@@ -1,0 +1,437 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  }
+
+  body {
+    @apply bg-[#030712] text-slate-100 overflow-x-hidden antialiased;
+  }
+}
+
+/* Custom Gradient Utilities */
+.gradient-text-cyan {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500;
+}
+
+.gradient-text-violet {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400;
+}
+
+.gradient-border {
+  position: relative;
+  background: linear-gradient(to right, rgba(56, 189, 248, 0.2), rgba(99, 102, 241, 0.2));
+  border-radius: inherit;
+}
+
+/* =========================================================================
+   Apple / iOS Glassmorphism System (Liquid Frosted Glass)
+   ========================================================================= */
+.glass-panel,
+.glass-card,
+.ios-glass {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0.02) 100%
+  ), rgba(11, 17, 32, 0.65) !important;
+  backdrop-filter: blur(24px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(190%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.03),
+    0 20px 40px -15px rgba(0, 0, 0, 0.6) !important;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+/* Subtle Interactive Mouse Spotlight on Glass Surfaces */
+.glass-panel::before,
+.glass-card::before,
+.ios-glass::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    380px circle at var(--mouse-x, -999px) var(--mouse-y, -999px),
+    rgba(56, 189, 248, 0.09),
+    transparent 65%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.glass-panel:hover::before,
+.glass-card:hover::before,
+.ios-glass:hover::before {
+  opacity: 1;
+}
+
+.glass-panel > *,
+.glass-card > *,
+.ios-glass > * {
+  position: relative;
+  z-index: 2;
+}
+
+.glass-panel:hover,
+.glass-panel-hover:hover,
+.glass-card:hover,
+.glass-card-hover:hover,
+.ios-glass-hover:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.12) 0%,
+    rgba(255, 255, 255, 0.04) 100%
+  ), rgba(13, 22, 42, 0.78) !important;
+  border-color: rgba(56, 189, 248, 0.45) !important;
+  box-shadow: 
+    inset 0 1px 2px 0 rgba(255, 255, 255, 0.4),
+    inset 0 0 0 1px rgba(56, 189, 248, 0.25),
+    0 25px 50px -12px rgba(0, 0, 0, 0.7),
+    0 0 35px -5px rgba(56, 189, 248, 0.22) !important;
+  transform: translateY(-3px);
+}
+
+/* iOS Frosted Pill & Buttons */
+.ios-glass-pill {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 
+    inset 0 1px 0.5px 0 rgba(255, 255, 255, 0.22),
+    0 4px 12px rgba(0, 0, 0, 0.25);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ios-glass-pill:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(56, 189, 248, 0.4);
+  box-shadow: 
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.35),
+    0 6px 16px rgba(56, 189, 248, 0.2);
+  transform: translateY(-1px);
+}
+
+/* iPhone 16 Pro Mockup Frame & Glare */
+.iphone-frame {
+  border-radius: 50px;
+  background: linear-gradient(145deg, #2b3548 0%, #0d121f 50%, #1e2638 100%);
+  box-shadow: 
+    0 30px 70px -15px rgba(0, 0, 0, 0.9),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.2),
+    inset 0 2px 4px 0 rgba(255, 255, 255, 0.3),
+    0 0 30px rgba(56, 189, 248, 0.15);
+  position: relative;
+}
+
+.iphone-glare {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(115deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.03) 25%, transparent 50%);
+  pointer-events: none;
+  z-index: 20;
+}
+
+.dynamic-island {
+  background: #000;
+  border-radius: 20px;
+  padding: 2.5px 12px;
+  box-shadow: 
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+.home-indicator {
+  width: 95px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.45);
+  border-radius: 9999px;
+  margin: 6px auto 2px auto;
+}
+
+/* MacBook Frame & Base */
+.macbook-frame {
+  border-radius: 16px 16px 0 0;
+  border: 4px solid #1e293b;
+  border-bottom: none;
+  background: #000;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.85);
+}
+
+.macbook-base {
+  height: 12px;
+  background: linear-gradient(to bottom, #334155, #1e293b);
+  border-radius: 0 0 16px 16px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+  position: relative;
+}
+
+.macbook-base::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background: #0f172a;
+  border-radius: 0 0 4px 4px;
+}
+
+/* Custom Glows */
+.glow-cyan {
+  box-shadow: 0 0 25px -5px rgba(56, 189, 248, 0.35);
+}
+
+.glow-indigo {
+  box-shadow: 0 0 25px -5px rgba(99, 102, 241, 0.35);
+}
+
+/* Subtle Animated Mesh / Background Gradients */
+.cyber-grid {
+  background-size: 50px 50px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+}
+
+/* Smooth Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #030712;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
+
+/* Pulse Glow Animation */
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.05);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 5s ease-in-out infinite;
+}
+
+/* Slow Spin */
+@keyframes spinSlow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spinSlow 30s linear infinite;
+}
+
+/* Aurora Living Gradient Keyframes (Gentle Organic Motion) */
+@keyframes auroraFloat1 {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+    opacity: 0.65;
+  }
+  50% {
+    transform: translate3d(-10vw, 12vh, 0) scale(1.15) rotate(35deg);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate3d(6vw, 22vh, 0) scale(0.92) rotate(70deg);
+    opacity: 0.65;
+  }
+}
+
+@keyframes auroraFloat2 {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translate3d(12vw, -14vh, 0) scale(1.2) rotate(-30deg);
+    opacity: 0.85;
+  }
+  100% {
+    transform: translate3d(-6vw, -25vh, 0) scale(0.95) rotate(-65deg);
+    opacity: 0.6;
+  }
+}
+
+@keyframes auroraFloat3 {
+  0% {
+    transform: translate3d(0, 0, 0) scale(0.95);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translate3d(-12vw, -10vh, 0) scale(1.15);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate3d(8vw, -18vh, 0) scale(0.95);
+    opacity: 0.5;
+  }
+}
+
+@keyframes auroraFloat4 {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.55;
+  }
+  50% {
+    transform: translate3d(14vw, 8vh, 0) scale(1.22);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate3d(-8vw, 16vh, 0) scale(0.92);
+    opacity: 0.55;
+  }
+}
+
+@keyframes auroraFloat5 {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.45;
+  }
+  50% {
+    transform: translate3d(-8vw, 12vh, 0) scale(1.25);
+    opacity: 0.75;
+  }
+  100% {
+    transform: translate3d(8vw, -8vh, 0) scale(1);
+    opacity: 0.45;
+  }
+}
+
+.aurora-orb-1 {
+  animation: auroraFloat1 22s ease-in-out infinite alternate;
+}
+.aurora-orb-2 {
+  animation: auroraFloat2 28s ease-in-out infinite alternate;
+}
+.aurora-orb-3 {
+  animation: auroraFloat3 24s ease-in-out infinite alternate;
+}
+.aurora-orb-4 {
+  animation: auroraFloat4 30s ease-in-out infinite alternate;
+}
+.aurora-orb-5 {
+  animation: auroraFloat5 20s ease-in-out infinite alternate;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aurora-orb-1,
+  .aurora-orb-2,
+  .aurora-orb-3,
+  .aurora-orb-4,
+  .aurora-orb-5 {
+    animation: none !important;
+  }
+}
+
+/* Fade In */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Print Engine for Exact A4 PDF Generation */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 8mm 10mm;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Hide website UI elements */
+  nav,
+  main,
+  footer,
+  #cv-modal-toolbar,
+  #cv-sidebar,
+  .no-print {
+    display: none !important;
+  }
+
+  /* Make modal container transparent and static so children print cleanly */
+  #cv-modal-backdrop {
+    position: static !important;
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    inset: auto !important;
+  }
+
+  #cv-print-root {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    transform: none !important;
+  }
+
+  #cv-sheet {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
+  }
+
+  .avoid-break {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+}

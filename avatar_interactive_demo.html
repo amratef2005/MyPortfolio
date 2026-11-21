@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive 3D Avatar Demo - تجربة تفاعل الصورة مع الماوس</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #07090e;
+      --card-bg: rgba(15, 23, 42, 0.65);
+      --card-border: rgba(56, 189, 248, 0.2);
+      --accent-cyan: #38bdf8;
+      --accent-violet: #818cf8;
+      --accent-glow: rgba(56, 189, 248, 0.35);
+      --mouse-x: 50%;
+      --mouse-y: 50%;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: #f8fafc;
+      font-family: 'Cairo', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Ambient Background Grid & Glow */
+    .bg-grid {
+      position: fixed;
+      inset: 0;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .ambient-glow {
+      position: fixed;
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, var(--accent-glow) 0%, rgba(99, 102, 241, 0.12) 40%, transparent 70%);
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+      transition: transform 0.2s cubic-bezier(0.2, 0, 0.2, 1);
+      left: calc(var(--mouse-x) - 350px);
+      top: calc(var(--mouse-y) - 350px);
+      opacity: 0.6;
+    }
+
+    /* Header */
+    .header-bar {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      margin-bottom: 2rem;
+      animation: fadeInDown 0.8s ease-out;
+    }
+
+    .header-bar h1 {
+      font-size: 2.2rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 50%, var(--accent-cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+
+    .header-bar p {
+      color: #94a3b8;
+      font-size: 1.05rem;
+    }
+
+    .badge {
+      display: inline-block;
+      margin-top: 0.5rem;
+      padding: 0.35rem 0.85rem;
+      border-radius: 9999px;
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: var(--accent-cyan);
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    /* Interactive Showcase Card */
+    .scene-container {
+      position: relative;
+      z-index: 10;
+      perspective: 1200px;
+      width: 440px;
+      height: 520px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .avatar-card {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 28px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      transform-style: preserve-3d;
+      box-shadow: 
+        0 25px 50px -12px rgba(0, 0, 0, 0.7),
+        0 0 40px -10px var(--accent-glow);
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding-bottom: 2rem;
+      overflow: visible;
+    }
+
+    /* Aura Ring Behind Image */
+    .avatar-aura {
+      position: absolute;
+      top: 50px;
+      width: 270px;
+      height: 270px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-violet));
+      opacity: 0.35;
+      filter: blur(35px);
+      transform: translateZ(20px);
+      pointer-events: none;
+      animation: pulse 4s infinite alternate ease-in-out;
+    }
+
+    .cyber-ring {
+      position: absolute;
+      top: 60px;
+      width: 250px;
+      height: 250px;
+      border-radius: 50%;
+      border: 2px dashed rgba(56, 189, 248, 0.4);
+      transform: translateZ(30px);
+      pointer-events: none;
+      animation: spin 30s linear infinite;
+    }
+
+    /* The Transparent Avatar Image */
+    .avatar-wrapper {
+      position: absolute;
+      top: 25px;
+      width: 320px;
+      height: 320px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform-style: preserve-3d;
+      transform: translateZ(70px); /* Pops out in 3D */
+    }
+
+    .avatar-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 25px rgba(56, 189, 248, 0.35));
+      transition: filter 0.2s ease;
+      pointer-events: none;
+    }
+
+    /* Dynamic Light Reflection Layer */
+    .specular-light {
+      position: absolute;
+      inset: 0;
+      border-radius: 28px;
+      background: radial-gradient(circle at var(--mouse-x) var(--mouse-y), rgba(255, 255, 255, 0.18) 0%, transparent 60%);
+      pointer-events: none;
+      transform: translateZ(1px);
+    }
+
+    /* Card Details */
+    .card-info {
+      position: relative;
+      z-index: 5;
+      text-align: center;
+      transform: translateZ(50px);
+      margin-top: auto;
+    }
+
+    .card-info h3 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 0.2rem;
+    }
+
+    .card-info .role {
+      font-size: 0.95rem;
+      color: var(--accent-cyan);
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+
+    .tech-tags {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .tech-tag {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #cbd5e1;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Controls Panel */
+    .controls-bar {
+      position: relative;
+      z-index: 10;
+      margin-top: 2rem;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 0.75rem 1.5rem;
+      backdrop-filter: blur(12px);
+    }
+
+    .color-btn {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      cursor: pointer;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .color-btn:hover {
+      transform: scale(1.2);
+    }
+
+    .color-btn.active {
+      border-color: #ffffff;
+      box-shadow: 0 0 10px currentColor;
+    }
+
+    .status-text {
+      color: #94a3b8;
+      font-size: 0.85rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Keyframes */
+    @keyframes spin {
+      100% { transform: translateZ(30px) rotate(360deg); }
+    }
+
+    @keyframes pulse {
+      0% { transform: translateZ(20px) scale(0.9); opacity: 0.25; }
+      100% { transform: translateZ(20px) scale(1.1); opacity: 0.45; }
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-grid"></div>
+  <div class="ambient-glow" id="ambientGlow"></div>
+
+  <div class="header-bar">
+    <h1>حركة الصورة التفاعلية (3D Tilt & Parallax)</h1>
+    <p>تم تفريغ خلفية الصورة بنجاح وتفعيل تفاعل الحركة ثلاثي الأبعاد مع مؤشر الماوس</p>
+    <div class="badge">🔥 3D Perspective + Depth Parallax + Dynamic Lighting</div>
+  </div>
+
+  <div class="scene-container" id="sceneContainer">
+    <div class="avatar-card" id="avatarCard">
+      <div class="specular-light"></div>
+      <div class="avatar-aura" id="avatarAura"></div>
+      <div class="cyber-ring"></div>
+
+      <!-- Transparent Portrait -->
+      <div class="avatar-wrapper" id="avatarWrapper">
+        <img src="my_transparent.png" alt="Profile Picture" class="avatar-img" id="avatarImg">
+      </div>
+
+      <!-- Card Info -->
+      <div class="card-info">
+        <h3>Senior Software Engineer</h3>
+        <p class="role">Backend Architect & .NET 10</p>
+        <div class="tech-tags">
+          <span class="tech-tag">.NET 10</span>
+          <span class="tech-tag">Clean Architecture</span>
+          <span class="tech-tag">PostgreSQL</span>
+          <span class="tech-tag">Docker</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive Controls -->
+  <div class="controls-bar">
+    <span class="status-text">تغيير لون الهالة:</span>
+    <div class="color-btn active" style="background: #38bdf8;" onclick="setGlow('#38bdf8', '#818cf8', this)" title="سماوي كلاسيكي"></div>
+    <div class="color-btn" style="background: #10b981;" onclick="setGlow('#10b981', '#06b6d4', this)" title="زمردي هادئ"></div>
+    <div class="color-btn" style="background: #ec4899;" onclick="setGlow('#ec4899', '#8b5cf6', this)" title="بنفسجي ووردي"></div>
+    <div class="color-btn" style="background: #f59e0b;" onclick="setGlow('#f59e0b', '#ef4444', this)" title="ذهبي ناري"></div>
+    <span style="border-right: 1px solid rgba(255,255,255,0.1); height: 20px; margin: 0 0.5rem;"></span>
+    <span class="status-text" id="coordsText">حرك الماوس لتجربة التفاعل</span>
+  </div>
+
+  <script>
+    const scene = document.getElementById('sceneContainer');
+    const card = document.getElementById('avatarCard');
+    const avatarWrapper = document.getElementById('avatarWrapper');
+    const coordsText = document.getElementById('coordsText');
+    const root = document.documentElement;
+
+    let targetRotateX = 0;
+    let targetRotateY = 0;
+    let targetTranslateX = 0;
+    let targetTranslateY = 0;
+
+    let currentRotateX = 0;
+    let currentRotateY = 0;
+    let currentTranslateX = 0;
+    let currentTranslateY = 0;
+
+    const maxRotation = 22; // Maximum tilt angle in degrees
+    const maxAvatarTranslation = 18; // Maximum depth displacement in pixels
+
+    // Mouse Movement Tracking
+    window.addEventListener('mousemove', (e) => {
+      const rect = scene.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+
+      // Distance from center (-1 to 1)
+      const normalizedX = (e.clientX - centerX) / (window.innerWidth / 2);
+      const normalizedY = (e.clientY - centerY) / (window.innerHeight / 2);
+
+      // Invert Y for standard 3D rotation
+      targetRotateX = -normalizedY * maxRotation;
+      targetRotateY = normalizedX * maxRotation;
+
+      // Parallax translation for the image
+      targetTranslateX = normalizedX * maxAvatarTranslation;
+      targetTranslateY = normalizedY * maxAvatarTranslation;
+
+      // Update CSS variables for specular light and ambient glow
+      root.style.setProperty('--mouse-x', `${e.clientX}px`);
+      root.style.setProperty('--mouse-y', `${e.clientY}px`);
+
+      coordsText.textContent = `X: ${targetRotateY.toFixed(1)}° | Y: ${targetRotateX.toFixed(1)}°`;
+    });
+
+    // Reset smoothly when mouse leaves window
+    window.addEventListener('mouseleave', () => {
+      targetRotateX = 0;
+      targetRotateY = 0;
+      targetTranslateX = 0;
+      targetTranslateY = 0;
+      coordsText.textContent = 'الماوس خارج النافذة';
+    });
+
+    // Smooth Animation Loop (Lerp)
+    function animate() {
+      const ease = 0.08; // Spring smoothing factor
+
+      currentRotateX += (targetRotateX - currentRotateX) * ease;
+      currentRotateY += (targetRotateY - currentRotateY) * ease;
+      currentTranslateX += (targetTranslateX - currentTranslateX) * ease;
+      currentTranslateY += (targetTranslateY - currentTranslateY) * ease;
+
+      // Apply transforms
+      card.style.transform = `rotateX(${currentRotateX}deg) rotateY(${currentRotateY}deg)`;
+      avatarWrapper.style.transform = `translateZ(70px) translateX(${currentTranslateX}px) translateY(${currentTranslateY}px)`;
+
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+
+    // Color Selector
+    function setGlow(color1, color2, btn) {
+      document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      root.style.setProperty('--accent-cyan', color1);
+      root.style.setProperty('--accent-violet', color2);
+      root.style.setProperty('--accent-glow', `${color1}55`);
+    }
+  </script>
+</body>
+</html>
