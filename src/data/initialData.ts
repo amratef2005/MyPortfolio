@@ -1,8 +1,8 @@
 import { ProfileInfo, Project, Certificate, SkillCategory } from '../types';
 
 export const initialProfile: ProfileInfo = {
-  name: "Amr Atef Imam Mahmoud",
-  nameAr: "عمرو عاطف إمام محمود",
+  name: "Amr Atef Imam Kandel",
+  nameAr: "عمرو عاطف إمام قنديل",
   shortName: "Amr Atef",
   shortNameAr: "عمرو عاطف",
   title: ".NET Backend Developer",

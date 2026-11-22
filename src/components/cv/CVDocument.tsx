@@ -117,7 +117,7 @@ export const CVDocument: React.FC<CVDocumentProps> = ({
           suppressContentEditableWarning
           className="text-2xl sm:text-3xl font-black text-slate-950 uppercase tracking-wider mb-1"
         >
-          {profile.name || 'Amr Atef Imam Mahmoud'}
+          {profile.name || 'Amr Atef Imam Kandel'}
         </h1>
 
         <p

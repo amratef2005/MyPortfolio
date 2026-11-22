@@ -120,8 +120,8 @@ def sync_database():
     print("--- 2. Populating Profile Data ---")
     profile = {
         "id": "main_profile",
-        "name": "Amr Atef Imam Mahmoud",
-        "name_ar": "عمرو عاطف إمام محمود",
+        "name": "Amr Atef Imam Kandel",
+        "name_ar": "عمرو عاطف إمام قنديل",
         "short_name": "Amr Atef",
         "short_name_ar": "عمرو عاطف",
         "title": ".NET Backend Developer",

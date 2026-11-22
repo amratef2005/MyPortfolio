@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { ProfileInfo, Project, Certificate, SkillCategory, ContactMessage } from '../types';
 import { initialProfile, initialProjects, initialCertificates, initialSkillCategories } from '../data/initialData';
 
-const DATA_SEED_KEY = 'portfolio_seed_v3';
+const DATA_SEED_KEY = 'portfolio_seed_v4';
 
 interface PortfolioContextType {
   profile: ProfileInfo;
