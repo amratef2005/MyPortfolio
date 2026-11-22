@@ -72,7 +72,7 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     if (!saved) return initialProjects;
     try {
       const parsed = JSON.parse(saved);
-      if (!Array.isArray(parsed) || parsed.length === 0 || !parsed.some((p: any) => p.id === 'mot7km-saas')) {
+      if (!Array.isArray(parsed) || parsed.length === 0 || !parsed.some((p: any) => p.id === 'mot7km-saas') || !parsed.some((p: any) => p.featuresAr)) {
         localStorage.setItem('portfolio_projects', JSON.stringify(initialProjects));
         return initialProjects;
       }
@@ -84,12 +84,32 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   const [certificates, setCertificates] = useState<Certificate[]>(() => {
     const saved = localStorage.getItem('portfolio_certificates');
-    return saved ? JSON.parse(saved) : initialCertificates;
+    if (!saved) return initialCertificates;
+    try {
+      const parsed = JSON.parse(saved);
+      if (!Array.isArray(parsed) || !parsed.some((c: any) => c.badgeAr)) {
+        localStorage.setItem('portfolio_certificates', JSON.stringify(initialCertificates));
+        return initialCertificates;
+      }
+      return parsed;
+    } catch {
+      return initialCertificates;
+    }
   });
 
   const [skills, setSkills] = useState<SkillCategory[]>(() => {
     const saved = localStorage.getItem('portfolio_skills');
-    return saved ? JSON.parse(saved) : initialSkillCategories;
+    if (!saved) return initialSkillCategories;
+    try {
+      const parsed = JSON.parse(saved);
+      if (!Array.isArray(parsed) || !parsed.some((cat: any) => cat.skills?.some((s: any) => s.tagAr))) {
+        localStorage.setItem('portfolio_skills', JSON.stringify(initialSkillCategories));
+        return initialSkillCategories;
+      }
+      return parsed;
+    } catch {
+      return initialSkillCategories;
+    }
   });
 
   const [messages, setMessages] = useState<ContactMessage[]>(() => {
@@ -97,7 +117,10 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     return saved ? JSON.parse(saved) : [];
   });
 
-  const [lang, setLang] = useState<'ar' | 'en'>('en');
+  const [lang, setLang] = useState<'ar' | 'en'>(() => {
+    const saved = localStorage.getItem('portfolio_lang');
+    return (saved === 'ar' || saved === 'en') ? saved : 'en';
+  });
   const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [isCVModalOpen, setIsCVModalOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
@@ -142,11 +165,15 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     localStorage.setItem('portfolio_messages', JSON.stringify(messages));
   }, [messages]);
 
-  // Synchronize document direction and language dynamically
+  // Synchronize document direction, title and language dynamically
   useEffect(() => {
     document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
     document.documentElement.lang = lang;
-  }, [lang]);
+    document.title = lang === 'ar'
+      ? `${profile.nameAr || 'عمرو عاطف'} | مهندس نظم خلفية ومعماري .NET 10`
+      : `${profile.name || 'Amr Atef'} | Senior .NET & Backend Architect`;
+    localStorage.setItem('portfolio_lang', lang);
+  }, [lang, profile]);
 
   // Auth methods
   const login = (username: string, password?: string) => {

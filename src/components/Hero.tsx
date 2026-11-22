@@ -65,24 +65,36 @@ export const Hero: React.FC = () => {
               <div className="p-3.5 rounded-2xl glass-panel flex items-center gap-3">
                 <Layers className="w-5 h-5 text-cyan-400 shrink-0" />
                 <div className="text-xs">
-                  <span className="block font-bold text-white">Clean Architecture</span>
-                  <span className="text-slate-400 font-mono text-[11px]">CQRS & DDD</span>
+                  <span className="block font-bold text-white">
+                    {lang === 'ar' ? 'معمارية نظيفة' : 'Clean Architecture'}
+                  </span>
+                  <span className="text-slate-400 font-mono text-[11px]">
+                    {lang === 'ar' ? 'أنماط CQRS و DDD' : 'CQRS & DDD'}
+                  </span>
                 </div>
               </div>
 
               <div className="p-3.5 rounded-2xl glass-panel flex items-center gap-3">
                 <Database className="w-5 h-5 text-indigo-400 shrink-0" />
                 <div className="text-xs">
-                  <span className="block font-bold text-white">High Throughput</span>
-                  <span className="text-slate-400 font-mono text-[11px]">PostgreSQL & Redis</span>
+                  <span className="block font-bold text-white">
+                    {lang === 'ar' ? 'أداء وإنتاجية فائقة' : 'High Throughput'}
+                  </span>
+                  <span className="text-slate-400 font-mono text-[11px]">
+                    {lang === 'ar' ? 'قواعد PostgreSQL وكاش Redis' : 'PostgreSQL & Redis'}
+                  </span>
                 </div>
               </div>
 
               <div className="p-3.5 rounded-2xl glass-panel flex items-center gap-3 xs:col-span-2 sm:col-span-1">
                 <Cpu className="w-5 h-5 text-emerald-400 shrink-0" />
                 <div className="text-xs">
-                  <span className="block font-bold text-white">49+ Tests Passing</span>
-                  <span className="text-slate-400 font-mono text-[11px]">100% Zero-Defect</span>
+                  <span className="block font-bold text-white">
+                    {lang === 'ar' ? '+49 اختباراً ناجحاً' : '49+ Tests Passing'}
+                  </span>
+                  <span className="text-slate-400 font-mono text-[11px]">
+                    {lang === 'ar' ? 'خالٍ من الأخطاء 100%' : '100% Zero-Defect'}
+                  </span>
                 </div>
               </div>
             </div>
@@ -102,7 +114,7 @@ export const Hero: React.FC = () => {
                 className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-cyan-500/30 hover:border-cyan-400 text-slate-100 font-semibold text-sm transition-all flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(56,189,248,0.15)] group"
               >
                 <FileDown className="w-4 h-4 text-cyan-400 group-hover:scale-110 transition-transform" />
-                <span>{lang === 'ar' ? 'توليد الـ CV الذكي (Custom CV)' : 'Generate Custom CV (PDF)'}</span>
+                <span>{lang === 'ar' ? 'توليد السيرة الذاتية الذكية' : 'Generate Custom CV (PDF)'}</span>
               </button>
 
               <a

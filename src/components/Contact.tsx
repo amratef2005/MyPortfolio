@@ -115,7 +115,9 @@ export const Contact: React.FC = () => {
                     <Mail className="w-5 h-5" />
                   </div>
                   <div>
-                    <span className="block text-xs font-mono text-slate-400">Email</span>
+                    <span className="block text-xs font-mono text-slate-400">
+                      {lang === 'ar' ? 'البريد الإلكتروني' : 'Email'}
+                    </span>
                     <span className="text-xs sm:text-sm font-semibold text-white truncate max-w-[170px] sm:max-w-none block">
                       {profile.email}
                     </span>
@@ -124,7 +126,7 @@ export const Contact: React.FC = () => {
                 <button
                   onClick={copyEmail}
                   className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
-                  title="Copy Email"
+                  title={lang === 'ar' ? 'نسخ البريد الإلكتروني' : 'Copy Email'}
                 >
                   {copiedEmail ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
                 </button>
@@ -137,7 +139,9 @@ export const Contact: React.FC = () => {
                     <WhatsAppIcon className="w-5 h-5" />
                   </div>
                   <div>
-                    <span className="block text-xs font-mono text-slate-400">WhatsApp</span>
+                    <span className="block text-xs font-mono text-slate-400">
+                      {lang === 'ar' ? 'واتساب' : 'WhatsApp'}
+                    </span>
                     <span className="text-xs sm:text-sm font-semibold text-white">
                       {profile.phone}
                     </span>
@@ -146,7 +150,7 @@ export const Contact: React.FC = () => {
                 <button
                   onClick={copyWhatsApp}
                   className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
-                  title="Copy Phone"
+                  title={lang === 'ar' ? 'نسخ رقم الهاتف / واتساب' : 'Copy Phone'}
                 >
                   {copiedWhatsApp ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
                 </button>
@@ -159,16 +163,18 @@ export const Contact: React.FC = () => {
                     <Linkedin className="w-5 h-5" />
                   </div>
                   <div>
-                    <span className="block text-xs font-mono text-slate-400">LinkedIn</span>
+                    <span className="block text-xs font-mono text-slate-400">
+                      {lang === 'ar' ? 'لينكد إن' : 'LinkedIn'}
+                    </span>
                     <span className="text-xs sm:text-sm font-semibold text-white">
-                      Amr Atef
+                      {lang === 'ar' ? profile.nameAr : profile.name}
                     </span>
                   </div>
                 </div>
                 <button
                   onClick={copyLinkedIn}
                   className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
-                  title="Copy LinkedIn"
+                  title={lang === 'ar' ? 'نسخ رابط لينكد إن' : 'Copy LinkedIn'}
                 >
                   {copiedLinkedIn ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
                 </button>
@@ -180,7 +186,9 @@ export const Contact: React.FC = () => {
                   <MapPin className="w-5 h-5" />
                 </div>
                 <div>
-                  <span className="block text-xs font-mono text-slate-400">Location</span>
+                  <span className="block text-xs font-mono text-slate-400">
+                    {lang === 'ar' ? 'الموقع / الإقامة' : 'Location'}
+                  </span>
                   <span className="text-xs sm:text-sm font-semibold text-white">
                     {lang === 'ar' ? 'القاهرة، مصر (متاح للعمل عن بُعد عالمياً)' : 'Cairo, Egypt (Available Globally / Remote)'}
                   </span>

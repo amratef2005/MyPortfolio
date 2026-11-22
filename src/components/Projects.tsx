@@ -89,10 +89,12 @@ export const Projects: React.FC = () => {
                     {/* Header Badge */}
                     <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
                       <span className="px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-mono font-medium">
-                        {project.badge}
+                        {lang === 'ar' ? (project.badgeAr || project.badge) : project.badge}
                       </span>
                       <span className="text-xs font-mono text-slate-400 bg-slate-900/80 px-2.5 py-0.5 rounded-md">
-                        {project.category}
+                        {lang === 'ar' 
+                          ? (project.category === 'Cloud & SaaS' ? 'سحابي وأنظمة SaaS' : project.category === '.NET & Backend' ? '.NET وأنظمة خلفية' : project.category)
+                          : project.category}
                       </span>
                     </div>
 
@@ -116,10 +118,10 @@ export const Projects: React.FC = () => {
                       {project.metrics.slice(0, 2).map((m, mIdx) => (
                         <div key={mIdx} className="p-3 rounded-2xl bg-slate-900/70 border border-slate-800 text-center">
                           <span className="block text-cyan-400 font-mono font-bold text-sm sm:text-base">
-                            {m.value}
+                            {lang === 'ar' ? (m.valueAr || m.value) : m.value}
                           </span>
                           <span className="text-slate-400 text-[11px] font-mono">
-                            {m.label}
+                            {lang === 'ar' ? (m.labelAr || m.label) : m.label}
                           </span>
                         </div>
                       ))}
@@ -127,7 +129,7 @@ export const Projects: React.FC = () => {
 
                     {/* Architecture Highlights */}
                     <div className="flex flex-wrap gap-1.5 mb-6">
-                      {project.architecture.slice(0, 4).map((arch, aIdx) => (
+                      {(lang === 'ar' && project.architectureAr ? project.architectureAr : project.architecture).slice(0, 4).map((arch, aIdx) => (
                         <span
                           key={aIdx}
                           className="px-2.5 py-1 rounded-lg bg-slate-800/80 border border-slate-700/60 text-slate-300 text-xs font-mono"

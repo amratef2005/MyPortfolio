@@ -37,13 +37,15 @@ export const initialProjects: Project[] = [
     category: "Cloud & SaaS",
     featured: true,
     badge: "Enterprise SaaS • Latency < 20ms",
+    badgeAr: "نظام سحابي مؤسسي (SaaS) • زمن استجابة < 20ms",
     architecture: ["Clean Architecture", "Modular Monolith", "Multi-Tenancy (IMustHaveTenant)", "Sliding Session Rotation", "Batch Queue Worker"],
+    architectureAr: ["معمارية نظيفة (Clean Architecture)", "نواة موديولار موحدة (Modular Monolith)", "تعدد المستأجرين (Multi-Tenancy)", "تدوير الجلسات الانزلاقية (Sliding Tokens)", "طابور معالجة الدفعات (Batch Queue)"],
     technologies: [".NET 10", "C# 13/14", "EF Core", "PostgreSQL", "Supabase", "SignalR", "FluentValidation", "Docker", "MonsterASP CI/CD"],
     metrics: [
-      { label: "Menu Response Latency", value: "< 20ms" },
-      { label: "Security Model", value: "Sliding Token Rotation" },
-      { label: "Code Reliability", value: "0 Errors / 0 Warnings" },
-      { label: "Real-time Hub", value: "SignalR Active Hub" }
+      { label: "Menu Response Latency", labelAr: "زمن استجابة المنيو", value: "< 20ms", valueAr: "< 20 ملي ثانية" },
+      { label: "Security Model", labelAr: "نموذج الأمان", value: "Sliding Token Rotation", valueAr: "جلسات انزلاقية مشفرة" },
+      { label: "Code Reliability", labelAr: "استقرار الكود البرمجي", value: "0 Errors / 0 Warnings", valueAr: "0 أخطاء / 0 تحذيرات" },
+      { label: "Real-time Hub", labelAr: "قناة الاتصال اللحظي", value: "SignalR Active Hub", valueAr: "اتصال SignalR حي ومباشر" }
     ],
     features: [
       "Architected high-throughput multi-tenant SaaS backend using .NET 10, Clean Architecture, and PostgreSQL via Supabase.",
@@ -52,6 +54,14 @@ export const initialProjects: Project[] = [
       "Designed asynchronous in-memory batch processing queue (IProductViewQueue) processing thousands of concurrent QR menu views under 20ms without database throttling.",
       "Built comprehensive admin dashboard overview service (600+ LOC) with real-time active kitchen order counts, branch telemetry, and AI-driven promotions engine.",
       "Established automated CI/CD pipeline via GitHub Actions targeting MonsterASP with zero-downtime file deployment via app_offline.htm."
+    ],
+    featuresAr: [
+      "بناء وتصميم نواة SaaS سحابية متعددة المستأجرين فائقة السرعة باستخدام .NET 10 ومعمارية Clean Architecture مع Supabase PostgreSQL، محققاً زمن استجابة يقل عن 20 ملي ثانية.",
+      "تطبيق نظام مصادقة هجين (Google/Facebook OAuth + OTP الرسائل النصية) مع توكنات وصول لمدة 15 دقيقة وتوكنات تحديث انزلاقية لمدة 30 يوماً.",
+      "هندسة تدوير التوكنات بتشفير SHA-256 مع كشف خرق وإعادة استخدام التوكن وعزل بيانات المشتركين تلقائياً (IMustHaveTenant ومنع هجمات IDOR).",
+      "تصميم طابور معالجة دفعات غير متزامن في الذاكرة (IProductViewQueue) لمعالجة آلاف زيارات المنيو اللحظية دون إجهاد قاعدة البيانات.",
+      "تطوير لوحة تحكم إدارية متكاملة (أكثر من 600 سطر برمجي) مع إحصائيات حية لطلبات المطبخ عبر SignalR ومحرك عروض تسويقية ذكي.",
+      "إنشاء خط أنابيب نشر مؤتمت (CI/CD) عبر GitHub Actions مستهدفاً MonsterASP مع نشر بدون توقف الخدمة (Zero-Downtime) عبر ملفات app_offline.htm."
     ],
     githubUrl: "https://github.com/amratef",
     liveUrl: "https://mot7km.com"
@@ -67,13 +77,15 @@ export const initialProjects: Project[] = [
     category: ".NET & Backend",
     featured: true,
     badge: "CQRS + MediatR • 49 Tests Passing 100%",
+    badgeAr: "نمط CQRS مع MediatR • 49 اختباراً ناجحاً 100%",
     architecture: ["Clean Architecture", "CQRS (MediatR)", "Domain-Driven Design (DDD)", "Specification Pattern", "Result Pattern"],
+    architectureAr: ["معمارية نظيفة (Clean Architecture)", "نمط CQRS عبر MediatR", "التصميم الموجه بالنطاق (DDD)", "نمط التخصيص (Specification Pattern)", "نمط النتيجة الآمن (Result Pattern)"],
     technologies: [".NET 10", "MediatR", "EF Core", "PostgreSQL", "xUnit & FluentAssertions", "JWT Bearer", "Swagger OpenAPI", "RunASP CI/CD"],
     metrics: [
-      { label: "Test Suite Pass Rate", value: "100% (49 Tests)" },
-      { label: "Architectural Pattern", value: "CQRS + MediatR" },
-      { label: "Database Engine", value: "PostgreSQL" },
-      { label: "CI/CD Deployment", value: "RunASP Automated" }
+      { label: "Test Suite Pass Rate", labelAr: "نسبة اجتياز الاختبارات", value: "100% (49 Tests)", valueAr: "100% (49 اختباراً)" },
+      { label: "Architectural Pattern", labelAr: "النمط المعماري الأساسي", value: "CQRS + MediatR", valueAr: "نمط CQRS عبر MediatR" },
+      { label: "Database Engine", labelAr: "محرك قواعد البيانات", value: "PostgreSQL", valueAr: "قواعد بيانات PostgreSQL" },
+      { label: "CI/CD Deployment", labelAr: "النشر السحابي المؤتمت", value: "RunASP Automated", valueAr: "نشر آلي على RunASP" }
     ],
     features: [
       "Decoupled read and write operations strictly using CQRS pattern with MediatR pipeline behaviors for validation and performance tracking.",
@@ -81,6 +93,13 @@ export const initialProjects: Project[] = [
       "Designed automated dynamic QR-code lecture attendance engine with time-decay cryptographic validation preventing attendance spoofing.",
       "Built comprehensive academic course offering and student enrollment engine with automated cumulative GPA computation.",
       "Implemented enterprise RFC 7807 ProblemDetails centralized exception handling with FluentValidation pipeline integration."
+    ],
+    featuresAr: [
+      "فصل صارم بين عمليات القراءة والكتابة باستخدام نمط CQRS ومكتبة MediatR مع خطوط وسيطة (Pipeline Behaviors) للتحقق ومراقبة الأداء.",
+      "تحقيق نسبة نجاح 100% عبر 49 اختباراً مؤتمتاً شاملاً (Unit & Integration Tests) تغطي كيانات النطاق ومعالجات الأوامر بدقة.",
+      "تصميم محرك ذكي للحضور بالمحاضرات عبر QR Code ديناميكي مع تحقق تشفيري متغير زمنياً لمنع التحايل على تسجيل الحضور.",
+      "بناء نظام متكامل لتسجيل المقررات والتحاق الطلاب مع احتساب تلقائي للمعدل التراكمي (GPA) والتحقق التلقائي من المتطلبات السابقة.",
+      "تطبيق معالجة استثناءات مركزية مؤسسية متوافقة مع معيار RFC 7807 ProblemDetails ومدمجة مع مكتبة التحقق FluentValidation."
     ],
     githubUrl: "https://github.com/amratef",
     liveUrl: "https://studysync.runasp.net"
@@ -98,6 +117,7 @@ export const initialCertificates: Certificate[] = [
     fileUrl: "/iti.pdf",
     previewImage: "/certificate.png",
     badge: "Professional Diploma",
+    badgeAr: "دبلومة مهنية معتمدة",
     description: "Intensive professional training program covering modern software engineering, advanced C#, ASP.NET Core, database administration, software architecture, and agile enterprise development.",
     descriptionAr: "تدريب مكثف على هندسة البرمجيات الاحترافية، تقنيات C# المتقدمة، معمارية الأنظمة، وتطوير الأنظمة المؤسسية وفق أحدث معايير السوق العالمية."
   },
@@ -111,6 +131,7 @@ export const initialCertificates: Certificate[] = [
     fileUrl: "/cshar.pdf",
     previewImage: "/certificate.png",
     badge: "Official Certification",
+    badgeAr: "شهادة هندسية معتمدة",
     description: "Specialized validation in advanced C# language features, asynchronous programming, LINQ, memory management, and EF Core performance optimization.",
     descriptionAr: "شهادة تخصصية في إتقان لغة C# الحديثة، البرمجة غير المتزامنة (Async/Await)، إدارة الذاكرة، والتحسين الفائق لاستعلامات EF Core."
   }
@@ -122,12 +143,12 @@ export const initialSkillCategories: SkillCategory[] = [
     nameAr: "الأنظمة الخلفية وبيئة .NET",
     icon: "Server",
     skills: [
-      { name: ".NET 10 / .NET 8", level: 95, tag: "Primary Stack" },
-      { name: "C# (Advanced)", level: 95, tag: "Core Language" },
-      { name: "ASP.NET Core Web API", level: 95, tag: "REST & RPC" },
-      { name: "Entity Framework Core", level: 90, tag: "ORM & Optimization" },
-      { name: "MediatR & CQRS", level: 92, tag: "Architectural Pattern" },
-      { name: "SignalR (Real-time)", level: 88, tag: "WebSockets" }
+      { name: ".NET 10 / .NET 8", level: 95, tag: "Primary Stack", tagAr: "التقنية الأساسية" },
+      { name: "C# (Advanced)", level: 95, tag: "Core Language", tagAr: "لغة التطوير الأساسية" },
+      { name: "ASP.NET Core Web API", level: 95, tag: "REST & RPC", tagAr: "خدمات REST والاتصال" },
+      { name: "Entity Framework Core", level: 90, tag: "ORM & Optimization", tagAr: "إدارة وتحسين البيانات" },
+      { name: "MediatR & CQRS", level: 92, tag: "Architectural Pattern", tagAr: "نمط معماري معتمد" },
+      { name: "SignalR (Real-time)", level: 88, tag: "WebSockets", tagAr: "اتصال فوري WebSockets" }
     ]
   },
   {
@@ -135,11 +156,11 @@ export const initialSkillCategories: SkillCategory[] = [
     nameAr: "المعمارية وأفضل الممارسات",
     icon: "Cpu",
     skills: [
-      { name: "Clean Architecture", level: 95, tag: "Design Strategy" },
-      { name: "Domain-Driven Design (DDD)", level: 88, tag: "Domain Logic" },
-      { name: "Multi-Tenancy Architecture", level: 90, tag: "SaaS Isolation" },
-      { name: "Unit & Integration Testing (xUnit)", level: 92, tag: "TDD / E2E" },
-      { name: "Design Patterns (GoF)", level: 90, tag: "Patterns" }
+      { name: "Clean Architecture", level: 95, tag: "Design Strategy", tagAr: "استراتيجية معمارية" },
+      { name: "Domain-Driven Design (DDD)", level: 88, tag: "Domain Logic", tagAr: "منطق النطاق الموجه" },
+      { name: "Multi-Tenancy Architecture", level: 90, tag: "SaaS Isolation", tagAr: "عزل المستأجرين السحابي" },
+      { name: "Unit & Integration Testing (xUnit)", level: 92, tag: "TDD / E2E", tagAr: "اختبارات مؤتمتة شاملة" },
+      { name: "Design Patterns (GoF)", level: 90, tag: "Patterns", tagAr: "أنماط التصميم (GoF)" }
     ]
   },
   {
@@ -147,10 +168,10 @@ export const initialSkillCategories: SkillCategory[] = [
     nameAr: "قواعد البيانات وإدارة الذاكرة",
     icon: "Database",
     skills: [
-      { name: "PostgreSQL & Supabase", level: 90, tag: "Relational DB" },
-      { name: "SQL Server (T-SQL)", level: 88, tag: "Enterprise DB" },
-      { name: "Redis Distributed Caching", level: 85, tag: "In-Memory Cache" },
-      { name: "Database Indexing & Query Tuning", level: 86, tag: "High Performance" }
+      { name: "PostgreSQL & Supabase", level: 90, tag: "Relational DB", tagAr: "قواعد بيانات علائقية" },
+      { name: "SQL Server (T-SQL)", level: 88, tag: "Enterprise DB", tagAr: "قواعد بيانات مؤسسية" },
+      { name: "Redis Distributed Caching", level: 85, tag: "In-Memory Cache", tagAr: "كاش سريع في الذاكرة" },
+      { name: "Database Indexing & Query Tuning", level: 86, tag: "High Performance", tagAr: "تحسين الأداء والفهرسة" }
     ]
   },
   {
@@ -158,10 +179,10 @@ export const initialSkillCategories: SkillCategory[] = [
     nameAr: "الحوسبة السحابية والنشر المؤتمت",
     icon: "Cloud",
     skills: [
-      { name: "GitHub Actions (CI/CD)", level: 88, tag: "Automated Pipelines" },
-      { name: "Docker & Containerization", level: 82, tag: "Containers" },
-      { name: "MonsterASP & RunASP Hosting", level: 90, tag: "IIS / Cloud" },
-      { name: "Git & Version Control", level: 92, tag: "Workflow" }
+      { name: "GitHub Actions (CI/CD)", level: 88, tag: "Automated Pipelines", tagAr: "خطوط أنابيب النشر المؤتمت" },
+      { name: "Docker & Containerization", level: 82, tag: "Containers", tagAr: "حاويات برمجية معزولة" },
+      { name: "MonsterASP & RunASP Hosting", level: 90, tag: "IIS / Cloud", tagAr: "استضافة سحابية وخوادم" },
+      { name: "Git & Version Control", level: 92, tag: "Workflow", tagAr: "إدارة ومزامنة الإصدارات" }
     ]
   }
 ];

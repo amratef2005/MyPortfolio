@@ -73,7 +73,9 @@ export const Skills: React.FC = () => {
                       <div key={sIdx} className="space-y-1.5">
                         <div className="flex items-center justify-between text-xs font-mono">
                           <span className="text-slate-200 font-semibold">{skill.name}</span>
-                          <span className="text-cyan-400">{skill.tag || `${skill.level}%`}</span>
+                          <span className="text-cyan-400">
+                            {lang === 'ar' ? (skill.tagAr || skill.tag || `${skill.level}%`) : (skill.tag || `${skill.level}%`)}
+                          </span>
                         </div>
                         {/* Progress Bar */}
                         <div className="w-full h-2 rounded-full bg-slate-900 overflow-hidden border border-slate-800/50">

@@ -139,7 +139,7 @@ export const InteractiveAvatar: React.FC<InteractiveAvatarProps> = ({
             </div>
             
             <p className="text-slate-400 text-xs font-mono mt-1.5 drop-shadow-md">
-              .NET 10 • Clean Architecture • Supabase
+              {lang === 'ar' ? '.NET 10 • معمارية نظيفة • Supabase' : '.NET 10 • Clean Architecture • Supabase'}
             </p>
           </motion.div>
         </motion.div>

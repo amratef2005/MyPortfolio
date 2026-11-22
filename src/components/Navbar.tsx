@@ -35,7 +35,7 @@ export const Navbar: React.FC = () => {
               {lang === 'ar' ? profile.nameAr : profile.name}
             </span>
             <span className="text-[10px] sm:text-[11px] font-mono text-cyan-400/80 tracking-wider">
-              .NET 10 ARCHITECT
+              {lang === 'ar' ? 'معماري نظم .NET 10' : '.NET 10 ARCHITECT'}
             </span>
           </div>
         </a>
@@ -63,8 +63,8 @@ export const Navbar: React.FC = () => {
             title={lang === 'ar' ? 'أداة توليد السيرة الذاتية الذكية' : 'Generate Smart CV'}
           >
             <FileText className="w-3.5 h-3.5 text-cyan-400" />
-            <span className="hidden sm:inline">{lang === 'ar' ? 'توليد الـ CV' : 'Generate CV'}</span>
-            <span className="sm:hidden font-bold">CV</span>
+            <span className="hidden sm:inline">{lang === 'ar' ? 'توليد السيرة الذاتية' : 'Generate CV'}</span>
+            <span className="sm:hidden font-bold">{lang === 'ar' ? 'السيرة الذاتية' : 'CV'}</span>
           </button>
 
           {/* Language Toggle Button */}

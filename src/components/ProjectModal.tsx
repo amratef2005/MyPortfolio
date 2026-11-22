@@ -42,7 +42,7 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) 
         <div className="mt-2 mb-4">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-mono font-semibold mb-3">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>{project.badge}</span>
+            <span>{lang === 'ar' ? (project.badgeAr || project.badge) : project.badge}</span>
           </div>
           <h2 className="text-2xl sm:text-3xl font-black text-white">
             {lang === 'ar' ? project.titleAr : project.title}
@@ -57,10 +57,10 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) 
           {project.metrics.map((metric, idx) => (
             <div key={idx} className="text-center p-2">
               <span className="block text-cyan-400 font-mono font-bold text-base sm:text-lg">
-                {metric.value}
+                {lang === 'ar' ? (metric.valueAr || metric.value) : metric.value}
               </span>
               <span className="text-slate-400 text-xs font-medium">
-                {metric.label}
+                {lang === 'ar' ? (metric.labelAr || metric.label) : metric.label}
               </span>
             </div>
           ))}
@@ -81,10 +81,10 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) 
         <div className="mb-6">
           <h4 className="text-white font-bold text-base mb-3 flex items-center gap-2">
             <Layers className="w-4 h-4 text-indigo-400" />
-            <span>{lang === 'ar' ? 'الأنماط المعمارية المطبقة (Architectural Patterns)' : 'Architectural Patterns'}</span>
+            <span>{lang === 'ar' ? 'الأنماط المعمارية المطبقة' : 'Architectural Patterns'}</span>
           </h4>
           <div className="flex flex-wrap gap-2">
-            {project.architecture.map((arch, idx) => (
+            {(lang === 'ar' && project.architectureAr ? project.architectureAr : project.architecture).map((arch, idx) => (
               <span 
                 key={idx}
                 className="px-3 py-1.5 rounded-lg bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-mono font-medium"
@@ -102,7 +102,7 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) 
             <span>{lang === 'ar' ? 'الميزات الهندسية ونقاط القوة' : 'Key Engineering Highlights'}</span>
           </h4>
           <ul className="grid grid-cols-1 gap-2.5">
-            {project.features.map((feat, idx) => (
+            {(lang === 'ar' && project.featuresAr ? project.featuresAr : project.features).map((feat, idx) => (
               <li key={idx} className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-300 p-2.5 rounded-xl bg-slate-900/40 border border-slate-800/60">
                 <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
                 <span>{feat}</span>
@@ -139,7 +139,7 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) 
               className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-semibold transition-colors"
             >
               <Github className="w-4 h-4" />
-              <span>GitHub Repository</span>
+              <span>{lang === 'ar' ? 'مستودع الكود (GitHub)' : 'GitHub Repository'}</span>
             </a>
           )}
           {project.liveUrl && (
@@ -150,7 +150,7 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) 
               className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-sm font-semibold transition-colors shadow-[0_0_15px_rgba(56,189,248,0.4)]"
             >
               <ExternalLink className="w-4 h-4" />
-              <span>Live Demonstration</span>
+              <span>{lang === 'ar' ? 'معاينة المنصة الحية' : 'Live Demonstration'}</span>
             </a>
           )}
           <button

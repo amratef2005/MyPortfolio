@@ -34,19 +34,19 @@ export const CVModal: React.FC = () => {
     window.print();
   };
 
-  const accentThemes: { id: AccentColor; name: string; hex: string }[] = [
-    { id: 'slate', name: 'Classic Slate', hex: '#0f172a' },
-    { id: 'navy', name: 'Executive Navy', hex: '#1e3a8a' },
-    { id: 'cyan', name: 'Tech Cyan', hex: '#0284c7' },
-    { id: 'cobalt', name: 'Royal Cobalt', hex: '#1d4ed8' },
-    { id: 'indigo', name: 'Deep Indigo', hex: '#4338ca' },
-    { id: 'teal', name: 'Clean Teal', hex: '#0f766e' },
-    { id: 'emerald', name: 'Forest Emerald', hex: '#047857' },
-    { id: 'rose', name: 'Crimson Rose', hex: '#be123c' },
-    { id: 'ruby', name: 'Deep Ruby', hex: '#991b1b' },
-    { id: 'amber', name: 'Warm Amber', hex: '#b45309' },
-    { id: 'violet', name: 'Royal Violet', hex: '#6d28d9' },
-    { id: 'charcoal', name: 'Minimal Charcoal', hex: '#334155' },
+  const accentThemes: { id: AccentColor; name: string; nameAr: string; hex: string }[] = [
+    { id: 'slate', name: 'Classic Slate', nameAr: 'رمادي كلاسيكي', hex: '#0f172a' },
+    { id: 'navy', name: 'Executive Navy', nameAr: 'كحلي تنفيذي', hex: '#1e3a8a' },
+    { id: 'cyan', name: 'Tech Cyan', nameAr: 'أزرق تقني', hex: '#0284c7' },
+    { id: 'cobalt', name: 'Royal Cobalt', nameAr: 'أزرق ملكي', hex: '#1d4ed8' },
+    { id: 'indigo', name: 'Deep Indigo', nameAr: 'نيلي عميق', hex: '#4338ca' },
+    { id: 'teal', name: 'Clean Teal', nameAr: 'تيل بحري', hex: '#0f766e' },
+    { id: 'emerald', name: 'Forest Emerald', nameAr: 'زمردي غابي', hex: '#047857' },
+    { id: 'rose', name: 'Crimson Rose', nameAr: 'وردي قرمزي', hex: '#be123c' },
+    { id: 'ruby', name: 'Deep Ruby', nameAr: 'ياقوتي داكن', hex: '#991b1b' },
+    { id: 'amber', name: 'Warm Amber', nameAr: 'عنبري دافئ', hex: '#b45309' },
+    { id: 'violet', name: 'Royal Violet', nameAr: 'بنفسجي ملكي', hex: '#6d28d9' },
+    { id: 'charcoal', name: 'Minimal Charcoal', nameAr: 'فحمي بسيط', hex: '#334155' },
   ];
 
   return (
@@ -60,14 +60,14 @@ export const CVModal: React.FC = () => {
           </div>
           <div>
             <h3 className="font-bold text-white text-sm sm:text-base flex items-center gap-2">
-              <span>{lang === 'ar' ? 'السيرة الذاتية القياسية (ATS-Friendly CV)' : 'ATS-Optimized Standard Resume'}</span>
+              <span>{lang === 'ar' ? 'السيرة الذاتية المهنية (ATS Resume)' : 'ATS-Optimized Standard Resume'}</span>
               <span className="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded font-mono font-bold flex items-center gap-1">
                 <ShieldCheck className="w-3 h-3" />
-                <span>100% ATS Verified</span>
+                <span>{lang === 'ar' ? 'معتمد 100% لأنظمة ATS' : '100% ATS Verified'}</span>
               </span>
             </h3>
             <p className="text-[11px] text-slate-400 font-mono hidden sm:block">
-              {lang === 'ar' ? 'معتمدة لأنظمة الفحص الآلي ومجهزة بالكامل باللغة الإنجليزية ومقاس A4' : 'Single-Column ATS Standard • 100% English • Direct A4 Vector Print'}
+              {lang === 'ar' ? 'معتمدة لأنظمة الفحص الآلي • تصميم قياسي احترافي • طباعة متجهة لمقاس A4' : 'Single-Column ATS Standard • 100% English • Direct A4 Vector Print'}
             </p>
           </div>
         </div>
@@ -78,10 +78,12 @@ export const CVModal: React.FC = () => {
           <button
             onClick={() => setShowConfig(!showConfig)}
             className="lg:hidden p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white text-xs flex items-center gap-1.5"
-            title="إعدادات الألوان"
+            title={lang === 'ar' ? 'إعدادات الألوان' : 'Color Settings'}
           >
             <Sliders className="w-4 h-4 text-cyan-400" />
-            <span className="text-[11px] font-mono">{showConfig ? 'Hide' : 'Colors'}</span>
+            <span className="text-[11px] font-mono">
+              {showConfig ? (lang === 'ar' ? 'إخفاء' : 'Hide') : (lang === 'ar' ? 'الألوان' : 'Colors')}
+            </span>
           </button>
 
           {/* Print / Download Button */}
@@ -97,7 +99,7 @@ export const CVModal: React.FC = () => {
           <button
             onClick={() => setIsCVModalOpen(false)}
             className="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white border border-slate-800 transition-colors"
-            title="إغلاق"
+            title={lang === 'ar' ? 'إغلاق' : 'Close'}
           >
             <X className="w-5 h-5" />
           </button>
@@ -113,7 +115,7 @@ export const CVModal: React.FC = () => {
               <div className="flex items-center justify-between pb-2 border-b border-slate-800">
                 <label className="text-xs font-mono font-bold text-slate-200 flex items-center gap-2">
                   <Palette className="w-4 h-4 text-cyan-400" />
-                  <span>Accent Theme:</span>
+                  <span>{lang === 'ar' ? 'سمة اللون:' : 'Accent Theme:'}</span>
                 </label>
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950/60 border border-cyan-800/60 text-cyan-300 font-semibold uppercase">
                   {options.accentColor}
@@ -140,7 +142,9 @@ export const CVModal: React.FC = () => {
                       >
                         {isSelected && <Check className="w-3 h-3 text-white drop-shadow" />}
                       </span>
-                      <span className="text-xs font-medium truncate">{c.name}</span>
+                      <span className="text-xs font-medium truncate">
+                        {lang === 'ar' ? c.nameAr : c.name}
+                      </span>
                     </button>
                   );
                 })}
@@ -156,7 +160,7 @@ export const CVModal: React.FC = () => {
             <button
               onClick={() => setZoom(Math.max(60, zoom - 10))}
               className="p-1 hover:text-white"
-              title="Zoom Out"
+              title={lang === 'ar' ? 'تصغير' : 'Zoom Out'}
             >
               <ZoomOut className="w-3.5 h-3.5" />
             </button>
@@ -164,12 +168,14 @@ export const CVModal: React.FC = () => {
             <button
               onClick={() => setZoom(Math.min(140, zoom + 10))}
               className="p-1 hover:text-white"
-              title="Zoom In"
+              title={lang === 'ar' ? 'تكبير' : 'Zoom In'}
             >
               <ZoomIn className="w-3.5 h-3.5" />
             </button>
             <span className="border-r border-slate-700 h-3 mx-1" />
-            <span className="text-[10px] text-emerald-400 font-bold">Standard A4 ATS Sheet</span>
+            <span className="text-[10px] text-emerald-400 font-bold">
+              {lang === 'ar' ? 'مقاس A4 القياسي' : 'Standard A4 ATS Sheet'}
+            </span>
           </div>
 
           {/* Rendered Document Sheet */}

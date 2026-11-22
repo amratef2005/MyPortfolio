@@ -10,10 +10,13 @@ export interface Project {
   featured: boolean;
   image?: string;
   badge: string;
+  badgeAr?: string;
   architecture: string[];
+  architectureAr?: string[];
   technologies: string[];
-  metrics: { label: string; value: string }[];
+  metrics: { label: string; labelAr?: string; value: string; valueAr?: string }[];
   features: string[];
+  featuresAr?: string[];
   githubUrl?: string;
   liveUrl?: string;
 }
@@ -30,13 +33,14 @@ export interface Certificate {
   description: string;
   descriptionAr: string;
   badge: string;
+  badgeAr?: string;
 }
 
 export interface SkillCategory {
   name: string;
   nameAr: string;
   icon: string;
-  skills: { name: string; level: number; tag?: string }[];
+  skills: { name: string; nameAr?: string; level: number; tag?: string; tagAr?: string }[];
 }
 
 export interface ProfileInfo {

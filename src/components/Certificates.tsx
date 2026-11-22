@@ -51,7 +51,7 @@ export const Certificates: React.FC = () => {
                   <div className="text-start">
                     <div className="flex items-center justify-between mb-4">
                       <span className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono font-semibold">
-                        {cert.badge}
+                        {lang === 'ar' ? (cert.badgeAr || cert.badge) : cert.badge}
                       </span>
                       <span className="text-xs font-mono text-slate-400">
                         {cert.date}
