@@ -25,6 +25,13 @@ import {
   EyeOff
 } from 'lucide-react';
 
+const WhatsAppIcon: React.FC<{ className?: string }> = ({ className = "w-4 h-4" }) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
+    <path d="M17.472 14.382c-.301-.15-1.78-.878-2.056-.978-.276-.1-.477-.15-.678.15-.201.3-.778.978-.954 1.179-.176.2-.352.225-.653.075-1.543-.769-2.55-1.378-3.565-3.119-.269-.462-.027-.712.124-.862.135-.135.301-.351.452-.527.15-.175.201-.3.301-.5.101-.2.05-.376-.025-.526-.075-.15-.678-1.634-.929-2.238-.244-.588-.493-.508-.678-.518-.175-.01-.376-.01-.577-.01-.201 0-.527.075-.803.376s-1.054 1.029-1.054 2.509c0 1.48 1.079 2.91 1.23 3.111.15.201 2.121 3.239 5.139 4.542.718.311 1.279.497 1.716.636.722.23 1.379.197 1.898.12.578-.087 1.78-.727 2.031-1.43.251-.703.251-1.305.176-1.43-.075-.125-.276-.2-.577-.35z" />
+    <path d="M12.004 2C6.48 2 2 6.48 2 12c0 1.947.56 3.765 1.53 5.305L2 22l4.836-1.503A9.957 9.957 0 0012.004 22c5.523 0 10.004-4.48 10.004-10s-4.481-10-10.004-10zm0 18.232c-1.637 0-3.15-.479-4.432-1.306l-.318-.204-2.871.893.91-2.793-.223-.332A8.187 8.187 0 013.77 12c0-4.54 3.694-8.232 8.234-8.232 4.54 0 8.232 3.692 8.232 8.232s-3.692 8.232-8.232 8.232z" />
+  </svg>
+);
+
 export const AdminPage: React.FC = () => {
   const {
     profile,
@@ -70,6 +77,34 @@ export const AdminPage: React.FC = () => {
 
   // Profile Form State
   const [profileForm, setProfileForm] = useState(profile);
+
+  // Quick WhatsApp Status Menu in Header State
+  const [isStatusMenuOpen, setIsStatusMenuOpen] = useState(false);
+
+  const setWhatsAppQuickStatus = (status: 'available' | 'busy' | 'offline') => {
+    const isAvail = status !== 'offline';
+    const customAr = status === 'busy' 
+      ? 'مشغول • الرد خلال ساعات' 
+      : status === 'available' 
+        ? 'متاح الآن للرد الفوري' 
+        : 'غير متاح حالياً • اترك رسالة';
+    const customEn = status === 'busy' 
+      ? 'Busy • Replies within hours' 
+      : status === 'available' 
+        ? 'Available for immediate reply' 
+        : 'Currently away • Leave a message';
+
+    const updated = {
+      isWhatsAppAvailable: isAvail,
+      whatsappStatus: status,
+      whatsappCustomNoteAr: profile.whatsappCustomNoteAr || customAr,
+      whatsappCustomNoteEn: profile.whatsappCustomNoteEn || customEn,
+    };
+    
+    updateProfile(updated);
+    setProfileForm(prev => ({ ...prev, ...updated }));
+    setIsStatusMenuOpen(false);
+  };
 
   // Security Form State
   const [newUsername, setNewUsername] = useState(profile.adminUsername || 'admin');
@@ -255,6 +290,121 @@ export const AdminPage: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-3">
+          {/* Quick Live WhatsApp Status Controller */}
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setIsStatusMenuOpen(!isStatusMenuOpen)}
+              className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-mono font-bold transition-all shadow-sm ${
+                (profile.isWhatsAppAvailable !== false && profile.whatsappStatus !== 'offline')
+                  ? (profile.whatsappStatus === 'busy'
+                      ? 'bg-amber-500/15 border-amber-500/40 text-amber-300 hover:bg-amber-500/25 shadow-[0_0_15px_rgba(245,158,11,0.25)]'
+                      : 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/25 shadow-[0_0_15px_rgba(16,185,129,0.3)]')
+                  : 'bg-slate-900 border-slate-700 text-slate-400 hover:bg-slate-800'
+              }`}
+              title="انقر لتغيير حالة الواتساب فوراً (متاح / مشغول / غير متاح)"
+            >
+              {/* WhatsApp Icon with dynamic color */}
+              <div className={`w-5 h-5 rounded-md flex items-center justify-center transition-colors ${
+                (profile.isWhatsAppAvailable !== false && profile.whatsappStatus !== 'offline')
+                  ? (profile.whatsappStatus === 'busy' ? 'text-amber-400' : 'text-emerald-400')
+                  : 'text-slate-500'
+              }`}>
+                <WhatsAppIcon className="w-4 h-4" />
+              </div>
+
+              {/* Pulsing Dot */}
+              <span className="relative flex h-2 w-2">
+                {profile.isWhatsAppAvailable !== false && profile.whatsappStatus === 'available' && (
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                )}
+                <span className={`relative inline-flex rounded-full h-2 w-2 ${
+                  profile.whatsappStatus === 'busy' 
+                    ? 'bg-amber-400' 
+                    : (profile.isWhatsAppAvailable !== false && profile.whatsappStatus !== 'offline')
+                      ? 'bg-emerald-400'
+                      : 'bg-slate-500'
+                }`} />
+              </span>
+
+              <span className="hidden sm:inline">
+                {profile.whatsappStatus === 'busy'
+                  ? 'واتساب: مشغول'
+                  : (profile.isWhatsAppAvailable !== false && profile.whatsappStatus !== 'offline')
+                    ? 'واتساب: متاح الآن'
+                    : 'واتساب: غير متاح'}
+              </span>
+
+              <span className="text-[10px] opacity-70">▼</span>
+            </button>
+
+            {/* Dropdown Menu */}
+            {isStatusMenuOpen && (
+              <>
+                <div 
+                  className="fixed inset-0 z-40" 
+                  onClick={() => setIsStatusMenuOpen(false)} 
+                />
+                <div className="absolute left-0 sm:right-auto sm:left-0 mt-2 w-52 rounded-2xl bg-slate-900/95 backdrop-blur-xl border border-slate-800 shadow-[0_15px_40px_rgba(0,0,0,0.6)] p-2 z-50 space-y-1 text-right font-mono">
+                  <div className="px-3 py-1.5 text-[10px] text-slate-400 font-bold border-b border-slate-800">
+                    تغيير حالة الواتساب الحية:
+                  </div>
+
+                  {/* Option 1: Available */}
+                  <button
+                    type="button"
+                    onClick={() => setWhatsAppQuickStatus('available')}
+                    className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all ${
+                      profile.isWhatsAppAvailable !== false && profile.whatsappStatus === 'available'
+                        ? 'bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/40 shadow-sm'
+                        : 'text-slate-300 hover:bg-slate-800'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]" />
+                      <span>متاح الآن (Available)</span>
+                    </div>
+                    <WhatsAppIcon className="w-4 h-4 text-emerald-400" />
+                  </button>
+
+                  {/* Option 2: Busy */}
+                  <button
+                    type="button"
+                    onClick={() => setWhatsAppQuickStatus('busy')}
+                    className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all ${
+                      profile.whatsappStatus === 'busy'
+                        ? 'bg-amber-500/20 text-amber-300 font-bold border border-amber-500/40 shadow-sm'
+                        : 'text-slate-300 hover:bg-slate-800'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_8px_#fbbf24]" />
+                      <span>مشغول (Busy)</span>
+                    </div>
+                    <WhatsAppIcon className="w-4 h-4 text-amber-400" />
+                  </button>
+
+                  {/* Option 3: Offline */}
+                  <button
+                    type="button"
+                    onClick={() => setWhatsAppQuickStatus('offline')}
+                    className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all ${
+                      profile.isWhatsAppAvailable === false || profile.whatsappStatus === 'offline'
+                        ? 'bg-slate-800 text-slate-200 font-bold border border-slate-700 shadow-sm'
+                        : 'text-slate-400 hover:bg-slate-800'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-slate-500" />
+                      <span>غير متاح (Offline)</span>
+                    </div>
+                    <WhatsAppIcon className="w-4 h-4 text-slate-500" />
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+
           <a
             href="/"
             target="_blank"
@@ -823,8 +973,14 @@ export const AdminPage: React.FC = () => {
               <div className="p-5 rounded-2xl bg-gradient-to-br from-emerald-950/30 via-slate-900 to-slate-950 border border-emerald-500/30 space-y-4 shadow-xl">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-emerald-500/20 pb-3">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-xs">
-                      WA
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300 ${
+                      (profileForm.isWhatsAppAvailable !== false && profileForm.whatsappStatus !== 'offline')
+                        ? (profileForm.whatsappStatus === 'busy' 
+                            ? 'bg-amber-500/20 text-amber-400 border border-amber-500/40 shadow-[0_0_10px_rgba(245,158,11,0.25)]' 
+                            : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 shadow-[0_0_12px_rgba(16,185,129,0.35)]')
+                        : 'bg-slate-800 text-slate-500 border border-slate-700'
+                    }`}>
+                      <WhatsAppIcon className="w-4 h-4" />
                     </div>
                     <div>
                       <h3 className="text-sm font-bold text-white flex items-center gap-2">
