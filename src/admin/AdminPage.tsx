@@ -819,6 +819,230 @@ export const AdminPage: React.FC = () => {
                 </div>
               </div>
 
+              {/* WhatsApp Live Availability Control Card */}
+              <div className="p-5 rounded-2xl bg-gradient-to-br from-emerald-950/30 via-slate-900 to-slate-950 border border-emerald-500/30 space-y-4 shadow-xl">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-emerald-500/20 pb-3">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-xs">
+                      WA
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                        <span>التحكم في حالة التوفر على واتساب (WhatsApp Status)</span>
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold ${
+                          (profileForm.isWhatsAppAvailable !== false && profileForm.whatsappStatus !== 'offline')
+                            ? (profileForm.whatsappStatus === 'busy' ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30')
+                            : 'bg-slate-800 text-slate-400 border border-slate-700'
+                        }`}>
+                          {profileForm.isWhatsAppAvailable === false || profileForm.whatsappStatus === 'offline' 
+                            ? 'غير متاح (Offline)' 
+                            : profileForm.whatsappStatus === 'busy' 
+                              ? 'مشغول (Busy)' 
+                              : 'متاح للرد (Available)'}
+                        </span>
+                      </h3>
+                      <p className="text-[11px] text-slate-400 font-mono">
+                        يتحكم في إشارة التوفر الحية ببطاقة التواصل والزر العائم للزوار
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Master Toggle */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const next = profileForm.isWhatsAppAvailable === false;
+                      setProfileForm({
+                        ...profileForm,
+                        isWhatsAppAvailable: next,
+                        whatsappStatus: next ? 'available' : 'offline'
+                      });
+                    }}
+                    className={`px-4 py-2 rounded-xl text-xs font-mono font-bold transition-all flex items-center gap-2 ${
+                      profileForm.isWhatsAppAvailable !== false && profileForm.whatsappStatus !== 'offline'
+                        ? 'bg-emerald-500 text-slate-950 shadow-[0_0_15px_rgba(16,185,129,0.4)]'
+                        : 'bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-700'
+                    }`}
+                  >
+                    <span className={`w-2 h-2 rounded-full ${
+                      profileForm.isWhatsAppAvailable !== false && profileForm.whatsappStatus !== 'offline'
+                        ? 'bg-slate-950 animate-ping'
+                        : 'bg-slate-500'
+                    }`} />
+                    <span>
+                      {profileForm.isWhatsAppAvailable !== false && profileForm.whatsappStatus !== 'offline'
+                        ? 'الواتساب: متاح الآن'
+                        : 'الواتساب: غير متاح'}
+                    </span>
+                  </button>
+                </div>
+
+                {/* Status Choices Buttons */}
+                <div>
+                  <label className="block text-xs font-mono text-slate-300 mb-2 font-semibold">
+                    حدد نمط الحالة بدقة:
+                  </label>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                    {/* Available */}
+                    <button
+                      type="button"
+                      onClick={() => setProfileForm({
+                        ...profileForm,
+                        isWhatsAppAvailable: true,
+                        whatsappStatus: 'available',
+                        whatsappCustomNoteAr: profileForm.whatsappCustomNoteAr || 'متاح الآن للرد الفوري',
+                        whatsappCustomNoteEn: profileForm.whatsappCustomNoteEn || 'Available for immediate reply'
+                      })}
+                      className={`p-3 rounded-xl border text-start transition-all flex items-center gap-2.5 ${
+                        (profileForm.isWhatsAppAvailable !== false && profileForm.whatsappStatus === 'available')
+                          ? 'bg-emerald-950/60 border-emerald-400 text-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.25)]'
+                          : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:border-slate-700'
+                      }`}
+                    >
+                      <span className="w-3 h-3 rounded-full bg-emerald-400 shrink-0 shadow-[0_0_8px_#34d399]" />
+                      <div className="text-xs">
+                        <span className="block font-bold text-white">متاح الآن (Available)</span>
+                        <span className="text-[10px] text-slate-400 font-mono">للرد السريع والفوري</span>
+                      </div>
+                    </button>
+
+                    {/* Busy */}
+                    <button
+                      type="button"
+                      onClick={() => setProfileForm({
+                        ...profileForm,
+                        isWhatsAppAvailable: true,
+                        whatsappStatus: 'busy',
+                        whatsappCustomNoteAr: 'مشغول • الرد خلال ساعات',
+                        whatsappCustomNoteEn: 'Busy • Replies within hours'
+                      })}
+                      className={`p-3 rounded-xl border text-start transition-all flex items-center gap-2.5 ${
+                        profileForm.whatsappStatus === 'busy'
+                          ? 'bg-amber-950/60 border-amber-400 text-amber-300 shadow-[0_0_12px_rgba(245,158,11,0.25)]'
+                          : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:border-slate-700'
+                      }`}
+                    >
+                      <span className="w-3 h-3 rounded-full bg-amber-400 shrink-0" />
+                      <div className="text-xs">
+                        <span className="block font-bold text-white">مشغول (Busy)</span>
+                        <span className="text-[10px] text-slate-400 font-mono">الرد خلال ساعات</span>
+                      </div>
+                    </button>
+
+                    {/* Offline */}
+                    <button
+                      type="button"
+                      onClick={() => setProfileForm({
+                        ...profileForm,
+                        isWhatsAppAvailable: false,
+                        whatsappStatus: 'offline',
+                        whatsappCustomNoteAr: 'غير متاح حالياً • اترك رسالة',
+                        whatsappCustomNoteEn: 'Currently away • Leave a message'
+                      })}
+                      className={`p-3 rounded-xl border text-start transition-all flex items-center gap-2.5 ${
+                        (profileForm.isWhatsAppAvailable === false || profileForm.whatsappStatus === 'offline')
+                          ? 'bg-slate-800/80 border-slate-500 text-slate-200'
+                          : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:border-slate-700'
+                      }`}
+                    >
+                      <span className="w-3 h-3 rounded-full bg-slate-500 shrink-0" />
+                      <div className="text-xs">
+                        <span className="block font-bold text-white">غير متاح (Offline)</span>
+                        <span className="text-[10px] text-slate-400 font-mono">ترك رسالة فقط</span>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Custom Status Note Inputs */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                  <div>
+                    <label className="block text-xs font-mono text-slate-300 mb-1">
+                      نص الحالة المخصص (عربي):
+                    </label>
+                    <input
+                      type="text"
+                      value={profileForm.whatsappCustomNoteAr || ''}
+                      onChange={(e) => setProfileForm({ ...profileForm, whatsappCustomNoteAr: e.target.value })}
+                      placeholder="مثلاً: متاح الآن للرد الفوري أو في اجتماع"
+                      className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white text-xs"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-mono text-slate-300 mb-1">
+                      نص الحالة المخصص (English):
+                    </label>
+                    <input
+                      type="text"
+                      value={profileForm.whatsappCustomNoteEn || ''}
+                      onChange={(e) => setProfileForm({ ...profileForm, whatsappCustomNoteEn: e.target.value })}
+                      placeholder="e.g. Available for immediate reply"
+                      className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white text-xs font-mono"
+                    />
+                  </div>
+                </div>
+
+                {/* Floating Widget & Direct Link Settings */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-emerald-500/10">
+                  <div>
+                    <label className="block text-xs font-mono text-slate-300 mb-1">
+                      رابط واتساب المباشر (Direct WhatsApp Link):
+                    </label>
+                    <input
+                      type="text"
+                      value={profileForm.whatsapp || ''}
+                      onChange={(e) => setProfileForm({ ...profileForm, whatsapp: e.target.value })}
+                      placeholder="https://wa.me/201000000000"
+                      className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-emerald-400 text-xs font-mono"
+                    />
+                  </div>
+                  <div className="flex items-center justify-between p-3 rounded-xl bg-slate-900/60 border border-slate-800 self-end">
+                    <div>
+                      <span className="block text-xs font-bold text-white">إظهار الزر العائم في الموقع</span>
+                      <span className="text-[10px] text-slate-400 font-mono">Floating WhatsApp Button</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setProfileForm({
+                        ...profileForm,
+                        showFloatingWhatsApp: profileForm.showFloatingWhatsApp === false ? true : false
+                      })}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition-all ${
+                        profileForm.showFloatingWhatsApp !== false
+                          ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40'
+                          : 'bg-slate-800 text-slate-400 border border-slate-700'
+                      }`}
+                    >
+                      {profileForm.showFloatingWhatsApp !== false ? 'مُفعّل (ON)' : 'مُعطّل (OFF)'}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Live Preview Bar */}
+                <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800/80 flex items-center justify-between">
+                  <span className="text-[11px] font-mono text-slate-400">معاينة الشارة الحية:</span>
+                  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-medium ${
+                    (profileForm.isWhatsAppAvailable !== false && profileForm.whatsappStatus !== 'offline')
+                      ? (profileForm.whatsappStatus === 'busy' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30')
+                      : 'bg-slate-800 text-slate-400 border border-slate-700'
+                  }`}>
+                    <span className={`w-2 h-2 rounded-full ${
+                      (profileForm.isWhatsAppAvailable !== false && profileForm.whatsappStatus !== 'offline')
+                        ? (profileForm.whatsappStatus === 'busy' ? 'bg-amber-400' : 'bg-emerald-400 animate-pulse')
+                        : 'bg-slate-500'
+                    }`} />
+                    <span>
+                      {profileForm.whatsappCustomNoteAr || 
+                        (profileForm.whatsappStatus === 'busy' 
+                          ? 'مشغول • الرد خلال ساعات' 
+                          : (profileForm.isWhatsAppAvailable !== false && profileForm.whatsappStatus !== 'offline') 
+                            ? 'متاح الآن للرد الفوري' 
+                            : 'غير متاح حالياً • اترك رسالة')}
+                    </span>
+                  </span>
+                </div>
+              </div>
+
               {/* Top Image URL Setting */}
               <div className="p-4 rounded-2xl bg-cyan-950/20 border border-cyan-800/40 space-y-2">
                 <label className="block text-xs font-mono text-cyan-300 font-bold">

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
-import { Mail, MapPin, CheckCircle, Send, ArrowUpRight, Copy, Check, Linkedin } from 'lucide-react';
+import { Mail, MapPin, CheckCircle, Send, ArrowUpRight, Copy, Check, Linkedin, ExternalLink } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { AssembleItem } from './motion/KineticAssemble';
 
@@ -132,29 +132,77 @@ export const Contact: React.FC = () => {
                 </button>
               </div>
 
-              {/* WhatsApp */}
-              <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-900/70 border border-slate-800">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
-                    <WhatsAppIcon className="w-5 h-5" />
+              {/* WhatsApp Card with Dynamic Availability Indicator */}
+              {(() => {
+                const isAvailable = profile.isWhatsAppAvailable !== false && profile.whatsappStatus !== 'offline';
+                const isBusy = profile.whatsappStatus === 'busy';
+                const noteText = lang === 'ar'
+                  ? (profile.whatsappCustomNoteAr || (isBusy ? 'مشغول • الرد خلال ساعات' : isAvailable ? 'متاح الآن للرد الفوري' : 'غير متاح حالياً • اترك رسالة'))
+                  : (profile.whatsappCustomNoteEn || (isBusy ? 'Busy • Replies within hours' : isAvailable ? 'Available for immediate reply' : 'Currently away • Leave a message'));
+                const waUrl = profile.whatsapp || `https://wa.me/?text=Hello%20${encodeURIComponent(profile.name || 'Amr')}`;
+
+                return (
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-2xl bg-slate-900/70 border border-slate-800 gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className="relative w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0">
+                        <WhatsAppIcon className="w-5 h-5" />
+                        {/* Status dot badge */}
+                        <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                          {isAvailable && !isBusy && (
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                          )}
+                          <span className={`relative inline-flex rounded-full h-3 w-3 border-2 border-slate-900 ${
+                            isBusy ? 'bg-amber-400' : isAvailable ? 'bg-emerald-400' : 'bg-slate-500'
+                          }`} />
+                        </span>
+                      </div>
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="text-xs font-mono text-slate-400">
+                            {lang === 'ar' ? 'واتساب' : 'WhatsApp'}
+                          </span>
+                          {/* Availability Badge */}
+                          <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-medium ${
+                            isBusy 
+                              ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' 
+                              : isAvailable 
+                                ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' 
+                                : 'bg-slate-800 text-slate-400 border border-slate-700'
+                          }`}>
+                            <span className={`w-1.5 h-1.5 rounded-full ${
+                              isBusy ? 'bg-amber-400' : isAvailable ? 'bg-emerald-400' : 'bg-slate-500'
+                            }`} />
+                            {noteText}
+                          </span>
+                        </div>
+                        <span className="text-xs sm:text-sm font-semibold text-white block truncate">
+                          {profile.phone}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 self-end sm:self-auto shrink-0">
+                      <a
+                        href={waUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-mono font-semibold transition-colors"
+                        title={lang === 'ar' ? 'مراسلة مباشرة على واتساب' : 'Chat directly on WhatsApp'}
+                      >
+                        <ExternalLink className="w-3.5 h-3.5" />
+                        <span>{lang === 'ar' ? 'مراسلة' : 'Chat'}</span>
+                      </a>
+                      <button
+                        onClick={copyWhatsApp}
+                        className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
+                        title={lang === 'ar' ? 'نسخ رقم الهاتف / واتساب' : 'Copy Phone'}
+                      >
+                        {copiedWhatsApp ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                      </button>
+                    </div>
                   </div>
-                  <div>
-                    <span className="block text-xs font-mono text-slate-400">
-                      {lang === 'ar' ? 'واتساب' : 'WhatsApp'}
-                    </span>
-                    <span className="text-xs sm:text-sm font-semibold text-white">
-                      {profile.phone}
-                    </span>
-                  </div>
-                </div>
-                <button
-                  onClick={copyWhatsApp}
-                  className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
-                  title={lang === 'ar' ? 'نسخ رقم الهاتف / واتساب' : 'Copy Phone'}
-                >
-                  {copiedWhatsApp ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
-                </button>
-              </div>
+                );
+              })()}
 
               {/* LinkedIn */}
               <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-900/70 border border-slate-800">
