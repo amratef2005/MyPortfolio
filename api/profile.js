@@ -17,8 +17,10 @@ export default async function handler(req, res) {
     const pool = getPool();
     const data = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
 
-    // Ensure availability/whatsapp/avatar columns exist
+    // Ensure availability/whatsapp/avatar columns exist and are typed TEXT
     await pool.query(`
+      ALTER TABLE public.portfolio_profile
+      ALTER COLUMN top_avatar_url TYPE TEXT;
       ALTER TABLE public.portfolio_profile
       ADD COLUMN IF NOT EXISTS availability_status VARCHAR(50) DEFAULT 'available',
       ADD COLUMN IF NOT EXISTS availability_note_ar VARCHAR(255),

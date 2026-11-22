@@ -330,13 +330,23 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const updateProfile = (updated: Partial<ProfileInfo>) => {
     setProfile(prev => {
       const nextProfile = { ...prev, ...updated };
-      localStorage.setItem('portfolio_profile', JSON.stringify(nextProfile));
+      try {
+        localStorage.setItem('portfolio_profile', JSON.stringify(nextProfile));
+      } catch (err) {
+        console.warn('localStorage quota warning:', err);
+      }
       broadcastChange('UPDATE_PROFILE', nextProfile);
       fetch('/api/profile', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(nextProfile)
-      }).catch(e => console.error('Supabase profile sync error:', e));
+      })
+      .then(res => {
+        if (!res.ok) {
+          console.error('Supabase profile sync response not ok:', res.status);
+        }
+      })
+      .catch(e => console.error('Supabase profile sync error:', e));
       return nextProfile;
     });
   };

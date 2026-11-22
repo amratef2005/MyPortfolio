@@ -26,7 +26,9 @@ export const Navbar: React.FC = () => {
               src={profile.topAvatarUrl || profile.heroAvatarUrl || "/my.jpg"} 
               alt={profile.name} 
               onError={(e) => {
-                (e.target as HTMLImageElement).src = "/drama_hero.png";
+                const target = e.target as HTMLImageElement;
+                target.onerror = null;
+                target.src = "/my.jpg";
               }}
               className="w-full h-full object-cover object-top rounded-[10px]" 
             />

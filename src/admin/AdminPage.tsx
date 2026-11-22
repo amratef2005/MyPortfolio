@@ -34,6 +34,7 @@ import {
   X
 } from 'lucide-react';
 import { extractColorsFromImage, applyThemeColors, ExtractedPalette, DEFAULT_PALETTE } from '../utils/colorExtractor';
+import { compressImageFile } from '../utils/imageCompressor';
 
 export const AdminPage: React.FC = () => {
   const {
@@ -86,6 +87,7 @@ export const AdminPage: React.FC = () => {
 
   // Navbar Brand Quick Editor State
   const [isBrandModalOpen, setIsBrandModalOpen] = useState(false);
+  const [uploadingBrandAvatar, setUploadingBrandAvatar] = useState(false);
   const [brandForm, setBrandForm] = useState({
     topAvatarUrl: profile.topAvatarUrl || '/my.jpg',
     name: profile.name || 'Amr Atef Imam Kandel',
@@ -106,17 +108,21 @@ export const AdminPage: React.FC = () => {
     });
   }, [profile]);
 
-  const handleBrandAvatarUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleBrandAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const dataUrl = event.target?.result as string;
-      if (dataUrl) {
-        setBrandForm(prev => ({ ...prev, topAvatarUrl: dataUrl }));
+    setUploadingBrandAvatar(true);
+    try {
+      // Compress to max 320x320 Retina-ready JPEG (~20-30KB)
+      const compressedDataUrl = await compressImageFile(file, 320, 0.88);
+      if (compressedDataUrl) {
+        setBrandForm(prev => ({ ...prev, topAvatarUrl: compressedDataUrl }));
       }
-    };
-    reader.readAsDataURL(file);
+    } catch (err) {
+      console.error('Image compression error:', err);
+    } finally {
+      setUploadingBrandAvatar(false);
+    }
   };
 
   const handleSaveBrand = (e?: React.FormEvent) => {
@@ -140,36 +146,37 @@ export const AdminPage: React.FC = () => {
     setTimeout(() => {
       setBrandSuccess(false);
       setIsBrandModalOpen(false);
-    }, 1000);
+    }, 1200);
   };
 
-  const handleHeroFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleHeroFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = async (event) => {
-      const dataUrl = event.target?.result as string;
-      if (dataUrl) {
-        setProfileForm(prev => ({ ...prev, heroAvatarUrl: dataUrl }));
+    try {
+      // Compress hero avatar to max 800x800 (~60-90KB)
+      const compressedDataUrl = await compressImageFile(file, 800, 0.88);
+      if (compressedDataUrl) {
+        setProfileForm(prev => ({ ...prev, heroAvatarUrl: compressedDataUrl }));
         if (profileForm.autoExtractColors !== false) {
-          await triggerColorExtraction(dataUrl);
+          await triggerColorExtraction(compressedDataUrl);
         }
       }
-    };
-    reader.readAsDataURL(file);
+    } catch (err) {
+      console.error('Hero image compression error:', err);
+    }
   };
 
-  const handleTopFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleTopFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const dataUrl = event.target?.result as string;
-      if (dataUrl) {
-        setProfileForm(prev => ({ ...prev, topAvatarUrl: dataUrl }));
+    try {
+      const compressedDataUrl = await compressImageFile(file, 320, 0.88);
+      if (compressedDataUrl) {
+        setProfileForm(prev => ({ ...prev, topAvatarUrl: compressedDataUrl }));
       }
-    };
-    reader.readAsDataURL(file);
+    } catch (err) {
+      console.error('Top image compression error:', err);
+    }
   };
 
   const triggerColorExtraction = async (imageSrc: string) => {
@@ -2081,12 +2088,13 @@ export const AdminPage: React.FC = () => {
                     placeholder="/my.jpg أو رابط خارجي"
                     className="flex-1 px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-cyan-400 text-xs font-mono focus:border-cyan-500 outline-none"
                   />
-                  <label className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-cyan-300 text-xs font-bold cursor-pointer transition-all shrink-0">
-                    <Upload className="w-3.5 h-3.5" />
-                    <span>رفع صورة</span>
+                  <label className={`flex items-center gap-1.5 px-3 py-2 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-cyan-300 text-xs font-bold cursor-pointer transition-all shrink-0 ${uploadingBrandAvatar ? 'opacity-60 pointer-events-none' : ''}`}>
+                    <Upload className={`w-3.5 h-3.5 ${uploadingBrandAvatar ? 'animate-spin' : ''}`} />
+                    <span>{uploadingBrandAvatar ? 'جاري المعالجة...' : 'رفع صورة'}</span>
                     <input
                       type="file"
                       accept="image/*"
+                      disabled={uploadingBrandAvatar}
                       onChange={handleBrandAvatarUpload}
                       className="hidden"
                     />
