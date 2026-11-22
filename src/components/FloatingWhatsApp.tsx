@@ -114,9 +114,7 @@ export const FloatingWhatsApp: React.FC = () => {
               : 'bg-gradient-to-tr from-slate-700 to-slate-800 shadow-[0_0_15px_rgba(0,0,0,0.4)] opacity-85 hover:opacity-100 ring-1 ring-slate-600'
         }`}
       >
-        <WhatsAppIcon className={`w-7 h-7 sm:w-8 sm:h-8 drop-shadow transition-colors ${
-          isBusy ? 'text-amber-100' : isAvailable ? 'text-white' : 'text-slate-400'
-        }`} />
+        <WhatsAppIcon className="w-7 h-7 sm:w-8 sm:h-8 drop-shadow" />
 
         {/* Floating status dot on top edge of button */}
         <span className="absolute top-0 end-0 flex h-3.5 w-3.5">

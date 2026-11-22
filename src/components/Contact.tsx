@@ -144,16 +144,8 @@ export const Contact: React.FC = () => {
                 return (
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-2xl bg-slate-900/70 border border-slate-800 gap-3">
                     <div className="flex items-center gap-3">
-                      <div className={`relative w-10 h-10 rounded-xl border flex items-center justify-center shrink-0 transition-all duration-300 ${
-                        isBusy
-                          ? 'bg-amber-500/15 border-amber-500/30 text-amber-400 shadow-[0_0_15px_rgba(245,158,11,0.25)]'
-                          : isAvailable
-                            ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.3)]'
-                            : 'bg-slate-800/80 border-slate-700 text-slate-500'
-                      }`}>
-                        <WhatsAppIcon className={`w-5 h-5 transition-colors ${
-                          isBusy ? 'text-amber-400' : isAvailable ? 'text-emerald-400' : 'text-slate-500'
-                        }`} />
+                      <div className="relative w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0">
+                        <WhatsAppIcon className="w-5 h-5" />
                         {/* Status dot badge */}
                         <span className="absolute -top-1 -right-1 flex h-3 w-3">
                           {isAvailable && !isBusy && (
