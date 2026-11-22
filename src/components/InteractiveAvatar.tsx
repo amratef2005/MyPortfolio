@@ -127,21 +127,54 @@ export const InteractiveAvatar: React.FC<InteractiveAvatarProps> = ({
           </motion.div>
 
           {/* Floating Glassmorphic Status Pill */}
-          <motion.div 
-            style={{
-              transform: 'translateZ(25px)',
-            }}
-            className="absolute bottom-2 sm:bottom-4 z-20 flex flex-col items-center text-center px-4"
-          >
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900/80 border border-cyan-500/30 backdrop-blur-md text-cyan-400 text-xs font-mono font-semibold shadow-[0_10px_25px_-5px_rgba(0,0,0,0.8)]">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping shrink-0" />
-              <span>{isEn ? 'Available for High-Impact Roles' : 'جاهز للمشاريع والتحديات الهندسية'}</span>
-            </div>
-            
-            <p className="text-slate-400 text-xs font-mono mt-1.5 drop-shadow-md">
-              {lang === 'ar' ? '.NET 10 • معمارية نظيفة • Supabase' : '.NET 10 • Clean Architecture • Supabase'}
-            </p>
-          </motion.div>
+          {profile.showAvailabilityBadge !== false && (
+            <motion.div 
+              style={{
+                transform: 'translateZ(25px)',
+              }}
+              className="absolute bottom-2 sm:bottom-4 z-20 flex flex-col items-center text-center px-4"
+            >
+              <div className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900/90 border backdrop-blur-md text-xs font-mono font-semibold shadow-[0_10px_25px_-5px_rgba(0,0,0,0.8)] ${
+                (profile.availabilityStatus || 'available') === 'available'
+                  ? 'border-emerald-500/40 text-emerald-300'
+                  : (profile.availabilityStatus === 'busy'
+                    ? 'border-amber-500/40 text-amber-300'
+                    : 'border-slate-700 text-slate-400')
+              }`}>
+                <span className="relative flex h-2 w-2 shrink-0">
+                  {(profile.availabilityStatus || 'available') === 'available' && (
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                  )}
+                  <span className={`relative inline-flex rounded-full h-2 w-2 ${
+                    (profile.availabilityStatus || 'available') === 'available'
+                      ? 'bg-emerald-400'
+                      : (profile.availabilityStatus === 'busy' ? 'bg-amber-400' : 'bg-slate-500')
+                  }`} />
+                </span>
+                <span>
+                  {isEn
+                    ? (profile.availabilityNoteEn || (
+                        profile.availabilityStatus === 'busy'
+                          ? 'Busy with Ongoing Projects'
+                          : profile.availabilityStatus === 'offline'
+                            ? 'Currently Unavailable'
+                            : 'Available for High-Impact Roles'
+                      ))
+                    : (profile.availabilityNoteAr || (
+                        profile.availabilityStatus === 'busy'
+                          ? 'مشغول حالياً بمشاريع قائمة'
+                          : profile.availabilityStatus === 'offline'
+                            ? 'غير متاح حالياً لاستقبال مشاريع'
+                            : 'جاهز للمشاريع والتحديات الهندسية'
+                      ))}
+                </span>
+              </div>
+              
+              <p className="text-slate-400 text-xs font-mono mt-1.5 drop-shadow-md">
+                {lang === 'ar' ? '.NET 10 • معمارية نظيفة • Supabase' : '.NET 10 • Clean Architecture • Supabase'}
+              </p>
+            </motion.div>
+          )}
         </motion.div>
       </div>
 

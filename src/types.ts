@@ -66,6 +66,18 @@ export interface ProfileInfo {
   adminUsername?: string; // default "admin"
   adminPassword?: string; // default "admin123"
   adminPin?: string;
+
+  // 1. Work Availability & Presence Status
+  availabilityStatus?: 'available' | 'busy' | 'offline';
+  availabilityNoteAr?: string;
+  availabilityNoteEn?: string;
+  showAvailabilityBadge?: boolean;
+
+  // 2. WhatsApp Live Response Status
+  whatsappStatus?: 'online' | 'delayed' | 'offline';
+  whatsappNoteAr?: string;
+  whatsappNoteEn?: string;
+  showWhatsAppStatus?: boolean;
 }
 
 export interface ContactMessage {

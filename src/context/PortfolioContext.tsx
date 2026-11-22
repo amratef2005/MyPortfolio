@@ -61,7 +61,7 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         localStorage.setItem('portfolio_profile', JSON.stringify(initialProfile));
         return initialProfile;
       }
-      return parsed;
+      return { ...initialProfile, ...parsed };
     } catch {
       return initialProfile;
     }

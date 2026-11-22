@@ -23,6 +23,18 @@ export const initialProfile: ProfileInfo = {
   adminUsername: "admin",
   adminPassword: "admin123",
   adminPin: "1234",
+
+  // 1. Work Availability & Presence Status
+  availabilityStatus: "available",
+  availabilityNoteAr: "جاهز للمشاريع والتحديات الهندسية",
+  availabilityNoteEn: "Available for High-Impact Roles",
+  showAvailabilityBadge: true,
+
+  // 2. WhatsApp Live Response Status
+  whatsappStatus: "online",
+  whatsappNoteAr: "متاح الآن للرد الفوري",
+  whatsappNoteEn: "Available for immediate reply",
+  showWhatsAppStatus: true,
 };
 
 export const initialProjects: Project[] = [
