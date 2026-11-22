@@ -3,7 +3,7 @@ import { ProfileInfo, Project, Certificate, SkillCategory, ContactMessage } from
 import { initialProfile, initialProjects, initialCertificates, initialSkillCategories } from '../data/initialData';
 import { extractColorsFromImage, applyThemeColors } from '../utils/colorExtractor';
 
-const DATA_SEED_KEY = 'portfolio_seed_v5';
+const DATA_SEED_KEY = 'portfolio_seed_v6';
 
 interface PortfolioContextType {
   profile: ProfileInfo;

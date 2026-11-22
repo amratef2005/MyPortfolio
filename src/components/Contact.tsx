@@ -76,14 +76,19 @@ export const Contact: React.FC = () => {
     window.location.href = `mailto:${profile.email}`;
   };
 
-  const handleWhatsAppClick = () => {
-    if (profile.whatsapp && profile.whatsapp.startsWith('http')) {
-      window.open(profile.whatsapp, '_blank', 'noopener,noreferrer');
-    } else {
-      const clean = (profile.whatsapp || profile.phone || '').replace(/[^0-9]/g, '');
-      const url = clean ? `https://wa.me/${clean}` : `https://wa.me/?text=Hello%20Amr%20Atef`;
-      window.open(url, '_blank', 'noopener,noreferrer');
+  const getWhatsAppUrl = () => {
+    const rawWa = (profile.whatsapp || '').trim();
+    if (rawWa && rawWa.startsWith('http') && !rawWa.includes('wa.me/?text=') && !rawWa.endsWith('wa.me/')) {
+      return rawWa;
     }
+    const target = (profile.phone || rawWa || 'amratefkandel').replace(/^@/, '').trim();
+    if (target.startsWith('http')) return target;
+    return `https://wa.me/${target}`;
+  };
+
+  const handleWhatsAppClick = () => {
+    const url = getWhatsAppUrl();
+    window.open(url, '_blank', 'noopener,noreferrer');
   };
 
   const handleLinkedInClick = () => {

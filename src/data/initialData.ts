@@ -15,7 +15,7 @@ export const initialProfile: ProfileInfo = {
   locationAr: "الإسماعيلية، مصر",
   github: "https://github.com/amratef2005",
   linkedin: "https://linkedin.com/in/amr-atef-kandel",
-  whatsapp: "https://wa.me/?text=Hello%20Amr%20Atef",
+  whatsapp: "https://wa.me/amratefkandel",
   resumeUrl: "/Amr_Atef_Resume.pdf",
   topAvatarUrl: "/my.jpg",
   heroAvatarUrl: "/drama_hero.png",
