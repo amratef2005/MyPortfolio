@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
 import { Project } from '../types';
 import { ProjectModal } from './ProjectModal';
@@ -13,16 +13,38 @@ export const Projects: React.FC = () => {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [filter, setFilter] = useState<string>('All');
 
-  const categories = [
-    { id: 'All', labelAr: 'الكل', labelEn: 'All' },
-    { id: 'Cloud & SaaS', labelAr: 'سحابي و SaaS', labelEn: 'Cloud & SaaS' },
-    { id: '.NET & Backend', labelAr: '.NET وأنظمة خلفية', labelEn: '.NET & Backend' }
-  ];
+  // Filter out any unwanted entries
+  const validProjects = useMemo(() => {
+    return projects.filter(p => p.id !== 'mot7km-saas');
+  }, [projects]);
 
-  const filteredProjects = (filter === 'All' 
-    ? projects 
-    : projects.filter(p => p.category === filter)
-  ).filter(p => p.id !== 'mot7km-saas');
+  // Dynamically compute available categories that actually have at least 1 project
+  const categories = useMemo(() => {
+    const rawCategories = Array.from(new Set(validProjects.map(p => p.category))).filter(Boolean);
+    const catMap: Record<string, { labelAr: string; labelEn: string }> = {
+      '.NET & Backend': { labelAr: '.NET وأنظمة خلفية', labelEn: '.NET & Backend' },
+      'Cloud & SaaS': { labelAr: 'سحابي و SaaS', labelEn: 'Cloud & SaaS' },
+      'Full-Stack': { labelAr: 'فول ستاك', labelEn: 'Full-Stack' },
+    };
+
+    const list = [{ id: 'All', labelAr: 'الكل', labelEn: 'All' }];
+    rawCategories.forEach(cat => {
+      const mapping = catMap[cat] || { labelAr: cat, labelEn: cat };
+      list.push({ id: cat, labelAr: mapping.labelAr, labelEn: mapping.labelEn });
+    });
+    return list;
+  }, [validProjects]);
+
+  // Automatically reset filter to 'All' if selected category has no projects
+  useEffect(() => {
+    if (filter !== 'All' && !validProjects.some(p => p.category === filter)) {
+      setFilter('All');
+    }
+  }, [filter, validProjects]);
+
+  const filteredProjects = filter === 'All' 
+    ? validProjects 
+    : validProjects.filter(p => p.category === filter);
 
   return (
     <section id="projects" className="py-20 sm:py-28 relative overflow-hidden">
@@ -52,21 +74,23 @@ export const Projects: React.FC = () => {
             </div>
 
             {/* Filter Pills */}
-            <div className="flex items-center gap-1.5 bg-slate-900/90 p-1.5 rounded-2xl border border-slate-800 self-start md:self-auto overflow-x-auto max-w-full">
-              {categories.map((cat) => (
-                <button
-                  key={cat.id}
-                  onClick={() => setFilter(cat.id)}
-                  className={`px-3.5 py-2 rounded-xl text-xs font-mono font-semibold transition-all shrink-0 ${
-                    filter === cat.id
-                      ? 'bg-cyan-500 text-white shadow-[0_0_12px_rgba(56,189,248,0.35)]'
-                      : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
-                  }`}
-                >
-                  {lang === 'ar' ? cat.labelAr : cat.labelEn}
-                </button>
-              ))}
-            </div>
+            {categories.length > 1 && (
+              <div className="flex items-center gap-1.5 bg-slate-900/90 p-1.5 rounded-2xl border border-slate-800 self-start md:self-auto overflow-x-auto max-w-full shrink-0 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+                {categories.map((cat) => (
+                  <button
+                    key={cat.id}
+                    onClick={() => setFilter(cat.id)}
+                    className={`px-4 py-2 rounded-xl text-xs font-mono font-semibold whitespace-nowrap transition-all shrink-0 ${
+                      filter === cat.id
+                        ? 'bg-cyan-500 text-white shadow-[0_0_15px_rgba(56,189,248,0.4)]'
+                        : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                    }`}
+                  >
+                    {lang === 'ar' ? cat.labelAr : cat.labelEn}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </AssembleItem>
 
