@@ -1243,12 +1243,39 @@ export const AdminPage: React.FC = () => {
                   />
                 </div>
                 <div>
+                  <label className="block text-xs font-mono text-slate-300 mb-1">المسمى الوظيفي (English - Title)</label>
+                  <input
+                    type="text"
+                    value={profileForm.title}
+                    onChange={(e) => setProfileForm({ ...profileForm, title: e.target.value })}
+                    className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm font-mono"
+                  />
+                </div>
+                <div>
                   <label className="block text-xs font-mono text-slate-300 mb-1">المسمى الوظيفي (عربي)</label>
                   <input
                     type="text"
                     value={profileForm.titleAr}
                     onChange={(e) => setProfileForm({ ...profileForm, titleAr: e.target.value })}
                     className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-mono text-slate-300 mb-1">رابط GitHub</label>
+                  <input
+                    type="text"
+                    value={profileForm.github}
+                    onChange={(e) => setProfileForm({ ...profileForm, github: e.target.value })}
+                    className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm font-mono"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-mono text-slate-300 mb-1">رابط LinkedIn</label>
+                  <input
+                    type="text"
+                    value={profileForm.linkedin}
+                    onChange={(e) => setProfileForm({ ...profileForm, linkedin: e.target.value })}
+                    className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm font-mono"
                   />
                 </div>
                 <div>
@@ -1306,14 +1333,25 @@ export const AdminPage: React.FC = () => {
                 </p>
               </div>
 
-              <div>
-                <label className="block text-xs font-mono text-slate-300 mb-1">النبذة التعريفية (Bio)</label>
-                <textarea
-                  rows={3}
-                  value={profileForm.bioAr}
-                  onChange={(e) => setProfileForm({ ...profileForm, bioAr: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm"
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-mono text-slate-300 mb-1">النبذة التعريفية (عربي - Bio)</label>
+                  <textarea
+                    rows={4}
+                    value={profileForm.bioAr}
+                    onChange={(e) => setProfileForm({ ...profileForm, bioAr: e.target.value })}
+                    className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-mono text-slate-300 mb-1">النبذة التعريفية (English - Bio)</label>
+                  <textarea
+                    rows={4}
+                    value={profileForm.bio}
+                    onChange={(e) => setProfileForm({ ...profileForm, bio: e.target.value })}
+                    className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm font-mono"
+                  />
+                </div>
               </div>
 
               <button

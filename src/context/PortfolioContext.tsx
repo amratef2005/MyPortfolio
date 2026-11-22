@@ -2,6 +2,8 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { ProfileInfo, Project, Certificate, SkillCategory, ContactMessage } from '../types';
 import { initialProfile, initialProjects, initialCertificates, initialSkillCategories } from '../data/initialData';
 
+const DATA_SEED_KEY = 'portfolio_seed_v3';
+
 interface PortfolioContextType {
   profile: ProfileInfo;
   projects: Project[];
@@ -36,25 +38,40 @@ interface PortfolioContextType {
 
 const PortfolioContext = createContext<PortfolioContextType | undefined>(undefined);
 
+// Helper to broadcast changes to other open tabs (e.g., from Admin to Portfolio in real time)
+const broadcastChange = (type: string, payload: any) => {
+  try {
+    if (typeof BroadcastChannel !== 'undefined') {
+      const channel = new BroadcastChannel('portfolio_sync');
+      channel.postMessage({ type, payload });
+      channel.close();
+    }
+  } catch {
+    // ignore
+  }
+};
+
 export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // Load state from LocalStorage or fall back to defaults
   const [profile, setProfile] = useState<ProfileInfo>(() => {
+    const isSeeded = localStorage.getItem(DATA_SEED_KEY);
+    if (!isSeeded) {
+      localStorage.setItem(DATA_SEED_KEY, 'true');
+      localStorage.setItem('portfolio_profile', JSON.stringify(initialProfile));
+      localStorage.setItem('portfolio_projects', JSON.stringify(initialProjects));
+      localStorage.setItem('portfolio_certificates', JSON.stringify(initialCertificates));
+      localStorage.setItem('portfolio_skills', JSON.stringify(initialSkillCategories));
+      return initialProfile;
+    }
+
     const saved = localStorage.getItem('portfolio_profile');
     if (!saved) return initialProfile;
     try {
       const parsed = JSON.parse(saved);
-      // If legacy placeholder data or previous outdated data is detected, refresh completely to initialProfile
-      if (
-        !parsed.name ||
-        parsed.name !== initialProfile.name ||
-        !parsed.github?.includes('amratef2005') ||
-        !parsed.linkedin?.includes('amr-atef-kandel') ||
-        parsed.title !== initialProfile.title
-      ) {
-        localStorage.setItem('portfolio_profile', JSON.stringify(initialProfile));
-        return initialProfile;
+      if (parsed && typeof parsed === 'object') {
+        return { ...initialProfile, ...parsed };
       }
-      return { ...initialProfile, ...parsed };
+      return initialProfile;
     } catch {
       return initialProfile;
     }
@@ -65,11 +82,10 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     if (!saved) return initialProjects;
     try {
       const parsed = JSON.parse(saved);
-      if (!Array.isArray(parsed) || parsed.length === 0 || !parsed.some((p: any) => p.githubUrl?.includes('amratef2005'))) {
-        localStorage.setItem('portfolio_projects', JSON.stringify(initialProjects));
-        return initialProjects;
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
       }
-      return initialProjects; // Prioritize latest curated flagship projects
+      return initialProjects;
     } catch {
       return initialProjects;
     }
@@ -80,11 +96,10 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     if (!saved) return initialCertificates;
     try {
       const parsed = JSON.parse(saved);
-      if (!Array.isArray(parsed) || !parsed.some((c: any) => c.badgeAr)) {
-        localStorage.setItem('portfolio_certificates', JSON.stringify(initialCertificates));
-        return initialCertificates;
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
       }
-      return parsed;
+      return initialCertificates;
     } catch {
       return initialCertificates;
     }
@@ -95,11 +110,10 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     if (!saved) return initialSkillCategories;
     try {
       const parsed = JSON.parse(saved);
-      if (!Array.isArray(parsed) || !parsed.some((cat: any) => cat.name === 'Backend Development & Languages')) {
-        localStorage.setItem('portfolio_skills', JSON.stringify(initialSkillCategories));
-        return initialSkillCategories;
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
       }
-      return parsed;
+      return initialSkillCategories;
     } catch {
       return initialSkillCategories;
     }
@@ -120,20 +134,75 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     return sessionStorage.getItem('portfolio_admin_auth') === 'true';
   });
 
+  // Cross-tab synchronization: Any change in Admin tab immediately reflects in Portfolio tab
+  useEffect(() => {
+    let channel: BroadcastChannel | null = null;
+    try {
+      if (typeof BroadcastChannel !== 'undefined') {
+        channel = new BroadcastChannel('portfolio_sync');
+        channel.onmessage = (event) => {
+          const { type, payload } = event.data || {};
+          if (type === 'UPDATE_PROFILE' && payload) setProfile(payload);
+          if (type === 'UPDATE_PROJECTS' && payload) setProjects(payload);
+          if (type === 'UPDATE_CERTS' && payload) setCertificates(payload);
+          if (type === 'UPDATE_SKILLS' && payload) setSkills(payload);
+        };
+      }
+    } catch {
+      // ignore
+    }
+
+    const onStorage = (e: StorageEvent) => {
+      if (!e.newValue) return;
+      try {
+        if (e.key === 'portfolio_profile') setProfile(JSON.parse(e.newValue));
+        if (e.key === 'portfolio_projects') setProjects(JSON.parse(e.newValue));
+        if (e.key === 'portfolio_certificates') setCertificates(JSON.parse(e.newValue));
+        if (e.key === 'portfolio_skills') setSkills(JSON.parse(e.newValue));
+      } catch {
+        // ignore
+      }
+    };
+
+    window.addEventListener('storage', onStorage);
+    return () => {
+      if (channel) channel.close();
+      window.removeEventListener('storage', onStorage);
+    };
+  }, []);
+
   // Fetch live portfolio data from Supabase backend on startup
   useEffect(() => {
     fetch('/api/portfolio')
       .then(res => res.ok ? res.json() : null)
       .then(data => {
         if (!data) return;
-        if (data.profile) setProfile(data.profile);
-        if (Array.isArray(data.projects) && data.projects.length > 0) setProjects(data.projects);
-        if (Array.isArray(data.certificates) && data.certificates.length > 0) setCertificates(data.certificates);
-        if (Array.isArray(data.skills) && data.skills.length > 0) setSkills(data.skills);
-        if (Array.isArray(data.messages)) setMessages(data.messages);
+        if (data.profile) {
+          setProfile(prev => {
+            const merged = { ...prev, ...data.profile };
+            localStorage.setItem('portfolio_profile', JSON.stringify(merged));
+            return merged;
+          });
+        }
+        if (Array.isArray(data.projects) && data.projects.length > 0) {
+          setProjects(data.projects);
+          localStorage.setItem('portfolio_projects', JSON.stringify(data.projects));
+        }
+        if (Array.isArray(data.certificates) && data.certificates.length > 0) {
+          setCertificates(data.certificates);
+          localStorage.setItem('portfolio_certificates', JSON.stringify(data.certificates));
+        }
+        if (Array.isArray(data.skills) && data.skills.length > 0) {
+          setSkills(data.skills);
+          localStorage.setItem('portfolio_skills', JSON.stringify(data.skills));
+        }
+        if (Array.isArray(data.messages)) {
+          setMessages(data.messages);
+          localStorage.setItem('portfolio_messages', JSON.stringify(data.messages));
+        }
       })
       .catch(err => {
-        console.log('Local mode active (Supabase offline or static build):', err.message);
+        console.log('Local/fallback mode active:', err.message);
       });
   }, []);
 
@@ -200,16 +269,23 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   };
 
   const updateCredentials = (newUsername: string, newPassword: string) => {
-    setProfile(prev => ({
-      ...prev,
-      adminUsername: newUsername.trim(),
-      adminPassword: newPassword,
-    }));
+    setProfile(prev => {
+      const next = {
+        ...prev,
+        adminUsername: newUsername.trim(),
+        adminPassword: newPassword,
+      };
+      localStorage.setItem('portfolio_profile', JSON.stringify(next));
+      broadcastChange('UPDATE_PROFILE', next);
+      return next;
+    });
   };
 
   const updateProfile = (updated: Partial<ProfileInfo>) => {
     setProfile(prev => {
       const nextProfile = { ...prev, ...updated };
+      localStorage.setItem('portfolio_profile', JSON.stringify(nextProfile));
+      broadcastChange('UPDATE_PROFILE', nextProfile);
       fetch('/api/profile', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -220,17 +296,24 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   };
 
   const addProject = (project: Project) => {
-    setProjects(prev => [project, ...prev]);
-    fetch('/api/projects', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(project)
-    }).catch(e => console.error('Supabase project sync error:', e));
+    setProjects(prev => {
+      const next = [project, ...prev];
+      localStorage.setItem('portfolio_projects', JSON.stringify(next));
+      broadcastChange('UPDATE_PROJECTS', next);
+      fetch('/api/projects', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(project)
+      }).catch(e => console.error('Supabase project sync error:', e));
+      return next;
+    });
   };
 
   const updateProject = (id: string, updated: Partial<Project>) => {
     setProjects(prev => {
       const nextProjects = prev.map(p => p.id === id ? { ...p, ...updated } : p);
+      localStorage.setItem('portfolio_projects', JSON.stringify(nextProjects));
+      broadcastChange('UPDATE_PROJECTS', nextProjects);
       const target = nextProjects.find(p => p.id === id);
       if (target) {
         fetch('/api/projects', {
@@ -244,24 +327,46 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   };
 
   const deleteProject = (id: string) => {
-    setProjects(prev => prev.filter(p => p.id !== id));
-    fetch(`/api/projects/${id}`, { method: 'DELETE' }).catch(e => console.error('Supabase project delete error:', e));
+    setProjects(prev => {
+      const next = prev.filter(p => p.id !== id);
+      localStorage.setItem('portfolio_projects', JSON.stringify(next));
+      broadcastChange('UPDATE_PROJECTS', next);
+      fetch(`/api/projects?id=${id}`, { method: 'DELETE' }).catch(e => console.error('Supabase project delete error:', e));
+      return next;
+    });
   };
 
   const addCertificate = (cert: Certificate) => {
-    setCertificates(prev => [cert, ...prev]);
+    setCertificates(prev => {
+      const next = [cert, ...prev];
+      localStorage.setItem('portfolio_certificates', JSON.stringify(next));
+      broadcastChange('UPDATE_CERTS', next);
+      return next;
+    });
   };
 
   const updateCertificate = (id: string, updated: Partial<Certificate>) => {
-    setCertificates(prev => prev.map(c => c.id === id ? { ...c, ...updated } : c));
+    setCertificates(prev => {
+      const next = prev.map(c => c.id === id ? { ...c, ...updated } : c);
+      localStorage.setItem('portfolio_certificates', JSON.stringify(next));
+      broadcastChange('UPDATE_CERTS', next);
+      return next;
+    });
   };
 
   const deleteCertificate = (id: string) => {
-    setCertificates(prev => prev.filter(c => c.id !== id));
+    setCertificates(prev => {
+      const next = prev.filter(c => c.id !== id);
+      localStorage.setItem('portfolio_certificates', JSON.stringify(next));
+      broadcastChange('UPDATE_CERTS', next);
+      return next;
+    });
   };
 
   const updateSkills = (newSkills: SkillCategory[]) => {
     setSkills(newSkills);
+    localStorage.setItem('portfolio_skills', JSON.stringify(newSkills));
+    broadcastChange('UPDATE_SKILLS', newSkills);
   };
 
   const addMessage = (msg: Omit<ContactMessage, 'id' | 'createdAt' | 'read'>) => {
@@ -272,6 +377,11 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       read: false
     };
     setMessages(prev => [newMessage, ...prev]);
+    fetch('/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newMessage)
+    }).catch(e => console.error('Supabase message error:', e));
   };
 
   const markMessageRead = (id: string) => {
@@ -280,6 +390,7 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   const deleteMessage = (id: string) => {
     setMessages(prev => prev.filter(m => m.id !== id));
+    fetch(`/api/messages?id=${id}`, { method: 'DELETE' }).catch(e => console.error('Supabase delete message error:', e));
   };
 
   const exportData = () => {
@@ -304,10 +415,22 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const importData = (jsonStr: string): boolean => {
     try {
       const data = JSON.parse(jsonStr);
-      if (data.profile) setProfile(data.profile);
-      if (data.projects) setProjects(data.projects);
-      if (data.certificates) setCertificates(data.certificates);
-      if (data.skills) setSkills(data.skills);
+      if (data.profile) updateProfile(data.profile);
+      if (data.projects) {
+        setProjects(data.projects);
+        localStorage.setItem('portfolio_projects', JSON.stringify(data.projects));
+        broadcastChange('UPDATE_PROJECTS', data.projects);
+      }
+      if (data.certificates) {
+        setCertificates(data.certificates);
+        localStorage.setItem('portfolio_certificates', JSON.stringify(data.certificates));
+        broadcastChange('UPDATE_CERTS', data.certificates);
+      }
+      if (data.skills) {
+        setSkills(data.skills);
+        localStorage.setItem('portfolio_skills', JSON.stringify(data.skills));
+        broadcastChange('UPDATE_SKILLS', data.skills);
+      }
       if (data.messages) setMessages(data.messages);
       return true;
     } catch {
@@ -322,6 +445,10 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     setSkills(initialSkillCategories);
     setMessages([]);
     localStorage.clear();
+    broadcastChange('UPDATE_PROFILE', initialProfile);
+    broadcastChange('UPDATE_PROJECTS', initialProjects);
+    broadcastChange('UPDATE_CERTS', initialCertificates);
+    broadcastChange('UPDATE_SKILLS', initialSkillCategories);
   };
 
   return (
