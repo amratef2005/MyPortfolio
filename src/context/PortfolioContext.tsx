@@ -3,7 +3,7 @@ import { ProfileInfo, Project, Certificate, SkillCategory, ContactMessage, Exper
 import { initialProfile, initialProjects, initialCertificates, initialSkillCategories, initialExperiences } from '../data/initialData';
 import { extractColorsFromImage, applyThemeColors } from '../utils/colorExtractor';
 
-const DATA_SEED_KEY = 'portfolio_seed_v8';
+const DATA_SEED_KEY = 'portfolio_seed_v9';
 
 interface PortfolioContextType {
   profile: ProfileInfo;
@@ -213,8 +213,9 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           });
         }
         if (Array.isArray(data.projects) && data.projects.length > 0) {
-          setProjects(data.projects);
-          localStorage.setItem('portfolio_projects', JSON.stringify(data.projects));
+          const cleanProjects = data.projects.filter((p: Project) => p.id !== 'mot7km-saas');
+          setProjects(cleanProjects);
+          localStorage.setItem('portfolio_projects', JSON.stringify(cleanProjects));
         }
         if (Array.isArray(data.certificates) && data.certificates.length > 0) {
           setCertificates(data.certificates);

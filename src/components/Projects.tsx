@@ -19,9 +19,10 @@ export const Projects: React.FC = () => {
     { id: '.NET & Backend', labelAr: '.NET وأنظمة خلفية', labelEn: '.NET & Backend' }
   ];
 
-  const filteredProjects = filter === 'All' 
+  const filteredProjects = (filter === 'All' 
     ? projects 
-    : projects.filter(p => p.category === filter);
+    : projects.filter(p => p.category === filter)
+  ).filter(p => p.id !== 'mot7km-saas');
 
   return (
     <section id="projects" className="py-20 sm:py-28 relative overflow-hidden">

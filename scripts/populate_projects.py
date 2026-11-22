@@ -13,36 +13,6 @@ cur = conn.cursor()
 
 projects = [
     {
-        "id": "mot7km-saas",
-        "title": "MOT7KM SaaS",
-        "title_ar": "منصة مُتحكِّم (MOT7KM)",
-        "tagline": "High-Throughput Multi-Tenant SaaS ERP & Digital QR Menu Backend",
-        "tagline_ar": "نظام ERP سحابي متعدد المستأجرين (Multi-Tenant) ومنيو رقمي فائق السرعة",
-        "description": "Enterprise SaaS backend engineered with .NET 10, Clean Architecture, and PostgreSQL via Supabase. Features hybrid OAuth/SMS authentication, sliding session token rotation with reuse detection, and an asynchronous batch-processing queue handling thousands of concurrent QR scans under 20ms.",
-        "description_ar": "نظام SaaS متكامل لإدارة المطاعم والأنشطة التجارية مبني بـ .NET 10 ومعمارية Clean Architecture مع Supabase PostgreSQL.",
-        "category": "Cloud & SaaS",
-        "featured": True,
-        "badge": "Enterprise SaaS • Latency < 20ms",
-        "architecture": ["Clean Architecture", "Modular Monolith", "Multi-Tenancy (IMustHaveTenant)", "Sliding Session Rotation", "Batch Queue Worker"],
-        "technologies": [".NET 10", "C# 13/14", "EF Core", "PostgreSQL", "Supabase", "SignalR", "FluentValidation", "Docker", "MonsterASP CI/CD"],
-        "metrics": [
-            {"label": "Menu Response Latency", "value": "< 20ms"},
-            {"label": "Security Model", "value": "Sliding Token Rotation"},
-            {"label": "Code Reliability", "value": "0 Errors / 0 Warnings"},
-            {"label": "Real-time Hub", "value": "SignalR Active Hub"}
-        ],
-        "features": [
-            "Architected high-throughput multi-tenant SaaS backend using .NET 10, Clean Architecture, and PostgreSQL via Supabase.",
-            "Implemented hybrid authentication (OAuth Google/Facebook + Phone OTP) with 15-minute Access Tokens and 30-day sliding expiration Refresh Tokens.",
-            "Engineered cryptographic SHA-256 token rotation with family reuse breach detection and automatic multi-tenant data isolation (IMustHaveTenant & IDOR prevention).",
-            "Designed asynchronous in-memory batch processing queue (IProductViewQueue) processing thousands of concurrent QR menu views under 20ms without database throttling.",
-            "Built comprehensive admin dashboard overview service (600+ LOC) with real-time active kitchen order counts, branch telemetry, and AI-driven promotions engine.",
-            "Established automated CI/CD pipeline via GitHub Actions targeting MonsterASP with zero-downtime file deployment via app_offline.htm."
-        ],
-        "github_url": "https://github.com/amratef",
-        "live_url": "https://mot7km.com"
-    },
-    {
         "id": "studysync-lms",
         "title": "StudySync Platform",
         "title_ar": "منصة StudySync الأكاديمية",

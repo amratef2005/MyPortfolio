@@ -60,7 +60,9 @@ export default async function handler(req, res) {
       extractedColors: pRow.extracted_colors || null
     } : null;
 
-    const projects = projectsRes.rows.map(r => ({
+    const projects = projectsRes.rows
+      .filter(r => r.id !== 'mot7km-saas')
+      .map(r => ({
       id: r.id,
       title: r.title,
       titleAr: r.title_ar,

@@ -185,41 +185,6 @@ def sync_database():
     print("--- 3. Populating Projects Data ---")
     projects = [
         {
-            "id": "mot7km-saas",
-            "title": "Multi-Tenant SaaS ERP & Digital Menu Platform",
-            "title_ar": "منصة مُتحكِّم (MOT7KM) لإدارة المطاعم والمنيو السحابي",
-            "tagline": "High-Throughput Multi-Tenant SaaS ERP & Digital QR Menu Backend",
-            "tagline_ar": "نظام ERP سحابي متعدد المستأجرين (Multi-Tenant) ومنيو رقمي فائق السرعة",
-            "description": "Developed the backend of a multi-tenant SaaS platform for restaurants, cafés, and businesses to manage their digital presence and operations. Designed with Clean Architecture and a Modular Monolith approach, developing RESTful APIs, multi-tenant isolation, JWT/OAuth/OTP authentication, sliding session management with refresh token rotation and SHA-256 hashing, dashboard APIs, SignalR real-time updates, and background batch processing.",
-            "description_ar": "تطوير النظام الخلفي لمنصة SaaS متعددة المستأجرين لإدارة المطاعم والكافيهات وتنظيم حضورهم وعملياتهم الرقمية. تم بناؤه بمعمارية Clean Architecture ونمط Modular Monolith، مع عزل بيانات المستأجرين، ومصادقة هجينة (JWT, OAuth, OTP)، وتدوير الجلسات الانزلاقية بتشفير SHA-256، وتحديثات لحظية عبر SignalR، ومعالجة دفعات خلفية فائقة السرعة.",
-            "category": "Cloud & SaaS",
-            "featured": True,
-            "badge": "Multi-Tenant SaaS • Backend Developer",
-            "architecture": ["Clean Architecture", "Modular Monolith", "Multi-Tenancy & Tenant Isolation", "Refresh Token Rotation (SHA-256)", "Background Batch Processing"],
-            "technologies": ["C#", ".NET 10", "ASP.NET Core", "PostgreSQL", "Entity Framework Core", "Supabase", "SignalR", "GitHub Actions", "IIS"],
-            "metrics": [
-                {"label": "Architecture", "value": "Modular Monolith"},
-                {"label": "Security & Tokens", "value": "SHA-256 Rotation"},
-                {"label": "Multi-Tenancy", "value": "Tenant Isolation"},
-                {"label": "Real-time & Batch", "value": "SignalR + Batch Queue"}
-            ],
-            "features": [
-                "Designed and implemented Clean Architecture with a Modular Monolith approach.",
-                "Developed RESTful APIs for business profiles, branches, menus, categories, products, and promotional campaigns.",
-                "Implemented multi-tenancy and tenant isolation to ensure secure separation of business data.",
-                "Developed authentication mechanisms supporting JWT, OAuth, and phone OTP.",
-                "Implemented secure session management using refresh token rotation, sliding expiration, and token reuse detection.",
-                "Applied SHA-256 hashing for refresh token storage.",
-                "Developed administrative dashboard APIs with business analytics and performance insights.",
-                "Integrated SignalR for real-time dashboard updates.",
-                "Implemented background batch processing for product view tracking to optimize database operations.",
-                "Configured automated deployment workflows using GitHub Actions and IIS."
-            ],
-            "github_url": "https://github.com/amratef2005",
-            "live_url": "https://mot7km.com",
-            "display_order": 1
-        },
-        {
             "id": "studysync-lms",
             "title": "Academic Management System",
             "title_ar": "نظام الإدارة الأكاديمية (StudySync)",
