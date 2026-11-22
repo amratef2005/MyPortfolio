@@ -1,4 +1,4 @@
-import { ProfileInfo, Project, Certificate, SkillCategory } from '../types';
+import { ProfileInfo, Project, Certificate, SkillCategory, Experience } from '../types';
 
 export const initialProfile: ProfileInfo = {
   name: "Amr Atef Imam Kandel",
@@ -61,21 +61,25 @@ export const initialProfile: ProfileInfo = {
   ]
 };
 
-export const initialProjects: Project[] = [
+export const initialExperiences: Experience[] = [
   {
     id: "mot7km-saas",
-    title: "Multi-Tenant SaaS ERP & Digital Menu Platform",
-    titleAr: "منصة مُتحكِّم (MOT7KM) لإدارة المطاعم والمنيو السحابي",
-    tagline: "High-Throughput Multi-Tenant SaaS ERP & Digital QR Menu Backend",
-    taglineAr: "نظام ERP سحابي متعدد المستأجرين (Multi-Tenant) ومنيو رقمي فائق السرعة",
-    description: "Developed the backend of a multi-tenant SaaS platform for restaurants, cafés, and businesses to manage their digital presence and operations. Designed with Clean Architecture and a Modular Monolith approach, developing RESTful APIs, multi-tenant isolation, JWT/OAuth/OTP authentication, sliding session management with refresh token rotation and SHA-256 hashing, dashboard APIs, SignalR real-time updates, and background batch processing.",
-    descriptionAr: "تطوير النظام الخلفي لمنصة SaaS متعددة المستأجرين لإدارة المطاعم والكافيهات وتنظيم حضورهم وعملياتهم الرقمية. تم بناؤه بمعمارية Clean Architecture ونمط Modular Monolith، مع عزل بيانات المستأجرين، ومصادقة هجينة (JWT, OAuth, OTP)، وتدوير الجلسات الانزلاقية بتشفير SHA-256، وتحديثات لحظية عبر SignalR، ومعالجة دفعات خلفية فائقة السرعة.",
-    category: "Cloud & SaaS",
-    featured: true,
+    role: ".NET Backend Developer",
+    roleAr: "مطور نظم خلفية .NET",
+    company: "MOT7KM – Multi-Tenant SaaS ERP & Digital Menu Platform",
+    companyAr: "منصة مُتحكِّم (MOT7KM) لإدارة المطاعم والمنيو السحابي",
+    period: "2024 – Present",
+    periodAr: "2024 – حتى الآن",
+    location: "Remote • Egypt",
+    locationAr: "عن بُعد • مصر",
+    type: "Production SaaS • High Throughput",
+    typeAr: "نظام SaaS إنتاجي حي",
     badge: "Multi-Tenant SaaS • Backend Developer",
     badgeAr: "نظام SaaS متعدد المستأجرين • مطور نظم خلفية",
-    architecture: ["Clean Architecture", "Modular Monolith", "Multi-Tenancy & Tenant Isolation", "Refresh Token Rotation (SHA-256)", "Background Batch Processing"],
-    architectureAr: ["معمارية نظيفة (Clean Architecture)", "نواة موديولار موحدة (Modular Monolith)", "تعدد المستأجرين وعزل البيانات (Multi-Tenancy)", "تدوير التوكنات وتشفير SHA-256", "معالجة الدفعات في الخلفية"],
+    summary: "Architected and developed the complete backend for a high-performance multi-tenant SaaS platform empowering restaurants and cafés to manage digital presence, menus, orders, branch analytics, and real-time operations.",
+    summaryAr: "تصميم وتطوير النظام الخلفي الكامل لمنصة SaaS تجارية متعددة المستأجرين فائقة الأداء، تمكّن المطاعم والكافيهات من إدارة حضورهم الرقمي، القوائم، الفروع، والتحليلات اللحظية.",
+    architecture: ["Clean Architecture", "Modular Monolith", "Multi-Tenancy & Tenant Isolation", "Refresh Token Rotation (SHA-256)", "Background Batch Processing", "SignalR WebSockets"],
+    architectureAr: ["معمارية نظيفة (Clean Architecture)", "نواة موديولار موحدة (Modular Monolith)", "تعدد المستأجرين وعزل البيانات (Multi-Tenancy)", "تدوير التوكنات وتشفير SHA-256", "معالجة الدفعات في الخلفية", "اتصال لحظي SignalR"],
     technologies: ["C#", ".NET 10", "ASP.NET Core", "PostgreSQL", "Entity Framework Core", "Supabase", "SignalR", "GitHub Actions", "IIS"],
     metrics: [
       { label: "Architecture", labelAr: "المعمارية الأساسية", value: "Modular Monolith", valueAr: "نواة موديولار" },
@@ -83,10 +87,10 @@ export const initialProjects: Project[] = [
       { label: "Multi-Tenancy", labelAr: "عزل المستأجرين", value: "Tenant Isolation", valueAr: "عزل آمن للبيانات" },
       { label: "Real-time & Batch", labelAr: "الاتصال اللحظي والدفعات", value: "SignalR + Batch Queue", valueAr: "SignalR + معالجة دفعات" }
     ],
-    features: [
-      "Designed and implemented Clean Architecture with a Modular Monolith approach.",
+    responsibilities: [
+      "Designed and implemented Clean Architecture with a Modular Monolith approach for high maintainability.",
       "Developed RESTful APIs for business profiles, branches, menus, categories, products, and promotional campaigns.",
-      "Implemented multi-tenancy and tenant isolation to ensure secure separation of business data.",
+      "Implemented multi-tenancy and tenant isolation to ensure secure separation of business data and prevent IDOR vulnerabilities.",
       "Developed authentication mechanisms supporting JWT, OAuth, and phone OTP.",
       "Implemented secure session management using refresh token rotation, sliding expiration, and token reuse detection.",
       "Applied SHA-256 hashing for refresh token storage.",
@@ -95,11 +99,11 @@ export const initialProjects: Project[] = [
       "Implemented background batch processing for product view tracking to optimize database operations.",
       "Configured automated deployment workflows using GitHub Actions and IIS."
     ],
-    featuresAr: [
+    responsibilitiesAr: [
       "تصميم وتطبيق معمارية Clean Architecture بنمط Modular Monolith لضمان قابلية التوسع وسهولة الصيانة.",
       "تطوير واجهات برمجة تطبيقات RESTful APIs لملفات الأنشطة التجارية، الفروع، قوائم الطعام، التصنيفات، المنتجات، وحملات العروض الترويجية.",
-      "تطبيق نظام تعدد المستأجرين (Multi-Tenancy) وعزل البيانات لضمان فصل آمن ومحكم لبيانات كل نشاط تجاري.",
-      "تطوير آليات مصادقة متعددة تدعم JWT، و OAuth، والتحقق عبر رقم الهاتف (Phone OTP).",
+      "تطبيق نظام تعدد المستأجرين (Multi-Tenancy) وعزل البيانات لضمان فصل آمن ومحكم لبيانات كل نشاط تجاري ومنع ثغرات IDOR.",
+      "تطوير آليات مصادقة هجينة تدعم JWT، و OAuth، والتحقق عبر رقم الهاتف (Phone OTP).",
       "تطبيق إدارة جلسات آمنة باستخدام تدوير الـ Refresh Tokens، وانتهاء الصلاحية الانزلاقي (Sliding Expiration)، وكشف إعادة الاستخدام.",
       "استخدام خوارزمية SHA-256 لتشفير وحفظ الـ Refresh Tokens في قاعدة البيانات.",
       "تطوير واجهات لوحة التحكم الإدارية (Dashboard APIs) لتقديم تحليلات الأعمال وإحصائيات الأداء التفصيلية.",
@@ -109,7 +113,10 @@ export const initialProjects: Project[] = [
     ],
     githubUrl: "https://github.com/amratef2005",
     liveUrl: "https://mot7km.com"
-  },
+  }
+];
+
+export const initialProjects: Project[] = [
   {
     id: "studysync-lms",
     title: "Academic Management System",

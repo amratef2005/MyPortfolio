@@ -4,6 +4,7 @@ import { AnimatedBackground } from './components/AnimatedBackground';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { About } from './components/About';
+import { Experience } from './components/Experience';
 import { Projects } from './components/Projects';
 import { Certificates } from './components/Certificates';
 import { Skills } from './components/Skills';
@@ -47,6 +48,7 @@ export const App: React.FC = () => {
         <main className="space-y-4 sm:space-y-8">
           <Hero />
           <About />
+          <Experience />
           <Projects />
           <Certificates />
           <Skills />

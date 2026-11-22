@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 
 export const CVModal: React.FC = () => {
-  const { isCVModalOpen, setIsCVModalOpen, profile, projects, certificates, skills, lang } = usePortfolio();
+  const { isCVModalOpen, setIsCVModalOpen, profile, experiences, projects, certificates, skills, lang } = usePortfolio();
 
   const [options, setOptions] = useState<CVOptions>({
     template: 'classic', // Fixed to ATS-Standard
@@ -191,6 +191,7 @@ export const CVModal: React.FC = () => {
             <CVDocument
               options={options}
               profile={profile}
+              experiences={experiences}
               projects={projects}
               certificates={certificates}
               skills={skills}

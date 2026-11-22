@@ -1,5 +1,5 @@
 import React from 'react';
-import { ProfileInfo, Project, Certificate, SkillCategory } from '../../types';
+import { ProfileInfo, Project, Certificate, SkillCategory, Experience } from '../../types';
 
 export type AccentColor =
   | 'slate'
@@ -30,12 +30,14 @@ interface CVDocumentProps {
   projects: Project[];
   certificates: Certificate[];
   skills: SkillCategory[];
+  experiences?: Experience[];
 }
 
 export const CVDocument: React.FC<CVDocumentProps> = ({
   options,
   profile,
   projects,
+  experiences,
 }) => {
   // Filter projects by selection
   const selectedProjects = projects.filter(p => options.includedProjects.includes(p.id));
@@ -214,10 +216,88 @@ export const CVDocument: React.FC<CVDocumentProps> = ({
         </div>
       </section>
 
-      {/* ==================== 4. PROJECT EXPERIENCE ==================== */}
+      {/* ==================== 4. PROFESSIONAL WORK EXPERIENCE ==================== */}
+      <section className="mb-3.5 avoid-break">
+        <h2 className="text-xs font-bold font-mono tracking-widest uppercase text-slate-950 border-b border-slate-300 pb-0.5 mb-2">
+          Professional Work Experience
+        </h2>
+
+        <div className="space-y-3.5">
+          <div className="avoid-break">
+            {/* Title and Role Line */}
+            <div className="flex items-baseline justify-between">
+              <div className="flex items-baseline gap-2 flex-wrap">
+                <h3
+                  contentEditable={options.isEditable}
+                  suppressContentEditableWarning
+                  className="text-xs font-bold text-slate-950 font-mono"
+                >
+                  MOT7KM – Multi-Tenant SaaS ERP & Digital Menu Platform
+                </h3>
+                <span className="text-[11px] text-slate-400 font-mono">|</span>
+                <span
+                  contentEditable={options.isEditable}
+                  suppressContentEditableWarning
+                  className="text-[11px] text-slate-700 font-semibold"
+                >
+                  .NET Backend Developer
+                </span>
+              </div>
+              <span className="text-[10.5px] font-mono text-slate-600 font-semibold shrink-0">
+                2024 – Present | Remote
+              </span>
+            </div>
+
+            {/* Technologies */}
+            <p className="text-[10.5px] font-mono text-slate-700 mt-0.5">
+              <strong className="text-slate-950 font-semibold">Technologies: </strong>
+              C#, .NET 10, ASP.NET Core, PostgreSQL, Entity Framework Core, Supabase, SignalR, GitHub Actions, IIS
+            </p>
+
+            {/* Subtitle Summary */}
+            <p
+              contentEditable={options.isEditable}
+              suppressContentEditableWarning
+              className="text-[11px] text-slate-800 italic mt-0.5"
+            >
+              Architected and developed the backend for a production multi-tenant SaaS platform for restaurants and cafés to manage operations, menus, and real-time orders.
+            </p>
+
+            {/* ATS Bullet Points */}
+            <ul className="list-disc list-outside text-[11px] text-slate-800 space-y-0.5 mt-1 pl-4 leading-relaxed">
+              <li contentEditable={options.isEditable} suppressContentEditableWarning>
+                Designed and implemented Clean Architecture with a Modular Monolith approach for high maintainability.
+              </li>
+              <li contentEditable={options.isEditable} suppressContentEditableWarning>
+                Developed RESTful APIs for business profiles, branches, menus, categories, products, and promotional campaigns.
+              </li>
+              <li contentEditable={options.isEditable} suppressContentEditableWarning>
+                Implemented multi-tenancy and tenant isolation to ensure secure separation of business data and prevent IDOR vulnerabilities.
+              </li>
+              <li contentEditable={options.isEditable} suppressContentEditableWarning>
+                Developed authentication mechanisms supporting JWT, OAuth 2.0, and phone OTP.
+              </li>
+              <li contentEditable={options.isEditable} suppressContentEditableWarning>
+                Implemented secure session management using refresh token rotation, sliding expiration, and token reuse detection with SHA-256 hashing.
+              </li>
+              <li contentEditable={options.isEditable} suppressContentEditableWarning>
+                Developed administrative dashboard APIs with business analytics, branch performance insights, and SignalR real-time updates.
+              </li>
+              <li contentEditable={options.isEditable} suppressContentEditableWarning>
+                Implemented background batch processing for product view tracking to optimize database operations.
+              </li>
+              <li contentEditable={options.isEditable} suppressContentEditableWarning>
+                Configured automated deployment workflows using GitHub Actions and managed IIS hosting environments.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      {/* ==================== 5. KEY TECHNICAL PROJECTS ==================== */}
       <section className="mb-3.5">
         <h2 className="text-xs font-bold font-mono tracking-widest uppercase text-slate-950 border-b border-slate-300 pb-0.5 mb-2">
-          Project Experience
+          Key Technical Projects
         </h2>
 
         <div className="space-y-3.5">
@@ -251,6 +331,9 @@ export const CVDocument: React.FC<CVDocumentProps> = ({
                       {data.role}
                     </span>
                   </div>
+                  <span className="text-[10.5px] font-mono text-slate-600 font-semibold shrink-0">
+                    Academic Platform
+                  </span>
                 </div>
 
                 {/* Technologies */}

@@ -35,16 +35,16 @@ export const Projects: React.FC = () => {
             <div className="text-start">
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-cyan-400 text-xs font-mono mb-3">
                 <Rocket className="w-3.5 h-3.5 text-cyan-400" />
-                <span>{lang === 'ar' ? 'المشاريع المؤسسية الكبرى' : 'Flagship Systems'}</span>
+                <span>{lang === 'ar' ? 'المشاريع الهندسية والمعمارية' : 'Engineering & Architecture Projects'}</span>
               </div>
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight">
                 {lang === 'ar' ? (
                   <>
-                    معمارية <span className="gradient-text-cyan">أنظمة واقعية</span> تم بناؤها بأحدث التقنيات
+                    أنظمة متقدمة مبنية بـ <span className="gradient-text-cyan">Clean Architecture و CQRS</span>
                   </>
                 ) : (
                   <>
-                    Production-Ready <span className="gradient-text-cyan">Architectures</span>
+                    Flagship Systems Engineered with <span className="gradient-text-cyan">Clean Architecture & CQRS</span>
                   </>
                 )}
               </h2>
@@ -70,7 +70,7 @@ export const Projects: React.FC = () => {
         </AssembleItem>
 
         {/* Projects Cards Grid: Converges from Edges & Disperses Outward */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 items-stretch">
+        <div className={filteredProjects.length === 1 ? 'max-w-4xl mx-auto' : 'grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 items-stretch'}>
           {filteredProjects.map((project, idx) => {
             const isLeft = idx % 2 === 0;
             return (

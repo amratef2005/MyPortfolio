@@ -9,6 +9,7 @@ export const Navbar: React.FC = () => {
   const navLinks = [
     { href: "#hero", labelAr: "الرئيسية", labelEn: "Home" },
     { href: "#about", labelAr: "نبذة عني", labelEn: "About" },
+    { href: "#experience", labelAr: "الخبرات", labelEn: "Experience" },
     { href: "#projects", labelAr: "المشاريع", labelEn: "Projects" },
     { href: "#certificates", labelAr: "الشهادات و ITI", labelEn: "Certificates" },
     { href: "#skills", labelAr: "المهارات", labelEn: "Skills" },

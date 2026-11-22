@@ -1,3 +1,29 @@
+export interface Experience {
+  id: string;
+  role: string;
+  roleAr: string;
+  company: string;
+  companyAr: string;
+  period: string;
+  periodAr: string;
+  location: string;
+  locationAr: string;
+  type: string;
+  typeAr: string;
+  badge: string;
+  badgeAr?: string;
+  summary: string;
+  summaryAr: string;
+  architecture: string[];
+  architectureAr?: string[];
+  technologies: string[];
+  metrics: { label: string; labelAr?: string; value: string; valueAr?: string }[];
+  responsibilities: string[];
+  responsibilitiesAr?: string[];
+  liveUrl?: string;
+  githubUrl?: string;
+}
+
 export interface Project {
   id: string;
   title: string;

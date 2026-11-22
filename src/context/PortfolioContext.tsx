@@ -1,12 +1,13 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { ProfileInfo, Project, Certificate, SkillCategory, ContactMessage } from '../types';
-import { initialProfile, initialProjects, initialCertificates, initialSkillCategories } from '../data/initialData';
+import { ProfileInfo, Project, Certificate, SkillCategory, ContactMessage, Experience } from '../types';
+import { initialProfile, initialProjects, initialCertificates, initialSkillCategories, initialExperiences } from '../data/initialData';
 import { extractColorsFromImage, applyThemeColors } from '../utils/colorExtractor';
 
-const DATA_SEED_KEY = 'portfolio_seed_v6';
+const DATA_SEED_KEY = 'portfolio_seed_v8';
 
 interface PortfolioContextType {
   profile: ProfileInfo;
+  experiences: Experience[];
   projects: Project[];
   certificates: Certificate[];
   skills: SkillCategory[];
@@ -22,6 +23,9 @@ interface PortfolioContextType {
   logout: () => void;
   updateCredentials: (username: string, password: string) => void;
   updateProfile: (profile: Partial<ProfileInfo>) => void;
+  addExperience: (exp: Experience) => void;
+  updateExperience: (id: string, exp: Partial<Experience>) => void;
+  deleteExperience: (id: string) => void;
   addProject: (project: Project) => void;
   updateProject: (id: string, project: Partial<Project>) => void;
   deleteProject: (id: string) => void;
@@ -59,6 +63,7 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     if (!isSeeded) {
       localStorage.setItem(DATA_SEED_KEY, 'true');
       localStorage.setItem('portfolio_profile', JSON.stringify(initialProfile));
+      localStorage.setItem('portfolio_experiences', JSON.stringify(initialExperiences));
       localStorage.setItem('portfolio_projects', JSON.stringify(initialProjects));
       localStorage.setItem('portfolio_certificates', JSON.stringify(initialCertificates));
       localStorage.setItem('portfolio_skills', JSON.stringify(initialSkillCategories));
@@ -83,13 +88,28 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     }
   });
 
+  const [experiences, setExperiences] = useState<Experience[]>(() => {
+    const saved = localStorage.getItem('portfolio_experiences');
+    if (!saved) return initialExperiences;
+    try {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
+      return initialExperiences;
+    } catch {
+      return initialExperiences;
+    }
+  });
+
   const [projects, setProjects] = useState<Project[]>(() => {
     const saved = localStorage.getItem('portfolio_projects');
     if (!saved) return initialProjects;
     try {
       const parsed = JSON.parse(saved);
       if (Array.isArray(parsed) && parsed.length > 0) {
-        return parsed;
+        const filtered = parsed.filter(p => p.id !== 'mot7km-saas');
+        return filtered.length > 0 ? filtered : initialProjects;
       }
       return initialProjects;
     } catch {
@@ -149,6 +169,7 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         channel.onmessage = (event) => {
           const { type, payload } = event.data || {};
           if (type === 'UPDATE_PROFILE' && payload) setProfile(payload);
+          if (type === 'UPDATE_EXPERIENCES' && payload) setExperiences(payload);
           if (type === 'UPDATE_PROJECTS' && payload) setProjects(payload);
           if (type === 'UPDATE_CERTS' && payload) setCertificates(payload);
           if (type === 'UPDATE_SKILLS' && payload) setSkills(payload);
@@ -162,6 +183,7 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       if (!e.newValue) return;
       try {
         if (e.key === 'portfolio_profile') setProfile(JSON.parse(e.newValue));
+        if (e.key === 'portfolio_experiences') setExperiences(JSON.parse(e.newValue));
         if (e.key === 'portfolio_projects') setProjects(JSON.parse(e.newValue));
         if (e.key === 'portfolio_certificates') setCertificates(JSON.parse(e.newValue));
         if (e.key === 'portfolio_skills') setSkills(JSON.parse(e.newValue));
@@ -216,6 +238,10 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   useEffect(() => {
     localStorage.setItem('portfolio_profile', JSON.stringify(profile));
   }, [profile]);
+
+  useEffect(() => {
+    localStorage.setItem('portfolio_experiences', JSON.stringify(experiences));
+  }, [experiences]);
 
   useEffect(() => {
     localStorage.setItem('portfolio_projects', JSON.stringify(projects));
@@ -311,6 +337,33 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         body: JSON.stringify(nextProfile)
       }).catch(e => console.error('Supabase profile sync error:', e));
       return nextProfile;
+    });
+  };
+
+  const addExperience = (exp: Experience) => {
+    setExperiences(prev => {
+      const next = [exp, ...prev];
+      localStorage.setItem('portfolio_experiences', JSON.stringify(next));
+      broadcastChange('UPDATE_EXPERIENCES', next);
+      return next;
+    });
+  };
+
+  const updateExperience = (id: string, updated: Partial<Experience>) => {
+    setExperiences(prev => {
+      const next = prev.map(e => e.id === id ? { ...e, ...updated } : e);
+      localStorage.setItem('portfolio_experiences', JSON.stringify(next));
+      broadcastChange('UPDATE_EXPERIENCES', next);
+      return next;
+    });
+  };
+
+  const deleteExperience = (id: string) => {
+    setExperiences(prev => {
+      const next = prev.filter(e => e.id !== id);
+      localStorage.setItem('portfolio_experiences', JSON.stringify(next));
+      broadcastChange('UPDATE_EXPERIENCES', next);
+      return next;
     });
   };
 
@@ -415,6 +468,7 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const exportData = () => {
     const data = {
       profile,
+      experiences,
       projects,
       certificates,
       skills,
@@ -435,6 +489,11 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     try {
       const data = JSON.parse(jsonStr);
       if (data.profile) updateProfile(data.profile);
+      if (data.experiences) {
+        setExperiences(data.experiences);
+        localStorage.setItem('portfolio_experiences', JSON.stringify(data.experiences));
+        broadcastChange('UPDATE_EXPERIENCES', data.experiences);
+      }
       if (data.projects) {
         setProjects(data.projects);
         localStorage.setItem('portfolio_projects', JSON.stringify(data.projects));
@@ -459,12 +518,14 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   const resetToDefault = () => {
     setProfile(initialProfile);
+    setExperiences(initialExperiences);
     setProjects(initialProjects);
     setCertificates(initialCertificates);
     setSkills(initialSkillCategories);
     setMessages([]);
     localStorage.clear();
     broadcastChange('UPDATE_PROFILE', initialProfile);
+    broadcastChange('UPDATE_EXPERIENCES', initialExperiences);
     broadcastChange('UPDATE_PROJECTS', initialProjects);
     broadcastChange('UPDATE_CERTS', initialCertificates);
     broadcastChange('UPDATE_SKILLS', initialSkillCategories);
@@ -474,6 +535,7 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     <PortfolioContext.Provider
       value={{
         profile,
+        experiences,
         projects,
         certificates,
         skills,
@@ -489,6 +551,9 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         logout,
         updateCredentials,
         updateProfile,
+        addExperience,
+        updateExperience,
+        deleteExperience,
         addProject,
         updateProject,
         deleteProject,
