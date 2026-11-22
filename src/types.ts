@@ -59,11 +59,6 @@ export interface ProfileInfo {
   github: string;
   linkedin: string;
   whatsapp: string;
-  isWhatsAppAvailable?: boolean; // WhatsApp Online/Offline control
-  whatsappStatus?: 'available' | 'busy' | 'offline'; // Detailed status
-  whatsappCustomNoteAr?: string; // e.g. "متاح الآن للرد الفوري"
-  whatsappCustomNoteEn?: string; // e.g. "Available for immediate reply"
-  showFloatingWhatsApp?: boolean; // Toggle floating widget
   resumeUrl: string;
   topAvatarUrl?: string; // Top image (Navbar)
   yearsOfExperience: number;

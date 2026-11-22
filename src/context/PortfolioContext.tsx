@@ -61,15 +61,7 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         localStorage.setItem('portfolio_profile', JSON.stringify(initialProfile));
         return initialProfile;
       }
-      return {
-        ...initialProfile,
-        ...parsed,
-        isWhatsAppAvailable: parsed.isWhatsAppAvailable !== undefined ? parsed.isWhatsAppAvailable : initialProfile.isWhatsAppAvailable,
-        whatsappStatus: parsed.whatsappStatus || initialProfile.whatsappStatus,
-        whatsappCustomNoteAr: parsed.whatsappCustomNoteAr || initialProfile.whatsappCustomNoteAr,
-        whatsappCustomNoteEn: parsed.whatsappCustomNoteEn || initialProfile.whatsappCustomNoteEn,
-        showFloatingWhatsApp: parsed.showFloatingWhatsApp !== undefined ? parsed.showFloatingWhatsApp : initialProfile.showFloatingWhatsApp,
-      };
+      return parsed;
     } catch {
       return initialProfile;
     }

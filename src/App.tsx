@@ -9,7 +9,6 @@ import { Certificates } from './components/Certificates';
 import { Skills } from './components/Skills';
 import { Contact } from './components/Contact';
 import { CVModal } from './components/cv/CVModal';
-import { FloatingWhatsApp } from './components/FloatingWhatsApp';
 
 export const App: React.FC = () => {
   React.useEffect(() => {
@@ -56,9 +55,6 @@ export const App: React.FC = () => {
 
         {/* Dynamic CV / Resume Builder Modal */}
         <CVModal />
-
-        {/* Dynamic WhatsApp Availability Floating Widget */}
-        <FloatingWhatsApp />
       </div>
     </PortfolioProvider>
   );
