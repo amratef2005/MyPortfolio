@@ -61,6 +61,18 @@ export interface ProfileInfo {
   whatsapp: string;
   resumeUrl: string;
   topAvatarUrl?: string; // Top image (Navbar)
+  heroAvatarUrl?: string; // 3D Interactive Hero Avatar
+  autoExtractColors?: boolean; // Automatically extract theme colors from avatar
+  extractedColors?: {
+    primary: string;
+    primaryRgb?: string;
+    secondary: string;
+    secondaryRgb?: string;
+    accent: string;
+    accentRgb?: string;
+    glow: string;
+    glowSecondary?: string;
+  };
   yearsOfExperience: number;
   completedProjects: number;
   adminUsername?: string; // default "admin"

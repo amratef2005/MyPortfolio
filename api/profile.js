@@ -17,7 +17,7 @@ export default async function handler(req, res) {
     const pool = getPool();
     const data = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
 
-    // Ensure availability/whatsapp columns exist
+    // Ensure availability/whatsapp/avatar columns exist
     await pool.query(`
       ALTER TABLE public.portfolio_profile
       ADD COLUMN IF NOT EXISTS availability_status VARCHAR(50) DEFAULT 'available',
@@ -27,7 +27,10 @@ export default async function handler(req, res) {
       ADD COLUMN IF NOT EXISTS whatsapp_status VARCHAR(50) DEFAULT 'online',
       ADD COLUMN IF NOT EXISTS whatsapp_note_ar VARCHAR(255),
       ADD COLUMN IF NOT EXISTS whatsapp_note_en VARCHAR(255),
-      ADD COLUMN IF NOT EXISTS show_whatsapp_status BOOLEAN DEFAULT TRUE;
+      ADD COLUMN IF NOT EXISTS show_whatsapp_status BOOLEAN DEFAULT TRUE,
+      ADD COLUMN IF NOT EXISTS hero_avatar_url TEXT DEFAULT '/drama_hero.png',
+      ADD COLUMN IF NOT EXISTS auto_extract_colors BOOLEAN DEFAULT TRUE,
+      ADD COLUMN IF NOT EXISTS extracted_colors JSONB;
     `).catch(() => {});
 
     await pool.query(`
@@ -62,6 +65,9 @@ export default async function handler(req, res) {
         whatsapp_note_ar = COALESCE($28, whatsapp_note_ar),
         whatsapp_note_en = COALESCE($29, whatsapp_note_en),
         show_whatsapp_status = COALESCE($30, show_whatsapp_status),
+        hero_avatar_url = COALESCE($31, hero_avatar_url),
+        auto_extract_colors = COALESCE($32, auto_extract_colors),
+        extracted_colors = COALESCE($33, extracted_colors),
         updated_at = NOW()
       WHERE id = 'main_profile'
     `, [
@@ -75,7 +81,10 @@ export default async function handler(req, res) {
       data.availabilityStatus, data.availabilityNoteAr, data.availabilityNoteEn,
       data.showAvailabilityBadge,
       data.whatsappStatus, data.whatsappNoteAr, data.whatsappNoteEn,
-      data.showWhatsAppStatus
+      data.showWhatsAppStatus,
+      data.heroAvatarUrl,
+      data.autoExtractColors,
+      data.extractedColors ? JSON.stringify(data.extractedColors) : null
     ]);
 
     return res.status(200).json({ success: true });

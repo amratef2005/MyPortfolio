@@ -54,7 +54,10 @@ export default async function handler(req, res) {
       whatsappStatus: pRow.whatsapp_status || 'online',
       whatsappNoteAr: pRow.whatsapp_note_ar,
       whatsappNoteEn: pRow.whatsapp_note_en,
-      showWhatsAppStatus: pRow.show_whatsapp_status !== false
+      showWhatsAppStatus: pRow.show_whatsapp_status !== false,
+      heroAvatarUrl: pRow.hero_avatar_url || '/drama_hero.png',
+      autoExtractColors: pRow.auto_extract_colors !== false,
+      extractedColors: pRow.extracted_colors || null
     } : null;
 
     const projects = projectsRes.rows.map(r => ({

@@ -25,8 +25,15 @@ import {
   EyeOff,
   Radio,
   MessageSquare,
-  Sparkles
+  Sparkles,
+  Upload,
+  Palette,
+  RefreshCw,
+  Image as ImageIcon,
+  Pencil,
+  X
 } from 'lucide-react';
+import { extractColorsFromImage, applyThemeColors, ExtractedPalette, DEFAULT_PALETTE } from '../utils/colorExtractor';
 
 export const AdminPage: React.FC = () => {
   const {
@@ -74,10 +81,115 @@ export const AdminPage: React.FC = () => {
 
   // Profile Form State
   const [profileForm, setProfileForm] = useState(profile);
+  const [extractingColors, setExtractingColors] = useState(false);
+  const [colorSuccess, setColorSuccess] = useState('');
+
+  // Navbar Brand Quick Editor State
+  const [isBrandModalOpen, setIsBrandModalOpen] = useState(false);
+  const [brandForm, setBrandForm] = useState({
+    topAvatarUrl: profile.topAvatarUrl || '/my.jpg',
+    name: profile.name || 'Amr Atef Imam Kandel',
+    nameAr: profile.nameAr || 'عمرو عاطف إمام قنديل',
+    title: profile.title || '.NET Backend Developer',
+    titleAr: profile.titleAr || 'مطور نظم خلفية .NET',
+  });
+  const [brandSuccess, setBrandSuccess] = useState(false);
 
   React.useEffect(() => {
     setProfileForm(profile);
+    setBrandForm({
+      topAvatarUrl: profile.topAvatarUrl || '/my.jpg',
+      name: profile.name || 'Amr Atef Imam Kandel',
+      nameAr: profile.nameAr || 'عمرو عاطف إمام قنديل',
+      title: profile.title || '.NET Backend Developer',
+      titleAr: profile.titleAr || 'مطور نظم خلفية .NET',
+    });
   }, [profile]);
+
+  const handleBrandAvatarUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const dataUrl = event.target?.result as string;
+      if (dataUrl) {
+        setBrandForm(prev => ({ ...prev, topAvatarUrl: dataUrl }));
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleSaveBrand = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    updateProfile({
+      topAvatarUrl: brandForm.topAvatarUrl,
+      name: brandForm.name,
+      nameAr: brandForm.nameAr,
+      title: brandForm.title,
+      titleAr: brandForm.titleAr,
+    });
+    setProfileForm(prev => ({
+      ...prev,
+      topAvatarUrl: brandForm.topAvatarUrl,
+      name: brandForm.name,
+      nameAr: brandForm.nameAr,
+      title: brandForm.title,
+      titleAr: brandForm.titleAr,
+    }));
+    setBrandSuccess(true);
+    setTimeout(() => {
+      setBrandSuccess(false);
+      setIsBrandModalOpen(false);
+    }, 1000);
+  };
+
+  const handleHeroFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      const dataUrl = event.target?.result as string;
+      if (dataUrl) {
+        setProfileForm(prev => ({ ...prev, heroAvatarUrl: dataUrl }));
+        if (profileForm.autoExtractColors !== false) {
+          await triggerColorExtraction(dataUrl);
+        }
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleTopFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const dataUrl = event.target?.result as string;
+      if (dataUrl) {
+        setProfileForm(prev => ({ ...prev, topAvatarUrl: dataUrl }));
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const triggerColorExtraction = async (imageSrc: string) => {
+    setExtractingColors(true);
+    setColorSuccess('');
+    try {
+      const palette = await extractColorsFromImage(imageSrc);
+      applyThemeColors(palette);
+      setProfileForm(prev => ({
+        ...prev,
+        extractedColors: palette
+      }));
+      setColorSuccess('تم استخراج ألوان الثيم وتطبيقها بنجاح!');
+      setTimeout(() => setColorSuccess(''), 4000);
+    } catch (err) {
+      console.warn('Extraction error:', err);
+    } finally {
+      setExtractingColors(false);
+    }
+  };
 
   // Security Form State
   const [newUsername, setNewUsername] = useState(profile.adminUsername || 'admin');
@@ -243,24 +355,44 @@ export const AdminPage: React.FC = () => {
     <div className="min-h-screen bg-[#06080d] text-slate-100 flex flex-col font-cairo selection:bg-cyan-500/30 selection:text-cyan-200">
       {/* Top Header */}
       <header className="px-6 py-4 bg-slate-950/90 border-b border-slate-800/80 sticky top-0 z-40 backdrop-blur-md flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-indigo-600 p-0.5 shadow-[0_0_15px_rgba(56,189,248,0.3)] shrink-0">
-            <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center text-cyan-400">
-              <ShieldCheck className="w-5 h-5" />
+        {/* Navbar Live Brand Card & Quick Customizer Trigger (Matches Image 2) */}
+        <button
+          type="button"
+          onClick={() => setIsBrandModalOpen(true)}
+          title="انقر لتعديل هوية النافبار (الصورة، والاسم، والمسمى الوظيفي)"
+          className="flex items-center gap-3 group p-1.5 sm:px-3 sm:py-2 rounded-2xl bg-slate-900/60 hover:bg-slate-800/80 border border-slate-800 hover:border-cyan-500/40 transition-all text-start shadow-sm hover:shadow-[0_0_20px_rgba(56,189,248,0.2)] cursor-pointer"
+        >
+          {/* Avatar with Camera/Pencil overlay */}
+          <div className="relative w-10 h-10 sm:w-11 sm:h-11 rounded-xl overflow-hidden bg-gradient-to-tr from-cyan-500 to-indigo-600 p-0.5 shadow-[0_0_15px_rgba(56,189,248,0.35)] shrink-0">
+            <img 
+              src={profile.topAvatarUrl || profile.heroAvatarUrl || "/my.jpg"} 
+              alt={profile.name} 
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = "/drama_hero.png";
+              }}
+              className="w-full h-full object-cover object-top rounded-[10px]" 
+            />
+            <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity rounded-[10px]">
+              <Pencil className="w-3.5 h-3.5 text-cyan-300" />
             </div>
           </div>
-          <div>
-            <h1 className="font-bold text-white text-base sm:text-lg flex items-center gap-2">
-              <span>لوحة التحكم في البورتفوليو</span>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">
-                Live Admin
+
+          {/* Name & Subtitle matching the Navbar Brand (Image 2) */}
+          <div className="flex flex-col">
+            <div className="flex items-center gap-2">
+              <span className="font-bold text-white text-sm sm:text-base tracking-wide group-hover:text-cyan-300 transition-colors">
+                {profile.name || 'Amr Atef Imam Kandel'}
               </span>
-            </h1>
-            <p className="text-xs text-slate-400 font-mono">
-              إدارة المشاريع، الشهادات، المهارات، والرسائل الواردة
-            </p>
+              <span className="hidden xs:inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-cyan-500/15 border border-cyan-500/30 text-cyan-400 text-[10px] font-mono group-hover:bg-cyan-500/25 transition-all">
+                <Pencil className="w-2.5 h-2.5" />
+                تعديل الهوية
+              </span>
+            </div>
+            <span className="text-[10px] sm:text-[11px] font-mono text-cyan-400/90 tracking-wider">
+              {profile.title ? profile.title.toUpperCase() : '.NET BACKEND DEVELOPER'}
+            </span>
           </div>
-        </div>
+        </button>
 
         <div className="flex items-center gap-3">
           <a
@@ -1316,21 +1448,322 @@ export const AdminPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Top Image URL Setting */}
-              <div className="p-4 rounded-2xl bg-cyan-950/20 border border-cyan-800/40 space-y-2">
-                <label className="block text-xs font-mono text-cyan-300 font-bold">
-                  مسار / رابط الصورة العلوية (Navbar Image):
-                </label>
-                <input
-                  type="text"
-                  value={profileForm.topAvatarUrl || '/my.jpg'}
-                  onChange={(e) => setProfileForm({ ...profileForm, topAvatarUrl: e.target.value })}
-                  placeholder="/my.jpg أو رابط خارجي"
-                  className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-cyan-400 text-sm font-mono"
-                />
-                <p className="text-[11px] text-slate-400">
-                  ملاحظة: الصورة الشفافة ثلاثية الأبعاد التفاعلية في قسم الـ Hero تظل ثابتة ومحمية من التغيير كما هي في مكانها.
-                </p>
+              {/* =========================================================================
+                  HERO AVATAR & NAVBAR IMAGE & DYNAMIC COLOR THEME CONTROLS
+                  ========================================================================= */}
+              <div className="p-6 rounded-3xl bg-slate-900/80 border border-cyan-500/30 space-y-6 shadow-xl">
+                <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                  <div className="flex items-center gap-2 text-cyan-400 font-bold text-base">
+                    <ImageIcon className="w-5 h-5 text-cyan-400" />
+                    <span>إدارة الصور والهوية البصرية للموقع</span>
+                  </div>
+                  <span className="text-[11px] font-mono text-cyan-400/80 bg-cyan-950/60 px-3 py-1 rounded-full border border-cyan-800/40">
+                    تحديث مباشر ومزامنة لحظية
+                  </span>
+                </div>
+
+                {/* 1. Hero Avatar Controls */}
+                <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800 space-y-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                      <label className="block text-sm font-bold text-white mb-0.5">
+                        صورة الهيرو التفاعلية 3D (Hero Main Avatar):
+                      </label>
+                      <p className="text-xs text-slate-400">
+                        الصورة الكبيرة في مقدمة الموقع التي تتفاعل بحركة ثلاثية الأبعاد مع الماوس وتُفرز هالات ضوئية متناغمة.
+                      </p>
+                    </div>
+
+                    {/* Current Preview */}
+                    <div className="flex items-center gap-3 shrink-0">
+                      <div className="w-16 h-16 rounded-2xl overflow-hidden bg-slate-900 border-2 border-cyan-500/50 p-1 flex items-center justify-center shadow-[0_0_15px_rgba(56,189,248,0.25)]">
+                        <img
+                          src={profileForm.heroAvatarUrl || '/drama_hero.png'}
+                          alt="Hero Preview"
+                          className="w-full h-full object-contain filter drop-shadow"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = '/drama_hero.png';
+                          }}
+                        />
+                      </div>
+                      <span className="text-[11px] font-mono text-slate-400">معاينة الهيرو</span>
+                    </div>
+                  </div>
+
+                  {/* Preset Chips */}
+                  <div>
+                    <span className="block text-xs font-mono text-slate-400 mb-2">اختر من الصور الجاهزة بالبرتفوليو:</span>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
+                      {[
+                        { label: 'الصورة المفرغة الجديدة', url: '/drama_hero.png', tag: 'الموصى بها' },
+                        { label: 'الصورة الكلاسيكية المفرغة', url: '/my_transparent.png', tag: 'السابقة' },
+                        { label: 'صورة البورتريه مع الخلفية', url: '/WhatsApp Image 2026-11-22 at 7.04.38 AM.jpeg', tag: 'الأصلية' },
+                        { label: 'الصورة المربعة الرسمية', url: '/my.jpg', tag: 'الرسمية' },
+                      ].map((item) => (
+                        <button
+                          key={item.url}
+                          type="button"
+                          onClick={() => {
+                            setProfileForm(prev => ({ ...prev, heroAvatarUrl: item.url }));
+                            if (profileForm.autoExtractColors !== false) {
+                              triggerColorExtraction(item.url);
+                            }
+                          }}
+                          className={`p-2.5 rounded-xl text-start border transition-all flex flex-col justify-between text-xs ${
+                            (profileForm.heroAvatarUrl || '/drama_hero.png') === item.url
+                              ? 'bg-cyan-500/15 border-cyan-400 text-cyan-200 shadow-[0_0_12px_rgba(56,189,248,0.25)]'
+                              : 'bg-slate-900/60 border-slate-800 text-slate-300 hover:border-slate-700'
+                          }`}
+                        >
+                          <span className="font-bold truncate">{item.label}</span>
+                          <div className="flex items-center justify-between mt-1 text-[10px] font-mono text-slate-400">
+                            <span className="text-cyan-400">{item.tag}</span>
+                            <span className="truncate max-w-[100px]">{item.url}</span>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Upload or Custom URL */}
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
+                    <div className="md:col-span-8 space-y-1">
+                      <label className="block text-xs font-mono text-slate-400">أو اكتب مسار / رابط الصورة:</label>
+                      <input
+                        type="text"
+                        value={profileForm.heroAvatarUrl || '/drama_hero.png'}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setProfileForm({ ...profileForm, heroAvatarUrl: val });
+                        }}
+                        placeholder="/drama_hero.png أو رابط خارجي https://..."
+                        className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-cyan-400 text-xs font-mono"
+                      />
+                    </div>
+                    <div className="md:col-span-4">
+                      <label className="block text-xs font-mono text-slate-400 mb-1">رفع صورة جديدة من جهازك:</label>
+                      <label className="flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 text-xs font-bold cursor-pointer transition-all shadow-sm">
+                        <Upload className="w-4 h-4 shrink-0" />
+                        <span>رفع صورة من الجهاز</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleHeroFileUpload}
+                          className="hidden"
+                        />
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2. Navbar Image Controls */}
+                <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800 space-y-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                      <label className="block text-sm font-bold text-white mb-0.5">
+                        صورة شريط التنقل (Navbar Avatar):
+                      </label>
+                      <p className="text-xs text-slate-400">
+                        الصورة الرمزية الصغيرة الظاهرة بجانب اسمك في الـ Navbar بأعلى الموقع.
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-3 shrink-0">
+                      <div className="w-10 h-10 rounded-xl overflow-hidden bg-slate-900 border border-cyan-500/40 p-0.5">
+                        <img
+                          src={profileForm.topAvatarUrl || '/my.jpg'}
+                          alt="Navbar Preview"
+                          className="w-full h-full object-cover object-top rounded-lg"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = '/my.jpg';
+                          }}
+                        />
+                      </div>
+                      <span className="text-[11px] font-mono text-slate-400">معاينة النافبار</span>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
+                    <div className="md:col-span-8">
+                      <input
+                        type="text"
+                        value={profileForm.topAvatarUrl || '/my.jpg'}
+                        onChange={(e) => setProfileForm({ ...profileForm, topAvatarUrl: e.target.value })}
+                        placeholder="/my.jpg أو رابط صورة"
+                        className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-cyan-400 text-xs font-mono"
+                      />
+                    </div>
+                    <div className="md:col-span-4">
+                      <label className="flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 text-xs font-bold cursor-pointer transition-all">
+                        <Upload className="w-4 h-4 shrink-0 text-cyan-400" />
+                        <span>رفع صورة للنافبار</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleTopFileUpload}
+                          className="hidden"
+                        />
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 3. Adaptive Dynamic Color Extractor */}
+                <div className="p-4 rounded-2xl bg-gradient-to-br from-indigo-950/30 via-slate-950 to-cyan-950/30 border border-indigo-500/30 space-y-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-9 h-9 rounded-xl bg-indigo-500/20 border border-indigo-500/40 flex items-center justify-center text-indigo-400">
+                        <Palette className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-bold text-white">محرك استخراج الألوان من الصورة (Adaptive Color Engine)</h4>
+                        <p className="text-xs text-slate-400">يقوم بتحليل ألوان صورتك تلقائياً وتلوين الهالات والنصوص والخلفية بتناغم تام.</p>
+                      </div>
+                    </div>
+
+                    {/* Auto-Extract Toggle */}
+                    <label className="inline-flex items-center gap-2 cursor-pointer select-none">
+                      <input
+                        type="checkbox"
+                        checked={profileForm.autoExtractColors !== false}
+                        onChange={(e) => {
+                          const enabled = e.target.checked;
+                          setProfileForm(prev => ({ ...prev, autoExtractColors: enabled }));
+                          if (enabled) {
+                            triggerColorExtraction(profileForm.heroAvatarUrl || '/drama_hero.png');
+                          }
+                        }}
+                        className="w-4 h-4 accent-cyan-500 rounded"
+                      />
+                      <span className="text-xs font-bold text-cyan-300">تفعيل استخراج الألوان تلقائياً</span>
+                    </label>
+                  </div>
+
+                  {/* Color Swatches Grid */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1">
+                    <div className="p-3 rounded-xl bg-slate-900/90 border border-slate-800 space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[11px] font-mono text-slate-400">الأساسي (Primary)</span>
+                        <div
+                          className="w-4 h-4 rounded-full border border-white/30 shadow-sm"
+                          style={{ background: profileForm.extractedColors?.primary || '#38bdf8' }}
+                        />
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <input
+                          type="color"
+                          value={profileForm.extractedColors?.primary || '#38bdf8'}
+                          onChange={(e) => {
+                            const newHex = e.target.value;
+                            const palette = {
+                              ...(profileForm.extractedColors || DEFAULT_PALETTE),
+                              primary: newHex
+                            };
+                            applyThemeColors(palette as any);
+                            setProfileForm(prev => ({ ...prev, extractedColors: palette as any }));
+                          }}
+                          className="w-6 h-6 rounded cursor-pointer border-0 bg-transparent"
+                        />
+                        <span className="text-xs font-mono font-bold text-white">
+                          {profileForm.extractedColors?.primary || '#38bdf8'}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="p-3 rounded-xl bg-slate-900/90 border border-slate-800 space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[11px] font-mono text-slate-400">الثانوي (Secondary)</span>
+                        <div
+                          className="w-4 h-4 rounded-full border border-white/30 shadow-sm"
+                          style={{ background: profileForm.extractedColors?.secondary || '#6366f1' }}
+                        />
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <input
+                          type="color"
+                          value={profileForm.extractedColors?.secondary || '#6366f1'}
+                          onChange={(e) => {
+                            const newHex = e.target.value;
+                            const palette = {
+                              ...(profileForm.extractedColors || DEFAULT_PALETTE),
+                              secondary: newHex
+                            };
+                            applyThemeColors(palette as any);
+                            setProfileForm(prev => ({ ...prev, extractedColors: palette as any }));
+                          }}
+                          className="w-6 h-6 rounded cursor-pointer border-0 bg-transparent"
+                        />
+                        <span className="text-xs font-mono font-bold text-white">
+                          {profileForm.extractedColors?.secondary || '#6366f1'}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="p-3 rounded-xl bg-slate-900/90 border border-slate-800 space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[11px] font-mono text-slate-400">المكمل (Accent)</span>
+                        <div
+                          className="w-4 h-4 rounded-full border border-white/30 shadow-sm"
+                          style={{ background: profileForm.extractedColors?.accent || '#06b6d4' }}
+                        />
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <input
+                          type="color"
+                          value={profileForm.extractedColors?.accent || '#06b6d4'}
+                          onChange={(e) => {
+                            const newHex = e.target.value;
+                            const palette = {
+                              ...(profileForm.extractedColors || DEFAULT_PALETTE),
+                              accent: newHex
+                            };
+                            applyThemeColors(palette as any);
+                            setProfileForm(prev => ({ ...prev, extractedColors: palette as any }));
+                          }}
+                          className="w-6 h-6 rounded cursor-pointer border-0 bg-transparent"
+                        />
+                        <span className="text-xs font-mono font-bold text-white">
+                          {profileForm.extractedColors?.accent || '#06b6d4'}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="p-3 rounded-xl bg-slate-900/90 border border-slate-800 space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[11px] font-mono text-slate-400">الهالة (Glow)</span>
+                        <div
+                          className="w-4 h-4 rounded-full shadow-[0_0_8px_currentColor]"
+                          style={{ background: profileForm.extractedColors?.primary || '#38bdf8' }}
+                        />
+                      </div>
+                      <div className="pt-1">
+                        <span className="text-[11px] font-mono text-cyan-300 block truncate">
+                          {profileForm.extractedColors?.glow || 'Active Aura Glow'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Re-extract Action Button */}
+                  <div className="flex flex-wrap items-center gap-3 pt-1">
+                    <button
+                      type="button"
+                      disabled={extractingColors}
+                      onClick={() => triggerColorExtraction(profileForm.heroAvatarUrl || '/drama_hero.png')}
+                      className="px-4 py-2 rounded-xl bg-indigo-500/20 hover:bg-indigo-500/30 border border-indigo-500/40 text-indigo-300 text-xs font-mono font-bold flex items-center gap-2 transition-all disabled:opacity-50"
+                    >
+                      <RefreshCw className={`w-3.5 h-3.5 ${extractingColors ? 'animate-spin' : ''}`} />
+                      <span>{extractingColors ? 'جاري تحليل الألوان...' : 'إعادة استخراج الألوان من الصورة الآن'}</span>
+                    </button>
+
+                    {colorSuccess && (
+                      <span className="text-xs text-emerald-400 font-mono flex items-center gap-1.5 animate-fadeIn">
+                        <CheckCircle2 className="w-3.5 h-3.5" />
+                        {colorSuccess}
+                      </span>
+                    )}
+                  </div>
+                </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1580,6 +2013,188 @@ export const AdminPage: React.FC = () => {
           )}
         </main>
       </div>
+
+      {/* =========================================================================
+          NAVBAR BRAND QUICK EDITOR MODAL (Directly edits Image 2 from Image 1)
+          ========================================================================= */}
+      {isBrandModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
+          <div className="relative w-full max-w-lg bg-slate-950 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl text-start space-y-6 max-h-[90vh] overflow-y-auto">
+            {/* Close Button */}
+            <button
+              type="button"
+              onClick={() => setIsBrandModalOpen(false)}
+              className="absolute top-5 left-5 p-2 text-slate-400 hover:text-white rounded-xl hover:bg-slate-900 transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {/* Header */}
+            <div>
+              <div className="flex items-center gap-2 text-cyan-400 mb-1">
+                <Pencil className="w-5 h-5 text-cyan-400" />
+                <h3 className="text-xl font-bold text-white">تعديل هوية شريط التنقل (Navbar Brand)</h3>
+              </div>
+              <p className="text-xs text-slate-400 font-mono">
+                عدّل الصورة المصغرة، والاسم الكامل، والمسمى الوظيفي كما يظهر في أعلى الموقع للزوار.
+              </p>
+            </div>
+
+            {/* Live Interactive Preview Box (Matching Image 2) */}
+            <div className="p-4 rounded-2xl bg-[#06080d] border border-cyan-500/30 space-y-2">
+              <span className="text-[11px] font-mono text-cyan-400 font-semibold block">معاينة حية لشكل النافبار (Live Preview):</span>
+              <div className="p-3 rounded-xl bg-[#06080d]/90 border border-white/10 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl overflow-hidden bg-gradient-to-tr from-cyan-500 to-indigo-600 p-0.5 shadow-[0_0_15px_rgba(56,189,248,0.35)] shrink-0">
+                  <img
+                    src={brandForm.topAvatarUrl || '/my.jpg'}
+                    alt="Preview"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = '/drama_hero.png';
+                    }}
+                    className="w-full h-full object-cover object-top rounded-[10px]"
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <span className="font-bold text-white text-sm tracking-wide">
+                    {brandForm.name || 'Amr Atef Imam Kandel'}
+                  </span>
+                  <span className="text-[10px] font-mono text-cyan-400/90 tracking-wider">
+                    {brandForm.title ? brandForm.title.toUpperCase() : '.NET BACKEND DEVELOPER'}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <form onSubmit={handleSaveBrand} className="space-y-4">
+              {/* 1. Avatar Image */}
+              <div className="space-y-2">
+                <label className="block text-xs font-mono text-slate-300 font-bold">
+                  صورة النافبار (Navbar Avatar Image):
+                </label>
+                
+                {/* Upload Button + Input */}
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={brandForm.topAvatarUrl}
+                    onChange={(e) => setBrandForm({ ...brandForm, topAvatarUrl: e.target.value })}
+                    placeholder="/my.jpg أو رابط خارجي"
+                    className="flex-1 px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-cyan-400 text-xs font-mono focus:border-cyan-500 outline-none"
+                  />
+                  <label className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-cyan-300 text-xs font-bold cursor-pointer transition-all shrink-0">
+                    <Upload className="w-3.5 h-3.5" />
+                    <span>رفع صورة</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleBrandAvatarUpload}
+                      className="hidden"
+                    />
+                  </label>
+                </div>
+
+                {/* Quick Presets */}
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  {[
+                    { label: 'الصورة الشخصية الرسمية', url: '/my.jpg' },
+                    { label: 'صورة البورتريه الجديدة', url: '/drama_hero.png' },
+                    { label: 'الصورة الكلاسيكية المفرغة', url: '/my_transparent.png' },
+                  ].map((preset) => (
+                    <button
+                      key={preset.url}
+                      type="button"
+                      onClick={() => setBrandForm({ ...brandForm, topAvatarUrl: preset.url })}
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-mono border transition-all ${
+                        brandForm.topAvatarUrl === preset.url
+                          ? 'bg-cyan-500/20 border-cyan-400 text-cyan-300'
+                          : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      {preset.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* 2. Names (En & Ar) */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-mono text-slate-300 mb-1">الاسم بالإنجليزية (English Name):</label>
+                  <input
+                    type="text"
+                    value={brandForm.name}
+                    onChange={(e) => setBrandForm({ ...brandForm, name: e.target.value })}
+                    placeholder="Amr Atef Imam Kandel"
+                    className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white text-xs font-mono focus:border-cyan-500 outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-mono text-slate-300 mb-1">الاسم بالعربية (Arabic Name):</label>
+                  <input
+                    type="text"
+                    value={brandForm.nameAr}
+                    onChange={(e) => setBrandForm({ ...brandForm, nameAr: e.target.value })}
+                    placeholder="عمرو عاطف إمام قنديل"
+                    className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white text-xs focus:border-cyan-500 outline-none"
+                  />
+                </div>
+              </div>
+
+              {/* 3. Titles (En & Ar) */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-mono text-slate-300 mb-1">المسمى الوظيفي (English Title):</label>
+                  <input
+                    type="text"
+                    value={brandForm.title}
+                    onChange={(e) => setBrandForm({ ...brandForm, title: e.target.value })}
+                    placeholder=".NET Backend Developer"
+                    className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white text-xs font-mono focus:border-cyan-500 outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-mono text-slate-300 mb-1">المسمى الوظيفي (Arabic Title):</label>
+                  <input
+                    type="text"
+                    value={brandForm.titleAr}
+                    onChange={(e) => setBrandForm({ ...brandForm, titleAr: e.target.value })}
+                    placeholder="مطور نظم خلفية .NET"
+                    className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white text-xs focus:border-cyan-500 outline-none"
+                  />
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex items-center justify-between pt-2">
+                <button
+                  type="button"
+                  onClick={() => setIsBrandModalOpen(false)}
+                  className="px-4 py-2 rounded-xl border border-slate-800 text-slate-400 hover:text-white text-xs font-mono transition-colors"
+                >
+                  إلغاء
+                </button>
+
+                <button
+                  type="submit"
+                  className="px-6 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-white font-bold text-xs flex items-center gap-2 shadow-[0_0_15px_rgba(56,189,248,0.3)] transition-all"
+                >
+                  {brandSuccess ? (
+                    <>
+                      <CheckCircle2 className="w-4 h-4 text-white" />
+                      <span>تم الحفظ والتطبيق!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Save className="w-4 h-4" />
+                      <span>حفظ وتطبيق على الموقع</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

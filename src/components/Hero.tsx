@@ -19,9 +19,19 @@ export const Hero: React.FC = () => {
   return (
     <VoidEmergence className="overflow-hidden">
       <section id="hero" className="relative min-h-[92vh] pt-24 sm:pt-32 pb-16 sm:pb-24 flex items-center justify-center">
-        {/* Background Soft Lighting Glows */}
-        <div className="absolute top-1/4 -right-10 w-[350px] sm:w-[500px] h-[350px] sm:h-[500px] bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none" />
-        <div className="absolute bottom-10 -left-10 w-[350px] sm:w-[500px] h-[350px] sm:h-[500px] bg-indigo-500/10 rounded-full blur-[120px] pointer-events-none" />
+        {/* Background Soft Lighting Glows dynamically tinted from Avatar colors */}
+        <div 
+          style={{
+            background: 'radial-gradient(circle, rgba(var(--theme-primary-rgb, 56, 189, 248), 0.16) 0%, transparent 70%)'
+          }}
+          className="absolute top-1/4 -right-10 w-[350px] sm:w-[500px] h-[350px] sm:h-[500px] rounded-full blur-[120px] pointer-events-none" 
+        />
+        <div 
+          style={{
+            background: 'radial-gradient(circle, rgba(var(--theme-secondary-rgb, 99, 102, 241), 0.14) 0%, transparent 70%)'
+          }}
+          className="absolute bottom-10 -left-10 w-[350px] sm:w-[500px] h-[350px] sm:h-[500px] rounded-full blur-[120px] pointer-events-none" 
+        />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
           {/* Left Column: Intro & Info */}
@@ -137,7 +147,7 @@ export const Hero: React.FC = () => {
             transition={{ duration: 0.55, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
             className="lg:col-span-5 flex justify-center items-center z-10 order-1 lg:order-2"
           >
-            <InteractiveAvatar imageSrc="/my_transparent.png" />
+            <InteractiveAvatar imageSrc={profile.heroAvatarUrl || "/drama_hero.png"} />
           </motion.div>
         </div>
       </section>

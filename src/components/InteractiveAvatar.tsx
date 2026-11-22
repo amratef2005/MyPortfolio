@@ -7,9 +7,10 @@ interface InteractiveAvatarProps {
 }
 
 export const InteractiveAvatar: React.FC<InteractiveAvatarProps> = ({ 
-  imageSrc = "/my_transparent.png" 
+  imageSrc
 }) => {
   const { lang, profile } = usePortfolio();
+  const currentSrc = imageSrc || profile.heroAvatarUrl || "/drama_hero.png";
   const isEn = lang === 'en';
   const containerRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
@@ -88,22 +89,24 @@ export const InteractiveAvatar: React.FC<InteractiveAvatarProps> = ({
           }}
           className="relative w-full h-full flex flex-col items-center justify-center"
         >
-          {/* Ambient Glowing Spotlight Behind Silhouette */}
+          {/* Ambient Glowing Spotlight Behind Silhouette dynamically tinted */}
           <motion.div 
             style={{
               x: auraX,
               y: auraY,
               transform: 'translateZ(-20px)',
+              background: 'radial-gradient(circle, rgba(var(--theme-primary-rgb, 56, 189, 248), 0.32) 0%, rgba(var(--theme-secondary-rgb, 99, 102, 241), 0.22) 55%, transparent 75%)'
             }}
-            className="absolute w-72 sm:w-84 h-72 sm:h-84 rounded-full bg-gradient-to-tr from-cyan-500/25 via-blue-600/20 to-indigo-500/20 blur-[75px] pointer-events-none animate-pulse-glow" 
+            className="absolute w-72 sm:w-84 h-72 sm:h-84 rounded-full blur-[75px] pointer-events-none animate-pulse-glow" 
           />
 
           {/* Rotating Cyber Orbital Ring Framing the Portrait */}
           <motion.div 
             style={{
               transform: 'translateZ(10px)',
+              borderColor: 'rgba(var(--theme-primary-rgb, 56, 189, 248), 0.25)'
             }}
-            className="absolute w-64 sm:w-76 h-64 sm:h-76 rounded-full border border-dashed border-cyan-500/20 pointer-events-none animate-spin-slow"
+            className="absolute w-64 sm:w-76 h-64 sm:h-76 rounded-full border border-dashed pointer-events-none animate-spin-slow"
           />
 
           {/* The Silhouette Image with Seamless Bottom Fade */}
@@ -119,9 +122,15 @@ export const InteractiveAvatar: React.FC<InteractiveAvatarProps> = ({
             className="relative w-[320px] sm:w-[380px] h-[360px] sm:h-[420px] flex items-center justify-center pointer-events-none"
           >
             <img
-              src={imageSrc}
+              src={currentSrc}
               alt={isEn ? profile.name : profile.nameAr}
-              className="w-full h-full object-contain filter drop-shadow-[0_20px_35px_rgba(0,0,0,0.9)] drop-shadow-[0_0_25px_rgba(56,189,248,0.25)]"
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = "/drama_hero.png";
+              }}
+              style={{
+                filter: 'drop-shadow(0 20px 35px rgba(0,0,0,0.9)) drop-shadow(0 0 25px rgba(var(--theme-primary-rgb, 56, 189, 248), 0.3))'
+              }}
+              className="w-full h-full object-contain"
               loading="eager"
             />
           </motion.div>

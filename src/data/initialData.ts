@@ -18,6 +18,8 @@ export const initialProfile: ProfileInfo = {
   whatsapp: "https://wa.me/?text=Hello%20Amr%20Atef",
   resumeUrl: "/Amr_Atef_Resume.pdf",
   topAvatarUrl: "/my.jpg",
+  heroAvatarUrl: "/drama_hero.png",
+  autoExtractColors: true,
   yearsOfExperience: 2,
   completedProjects: 10,
   adminUsername: "admin",

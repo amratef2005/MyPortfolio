@@ -22,10 +22,10 @@ export const Navbar: React.FC = () => {
         <a href="#hero" className="flex items-center gap-2.5 group">
           <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl overflow-hidden bg-gradient-to-tr from-cyan-500 to-indigo-600 p-0.5 shadow-[0_0_15px_rgba(56,189,248,0.35)] group-hover:shadow-[0_0_22px_rgba(56,189,248,0.6)] transition-all shrink-0">
             <img 
-              src="/my.jpg" 
+              src={profile.topAvatarUrl || profile.heroAvatarUrl || "/my.jpg"} 
               alt={profile.name} 
               onError={(e) => {
-                (e.target as HTMLImageElement).src = "/my_transparent.png";
+                (e.target as HTMLImageElement).src = "/drama_hero.png";
               }}
               className="w-full h-full object-cover object-top rounded-[10px]" 
             />

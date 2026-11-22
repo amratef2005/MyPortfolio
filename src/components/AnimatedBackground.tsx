@@ -67,13 +67,31 @@ export const AnimatedBackground: React.FC = () => {
       {/* Gentle Interactive Mouse Follower Glow (Direct GPU transform) */}
       <div
         ref={glowRef}
-        className="absolute top-0 left-0 w-[420px] h-[420px] rounded-full bg-gradient-to-tr from-cyan-500/10 via-sky-500/6 to-indigo-500/6 blur-[90px] opacity-0 transition-opacity duration-500 pointer-events-none will-change-transform"
+        style={{
+          background: 'radial-gradient(circle, rgba(var(--theme-primary-rgb, 56, 189, 248), 0.14) 0%, rgba(var(--theme-secondary-rgb, 99, 102, 241), 0.08) 55%, transparent 75%)'
+        }}
+        className="absolute top-0 left-0 w-[440px] h-[440px] rounded-full blur-[90px] opacity-0 transition-opacity duration-500 pointer-events-none will-change-transform"
       />
 
       {/* Ambient Aurora Glows */}
-      <div className="aurora-orb aurora-orb-1 absolute -top-[10%] -right-[5%] w-[480px] sm:w-[650px] h-[480px] sm:h-[650px] rounded-full bg-gradient-to-br from-cyan-500/14 via-sky-500/8 to-transparent blur-[80px] sm:blur-[110px] will-change-transform" />
-      <div className="aurora-orb aurora-orb-2 absolute top-[28%] -left-[10%] w-[450px] sm:w-[600px] h-[450px] sm:h-[600px] rounded-full bg-gradient-to-tr from-indigo-600/14 via-purple-500/8 to-transparent blur-[80px] sm:blur-[120px] will-change-transform" />
-      <div className="aurora-orb aurora-orb-3 absolute top-[55%] -right-[8%] w-[420px] sm:w-[550px] h-[420px] sm:h-[550px] rounded-full bg-gradient-to-bl from-teal-500/10 via-cyan-400/6 to-transparent blur-[70px] sm:blur-[100px] will-change-transform" />
+      <div 
+        style={{
+          background: 'radial-gradient(circle, rgba(var(--theme-primary-rgb, 56, 189, 248), 0.15) 0%, transparent 70%)'
+        }}
+        className="aurora-orb aurora-orb-1 absolute -top-[10%] -right-[5%] w-[480px] sm:w-[650px] h-[480px] sm:h-[650px] rounded-full blur-[80px] sm:blur-[110px] will-change-transform" 
+      />
+      <div 
+        style={{
+          background: 'radial-gradient(circle, rgba(var(--theme-secondary-rgb, 99, 102, 241), 0.15) 0%, transparent 70%)'
+        }}
+        className="aurora-orb aurora-orb-2 absolute top-[28%] -left-[10%] w-[450px] sm:w-[600px] h-[450px] sm:h-[600px] rounded-full blur-[80px] sm:blur-[120px] will-change-transform" 
+      />
+      <div 
+        style={{
+          background: 'radial-gradient(circle, rgba(var(--theme-accent-rgb, 6, 182, 212), 0.12) 0%, transparent 70%)'
+        }}
+        className="aurora-orb aurora-orb-3 absolute top-[55%] -right-[8%] w-[420px] sm:w-[550px] h-[420px] sm:h-[550px] rounded-full blur-[70px] sm:blur-[100px] will-change-transform" 
+      />
 
       {/* Apple-style Frosted Micro-Dot Mesh */}
       <div className="absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.06)_1px,transparent_1px)] [background-size:28px_28px] opacity-60" />

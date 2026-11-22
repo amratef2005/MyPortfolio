@@ -1,8 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { ProfileInfo, Project, Certificate, SkillCategory, ContactMessage } from '../types';
 import { initialProfile, initialProjects, initialCertificates, initialSkillCategories } from '../data/initialData';
+import { extractColorsFromImage, applyThemeColors } from '../utils/colorExtractor';
 
-const DATA_SEED_KEY = 'portfolio_seed_v4';
+const DATA_SEED_KEY = 'portfolio_seed_v5';
 
 interface PortfolioContextType {
   profile: ProfileInfo;
@@ -69,7 +70,12 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     try {
       const parsed = JSON.parse(saved);
       if (parsed && typeof parsed === 'object') {
-        return { ...initialProfile, ...parsed };
+        return {
+          ...initialProfile,
+          ...parsed,
+          heroAvatarUrl: parsed.heroAvatarUrl || initialProfile.heroAvatarUrl || '/drama_hero.png',
+          autoExtractColors: parsed.autoExtractColors !== undefined ? parsed.autoExtractColors : true
+        };
       }
       return initialProfile;
     } catch {
@@ -236,6 +242,19 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       : `${profile.name || 'Amr Atef'} | .NET Backend Developer`;
     localStorage.setItem('portfolio_lang', lang);
   }, [lang, profile]);
+
+  // Adaptive Color Theme Sync from Avatar Image
+  useEffect(() => {
+    if (profile.autoExtractColors !== false) {
+      if (profile.extractedColors && profile.extractedColors.primary) {
+        applyThemeColors(profile.extractedColors as any);
+      }
+      const avatarSrc = profile.heroAvatarUrl || profile.topAvatarUrl || '/drama_hero.png';
+      extractColorsFromImage(avatarSrc).then(palette => {
+        applyThemeColors(palette);
+      });
+    }
+  }, [profile.heroAvatarUrl, profile.topAvatarUrl, profile.autoExtractColors, profile.extractedColors]);
 
   // Auth methods
   const login = (username: string, password?: string) => {
