@@ -18,21 +18,16 @@ export const App: React.FC = () => {
     }
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
 
-    // Subtle mouse position tracking for glass card spotlights
+    // High-performance spotlight: ONLY compute for the card actively hovered (Zero reflow on scroll)
     const handleMouseMove = (e: MouseEvent) => {
-      const cards = document.querySelectorAll<HTMLElement>('.glass-panel, .glass-card, .ios-glass');
-      cards.forEach((card) => {
+      const target = e.target as HTMLElement | null;
+      if (!target) return;
+      const card = target.closest<HTMLElement>('.glass-panel, .glass-card, .ios-glass');
+      if (card) {
         const rect = card.getBoundingClientRect();
-        if (
-          e.clientX >= rect.left - 40 &&
-          e.clientX <= rect.right + 40 &&
-          e.clientY >= rect.top - 40 &&
-          e.clientY <= rect.bottom + 40
-        ) {
-          card.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
-          card.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
-        }
-      });
+        card.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
+        card.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
+      }
     };
 
     window.addEventListener('mousemove', handleMouseMove, { passive: true });
@@ -42,7 +37,7 @@ export const App: React.FC = () => {
   return (
     <PortfolioProvider>
       <div className="relative min-h-screen text-slate-100 selection:bg-cyan-500/30 selection:text-cyan-200">
-        {/* Subtle Living Animated Ambient Background */}
+        {/* Living Animated Ambient Background (Direct GPU Driven) */}
         <AnimatedBackground />
 
         {/* Navigation Bar */}

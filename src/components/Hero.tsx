@@ -19,16 +19,16 @@ export const Hero: React.FC = () => {
   return (
     <VoidEmergence className="overflow-hidden">
       <section id="hero" className="relative min-h-[92vh] pt-24 sm:pt-32 pb-16 sm:pb-24 flex items-center justify-center">
-        {/* Background Soft Lighting Glows with Void Fade */}
-        <div className="absolute top-1/4 -right-10 w-[350px] sm:w-[550px] h-[350px] sm:h-[550px] bg-cyan-500/10 rounded-full blur-[140px] pointer-events-none" />
-        <div className="absolute bottom-10 -left-10 w-[350px] sm:w-[550px] h-[350px] sm:h-[550px] bg-indigo-500/10 rounded-full blur-[140px] pointer-events-none" />
+        {/* Background Soft Lighting Glows */}
+        <div className="absolute top-1/4 -right-10 w-[350px] sm:w-[500px] h-[350px] sm:h-[500px] bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-10 -left-10 w-[350px] sm:w-[500px] h-[350px] sm:h-[500px] bg-indigo-500/10 rounded-full blur-[120px] pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
           {/* Left Column: Intro & Info */}
           <motion.div 
-            initial={{ opacity: 0, x: -30 }}
+            initial={{ opacity: 0, x: -25 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 1.1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.5, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
             className="lg:col-span-7 flex flex-col gap-5 sm:gap-6 text-start z-10 order-2 lg:order-1"
           >
             {/* Status Badge */}
@@ -115,11 +115,11 @@ export const Hero: React.FC = () => {
             </div>
           </motion.div>
 
-          {/* Right Column: 3D Interactive Avatar with Void Emergence */}
+          {/* Right Column: 3D Interactive Avatar with Fast Void Emergence */}
           <motion.div 
-            initial={{ opacity: 0, scale: 0.88, filter: 'blur(16px)' }}
-            animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
-            transition={{ duration: 1.4, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            initial={{ opacity: 0, scale: 0.92 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.55, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
             className="lg:col-span-5 flex justify-center items-center z-10 order-1 lg:order-2"
           >
             <InteractiveAvatar imageSrc="/my_transparent.png" />

@@ -1,16 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 /**
- * AnimatedBackground
- * Provides an organic, elegant ambient background with subtle flowing colors,
- * an Apple-inspired frosted grid texture, and a gentle mouse follower ambient light.
+ * AnimatedBackground (High-Performance GPU Transform):
+ * Uses direct DOM transform updates via requestAnimationFrame to achieve
+ * a solid 60-120 FPS with ZERO React component re-renders.
  */
 export const AnimatedBackground: React.FC = () => {
-  const [mousePos, setMousePos] = useState({ x: -1000, y: -1000 });
-  const [isPointerActive, setIsPointerActive] = useState(false);
+  const glowRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Only track fine pointer devices (mice / trackpads), not touch screens
     if (typeof window === 'undefined' || !window.matchMedia('(pointer: fine)').matches) {
       return;
     }
@@ -20,22 +18,30 @@ export const AnimatedBackground: React.FC = () => {
     let targetY = -1000;
     let currentX = -1000;
     let currentY = -1000;
+    let isVisible = false;
 
     const onMouseMove = (e: MouseEvent) => {
       targetX = e.clientX;
       targetY = e.clientY;
-      if (!isPointerActive) setIsPointerActive(true);
+      if (!isVisible && glowRef.current) {
+        isVisible = true;
+        glowRef.current.style.opacity = '1';
+      }
     };
 
     const onMouseLeave = () => {
-      setIsPointerActive(false);
+      isVisible = false;
+      if (glowRef.current) {
+        glowRef.current.style.opacity = '0';
+      }
     };
 
-    // Smooth lerp (0.07) for graceful, buttery trailing light
     const updatePosition = () => {
-      currentX += (targetX - currentX) * 0.07;
-      currentY += (targetY - currentY) * 0.07;
-      setMousePos({ x: Math.round(currentX), y: Math.round(currentY) });
+      currentX += (targetX - currentX) * 0.12;
+      currentY += (targetY - currentY) * 0.12;
+      if (glowRef.current) {
+        glowRef.current.style.transform = `translate3d(${Math.round(currentX)}px, ${Math.round(currentY)}px, 0) translate(-50%, -50%)`;
+      }
       frameId = requestAnimationFrame(updatePosition);
     };
 
@@ -48,7 +54,7 @@ export const AnimatedBackground: React.FC = () => {
       document.removeEventListener('mouseleave', onMouseLeave);
       cancelAnimationFrame(frameId);
     };
-  }, [isPointerActive]);
+  }, []);
 
   return (
     <div
@@ -58,30 +64,16 @@ export const AnimatedBackground: React.FC = () => {
       {/* Base Deep Midnight Canvas */}
       <div className="absolute inset-0 bg-[#030712]" />
 
-      {/* Gentle Interactive Mouse Follower Glow (Subtle and Soft) */}
+      {/* Gentle Interactive Mouse Follower Glow (Direct GPU transform) */}
       <div
-        className="absolute w-[460px] h-[460px] rounded-full bg-gradient-to-tr from-cyan-500/10 via-sky-500/6 to-indigo-500/6 blur-[110px] -translate-x-1/2 -translate-y-1/2 will-change-transform transition-opacity duration-700 pointer-events-none"
-        style={{
-          left: `${mousePos.x}px`,
-          top: `${mousePos.y}px`,
-          opacity: isPointerActive ? 1 : 0,
-        }}
+        ref={glowRef}
+        className="absolute top-0 left-0 w-[420px] h-[420px] rounded-full bg-gradient-to-tr from-cyan-500/10 via-sky-500/6 to-indigo-500/6 blur-[90px] opacity-0 transition-opacity duration-500 pointer-events-none will-change-transform"
       />
 
-      {/* Aurora Blob 1: Electric Cyan & Sky Blue */}
-      <div className="aurora-orb aurora-orb-1 absolute -top-[10%] -right-[5%] w-[500px] sm:w-[720px] h-[500px] sm:h-[720px] rounded-full bg-gradient-to-br from-cyan-500/16 via-sky-500/10 to-transparent blur-[90px] sm:blur-[130px] will-change-transform" />
-
-      {/* Aurora Blob 2: Vibrant Indigo & Royal Violet */}
-      <div className="aurora-orb aurora-orb-2 absolute top-[28%] -left-[10%] w-[480px] sm:w-[680px] h-[480px] sm:h-[680px] rounded-full bg-gradient-to-tr from-indigo-600/16 via-purple-500/10 to-transparent blur-[90px] sm:blur-[140px] will-change-transform" />
-
-      {/* Aurora Blob 3: Mint Teal & Aqua Glow */}
-      <div className="aurora-orb aurora-orb-3 absolute top-[55%] -right-[8%] w-[450px] sm:w-[640px] h-[450px] sm:h-[640px] rounded-full bg-gradient-to-bl from-teal-500/12 via-cyan-400/8 to-transparent blur-[80px] sm:blur-[120px] will-change-transform" />
-
-      {/* Aurora Blob 4: Deep Sapphire & Electric Blue */}
-      <div className="aurora-orb aurora-orb-4 absolute bottom-[-5%] left-[15%] w-[500px] sm:w-[700px] h-[500px] sm:h-[700px] rounded-full bg-gradient-to-t from-blue-600/14 via-indigo-500/8 to-transparent blur-[90px] sm:blur-[130px] will-change-transform" />
-
-      {/* Aurora Blob 5: Subtle Magenta & Pink Sheen */}
-      <div className="aurora-orb aurora-orb-5 absolute top-[12%] left-[25%] w-[380px] sm:w-[500px] h-[380px] sm:h-[500px] rounded-full bg-gradient-to-tr from-fuchsia-500/8 via-pink-500/5 to-transparent blur-[100px] sm:blur-[130px] will-change-transform" />
+      {/* Ambient Aurora Glows */}
+      <div className="aurora-orb aurora-orb-1 absolute -top-[10%] -right-[5%] w-[480px] sm:w-[650px] h-[480px] sm:h-[650px] rounded-full bg-gradient-to-br from-cyan-500/14 via-sky-500/8 to-transparent blur-[80px] sm:blur-[110px] will-change-transform" />
+      <div className="aurora-orb aurora-orb-2 absolute top-[28%] -left-[10%] w-[450px] sm:w-[600px] h-[450px] sm:h-[600px] rounded-full bg-gradient-to-tr from-indigo-600/14 via-purple-500/8 to-transparent blur-[80px] sm:blur-[120px] will-change-transform" />
+      <div className="aurora-orb aurora-orb-3 absolute top-[55%] -right-[8%] w-[420px] sm:w-[550px] h-[420px] sm:h-[550px] rounded-full bg-gradient-to-bl from-teal-500/10 via-cyan-400/6 to-transparent blur-[70px] sm:blur-[100px] will-change-transform" />
 
       {/* Apple-style Frosted Micro-Dot Mesh */}
       <div className="absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.06)_1px,transparent_1px)] [background-size:28px_28px] opacity-60" />
