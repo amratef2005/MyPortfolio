@@ -31,23 +31,70 @@ export const Contact: React.FC = () => {
   const [copiedWhatsApp, setCopiedWhatsApp] = useState(false);
   const [copiedEmail, setCopiedEmail] = useState(false);
   const [copiedLinkedIn, setCopiedLinkedIn] = useState(false);
+  const [copiedLocation, setCopiedLocation] = useState(false);
 
-  const copyWhatsApp = () => {
+  const copyWhatsApp = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
     navigator.clipboard.writeText(profile.phone || 'amratefkandel');
     setCopiedWhatsApp(true);
     setTimeout(() => setCopiedWhatsApp(false), 2000);
   };
 
-  const copyEmail = () => {
+  const copyEmail = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
     navigator.clipboard.writeText(profile.email);
     setCopiedEmail(true);
     setTimeout(() => setCopiedEmail(false), 2000);
   };
 
-  const copyLinkedIn = () => {
+  const copyLinkedIn = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
     navigator.clipboard.writeText(profile.linkedin);
     setCopiedLinkedIn(true);
     setTimeout(() => setCopiedLinkedIn(false), 2000);
+  };
+
+  const copyLocation = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    const locText = lang === 'ar' 
+      ? (profile.locationAr || 'الإسماعيلية، مصر')
+      : (profile.location || 'Ismailia, Egypt');
+    navigator.clipboard.writeText(locText);
+    setCopiedLocation(true);
+    setTimeout(() => setCopiedLocation(false), 2000);
+  };
+
+  const handleAvailabilityClick = () => {
+    const input = document.getElementById('contact-name-input') || document.getElementById('contact-message-input');
+    if (input) {
+      input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      input.focus();
+    }
+  };
+
+  const handleEmailClick = () => {
+    window.location.href = `mailto:${profile.email}`;
+  };
+
+  const handleWhatsAppClick = () => {
+    if (profile.whatsapp && profile.whatsapp.startsWith('http')) {
+      window.open(profile.whatsapp, '_blank', 'noopener,noreferrer');
+    } else {
+      const clean = (profile.whatsapp || profile.phone || '').replace(/[^0-9]/g, '');
+      const url = clean ? `https://wa.me/${clean}` : `https://wa.me/?text=Hello%20Amr%20Atef`;
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
+  };
+
+  const handleLinkedInClick = () => {
+    if (profile.linkedin) {
+      window.open(profile.linkedin, '_blank', 'noopener,noreferrer');
+    }
+  };
+
+  const handleLocationClick = () => {
+    const query = encodeURIComponent(profile.location || 'Ismailia, Egypt');
+    window.open(`https://www.google.com/maps/search/?api=1&query=${query}`, '_blank', 'noopener,noreferrer');
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -112,64 +159,99 @@ export const Contact: React.FC = () => {
 
               {/* Current Work Availability Live Pill */}
               {profile.showAvailabilityBadge !== false && (
-                <div className={`p-3.5 rounded-2xl border flex items-center gap-3 ${
-                  (profile.availabilityStatus || 'available') === 'available'
-                    ? 'bg-emerald-950/20 border-emerald-500/30 text-emerald-300'
-                    : (profile.availabilityStatus === 'busy'
-                      ? 'bg-amber-950/20 border-amber-500/30 text-amber-300'
-                      : 'bg-slate-900/70 border-slate-800 text-slate-400')
-                }`}>
-                  <span className="relative flex h-2.5 w-2.5 shrink-0">
-                    {(profile.availabilityStatus || 'available') === 'available' && (
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                    )}
-                    <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${
-                      (profile.availabilityStatus || 'available') === 'available'
-                        ? 'bg-emerald-400'
-                        : (profile.availabilityStatus === 'busy' ? 'bg-amber-400' : 'bg-slate-500')
-                    }`} />
-                  </span>
-                  <div className="flex-1">
-                    <span className="block text-[10px] font-mono text-slate-400 uppercase tracking-wider">
-                      {lang === 'ar' ? 'الحالة الحالية للتوفر' : 'Current Status'}
+                <div 
+                  onClick={handleAvailabilityClick}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleAvailabilityClick(); } }}
+                  title={lang === 'ar' ? 'انقر للتواصل المباشر عبر النموذج' : 'Click to scroll to message form'}
+                  className={`group p-3.5 rounded-2xl border flex items-center justify-between gap-3 cursor-pointer select-none transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg active:scale-[0.985] ${
+                    (profile.availabilityStatus || 'available') === 'available'
+                      ? 'bg-emerald-950/20 border-emerald-500/30 text-emerald-300 hover:border-emerald-500/60 hover:shadow-emerald-500/10'
+                      : (profile.availabilityStatus === 'busy'
+                        ? 'bg-amber-950/20 border-amber-500/30 text-amber-300 hover:border-amber-500/60 hover:shadow-amber-500/10'
+                        : 'bg-slate-900/70 border-slate-800 text-slate-400 hover:border-slate-700 hover:bg-slate-800/80')
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="relative flex h-2.5 w-2.5 shrink-0">
+                      {(profile.availabilityStatus || 'available') === 'available' && (
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                      )}
+                      <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${
+                        (profile.availabilityStatus || 'available') === 'available'
+                          ? 'bg-emerald-400'
+                          : (profile.availabilityStatus === 'busy' ? 'bg-amber-400' : 'bg-slate-500')
+                      }`} />
                     </span>
-                    <span className="text-xs sm:text-sm font-bold text-white">
-                      {lang === 'ar'
-                        ? (profile.availabilityNoteAr || ((profile.availabilityStatus || 'available') === 'available' ? 'جاهز للمشاريع والتحديات الهندسية' : (profile.availabilityStatus === 'busy' ? 'مشغول حالياً بمشاريع قائمة' : 'غير متاح حالياً')))
-                        : (profile.availabilityNoteEn || ((profile.availabilityStatus || 'available') === 'available' ? 'Available for High-Impact Roles' : (profile.availabilityStatus === 'busy' ? 'Busy with Ongoing Projects' : 'Currently Unavailable')))}
-                    </span>
+                    <div>
+                      <span className="block text-[10px] font-mono text-slate-400 uppercase tracking-wider">
+                        {lang === 'ar' ? 'الحالة الحالية للتوفر' : 'Current Status'}
+                      </span>
+                      <span className="text-xs sm:text-sm font-bold text-white group-hover:text-cyan-300 transition-colors">
+                        {lang === 'ar'
+                          ? (profile.availabilityNoteAr || ((profile.availabilityStatus || 'available') === 'available' ? 'جاهز للمشاريع والتحديات الهندسية' : (profile.availabilityStatus === 'busy' ? 'مشغول حالياً بمشاريع قائمة' : 'غير متاح حالياً')))
+                          : (profile.availabilityNoteEn || ((profile.availabilityStatus || 'available') === 'available' ? 'Available for High-Impact Roles' : (profile.availabilityStatus === 'busy' ? 'Busy with Ongoing Projects' : 'Currently Unavailable')))}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="opacity-0 group-hover:opacity-100 transition-all -translate-x-1 group-hover:translate-x-0 text-slate-400 group-hover:text-cyan-300">
+                    <Send className="w-4 h-4 rotate-45" />
                   </div>
                 </div>
               )}
 
               {/* Email */}
-              <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-900/70 border border-slate-800">
+              <div 
+                onClick={handleEmailClick}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleEmailClick(); } }}
+                title={lang === 'ar' ? 'انقر لفتح البريد الإلكتروني مباشرة' : 'Click to send email directly'}
+                className="group flex items-center justify-between p-4 rounded-2xl bg-slate-900/70 border border-slate-800 hover:border-cyan-500/50 hover:bg-slate-800/80 hover:shadow-[0_0_20px_rgba(6,182,212,0.15)] cursor-pointer select-none transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.985]"
+              >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+                  <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 group-hover:scale-110 group-hover:bg-cyan-500/20 transition-all shrink-0">
                     <Mail className="w-5 h-5" />
                   </div>
                   <div>
                     <span className="block text-xs font-mono text-slate-400">
                       {lang === 'ar' ? 'البريد الإلكتروني' : 'Email'}
                     </span>
-                    <span className="text-xs sm:text-sm font-semibold text-white truncate max-w-[170px] sm:max-w-none block">
+                    <span className="text-xs sm:text-sm font-semibold text-white group-hover:text-cyan-300 transition-colors truncate max-w-[170px] sm:max-w-none block">
                       {profile.email}
                     </span>
                   </div>
                 </div>
-                <button
-                  onClick={copyEmail}
-                  className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
-                  title={lang === 'ar' ? 'نسخ البريد الإلكتروني' : 'Copy Email'}
-                >
-                  {copiedEmail ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
-                </button>
+                <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
+                  <a
+                    href={`mailto:${profile.email}`}
+                    className="p-2 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 transition-all"
+                    title={lang === 'ar' ? 'إرسال بريد إلكتروني' : 'Send Email'}
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                  </a>
+                  <button
+                    onClick={copyEmail}
+                    className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
+                    title={lang === 'ar' ? 'نسخ البريد الإلكتروني' : 'Copy Email'}
+                  >
+                    {copiedEmail ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                  </button>
+                </div>
               </div>
 
               {/* WhatsApp */}
-              <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-900/70 border border-slate-800">
+              <div 
+                onClick={handleWhatsAppClick}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleWhatsAppClick(); } }}
+                title={lang === 'ar' ? 'انقر لفتح محادثة واتساب المباشرة' : 'Click to chat on WhatsApp'}
+                className="group flex items-center justify-between p-4 rounded-2xl bg-slate-900/70 border border-slate-800 hover:border-emerald-500/50 hover:bg-slate-800/80 hover:shadow-[0_0_20px_rgba(16,185,129,0.15)] cursor-pointer select-none transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.985]"
+              >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0 group-hover:scale-110 group-hover:bg-emerald-500/20 transition-all">
                     <WhatsAppIcon className="w-5 h-5" />
                   </div>
                   <div>
@@ -198,23 +280,19 @@ export const Contact: React.FC = () => {
                         </span>
                       )}
                     </div>
-                    <span className="text-xs sm:text-sm font-semibold text-white">
+                    <span className="text-xs sm:text-sm font-semibold text-white group-hover:text-emerald-300 transition-colors">
                       {profile.phone}
                     </span>
                   </div>
                 </div>
-                <div className="flex items-center gap-1.5">
-                  {profile.whatsapp && (
-                    <a
-                      href={profile.whatsapp.startsWith('http') ? profile.whatsapp : `https://wa.me/${profile.whatsapp.replace(/[^0-9]/g, '')}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-2 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 transition-all text-xs font-mono flex items-center gap-1"
-                      title={lang === 'ar' ? 'محادثة مباشرة عبر واتساب' : 'Direct WhatsApp Chat'}
-                    >
-                      <ExternalLink className="w-4 h-4" />
-                    </a>
-                  )}
+                <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
+                  <button
+                    onClick={handleWhatsAppClick}
+                    className="p-2 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 transition-all text-xs font-mono flex items-center gap-1"
+                    title={lang === 'ar' ? 'محادثة مباشرة عبر واتساب' : 'Direct WhatsApp Chat'}
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                  </button>
                   <button
                     onClick={copyWhatsApp}
                     className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
@@ -226,43 +304,88 @@ export const Contact: React.FC = () => {
               </div>
 
               {/* LinkedIn */}
-              <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-900/70 border border-slate-800">
+              <div 
+                onClick={handleLinkedInClick}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleLinkedInClick(); } }}
+                title={lang === 'ar' ? 'انقر لزيارة الملف الشخصي على لينكد إن' : 'Click to visit LinkedIn profile'}
+                className="group flex items-center justify-between p-4 rounded-2xl bg-slate-900/70 border border-slate-800 hover:border-indigo-500/50 hover:bg-slate-800/80 hover:shadow-[0_0_20px_rgba(99,102,241,0.15)] cursor-pointer select-none transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.985]"
+              >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+                  <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 group-hover:scale-110 group-hover:bg-indigo-500/20 transition-all shrink-0">
                     <Linkedin className="w-5 h-5" />
                   </div>
                   <div>
                     <span className="block text-xs font-mono text-slate-400">
                       {lang === 'ar' ? 'لينكد إن' : 'LinkedIn'}
                     </span>
-                    <span className="text-xs sm:text-sm font-semibold text-white">
+                    <span className="text-xs sm:text-sm font-semibold text-white group-hover:text-indigo-300 transition-colors">
                       {lang === 'ar' ? profile.nameAr : profile.name}
                     </span>
                   </div>
                 </div>
-                <button
-                  onClick={copyLinkedIn}
-                  className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
-                  title={lang === 'ar' ? 'نسخ رابط لينكد إن' : 'Copy LinkedIn'}
-                >
-                  {copiedLinkedIn ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
-                </button>
+                <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
+                  {profile.linkedin && (
+                    <a
+                      href={profile.linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-2 rounded-lg bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 transition-all text-xs font-mono flex items-center gap-1"
+                      title={lang === 'ar' ? 'زيارة الملف الشخصي على لينكد إن' : 'Visit LinkedIn Profile'}
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                    </a>
+                  )}
+                  <button
+                    onClick={copyLinkedIn}
+                    className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
+                    title={lang === 'ar' ? 'نسخ رابط لينكد إن' : 'Copy LinkedIn'}
+                  >
+                    {copiedLinkedIn ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                  </button>
+                </div>
               </div>
 
               {/* Location */}
-              <div className="flex items-center gap-3 p-4 rounded-2xl bg-slate-900/50 border border-slate-800/60">
-                <div className="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-slate-400">
-                  <MapPin className="w-5 h-5" />
+              <div 
+                onClick={handleLocationClick}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleLocationClick(); } }}
+                title={lang === 'ar' ? 'انقر لفتح الموقع على خرائط Google' : 'Click to view on Google Maps'}
+                className="group flex items-center justify-between p-4 rounded-2xl bg-slate-900/70 border border-slate-800 hover:border-sky-500/40 hover:bg-slate-800/80 hover:shadow-[0_0_20px_rgba(14,165,233,0.15)] cursor-pointer select-none transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.985]"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400 group-hover:scale-110 group-hover:bg-sky-500/20 transition-all shrink-0">
+                    <MapPin className="w-5 h-5 group-hover:-translate-y-0.5 transition-transform" />
+                  </div>
+                  <div>
+                    <span className="block text-xs font-mono text-slate-400">
+                      {lang === 'ar' ? 'الموقع / الإقامة' : 'Location'}
+                    </span>
+                    <span className="text-xs sm:text-sm font-semibold text-white group-hover:text-sky-300 transition-colors">
+                      {lang === 'ar' 
+                        ? `${profile.locationAr || 'الإسماعيلية، مصر'} (متاح للعمل عن بُعد وحضورياً)` 
+                        : `${profile.location || 'Ismailia, Egypt'} (Available for Remote & On-site)`}
+                    </span>
+                  </div>
                 </div>
-                <div>
-                  <span className="block text-xs font-mono text-slate-400">
-                    {lang === 'ar' ? 'الموقع / الإقامة' : 'Location'}
-                  </span>
-                  <span className="text-xs sm:text-sm font-semibold text-white">
-                    {lang === 'ar' 
-                      ? `${profile.locationAr || 'الإسماعيلية، مصر'} (متاح للعمل عن بُعد وحضورياً)` 
-                      : `${profile.location || 'Ismailia, Egypt'} (Available for Remote & On-site)`}
-                  </span>
+                <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
+                  <button
+                    onClick={handleLocationClick}
+                    className="p-2 rounded-lg bg-sky-500/10 hover:bg-sky-500/20 text-sky-400 border border-sky-500/30 transition-all"
+                    title={lang === 'ar' ? 'فتح الموقع في خرائط Google' : 'Open in Google Maps'}
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={copyLocation}
+                    className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
+                    title={lang === 'ar' ? 'نسخ تفاصيل الموقع' : 'Copy Location'}
+                  >
+                    {copiedLocation ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                  </button>
                 </div>
               </div>
             </div>
@@ -293,6 +416,7 @@ export const Contact: React.FC = () => {
                       {lang === 'ar' ? 'الاسم الكريم' : 'Your Name'}
                     </label>
                     <input
+                      id="contact-name-input"
                       type="text"
                       required
                       value={formData.name}
@@ -335,6 +459,7 @@ export const Contact: React.FC = () => {
                     {lang === 'ar' ? 'تفاصيل الرسالة أو الاستفسار' : 'Message Details'}
                   </label>
                   <textarea
+                    id="contact-message-input"
                     rows={4}
                     required
                     value={formData.message}
