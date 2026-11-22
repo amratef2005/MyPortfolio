@@ -1,119 +1,151 @@
 import { ProfileInfo, Project, Certificate, SkillCategory } from '../types';
 
 export const initialProfile: ProfileInfo = {
-  name: "Amr Atef Imam Kandel",
-  nameAr: "عمرو عاطف إمام قنديل",
+  name: "Amr Atef Imam Mahmoud",
+  nameAr: "عمرو عاطف إمام محمود",
   shortName: "Amr Atef",
   shortNameAr: "عمرو عاطف",
-  title: "Senior .NET & Backend Architect",
-  titleAr: "مهندس نظم خلفية ومعماري .NET 10",
-  bio: "Senior Backend Engineer and Systems Architect specialized in high-performance enterprise systems, Clean Architecture, and Domain-Driven Design (DDD). Extensive experience in .NET 10, CQRS, Multi-Tenancy, PostgreSQL, and distributed caching.",
-  bioAr: "مهندس برمجيات متقدم متخصص في بناء وتصميم الأنظمة الخلفية عالية الأداء والمعمارية النظيفة (Clean Architecture & DDD). خبرة عميقة في .NET 10، أنماط CQRS، تعدد المستأجرين (Multi-Tenancy)، وقواعد بيانات PostgreSQL، والكاش الموزع.",
+  title: ".NET Backend Developer",
+  titleAr: "مطور نظم خلفية .NET",
+  bio: "Computer Science student and .NET Backend Developer with hands-on experience designing and developing scalable backend systems using C# and ASP.NET Core. Experienced in building RESTful APIs, implementing Clean Architecture and CQRS patterns, designing relational databases, and developing secure authentication and authorization mechanisms. Practical experience in multi-tenant SaaS applications, JWT authentication, OAuth 2.0, refresh token rotation, real-time communication using SignalR, and background processing. Collaborates with cross-functional teams, owning backend development and API integration with mobile and frontend applications. Interested in software architecture, backend security, database optimization, and maintainable software systems.",
+  bioAr: "طالب علوم حاسب ومطور نظم خلفية .NET بخبرة عملية في تصميم وتطوير أنظمة خلفية قابلة للتوسع باستخدام C# و ASP.NET Core. خبير في بناء واجهات برمجة التطبيقات RESTful APIs، وتطبيق معمارية Clean Architecture ونمط CQRS، وتصميم قواعد البيانات العلائقية، وتطوير آليات مصادقة وتفويض قوية وآمنة. أمتلك خبرة عملية في تطبيقات SaaS متعددة المستأجرين (Multi-Tenant)، ومصادقة JWT و OAuth 2.0، وتدوير الـ Refresh Tokens، والاتصال اللحظي عبر SignalR، والمعالجة في الخلفية. أتعاون بفاعلية مع الفرق البرمجية المختلفة كمسؤول عن تطوير النظم الخلفية وتكامل الـ APIs مع تطبيقات الموبايل والفرونت إند. مهتم بهندسة البرمجيات، وأمان الأنظمة الخلفية، وتحسين أداء قواعد البيانات، وبناء نظم برمجية مستدامة.",
   email: "amratefkandel@gmail.com",
-  phone: "amratefkandel",
+  phone: "@amratefkandel",
   location: "Ismailia, Egypt",
   locationAr: "الإسماعيلية، مصر",
-  github: "https://github.com/amratef",
-  linkedin: "https://www.linkedin.com/public-profile/settings/?trk=d_flagship3_profile_self_view_public_profile&lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base%3BTY4k9EFtT8yGn8QZz2QzAQ%3D%3D",
+  github: "https://github.com/amratef2005",
+  linkedin: "https://linkedin.com/in/amr-atef-kandel",
   whatsapp: "https://wa.me/?text=Hello%20Amr%20Atef",
   resumeUrl: "/Amr_Atef_Resume.pdf",
   topAvatarUrl: "/my.jpg",
-  yearsOfExperience: 3,
-  completedProjects: 12,
+  yearsOfExperience: 2,
+  completedProjects: 10,
   adminUsername: "admin",
   adminPassword: "admin123",
   adminPin: "1234",
 
   // 1. Work Availability & Presence Status
   availabilityStatus: "available",
-  availabilityNoteAr: "جاهز للمشاريع والتحديات الهندسية",
-  availabilityNoteEn: "Available for High-Impact Roles",
+  availabilityNoteAr: "جاهز للفرص الهندسية والمشاريع المبتكرة",
+  availabilityNoteEn: "Available for High-Impact Backend Roles",
   showAvailabilityBadge: true,
 
   // 2. WhatsApp Live Response Status
   whatsappStatus: "online",
-  whatsappNoteAr: "متاح الآن للرد الفوري",
-  whatsappNoteEn: "Available for immediate reply",
+  whatsappNoteAr: "متاح الآن للرد السريع عبر @amratefkandel",
+  whatsappNoteEn: "Online • Fast Reply (@amratefkandel)",
   showWhatsAppStatus: true,
+
+  // Education & Languages
+  university: "Suez Canal University – Faculty of Science",
+  universityAr: "جامعة قناة السويس – كلية العلوم",
+  degree: "Bachelor of Science (B.Sc.) in Mathematics – Computer Science Program | Fourth Year Student (In Progress)",
+  degreeAr: "بكالوريوس العلوم في الرياضيات وعلوم الحاسب | طالب بالفرقة الرابعة",
+  languages: "Arabic: Native | English: Intermediate",
+  languagesAr: "العربية: لغة أم | الإنجليزية: مستوى متوسط",
+
+  // Teamwork & Collaboration
+  teamwork: [
+    "Worked in development teams of Backend, Mobile, and Frontend developers.",
+    "Took responsibility for backend architecture, API development, and database integration.",
+    "Collaborated with Mobile and Frontend developers to integrate backend services.",
+    "Participated in technical discussions and implementation decisions."
+  ],
+  teamworkAr: [
+    "العمل ضمن فرق تطوير برمجية متكاملة تضم مطوري Backend و Mobile و Frontend.",
+    "تولي مسؤولية معمارية النظام الخلفي، وتطوير الـ APIs، وتكامل قواعد البيانات.",
+    "التعاون المستمر مع مطوري الموبايل والفرونت إند لربط وتكامل الخدمات الخلفية بسلاسة.",
+    "المشاركة الفعالة في النقاشات التقنية واتخاذ القرارات الهندسية ومعايير التطوير."
+  ]
 };
 
 export const initialProjects: Project[] = [
   {
     id: "mot7km-saas",
-    title: "MOT7KM SaaS",
+    title: "Multi-Tenant SaaS ERP & Digital Menu Platform",
     titleAr: "منصة مُتحكِّم (MOT7KM) لإدارة المطاعم والمنيو السحابي",
     tagline: "High-Throughput Multi-Tenant SaaS ERP & Digital QR Menu Backend",
     taglineAr: "نظام ERP سحابي متعدد المستأجرين (Multi-Tenant) ومنيو رقمي فائق السرعة",
-    description: "Enterprise SaaS backend engineered with .NET 10, Clean Architecture, and PostgreSQL via Supabase. Features hybrid OAuth/SMS authentication, sliding session token rotation with reuse detection, and an asynchronous batch-processing queue handling thousands of concurrent QR scans under 20ms.",
-    descriptionAr: "نظام SaaS متكامل لإدارة المطاعم والأنشطة التجارية مبني بـ .NET 10 ومعمارية Clean Architecture مع Supabase PostgreSQL. يحتوي على مصادقة هجينة ونظام جلسات انزلاقية مع كشف تكرار التوكنات، وطابور معالجة دفعات غير متزامن للتعامل مع آلاف زيارات الـ QR بسرعة استجابة أقل من 20 ملي ثانية.",
+    description: "Developed the backend of a multi-tenant SaaS platform for restaurants, cafés, and businesses to manage their digital presence and operations. Designed with Clean Architecture and a Modular Monolith approach, developing RESTful APIs, multi-tenant isolation, JWT/OAuth/OTP authentication, sliding session management with refresh token rotation and SHA-256 hashing, dashboard APIs, SignalR real-time updates, and background batch processing.",
+    descriptionAr: "تطوير النظام الخلفي لمنصة SaaS متعددة المستأجرين لإدارة المطاعم والكافيهات وتنظيم حضورهم وعملياتهم الرقمية. تم بناؤه بمعمارية Clean Architecture ونمط Modular Monolith، مع عزل بيانات المستأجرين، ومصادقة هجينة (JWT, OAuth, OTP)، وتدوير الجلسات الانزلاقية بتشفير SHA-256، وتحديثات لحظية عبر SignalR، ومعالجة دفعات خلفية فائقة السرعة.",
     category: "Cloud & SaaS",
     featured: true,
-    badge: "Enterprise SaaS • Latency < 20ms",
-    badgeAr: "نظام سحابي مؤسسي (SaaS) • زمن استجابة < 20ms",
-    architecture: ["Clean Architecture", "Modular Monolith", "Multi-Tenancy (IMustHaveTenant)", "Sliding Session Rotation", "Batch Queue Worker"],
-    architectureAr: ["معمارية نظيفة (Clean Architecture)", "نواة موديولار موحدة (Modular Monolith)", "تعدد المستأجرين (Multi-Tenancy)", "تدوير الجلسات الانزلاقية (Sliding Tokens)", "طابور معالجة الدفعات (Batch Queue)"],
-    technologies: [".NET 10", "C# 13/14", "EF Core", "PostgreSQL", "Supabase", "SignalR", "FluentValidation", "Docker", "MonsterASP CI/CD"],
+    badge: "Multi-Tenant SaaS • Backend Developer",
+    badgeAr: "نظام SaaS متعدد المستأجرين • مطور نظم خلفية",
+    architecture: ["Clean Architecture", "Modular Monolith", "Multi-Tenancy & Tenant Isolation", "Refresh Token Rotation (SHA-256)", "Background Batch Processing"],
+    architectureAr: ["معمارية نظيفة (Clean Architecture)", "نواة موديولار موحدة (Modular Monolith)", "تعدد المستأجرين وعزل البيانات (Multi-Tenancy)", "تدوير التوكنات وتشفير SHA-256", "معالجة الدفعات في الخلفية"],
+    technologies: ["C#", ".NET 10", "ASP.NET Core", "PostgreSQL", "Entity Framework Core", "Supabase", "SignalR", "GitHub Actions", "IIS"],
     metrics: [
-      { label: "Menu Response Latency", labelAr: "زمن استجابة المنيو", value: "< 20ms", valueAr: "< 20 ملي ثانية" },
-      { label: "Security Model", labelAr: "نموذج الأمان", value: "Sliding Token Rotation", valueAr: "جلسات انزلاقية مشفرة" },
-      { label: "Code Reliability", labelAr: "استقرار الكود البرمجي", value: "0 Errors / 0 Warnings", valueAr: "0 أخطاء / 0 تحذيرات" },
-      { label: "Real-time Hub", labelAr: "قناة الاتصال اللحظي", value: "SignalR Active Hub", valueAr: "اتصال SignalR حي ومباشر" }
+      { label: "Architecture", labelAr: "المعمارية الأساسية", value: "Modular Monolith", valueAr: "نواة موديولار" },
+      { label: "Security & Tokens", labelAr: "الأمان والجلسات", value: "SHA-256 Rotation", valueAr: "تدوير التوكنات بـ SHA-256" },
+      { label: "Multi-Tenancy", labelAr: "عزل المستأجرين", value: "Tenant Isolation", valueAr: "عزل آمن للبيانات" },
+      { label: "Real-time & Batch", labelAr: "الاتصال اللحظي والدفعات", value: "SignalR + Batch Queue", valueAr: "SignalR + معالجة دفعات" }
     ],
     features: [
-      "Architected high-throughput multi-tenant SaaS backend using .NET 10, Clean Architecture, and PostgreSQL via Supabase.",
-      "Implemented hybrid authentication (OAuth Google/Facebook + Phone OTP) with 15-minute Access Tokens and 30-day sliding expiration Refresh Tokens.",
-      "Engineered cryptographic SHA-256 token rotation with family reuse breach detection and automatic multi-tenant data isolation (IMustHaveTenant & IDOR prevention).",
-      "Designed asynchronous in-memory batch processing queue (IProductViewQueue) processing thousands of concurrent QR menu views under 20ms without database throttling.",
-      "Built comprehensive admin dashboard overview service (600+ LOC) with real-time active kitchen order counts, branch telemetry, and AI-driven promotions engine.",
-      "Established automated CI/CD pipeline via GitHub Actions targeting MonsterASP with zero-downtime file deployment via app_offline.htm."
+      "Designed and implemented Clean Architecture with a Modular Monolith approach.",
+      "Developed RESTful APIs for business profiles, branches, menus, categories, products, and promotional campaigns.",
+      "Implemented multi-tenancy and tenant isolation to ensure secure separation of business data.",
+      "Developed authentication mechanisms supporting JWT, OAuth, and phone OTP.",
+      "Implemented secure session management using refresh token rotation, sliding expiration, and token reuse detection.",
+      "Applied SHA-256 hashing for refresh token storage.",
+      "Developed administrative dashboard APIs with business analytics and performance insights.",
+      "Integrated SignalR for real-time dashboard updates.",
+      "Implemented background batch processing for product view tracking to optimize database operations.",
+      "Configured automated deployment workflows using GitHub Actions and IIS."
     ],
     featuresAr: [
-      "بناء وتصميم نواة SaaS سحابية متعددة المستأجرين فائقة السرعة باستخدام .NET 10 ومعمارية Clean Architecture مع Supabase PostgreSQL، محققاً زمن استجابة يقل عن 20 ملي ثانية.",
-      "تطبيق نظام مصادقة هجين (Google/Facebook OAuth + OTP الرسائل النصية) مع توكنات وصول لمدة 15 دقيقة وتوكنات تحديث انزلاقية لمدة 30 يوماً.",
-      "هندسة تدوير التوكنات بتشفير SHA-256 مع كشف خرق وإعادة استخدام التوكن وعزل بيانات المشتركين تلقائياً (IMustHaveTenant ومنع هجمات IDOR).",
-      "تصميم طابور معالجة دفعات غير متزامن في الذاكرة (IProductViewQueue) لمعالجة آلاف زيارات المنيو اللحظية دون إجهاد قاعدة البيانات.",
-      "تطوير لوحة تحكم إدارية متكاملة (أكثر من 600 سطر برمجي) مع إحصائيات حية لطلبات المطبخ عبر SignalR ومحرك عروض تسويقية ذكي.",
-      "إنشاء خط أنابيب نشر مؤتمت (CI/CD) عبر GitHub Actions مستهدفاً MonsterASP مع نشر بدون توقف الخدمة (Zero-Downtime) عبر ملفات app_offline.htm."
+      "تصميم وتطبيق معمارية Clean Architecture بنمط Modular Monolith لضمان قابلية التوسع وسهولة الصيانة.",
+      "تطوير واجهات برمجة تطبيقات RESTful APIs لملفات الأنشطة التجارية، الفروع، قوائم الطعام، التصنيفات، المنتجات، وحملات العروض الترويجية.",
+      "تطبيق نظام تعدد المستأجرين (Multi-Tenancy) وعزل البيانات لضمان فصل آمن ومحكم لبيانات كل نشاط تجاري.",
+      "تطوير آليات مصادقة متعددة تدعم JWT، و OAuth، والتحقق عبر رقم الهاتف (Phone OTP).",
+      "تطبيق إدارة جلسات آمنة باستخدام تدوير الـ Refresh Tokens، وانتهاء الصلاحية الانزلاقي (Sliding Expiration)، وكشف إعادة الاستخدام.",
+      "استخدام خوارزمية SHA-256 لتشفير وحفظ الـ Refresh Tokens في قاعدة البيانات.",
+      "تطوير واجهات لوحة التحكم الإدارية (Dashboard APIs) لتقديم تحليلات الأعمال وإحصائيات الأداء التفصيلية.",
+      "دمج مكتبة SignalR لتحديثات لوحة التحكم والإشعارات في الوقت الفعلي (Real-time Updates).",
+      "تنفيذ معالجة دفعات خلفية (Background Batch Processing) لتتبع مشاهدات المنتجات وتحسين استهلاك موارد قاعدة البيانات.",
+      "إعداد وتكوين تدفقات النشر المؤتمت (CI/CD) باستخدام GitHub Actions والاستضافة عبر خوادم IIS."
     ],
-    githubUrl: "https://github.com/amratef",
+    githubUrl: "https://github.com/amratef2005",
     liveUrl: "https://mot7km.com"
   },
   {
     id: "studysync-lms",
-    title: "StudySync Platform",
-    titleAr: "منصة StudySync الأكاديمية الذكية",
-    tagline: "Academic Management & Automated Attendance Platform with Clean Architecture & CQRS",
-    taglineAr: "نظام الإدارة الأكاديمية والحضور الذكي بمعمارية نظيفة ونمط CQRS",
-    description: "Modern academic management system designed with .NET 10, Clean Architecture, MediatR (CQRS), and PostgreSQL. Fully backed by 49 automated tests passing with 100% success rate, featuring smart QR code attendance and role-separated portals for doctors and students.",
-    descriptionAr: "منصة أكاديمية حديثة للجامعات والمعاهد مبنية بـ .NET 10 ونمط CQRS عبر مكتبة MediatR وقاعدة بيانات PostgreSQL. مدعومة بـ 49 اختباراً مؤتمتاً بنسبة نجاح 100%، وتوفر نظام تسجيل أكاديمي وحضور ذكي عبر الـ QR Code وبوابات منفصلة للأساتذة والطلاب.",
+    title: "Academic Management System",
+    titleAr: "نظام الإدارة الأكاديمية (StudySync)",
+    tagline: "Academic Management System with Clean Architecture, CQRS & Automated Testing",
+    taglineAr: "نظام إدارة أكاديمية متكامل بمعمارية Clean Architecture ونمط CQRS واختبارات مؤتمتة",
+    description: "Developed the backend of an academic management system to organize educational operations through a scalable and maintainable architecture. Applied Clean Architecture to separate Domain, Application, Infrastructure, and Presentation layers, implemented CQRS to organize application commands and queries, developed authentication and session management, course management, structured error handling, supported separate portals for different user roles, and achieved 49 passing automated tests with a 100% pass rate.",
+    descriptionAr: "تطوير النظام الخلفي لنظام إدارة أكاديمية لتنظيم العمليات التعليمية عبر معمارية قابلة للتوسع والصيانة. تطبيق معمارية Clean Architecture للفصل بين طبقات Domain و Application و Infrastructure و Presentation، وتطبيق نمط CQRS، وبناء وظائف المصادقة وإدارة المقررات، مع تحقيق 49 اختباراً مؤتمتاً ناجحاً بنسبة 100%.",
     category: ".NET & Backend",
     featured: true,
-    badge: "CQRS + MediatR • 49 Tests Passing 100%",
-    badgeAr: "نمط CQRS مع MediatR • 49 اختباراً ناجحاً 100%",
-    architecture: ["Clean Architecture", "CQRS (MediatR)", "Domain-Driven Design (DDD)", "Specification Pattern", "Result Pattern"],
-    architectureAr: ["معمارية نظيفة (Clean Architecture)", "نمط CQRS عبر MediatR", "التصميم الموجه بالنطاق (DDD)", "نمط التخصيص (Specification Pattern)", "نمط النتيجة الآمن (Result Pattern)"],
-    technologies: [".NET 10", "MediatR", "EF Core", "PostgreSQL", "xUnit & FluentAssertions", "JWT Bearer", "Swagger OpenAPI", "RunASP CI/CD"],
+    badge: "CQRS + Clean Architecture • 49 Tests 100%",
+    badgeAr: "معمارية نظيفة ونمط CQRS • 49 اختباراً ناجحاً 100%",
+    architecture: ["Clean Architecture", "CQRS Pattern", "Domain Separation", "Structured Error Handling", "Automated Testing Suite"],
+    architectureAr: ["معمارية نظيفة (Clean Architecture)", "نمط CQRS", "فصل الطبقات والمجال (Domain Separation)", "معالجة منظمة للأخطاء", "حزمة اختبارات مؤتمتة"],
+    technologies: ["C#", ".NET 10", "ASP.NET Core", "PostgreSQL", "Entity Framework Core", "Clean Architecture", "CQRS", "xUnit"],
     metrics: [
-      { label: "Test Suite Pass Rate", labelAr: "نسبة اجتياز الاختبارات", value: "100% (49 Tests)", valueAr: "100% (49 اختباراً)" },
-      { label: "Architectural Pattern", labelAr: "النمط المعماري الأساسي", value: "CQRS + MediatR", valueAr: "نمط CQRS عبر MediatR" },
-      { label: "Database Engine", labelAr: "محرك قواعد البيانات", value: "PostgreSQL", valueAr: "قواعد بيانات PostgreSQL" },
-      { label: "CI/CD Deployment", labelAr: "النشر السحابي المؤتمت", value: "RunASP Automated", valueAr: "نشر آلي على RunASP" }
+      { label: "Automated Tests", labelAr: "الاختبارات المؤتمتة", value: "49 Passing (100%)", valueAr: "49 اختباراً ناجحاً (100%)" },
+      { label: "Architecture", labelAr: "النمط المعماري", value: "Clean Architecture", valueAr: "معمارية نظيفة" },
+      { label: "Pattern", labelAr: "تنظيم الأوامر والاستعلامات", value: "CQRS Pattern", valueAr: "نمط CQRS" },
+      { label: "Portals", labelAr: "بوابات الأدوار", value: "Multi-Role Portals", valueAr: "بوابات منفصلة للأدوار" }
     ],
     features: [
-      "Decoupled read and write operations strictly using CQRS pattern with MediatR pipeline behaviors for validation and performance tracking.",
-      "Achieved 100% test pass rate across 49 comprehensive automated unit and integration tests covering domain entities and command handlers.",
-      "Designed automated dynamic QR-code lecture attendance engine with time-decay cryptographic validation preventing attendance spoofing.",
-      "Built comprehensive academic course offering and student enrollment engine with automated cumulative GPA computation.",
-      "Implemented enterprise RFC 7807 ProblemDetails centralized exception handling with FluentValidation pipeline integration."
+      "Applied Clean Architecture to separate Domain, Application, Infrastructure, and Presentation layers.",
+      "Implemented CQRS to organize application commands and queries.",
+      "Developed authentication and session management functionality.",
+      "Implemented course management features and structured error-handling mechanisms.",
+      "Supported separate application portals for different user roles.",
+      "Contributed to automated testing and application reliability, achieving 49 passing automated tests with a 100% pass rate."
     ],
     featuresAr: [
-      "فصل صارم بين عمليات القراءة والكتابة باستخدام نمط CQRS ومكتبة MediatR مع خطوط وسيطة (Pipeline Behaviors) للتحقق ومراقبة الأداء.",
-      "تحقيق نسبة نجاح 100% عبر 49 اختباراً مؤتمتاً شاملاً (Unit & Integration Tests) تغطي كيانات النطاق ومعالجات الأوامر بدقة.",
-      "تصميم محرك ذكي للحضور بالمحاضرات عبر QR Code ديناميكي مع تحقق تشفيري متغير زمنياً لمنع التحايل على تسجيل الحضور.",
-      "بناء نظام متكامل لتسجيل المقررات والتحاق الطلاب مع احتساب تلقائي للمعدل التراكمي (GPA) والتحقق التلقائي من المتطلبات السابقة.",
-      "تطبيق معالجة استثناءات مركزية مؤسسية متوافقة مع معيار RFC 7807 ProblemDetails ومدمجة مع مكتبة التحقق FluentValidation."
+      "تطبيق معمارية Clean Architecture لفصل طبقات Domain و Application و Infrastructure و Presentation بشكل محكم.",
+      "تطبيق نمط CQRS لتنظيم ومعالجة أوامر واستعلامات التطبيق بمرونة وكفاءة.",
+      "تطوير وظائف المصادقة وإدارة الجلسات للمستخدمين باحترافية.",
+      "بناء ميزات إدارة المقررات الدراسية وآليات معالجة وتتبع الأخطاء المنظمة.",
+      "دعم بوابات منفصلة ومخصصة لمختلف أدوار المستخدمين بصلاحيات محددة.",
+      "المساهمة في الاختبارات المؤتمتة وموثوقية التطبيق، وتحقيق 49 اختباراً مؤتمتاً ناجحاً بنسبة اجتياز 100%."
     ],
-    githubUrl: "https://github.com/amratef",
+    githubUrl: "https://github.com/amratef2005",
     liveUrl: "https://studysync.runasp.net"
   }
 ];
@@ -128,8 +160,8 @@ export const initialCertificates: Certificate[] = [
     date: "2024",
     fileUrl: "/iti.pdf",
     previewImage: "/certificate.png",
-    badge: "Professional Diploma",
-    badgeAr: "دبلومة مهنية معتمدة",
+    badge: "Professional Training",
+    badgeAr: "تدريب مهني معتمد",
     description: "Intensive professional training program covering modern software engineering, advanced C#, ASP.NET Core, database administration, software architecture, and agile enterprise development.",
     descriptionAr: "تدريب مكثف على هندسة البرمجيات الاحترافية، تقنيات C# المتقدمة، معمارية الأنظمة، وتطوير الأنظمة المؤسسية وفق أحدث معايير السوق العالمية."
   },
@@ -151,50 +183,55 @@ export const initialCertificates: Certificate[] = [
 
 export const initialSkillCategories: SkillCategory[] = [
   {
-    name: "Core Backend & .NET",
-    nameAr: "الأنظمة الخلفية وبيئة .NET",
+    name: "Backend Development & Languages",
+    nameAr: "تطوير النظم الخلفية ولغات البرمجة",
     icon: "Server",
     skills: [
-      { name: ".NET 10 / .NET 8", level: 95, tag: "Primary Stack", tagAr: "التقنية الأساسية" },
-      { name: "C# (Advanced)", level: 95, tag: "Core Language", tagAr: "لغة التطوير الأساسية" },
-      { name: "ASP.NET Core Web API", level: 95, tag: "REST & RPC", tagAr: "خدمات REST والاتصال" },
-      { name: "Entity Framework Core", level: 90, tag: "ORM & Optimization", tagAr: "إدارة وتحسين البيانات" },
-      { name: "MediatR & CQRS", level: 92, tag: "Architectural Pattern", tagAr: "نمط معماري معتمد" },
-      { name: "SignalR (Real-time)", level: 88, tag: "WebSockets", tagAr: "اتصال فوري WebSockets" }
+      { name: "C#", level: 95, tag: "Primary Language", tagAr: "لغة التطوير الأساسية" },
+      { name: "SQL", level: 92, tag: "Relational Queries", tagAr: "استعلامات علائقية" },
+      { name: ".NET 10 / ASP.NET Core Web API", level: 95, tag: "RESTful APIs", tagAr: "واجهات برمجية REST" },
+      { name: "Entity Framework Core", level: 92, tag: "ORM & Optimization", tagAr: "إدارة البيانات و ORM" },
+      { name: "Dependency Injection & Middleware", level: 90, tag: "Core Architecture", tagAr: "حقن التبعيات والبرمجيات الوسيطة" },
+      { name: "Background Services", level: 88, tag: "Async Workers", tagAr: "خدمات المعالجة الخلفية" }
     ]
   },
   {
-    name: "Architecture & Best Practices",
-    nameAr: "المعمارية وأفضل الممارسات",
+    name: "Architecture & System Design",
+    nameAr: "المعمارية وتصميم الأنظمة",
     icon: "Cpu",
     skills: [
-      { name: "Clean Architecture", level: 95, tag: "Design Strategy", tagAr: "استراتيجية معمارية" },
-      { name: "Domain-Driven Design (DDD)", level: 88, tag: "Domain Logic", tagAr: "منطق النطاق الموجه" },
-      { name: "Multi-Tenancy Architecture", level: 90, tag: "SaaS Isolation", tagAr: "عزل المستأجرين السحابي" },
-      { name: "Unit & Integration Testing (xUnit)", level: 92, tag: "TDD / E2E", tagAr: "اختبارات مؤتمتة شاملة" },
-      { name: "Design Patterns (GoF)", level: 90, tag: "Patterns", tagAr: "أنماط التصميم (GoF)" }
+      { name: "Clean Architecture", level: 95, tag: "Domain Separation", tagAr: "معمارية نظيفة وفصل الطبقات" },
+      { name: "Modular Monolith", level: 90, tag: "Modular Design", tagAr: "نواة موديولار موحدة" },
+      { name: "CQRS Pattern", level: 92, tag: "Commands & Queries", tagAr: "فصل الأوامر والاستعلامات" },
+      { name: "DTOs & Manual Mapping", level: 94, tag: "Data Transformation", tagAr: "تحويل ونقل البيانات" },
+      { name: "Separation of Concerns", level: 95, tag: "Best Practices", tagAr: "فصل المسؤوليات والاهتمامات" }
     ]
   },
   {
-    name: "Databases & Caching",
-    nameAr: "قواعد البيانات وإدارة الذاكرة",
+    name: "Databases, ORM & Real-Time",
+    nameAr: "قواعد البيانات والاتصال اللحظي",
     icon: "Database",
     skills: [
-      { name: "PostgreSQL & Supabase", level: 90, tag: "Relational DB", tagAr: "قواعد بيانات علائقية" },
-      { name: "SQL Server (T-SQL)", level: 88, tag: "Enterprise DB", tagAr: "قواعد بيانات مؤسسية" },
-      { name: "Redis Distributed Caching", level: 85, tag: "In-Memory Cache", tagAr: "كاش سريع في الذاكرة" },
-      { name: "Database Indexing & Query Tuning", level: 86, tag: "High Performance", tagAr: "تحسين الأداء والفهرسة" }
+      { name: "Microsoft SQL Server", level: 90, tag: "Enterprise DB", tagAr: "قواعد بيانات مؤسسية" },
+      { name: "PostgreSQL & Supabase", level: 92, tag: "Relational Cloud DB", tagAr: "قواعد بيانات سحابية" },
+      { name: "Database Migrations & Relational Design", level: 90, tag: "Schema Design", tagAr: "تصميم المخططات وترقية البيانات" },
+      { name: "SignalR (Real-Time Communication)", level: 88, tag: "WebSockets", tagAr: "اتصال لحظي وتحديثات فورية" },
+      { name: "Background & Batch Processing", level: 88, tag: "Performance Tuning", tagAr: "معالجة دفعات في الخلفية" },
+      { name: "Asynchronous Programming", level: 94, tag: "High Concurrency", tagAr: "برمجة غير متزامنة عالية الأداء" }
     ]
   },
   {
-    name: "DevOps & Cloud Deployment",
-    nameAr: "الحوسبة السحابية والنشر المؤتمت",
+    name: "Security, Validation & DevOps",
+    nameAr: "الأمان، التحقق وأدوات النشر",
     icon: "Cloud",
     skills: [
-      { name: "GitHub Actions (CI/CD)", level: 88, tag: "Automated Pipelines", tagAr: "خطوط أنابيب النشر المؤتمت" },
-      { name: "Docker & Containerization", level: 82, tag: "Containers", tagAr: "حاويات برمجية معزولة" },
-      { name: "MonsterASP & RunASP Hosting", level: 90, tag: "IIS / Cloud", tagAr: "استضافة سحابية وخوادم" },
-      { name: "Git & Version Control", level: 92, tag: "Workflow", tagAr: "إدارة ومزامنة الإصدارات" }
+      { name: "JWT & OAuth 2.0 Authentication", level: 94, tag: "Auth Standards", tagAr: "معايير المصادقة الحديثة" },
+      { name: "Phone OTP & Refresh Token Rotation", level: 92, tag: "Session Security", tagAr: "تدوير التوكنات وأمان الجلسات" },
+      { name: "SHA-256 Hashing & IDOR Prevention", level: 92, tag: "Data Protection", tagAr: "تشفير وحماية ضد ثغرات IDOR" },
+      { name: "Multi-Tenant & Ownership Authorization", level: 90, tag: "Tenant Isolation", tagAr: "عزل المستأجرين والصلاحيات" },
+      { name: "FluentValidation & Swagger / OpenAPI", level: 92, tag: "Docs & Validation", tagAr: "توثيق الـ API والتحقق" },
+      { name: "Git, GitHub & GitHub Actions (CI/CD)", level: 88, tag: "Automation", tagAr: "أتمتة خطوط النشر CI/CD" },
+      { name: "IIS Deployment", level: 86, tag: "Hosting & Servers", tagAr: "نشر وإدارة خوادم IIS" }
     ]
   }
 ];

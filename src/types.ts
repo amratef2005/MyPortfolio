@@ -78,6 +78,16 @@ export interface ProfileInfo {
   whatsappNoteAr?: string;
   whatsappNoteEn?: string;
   showWhatsAppStatus?: boolean;
+
+  // Education, Collaboration & Languages
+  university?: string;
+  universityAr?: string;
+  degree?: string;
+  degreeAr?: string;
+  teamwork?: string[];
+  teamworkAr?: string[];
+  languages?: string;
+  languagesAr?: string;
 }
 
 export interface ContactMessage {

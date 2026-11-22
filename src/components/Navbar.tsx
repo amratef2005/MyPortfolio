@@ -35,7 +35,7 @@ export const Navbar: React.FC = () => {
               {lang === 'ar' ? profile.nameAr : profile.name}
             </span>
             <span className="text-[10px] sm:text-[11px] font-mono text-cyan-400/80 tracking-wider">
-              {lang === 'ar' ? 'معماري نظم .NET 10' : '.NET 10 ARCHITECT'}
+              {lang === 'ar' ? 'مطور نظم خلفية .NET' : '.NET BACKEND DEVELOPER'}
             </span>
           </div>
         </a>

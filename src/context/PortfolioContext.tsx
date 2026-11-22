@@ -43,20 +43,13 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     if (!saved) return initialProfile;
     try {
       const parsed = JSON.parse(saved);
-      // If legacy placeholder data or previous email is detected, refresh completely to initialProfile
+      // If legacy placeholder data or previous outdated data is detected, refresh completely to initialProfile
       if (
         !parsed.name ||
-        parsed.name === 'Software Engineer' ||
-        parsed.name === 'Amr Atef' ||
-        parsed.email === 'developer@example.com' ||
-        parsed.email === 'amratef.dev@gmail.com' ||
-        parsed.phone === '+20 100 000 0000' ||
-        parsed.location === 'Cairo, Egypt' ||
-        parsed.location === 'Ismailia • Cairo, Egypt' ||
-        parsed.locationAr === 'الإسماعيلية • القاهرة، مصر' ||
-        parsed.linkedin === 'https://linkedin.com/in/amratef' ||
-        parsed.github?.includes('developer') ||
-        parsed.linkedin?.includes('developer')
+        parsed.name !== initialProfile.name ||
+        !parsed.github?.includes('amratef2005') ||
+        !parsed.linkedin?.includes('amr-atef-kandel') ||
+        parsed.title !== initialProfile.title
       ) {
         localStorage.setItem('portfolio_profile', JSON.stringify(initialProfile));
         return initialProfile;
@@ -72,7 +65,7 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     if (!saved) return initialProjects;
     try {
       const parsed = JSON.parse(saved);
-      if (!Array.isArray(parsed) || parsed.length === 0 || !parsed.some((p: any) => p.id === 'mot7km-saas') || !parsed.some((p: any) => p.featuresAr)) {
+      if (!Array.isArray(parsed) || parsed.length === 0 || !parsed.some((p: any) => p.githubUrl?.includes('amratef2005'))) {
         localStorage.setItem('portfolio_projects', JSON.stringify(initialProjects));
         return initialProjects;
       }
@@ -102,7 +95,7 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     if (!saved) return initialSkillCategories;
     try {
       const parsed = JSON.parse(saved);
-      if (!Array.isArray(parsed) || !parsed.some((cat: any) => cat.skills?.some((s: any) => s.tagAr))) {
+      if (!Array.isArray(parsed) || !parsed.some((cat: any) => cat.name === 'Backend Development & Languages')) {
         localStorage.setItem('portfolio_skills', JSON.stringify(initialSkillCategories));
         return initialSkillCategories;
       }
@@ -170,8 +163,8 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
     document.documentElement.lang = lang;
     document.title = lang === 'ar'
-      ? `${profile.nameAr || 'عمرو عاطف'} | مهندس نظم خلفية ومعماري .NET 10`
-      : `${profile.name || 'Amr Atef'} | Senior .NET & Backend Architect`;
+      ? `${profile.nameAr || 'عمرو عاطف'} | مطور نظم خلفية .NET`
+      : `${profile.name || 'Amr Atef'} | .NET Backend Developer`;
     localStorage.setItem('portfolio_lang', lang);
   }, [lang, profile]);
 

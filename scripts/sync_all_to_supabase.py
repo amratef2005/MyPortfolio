@@ -38,37 +38,14 @@ def sync_database():
         whatsapp VARCHAR(255),
         resume_url VARCHAR(255),
         top_avatar_url VARCHAR(255),
-        years_of_experience INT DEFAULT 3,
-        completed_projects INT DEFAULT 12,
+        years_of_experience INT DEFAULT 2,
+        completed_projects INT DEFAULT 10,
         admin_username VARCHAR(100) DEFAULT 'admin',
         admin_password VARCHAR(100) DEFAULT 'admin123',
         admin_pin VARCHAR(20) DEFAULT '1234',
         updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
     );
     """)
-
-    # Add columns if they didn't exist in older table
-    columns_to_add = [
-        ("short_name", "VARCHAR(100)"),
-        ("short_name_ar", "VARCHAR(100)"),
-        ("top_avatar_url", "VARCHAR(255)"),
-        ("years_of_experience", "INT DEFAULT 3"),
-        ("completed_projects", "INT DEFAULT 12"),
-        ("admin_username", "VARCHAR(100) DEFAULT 'admin'"),
-        ("admin_password", "VARCHAR(100) DEFAULT 'admin123'")
-    ]
-    for col_name, col_type in columns_to_add:
-        try:
-            cur.execute(f"ALTER TABLE public.portfolio_profile ADD COLUMN IF NOT EXISTS {col_name} {col_type};")
-        except Exception as e:
-            print(f"Notice on profile {col_name}:", e)
-
-    # Add columns if they didn't exist in older projects table
-    for col_name, col_type in [("display_order", "INT DEFAULT 1"), ("image", "VARCHAR(255)")]:
-        try:
-            cur.execute(f"ALTER TABLE public.portfolio_projects ADD COLUMN IF NOT EXISTS {col_name} {col_type};")
-        except Exception as e:
-            print(f"Notice on projects {col_name}:", e)
 
     # 2. Projects table
     cur.execute("""
@@ -143,25 +120,25 @@ def sync_database():
     print("--- 2. Populating Profile Data ---")
     profile = {
         "id": "main_profile",
-        "name": "Amr Atef Imam Kandel",
-        "name_ar": "عمرو عاطف إمام قنديل",
+        "name": "Amr Atef Imam Mahmoud",
+        "name_ar": "عمرو عاطف إمام محمود",
         "short_name": "Amr Atef",
         "short_name_ar": "عمرو عاطف",
-        "title": "Senior .NET & Backend Architect",
-        "title_ar": "مهندس نظم خلفية ومعماري .NET 10",
-        "bio": "Senior Backend Engineer and Systems Architect specialized in high-performance enterprise systems, Clean Architecture, and Domain-Driven Design (DDD). Extensive experience in .NET 10, CQRS, Multi-Tenancy, PostgreSQL, and distributed caching.",
-        "bio_ar": "مهندس برمجيات متقدم متخصص في بناء وتصميم الأنظمة الخلفية عالية الأداء والمعمارية النظيفة (Clean Architecture & DDD). خبرة عميقة في .NET 10، أنماط CQRS، تعدد المستأجرين (Multi-Tenancy)، وقواعد بيانات PostgreSQL، والكاش الموزع.",
+        "title": ".NET Backend Developer",
+        "title_ar": "مطور نظم خلفية .NET",
+        "bio": "Computer Science student and .NET Backend Developer with hands-on experience designing and developing scalable backend systems using C# and ASP.NET Core. Experienced in building RESTful APIs, implementing Clean Architecture and CQRS patterns, designing relational databases, and developing secure authentication and authorization mechanisms. Practical experience in multi-tenant SaaS applications, JWT authentication, OAuth 2.0, refresh token rotation, real-time communication using SignalR, and background processing. Collaborates with cross-functional teams, owning backend development and API integration with mobile and frontend applications. Interested in software architecture, backend security, database optimization, and maintainable software systems.",
+        "bio_ar": "طالب علوم حاسب ومطور نظم خلفية .NET بخبرة عملية في تصميم وتطوير أنظمة خلفية قابلة للتوسع باستخدام C# و ASP.NET Core. خبير في بناء واجهات برمجة التطبيقات RESTful APIs، وتطبيق معمارية Clean Architecture ونمط CQRS، وتصميم قواعد البيانات العلائقية، وتطوير آليات مصادقة وتفويض قوية وآمنة. أمتلك خبرة عملية في تطبيقات SaaS متعددة المستأجرين (Multi-Tenant)، ومصادقة JWT و OAuth 2.0، وتدوير الـ Refresh Tokens، والاتصال اللحظي عبر SignalR، والمعالجة في الخلفية. أتعاون بفاعلية مع الفرق البرمجية المختلفة كمسؤول عن تطوير النظم الخلفية وتكامل الـ APIs مع تطبيقات الموبايل والفرونت إند. مهتم بهندسة البرمجيات، وأمان الأنظمة الخلفية، وتحسين أداء قواعد البيانات، وبناء نظم برمجية مستدامة.",
         "email": "amratefkandel@gmail.com",
-        "phone": "amratefkandel",
+        "phone": "@amratefkandel",
         "location": "Ismailia, Egypt",
         "location_ar": "الإسماعيلية، مصر",
-        "github": "https://github.com/amratef",
-        "linkedin": "https://www.linkedin.com/public-profile/settings/?trk=d_flagship3_profile_self_view_public_profile&lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base%3BTY4k9EFtT8yGn8QZz2QzAQ%3D%3D",
+        "github": "https://github.com/amratef2005",
+        "linkedin": "https://linkedin.com/in/amr-atef-kandel",
         "whatsapp": "https://wa.me/?text=Hello%20Amr%20Atef",
         "resume_url": "/Amr_Atef_Resume.pdf",
         "top_avatar_url": "/my.jpg",
-        "years_of_experience": 3,
-        "completed_projects": 12,
+        "years_of_experience": 2,
+        "completed_projects": 10,
         "admin_username": "admin",
         "admin_password": "admin123",
         "admin_pin": "1234"
@@ -209,62 +186,67 @@ def sync_database():
     projects = [
         {
             "id": "mot7km-saas",
-            "title": "MOT7KM SaaS",
+            "title": "Multi-Tenant SaaS ERP & Digital Menu Platform",
             "title_ar": "منصة مُتحكِّم (MOT7KM) لإدارة المطاعم والمنيو السحابي",
             "tagline": "High-Throughput Multi-Tenant SaaS ERP & Digital QR Menu Backend",
             "tagline_ar": "نظام ERP سحابي متعدد المستأجرين (Multi-Tenant) ومنيو رقمي فائق السرعة",
-            "description": "Enterprise SaaS backend engineered with .NET 10, Clean Architecture, and PostgreSQL via Supabase. Features hybrid OAuth/SMS authentication, sliding session token rotation with reuse detection, and an asynchronous batch-processing queue handling thousands of concurrent QR scans under 20ms.",
-            "description_ar": "نظام SaaS متكامل لإدارة المطاعم والأنشطة التجارية مبني بـ .NET 10 ومعمارية Clean Architecture مع Supabase PostgreSQL. يحتوي على مصادقة هجينة ونظام جلسات انزلاقية مع كشف تكرار التوكنات، وطابور معالجة دفعات غير متزامن للتعامل مع آلاف زيارات الـ QR بسرعة استجابة أقل من 20 ملي ثانية.",
+            "description": "Developed the backend of a multi-tenant SaaS platform for restaurants, cafés, and businesses to manage their digital presence and operations. Designed with Clean Architecture and a Modular Monolith approach, developing RESTful APIs, multi-tenant isolation, JWT/OAuth/OTP authentication, sliding session management with refresh token rotation and SHA-256 hashing, dashboard APIs, SignalR real-time updates, and background batch processing.",
+            "description_ar": "تطوير النظام الخلفي لمنصة SaaS متعددة المستأجرين لإدارة المطاعم والكافيهات وتنظيم حضورهم وعملياتهم الرقمية. تم بناؤه بمعمارية Clean Architecture ونمط Modular Monolith، مع عزل بيانات المستأجرين، ومصادقة هجينة (JWT, OAuth, OTP)، وتدوير الجلسات الانزلاقية بتشفير SHA-256، وتحديثات لحظية عبر SignalR، ومعالجة دفعات خلفية فائقة السرعة.",
             "category": "Cloud & SaaS",
             "featured": True,
-            "badge": "Enterprise SaaS • Latency < 20ms",
-            "architecture": ["Clean Architecture", "Modular Monolith", "Multi-Tenancy (IMustHaveTenant)", "Sliding Session Rotation", "Batch Queue Worker"],
-            "technologies": [".NET 10", "C# 13/14", "EF Core", "PostgreSQL", "Supabase", "SignalR", "FluentValidation", "Docker", "MonsterASP CI/CD"],
+            "badge": "Multi-Tenant SaaS • Backend Developer",
+            "architecture": ["Clean Architecture", "Modular Monolith", "Multi-Tenancy & Tenant Isolation", "Refresh Token Rotation (SHA-256)", "Background Batch Processing"],
+            "technologies": ["C#", ".NET 10", "ASP.NET Core", "PostgreSQL", "Entity Framework Core", "Supabase", "SignalR", "GitHub Actions", "IIS"],
             "metrics": [
-                {"label": "Menu Response Latency", "value": "< 20ms"},
-                {"label": "Security Model", "value": "Sliding Token Rotation"},
-                {"label": "Code Reliability", "value": "0 Errors / 0 Warnings"},
-                {"label": "Real-time Hub", "value": "SignalR Active Hub"}
+                {"label": "Architecture", "value": "Modular Monolith"},
+                {"label": "Security & Tokens", "value": "SHA-256 Rotation"},
+                {"label": "Multi-Tenancy", "value": "Tenant Isolation"},
+                {"label": "Real-time & Batch", "value": "SignalR + Batch Queue"}
             ],
             "features": [
-                "Architected high-throughput multi-tenant SaaS backend using .NET 10, Clean Architecture, and PostgreSQL via Supabase.",
-                "Implemented hybrid authentication (OAuth Google/Facebook + Phone OTP) with 15-minute Access Tokens and 30-day sliding expiration Refresh Tokens.",
-                "Engineered cryptographic SHA-256 token rotation with family reuse breach detection and automatic multi-tenant data isolation (IMustHaveTenant & IDOR prevention).",
-                "Designed asynchronous in-memory batch processing queue (IProductViewQueue) processing thousands of concurrent QR menu views under 20ms without database throttling.",
-                "Built comprehensive admin dashboard overview service (600+ LOC) with real-time active kitchen order counts, branch telemetry, and AI-driven promotions engine.",
-                "Established automated CI/CD pipeline via GitHub Actions targeting MonsterASP with zero-downtime file deployment via app_offline.htm."
+                "Designed and implemented Clean Architecture with a Modular Monolith approach.",
+                "Developed RESTful APIs for business profiles, branches, menus, categories, products, and promotional campaigns.",
+                "Implemented multi-tenancy and tenant isolation to ensure secure separation of business data.",
+                "Developed authentication mechanisms supporting JWT, OAuth, and phone OTP.",
+                "Implemented secure session management using refresh token rotation, sliding expiration, and token reuse detection.",
+                "Applied SHA-256 hashing for refresh token storage.",
+                "Developed administrative dashboard APIs with business analytics and performance insights.",
+                "Integrated SignalR for real-time dashboard updates.",
+                "Implemented background batch processing for product view tracking to optimize database operations.",
+                "Configured automated deployment workflows using GitHub Actions and IIS."
             ],
-            "github_url": "https://github.com/amratef",
+            "github_url": "https://github.com/amratef2005",
             "live_url": "https://mot7km.com",
             "display_order": 1
         },
         {
             "id": "studysync-lms",
-            "title": "StudySync Platform",
-            "title_ar": "منصة StudySync الأكاديمية الذكية",
-            "tagline": "Academic Management & Automated Attendance Platform with Clean Architecture & CQRS",
-            "tagline_ar": "نظام الإدارة الأكاديمية والحضور الذكي بمعمارية نظيفة ونمط CQRS",
-            "description": "Modern academic management system designed with .NET 10, Clean Architecture, MediatR (CQRS), and PostgreSQL. Fully backed by 49 automated tests passing with 100% success rate, featuring smart QR code attendance and role-separated portals for doctors and students.",
-            "description_ar": "منصة أكاديمية حديثة للجامعات والمعاهد مبنية بـ .NET 10 ونمط CQRS عبر مكتبة MediatR وقاعدة بيانات PostgreSQL. مدعومة بـ 49 اختباراً مؤتمتاً بنسبة نجاح 100%، وتوفر نظام تسجيل أكاديمي وحضور ذكي عبر الـ QR Code وبوابات منفصلة للأساتذة والطلاب.",
+            "title": "Academic Management System",
+            "title_ar": "نظام الإدارة الأكاديمية (StudySync)",
+            "tagline": "Academic Management System with Clean Architecture, CQRS & Automated Testing",
+            "tagline_ar": "نظام إدارة أكاديمية متكامل بمعمارية Clean Architecture ونمط CQRS واختبارات مؤتمتة",
+            "description": "Developed the backend of an academic management system to organize educational operations through a scalable and maintainable architecture. Applied Clean Architecture to separate Domain, Application, Infrastructure, and Presentation layers, implemented CQRS to organize application commands and queries, developed authentication and session management, course management, structured error handling, supported separate portals for different user roles, and achieved 49 passing automated tests with a 100% pass rate.",
+            "description_ar": "تطوير النظام الخلفي لنظام إدارة أكاديمية لتنظيم العمليات التعليمية عبر معمارية قابلة للتوسع والصيانة. تطبيق معمارية Clean Architecture للفصل بين طبقات Domain و Application و Infrastructure و Presentation، وتطبيق نمط CQRS، وبناء وظائف المصادقة وإدارة المقررات، مع تحقيق 49 اختباراً مؤتمتاً ناجحاً بنسبة 100%.",
             "category": ".NET & Backend",
             "featured": True,
-            "badge": "CQRS + MediatR • 49 Tests Passing 100%",
-            "architecture": ["Clean Architecture", "CQRS (MediatR)", "Domain-Driven Design (DDD)", "Specification Pattern", "Result Pattern"],
-            "technologies": [".NET 10", "MediatR", "EF Core", "PostgreSQL", "xUnit & FluentAssertions", "JWT Bearer", "Swagger OpenAPI", "RunASP CI/CD"],
+            "badge": "CQRS + Clean Architecture • 49 Tests 100%",
+            "architecture": ["Clean Architecture", "CQRS Pattern", "Domain Separation", "Structured Error Handling", "Automated Testing Suite"],
+            "technologies": ["C#", ".NET 10", "ASP.NET Core", "PostgreSQL", "Entity Framework Core", "Clean Architecture", "CQRS", "xUnit"],
             "metrics": [
-                {"label": "Test Suite Pass Rate", "value": "100% (49 Tests)"},
-                {"label": "Architectural Pattern", "value": "CQRS + MediatR"},
-                {"label": "Database Engine", "value": "PostgreSQL"},
-                {"label": "CI/CD Deployment", "value": "RunASP Automated"}
+                {"label": "Automated Tests", "value": "49 Passing (100%)"},
+                {"label": "Architecture", "value": "Clean Architecture"},
+                {"label": "Pattern", "value": "CQRS Pattern"},
+                {"label": "Portals", "value": "Multi-Role Portals"}
             ],
             "features": [
-                "Decoupled read and write operations strictly using CQRS pattern with MediatR pipeline behaviors for validation and performance tracking.",
-                "Achieved 100% test pass rate across 49 comprehensive automated unit and integration tests covering domain entities and command handlers.",
-                "Designed automated dynamic QR-code lecture attendance engine with time-decay cryptographic validation preventing attendance spoofing.",
-                "Built comprehensive academic course offering and student enrollment engine with automated cumulative GPA computation.",
-                "Implemented enterprise RFC 7807 ProblemDetails centralized exception handling with FluentValidation pipeline integration."
+                "Applied Clean Architecture to separate Domain, Application, Infrastructure, and Presentation layers.",
+                "Implemented CQRS to organize application commands and queries.",
+                "Developed authentication and session management functionality.",
+                "Implemented course management features and structured error-handling mechanisms.",
+                "Supported separate application portals for different user roles.",
+                "Contributed to automated testing and application reliability, achieving 49 passing automated tests with a 100% pass rate."
             ],
-            "github_url": "https://github.com/amratef",
+            "github_url": "https://github.com/amratef2005",
             "live_url": "https://studysync.runasp.net",
             "display_order": 2
         }
@@ -316,7 +298,7 @@ def sync_database():
             "date": "2024",
             "file_url": "/iti.pdf",
             "preview_image": "/certificate.png",
-            "badge": "Professional Diploma",
+            "badge": "Professional Training",
             "description": "Intensive professional training program covering modern software engineering, advanced C#, ASP.NET Core, database administration, software architecture, and agile enterprise development.",
             "description_ar": "تدريب مكثف على هندسة البرمجيات الاحترافية، تقنيات C# المتقدمة، معمارية الأنظمة، وتطوير الأنظمة المؤسسية وفق أحدث معايير السوق العالمية.",
             "display_order": 1
@@ -367,61 +349,69 @@ def sync_database():
     print("--- 5. Populating Skills Data ---")
     skills = [
         {
-            "id": "backend-dotnet",
-            "name": "Core Backend & .NET",
-            "name_ar": "الأنظمة الخلفية وبيئة .NET",
+            "id": "backend-development",
+            "name": "Backend Development & Languages",
+            "name_ar": "تطوير النظم الخلفية ولغات البرمجة",
             "icon": "Server",
             "skills": [
-                {"name": ".NET 10 / .NET 8", "level": 95, "tag": "Primary Stack"},
-                {"name": "C# (Advanced)", "level": 95, "tag": "Core Language"},
-                {"name": "ASP.NET Core Web API", "level": 95, "tag": "REST & RPC"},
-                {"name": "Entity Framework Core", "level": 90, "tag": "ORM & Optimization"},
-                {"name": "MediatR & CQRS", "level": 92, "tag": "Architectural Pattern"},
-                {"name": "SignalR (Real-time)", "level": 88, "tag": "WebSockets"}
+                {"name": "C#", "level": 95, "tag": "Primary Language", "tagAr": "لغة التطوير الأساسية"},
+                {"name": "SQL", "level": 92, "tag": "Relational Queries", "tagAr": "استعلامات علائقية"},
+                {"name": ".NET 10 / ASP.NET Core Web API", "level": 95, "tag": "RESTful APIs", "tagAr": "واجهات برمجية REST"},
+                {"name": "Entity Framework Core", "level": 92, "tag": "ORM & Optimization", "tagAr": "إدارة البيانات و ORM"},
+                {"name": "Dependency Injection & Middleware", "level": 90, "tag": "Core Architecture", "tagAr": "حقن التبعيات والبرمجيات الوسيطة"},
+                {"name": "Background Services", "level": 88, "tag": "Async Workers", "tagAr": "خدمات المعالجة الخلفية"}
             ],
             "display_order": 1
         },
         {
             "id": "architecture-design",
-            "name": "Architecture & Best Practices",
-            "name_ar": "المعمارية وأفضل الممارسات",
+            "name": "Architecture & System Design",
+            "name_ar": "المعمارية وتصميم الأنظمة",
             "icon": "Cpu",
             "skills": [
-                {"name": "Clean Architecture", "level": 95, "tag": "Design Strategy"},
-                {"name": "Domain-Driven Design (DDD)", "level": 88, "tag": "Domain Logic"},
-                {"name": "Multi-Tenancy Architecture", "level": 90, "tag": "SaaS Isolation"},
-                {"name": "Unit & Integration Testing (xUnit)", "level": 92, "tag": "TDD / E2E"},
-                {"name": "Design Patterns (GoF)", "level": 90, "tag": "Patterns"}
+                {"name": "Clean Architecture", "level": 95, "tag": "Domain Separation", "tagAr": "معمارية نظيفة وفصل الطبقات"},
+                {"name": "Modular Monolith", "level": 90, "tag": "Modular Design", "tagAr": "نواة موديولار موحدة"},
+                {"name": "CQRS Pattern", "level": 92, "tag": "Commands & Queries", "tagAr": "فصل الأوامر والاستعلامات"},
+                {"name": "DTOs & Manual Mapping", "level": 94, "tag": "Data Transformation", "tagAr": "تحويل ونقل البيانات"},
+                {"name": "Separation of Concerns", "level": 95, "tag": "Best Practices", "tagAr": "فصل المسؤوليات والاهتمامات"}
             ],
             "display_order": 2
         },
         {
-            "id": "databases-caching",
-            "name": "Databases & Caching",
-            "name_ar": "قواعد البيانات وإدارة الذاكرة",
+            "id": "databases-realtime",
+            "name": "Databases, ORM & Real-Time",
+            "name_ar": "قواعد البيانات والاتصال اللحظي",
             "icon": "Database",
             "skills": [
-                {"name": "PostgreSQL & Supabase", "level": 90, "tag": "Relational DB"},
-                {"name": "SQL Server (T-SQL)", "level": 88, "tag": "Enterprise DB"},
-                {"name": "Redis Distributed Caching", "level": 85, "tag": "In-Memory Cache"},
-                {"name": "Database Indexing & Query Tuning", "level": 86, "tag": "High Performance"}
+                {"name": "Microsoft SQL Server", "level": 90, "tag": "Enterprise DB", "tagAr": "قواعد بيانات مؤسسية"},
+                {"name": "PostgreSQL & Supabase", "level": 92, "tag": "Relational Cloud DB", "tagAr": "قواعد بيانات سحابية"},
+                {"name": "Database Migrations & Relational Design", "level": 90, "tag": "Schema Design", "tagAr": "تصميم المخططات وترقية البيانات"},
+                {"name": "SignalR (Real-Time Communication)", "level": 88, "tag": "WebSockets", "tagAr": "اتصال لحظي وتحديثات فورية"},
+                {"name": "Background & Batch Processing", "level": 88, "tag": "Performance Tuning", "tagAr": "معالجة دفعات في الخلفية"},
+                {"name": "Asynchronous Programming", "level": 94, "tag": "High Concurrency", "tagAr": "برمجة غير متزامنة عالية الأداء"}
             ],
             "display_order": 3
         },
         {
-            "id": "devops-cloud",
-            "name": "DevOps & Cloud Deployment",
-            "name_ar": "الحوسبة السحابية والنشر المؤتمت",
+            "id": "security-devops",
+            "name": "Security, Validation & DevOps",
+            "name_ar": "الأمان، التحقق وأدوات النشر",
             "icon": "Cloud",
             "skills": [
-                {"name": "GitHub Actions (CI/CD)", "level": 88, "tag": "Automated Pipelines"},
-                {"name": "Docker & Containerization", "level": 82, "tag": "Containers"},
-                {"name": "MonsterASP & RunASP Hosting", "level": 90, "tag": "IIS / Cloud"},
-                {"name": "Git & Version Control", "level": 92, "tag": "Workflow"}
+                {"name": "JWT & OAuth 2.0 Authentication", "level": 94, "tag": "Auth Standards", "tagAr": "معايير المصادقة الحديثة"},
+                {"name": "Phone OTP & Refresh Token Rotation", "level": 92, "tag": "Session Security", "tagAr": "تدوير التوكنات وأمان الجلسات"},
+                {"name": "SHA-256 Hashing & IDOR Prevention", "level": 92, "tag": "Data Protection", "tagAr": "تشفير وحماية ضد ثغرات IDOR"},
+                {"name": "Multi-Tenant & Ownership Authorization", "level": 90, "tag": "Tenant Isolation", "tagAr": "عزل المستأجرين والصلاحيات"},
+                {"name": "FluentValidation & Swagger / OpenAPI", "level": 92, "tag": "Docs & Validation", "tagAr": "توثيق الـ API والتحقق"},
+                {"name": "Git, GitHub & GitHub Actions (CI/CD)", "level": 88, "tag": "Automation", "tagAr": "أتمتة خطوط النشر CI/CD"},
+                {"name": "IIS Deployment", "level": 86, "tag": "Hosting & Servers", "tagAr": "نشر وإدارة خوادم IIS"}
             ],
             "display_order": 4
         }
     ]
+
+    # Delete previous skill categories to ensure clean 4 categories
+    cur.execute("DELETE FROM public.portfolio_skills;")
 
     for s in skills:
         cur.execute("""
@@ -429,14 +419,7 @@ def sync_database():
             id, name, name_ar, icon, skills, display_order, updated_at
         ) VALUES (
             %s, %s, %s, %s, %s, %s, NOW()
-        )
-        ON CONFLICT (id) DO UPDATE SET
-            name = EXCLUDED.name,
-            name_ar = EXCLUDED.name_ar,
-            icon = EXCLUDED.icon,
-            skills = EXCLUDED.skills,
-            display_order = EXCLUDED.display_order,
-            updated_at = NOW();
+        );
         """, (
             s["id"], s["name"], s["name_ar"], s["icon"],
             json.dumps(s["skills"]), s["display_order"]

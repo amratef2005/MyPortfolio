@@ -34,7 +34,7 @@ export const Hero: React.FC = () => {
             {/* Status Badge */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900/90 border border-cyan-500/30 text-cyan-400 text-xs font-mono font-medium self-start shadow-[0_0_15px_rgba(56,189,248,0.15)]">
               <Sparkles className="w-3.5 h-3.5 text-cyan-400 animate-spin-slow shrink-0" />
-              <span>{lang === 'ar' ? 'معمارية نظيفة • أداء فائق • .NET 10' : 'Clean Architecture • High Throughput • .NET 10'}</span>
+              <span>{lang === 'ar' ? 'معمارية نظيفة • CQRS • .NET 10 • PostgreSQL' : 'Clean Architecture • CQRS • .NET 10 • PostgreSQL'}</span>
             </div>
 
             {/* Main Title */}
@@ -53,6 +53,9 @@ export const Hero: React.FC = () => {
               <p className="text-lg sm:text-2xl font-bold gradient-text-violet mt-2 font-mono">
                 {lang === 'ar' ? profile.titleAr : profile.title}
               </p>
+              <p className="text-xs sm:text-sm font-mono text-cyan-400/90 font-semibold tracking-wider mt-1">
+                C# &bull; ASP.NET Core &bull; SQL Server &bull; PostgreSQL
+              </p>
             </div>
 
             {/* Bio Description */}
@@ -69,7 +72,7 @@ export const Hero: React.FC = () => {
                     {lang === 'ar' ? 'معمارية نظيفة' : 'Clean Architecture'}
                   </span>
                   <span className="text-slate-400 font-mono text-[11px]">
-                    {lang === 'ar' ? 'أنماط CQRS و DDD' : 'CQRS & DDD'}
+                    {lang === 'ar' ? 'أنماط CQRS و Modular Monolith' : 'CQRS & Modular Monolith'}
                   </span>
                 </div>
               </div>
@@ -78,10 +81,10 @@ export const Hero: React.FC = () => {
                 <Database className="w-5 h-5 text-indigo-400 shrink-0" />
                 <div className="text-xs">
                   <span className="block font-bold text-white">
-                    {lang === 'ar' ? 'أداء وإنتاجية فائقة' : 'High Throughput'}
+                    {lang === 'ar' ? 'SaaS متعدد المستأجرين' : 'Multi-Tenant SaaS'}
                   </span>
                   <span className="text-slate-400 font-mono text-[11px]">
-                    {lang === 'ar' ? 'قواعد PostgreSQL وكاش Redis' : 'PostgreSQL & Redis'}
+                    {lang === 'ar' ? 'عزل البيانات وتدوير التوكنات' : 'Isolation & Token Rotation'}
                   </span>
                 </div>
               </div>
@@ -90,10 +93,10 @@ export const Hero: React.FC = () => {
                 <Cpu className="w-5 h-5 text-emerald-400 shrink-0" />
                 <div className="text-xs">
                   <span className="block font-bold text-white">
-                    {lang === 'ar' ? '+49 اختباراً ناجحاً' : '49+ Tests Passing'}
+                    {lang === 'ar' ? '49 اختباراً مؤتمتاً' : '49 Automated Tests'}
                   </span>
                   <span className="text-slate-400 font-mono text-[11px]">
-                    {lang === 'ar' ? 'خالٍ من الأخطاء 100%' : '100% Zero-Defect'}
+                    {lang === 'ar' ? 'اجتياز بنسبة 100%' : '100% Pass Rate'}
                   </span>
                 </div>
               </div>

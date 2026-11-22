@@ -259,7 +259,9 @@ export const Contact: React.FC = () => {
                     {lang === 'ar' ? 'الموقع / الإقامة' : 'Location'}
                   </span>
                   <span className="text-xs sm:text-sm font-semibold text-white">
-                    {lang === 'ar' ? 'القاهرة، مصر (متاح للعمل عن بُعد عالمياً)' : 'Cairo, Egypt (Available Globally / Remote)'}
+                    {lang === 'ar' 
+                      ? `${profile.locationAr || 'الإسماعيلية، مصر'} (متاح للعمل عن بُعد وحضورياً)` 
+                      : `${profile.location || 'Ismailia, Egypt'} (Available for Remote & On-site)`}
                   </span>
                 </div>
               </div>
