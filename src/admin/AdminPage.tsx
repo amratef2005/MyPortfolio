@@ -237,9 +237,9 @@ export const AdminPage: React.FC = () => {
       });
       if (res.ok) {
         const data = await res.json();
-        setActiveSessionsCount(data.activeSessionsCount || 0);
+        setActiveSessionsCount(data.count ?? data.activeSessionsCount ?? (data.sessions ? data.sessions.length : 0));
         setSessions(data.sessions || []);
-        if (data.isCurrentSessionActive === false) {
+        if (sid && (data.isCurrentActive === false || data.isCurrentSessionActive === false)) {
           alert('تم إنهاء جلستك على هذا الجهاز (تم تسجيل الخروج بواسطة الإدارة).');
           logout();
         }
