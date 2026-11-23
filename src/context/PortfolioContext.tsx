@@ -360,9 +360,13 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         console.warn('localStorage quota warning:', err);
       }
       broadcastChange('UPDATE_PROFILE', nextProfile);
+      const sid = typeof window !== 'undefined' ? localStorage.getItem('portfolio_admin_session_id') || '' : '';
       fetch('/api/profile', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'x-session-id': sid
+        },
         body: JSON.stringify(nextProfile)
       })
       .then(res => {

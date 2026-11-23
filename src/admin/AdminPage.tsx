@@ -415,6 +415,11 @@ export const AdminPage: React.FC = () => {
     setSecuritySuccess('');
     setSecurityError('');
 
+    if (!isCallerMaster) {
+      setSecurityError('غير مصرح: صلاحية تعديل بيانات الدخول محصورة في الجهاز الأساسي الأول أو الأجهزة المفوضة.');
+      return;
+    }
+
     if (!newUsername.trim()) {
       setSecurityError('اسم المستخدم لا يمكن أن يكون فارغاً');
       return;
@@ -2274,81 +2279,108 @@ export const AdminPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* SECTION 2: USERNAME & PASSWORD SECURITY */}
-              <div className="p-6 md:p-8 rounded-3xl bg-slate-950/80 border border-slate-800 space-y-6 shadow-xl">
-                <div>
-                  <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                    <KeyRound className="w-5 h-5 text-cyan-400" />
-                    <span>تأكيد اليوزر والباسورد (بيانات الدخول)</span>
-                  </h2>
-                  <p className="text-xs text-slate-400 font-mono mt-1">
-                    تغيير وتأكيد اسم المستخدم وكلمة المرور الخاصة بلوحة التحكم
-                  </p>
+              {/* SECTION 2: USERNAME & PASSWORD SECURITY (LOCKED & HIDDEN FOR NON-MASTER) */}
+              {!isCallerMaster ? (
+                <div className="p-6 md:p-8 rounded-3xl bg-slate-950/80 border border-slate-800 space-y-3 shadow-xl">
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-500 shrink-0">
+                      <Lock className="w-6 h-6 text-slate-500" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h3 className="text-base font-bold text-white">تأكيد وتغيير بيانات الدخول (محجوب ومحمي)</h3>
+                        <span className="px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700 text-[10px] font-mono">
+                          صلاحية مقيدة 🔒
+                        </span>
+                      </div>
+                      <p className="text-xs text-slate-400 font-mono mt-1.5 leading-relaxed">
+                        تعديل اسم المستخدم وكلمة المرور محجوب ومقتصر حصرياً على <b>الجهاز الرئيسي الأول (أقدم جهاز)</b> أو الأجهزة التي تم تفويضها بمساواة الصلاحيات.
+                      </p>
+                    </div>
+                  </div>
                 </div>
-
-                {securitySuccess && (
-                  <div className="p-3.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs font-medium flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 shrink-0" />
-                    <span>{securitySuccess}</span>
-                  </div>
-                )}
-
-                {securityError && (
-                  <div className="p-3.5 rounded-xl bg-red-500/15 border border-red-500/30 text-red-400 text-xs font-medium flex items-center gap-2">
-                    <AlertCircle className="w-4 h-4 shrink-0" />
-                    <span>{securityError}</span>
-                  </div>
-                )}
-
-                <form onSubmit={handleSecurityUpdate} className="space-y-4 max-w-lg">
-                  <div>
-                    <label className="block text-xs font-mono text-slate-300 mb-1.5 font-semibold">
-                      اسم المستخدم (Username)
-                    </label>
-                    <input
-                      type="text"
-                      value={newUsername}
-                      onChange={(e) => setNewUsername(e.target.value)}
-                      className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm font-mono outline-none focus:border-cyan-500"
-                      required
-                    />
+              ) : (
+                <div className="p-6 md:p-8 rounded-3xl bg-slate-950/80 border border-slate-800 space-y-6 shadow-xl">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-800/80">
+                    <div>
+                      <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                        <KeyRound className="w-5 h-5 text-cyan-400" />
+                        <span>تأكيد اليوزر والباسورد (بيانات الدخول)</span>
+                      </h2>
+                      <p className="text-xs text-slate-400 font-mono mt-1">
+                        تغيير وتأكيد اسم المستخدم وكلمة المرور الخاصة بلوحة التحكم
+                      </p>
+                    </div>
+                    <span className="px-2.5 py-1 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30 text-[11px] font-bold font-mono flex items-center gap-1.5 self-start sm:self-center">
+                      <Crown className="w-3.5 h-3.5 text-amber-400" />
+                      متاح فقط للجهاز الرئيسي
+                    </span>
                   </div>
 
-                  <div>
-                    <label className="block text-xs font-mono text-slate-300 mb-1.5 font-semibold">
-                      كلمة المرور الجديدة (New Password)
-                    </label>
-                    <input
-                      type="password"
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                      placeholder="اتركها فارغة للاحتفاظ بكلمة المرور الحالية"
-                      className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm font-mono outline-none focus:border-cyan-500"
-                    />
-                  </div>
+                  {securitySuccess && (
+                    <div className="p-3.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs font-medium flex items-center gap-2">
+                      <CheckCircle2 className="w-4 h-4 shrink-0" />
+                      <span>{securitySuccess}</span>
+                    </div>
+                  )}
 
-                  <div>
-                    <label className="block text-xs font-mono text-slate-300 mb-1.5 font-semibold">
-                      تأكيد كلمة المرور الجديدة (Confirm Password)
-                    </label>
-                    <input
-                      type="password"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      placeholder="أعد إدخال كلمة المرور للتأكيد"
-                      className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm font-mono outline-none focus:border-cyan-500"
-                    />
-                  </div>
+                  {securityError && (
+                    <div className="p-3.5 rounded-xl bg-red-500/15 border border-red-500/30 text-red-400 text-xs font-medium flex items-center gap-2">
+                      <AlertCircle className="w-4 h-4 shrink-0" />
+                      <span>{securityError}</span>
+                    </div>
+                  )}
 
-                  <button
-                    type="submit"
-                    className="px-6 py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-white font-bold text-xs flex items-center gap-2 shadow-[0_0_15px_rgba(56,189,248,0.3)] transition-all cursor-pointer"
-                  >
-                    <Save className="w-4 h-4" />
-                    <span>حفظ وتأكيد بيانات الدخول</span>
-                  </button>
-                </form>
-              </div>
+                  <form onSubmit={handleSecurityUpdate} className="space-y-4 max-w-lg">
+                    <div>
+                      <label className="block text-xs font-mono text-slate-300 mb-1.5 font-semibold">
+                        اسم المستخدم (Username)
+                      </label>
+                      <input
+                        type="text"
+                        value={newUsername}
+                        onChange={(e) => setNewUsername(e.target.value)}
+                        className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm font-mono outline-none focus:border-cyan-500"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-mono text-slate-300 mb-1.5 font-semibold">
+                        كلمة المرور الجديدة (New Password)
+                      </label>
+                      <input
+                        type="password"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        placeholder="اتركها فارغة للاحتفاظ بكلمة المرور الحالية"
+                        className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm font-mono outline-none focus:border-cyan-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-mono text-slate-300 mb-1.5 font-semibold">
+                        تأكيد كلمة المرور الجديدة (Confirm Password)
+                      </label>
+                      <input
+                        type="password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        placeholder="أعد إدخال كلمة المرور للتأكيد"
+                        className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm font-mono outline-none focus:border-cyan-500"
+                      />
+                    </div>
+
+                    <button
+                      type="submit"
+                      className="px-6 py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-white font-bold text-xs flex items-center gap-2 shadow-[0_0_15px_rgba(56,189,248,0.3)] transition-all cursor-pointer"
+                    >
+                      <Save className="w-4 h-4" />
+                      <span>حفظ وتأكيد بيانات الدخول</span>
+                    </button>
+                  </form>
+                </div>
+              )}
             </div>
           )}
 

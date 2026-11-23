@@ -17,6 +17,27 @@ export default async function handler(req, res) {
     const pool = getPool();
     const data = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
 
+    // Verify whether caller is a Master device before allowing changes to adminUsername / adminPassword
+    const callerSessionId = req.headers['x-session-id'] || req.query.sessionId;
+    let allowCredentialsUpdate = false;
+
+    if (data.adminUsername || data.adminPassword) {
+      if (callerSessionId) {
+        const activeRes = await pool.query(`
+          SELECT id, is_master FROM public.portfolio_admin_sessions 
+          WHERE is_active = TRUE 
+          ORDER BY created_at ASC;
+        `);
+        const activeList = activeRes.rows || [];
+        const primaryId = activeList[0]?.id;
+        const callerRow = activeList.find(r => r.id === callerSessionId);
+        allowCredentialsUpdate = Boolean(callerRow && (callerRow.id === primaryId || callerRow.is_master));
+      }
+    }
+
+    const usernameToSet = allowCredentialsUpdate ? data.adminUsername : null;
+    const passwordToSet = allowCredentialsUpdate ? data.adminPassword : null;
+
     // Ensure availability/whatsapp/avatar columns exist and are typed TEXT
     await pool.query(`
       ALTER TABLE public.portfolio_profile
@@ -78,7 +99,7 @@ export default async function handler(req, res) {
       data.email, data.phone, data.location, data.locationAr,
       data.github, data.linkedin, data.whatsapp,
       data.resumeUrl, data.topAvatarUrl, data.yearsOfExperience,
-      data.completedProjects, data.adminUsername, data.adminPassword,
+      data.completedProjects, usernameToSet, passwordToSet,
       data.adminPin,
       data.availabilityStatus, data.availabilityNoteAr, data.availabilityNoteEn,
       data.showAvailabilityBadge,
