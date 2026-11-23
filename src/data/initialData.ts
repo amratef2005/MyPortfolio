@@ -22,9 +22,9 @@ export const initialProfile: ProfileInfo = {
   autoExtractColors: true,
   yearsOfExperience: 2,
   completedProjects: 10,
-  adminUsername: "admin",
-  adminPassword: "admin123",
-  adminPin: "1234",
+  adminUsername: "amratefkandel",
+  adminPassword: "KandelAmr###14",
+  adminPin: "1414",
 
   // 1. Work Availability & Presence Status
   availabilityStatus: "available",

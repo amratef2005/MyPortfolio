@@ -31,7 +31,12 @@ import {
   RefreshCw,
   Image as ImageIcon,
   Pencil,
-  X
+  X,
+  Laptop,
+  Smartphone,
+  Monitor,
+  Clock,
+  ShieldAlert
 } from 'lucide-react';
 import { extractColorsFromImage, applyThemeColors, ExtractedPalette, DEFAULT_PALETTE } from '../utils/colorExtractor';
 import { compressImageFile } from '../utils/imageCompressor';
@@ -199,11 +204,99 @@ export const AdminPage: React.FC = () => {
   };
 
   // Security Form State
-  const [newUsername, setNewUsername] = useState(profile.adminUsername || 'admin');
+  const [newUsername, setNewUsername] = useState(profile.adminUsername || 'amratefkandel');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [securitySuccess, setSecuritySuccess] = useState('');
   const [securityError, setSecurityError] = useState('');
+
+  // Active Sessions / Devices Management
+  interface AdminSession {
+    id: string;
+    deviceInfo: string;
+    ipAddress: string;
+    createdAt: string;
+    lastActive: string;
+    isCurrent: boolean;
+    isOldest: boolean;
+  }
+  const [sessions, setSessions] = useState<AdminSession[]>([]);
+  const [activeSessionsCount, setActiveSessionsCount] = useState<number>(0);
+  const [loadingSessions, setLoadingSessions] = useState<boolean>(false);
+  const [terminatingOldest, setTerminatingOldest] = useState<boolean>(false);
+  const [sessionActionMessage, setSessionActionMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
+  // Fetch active sessions from serverless API
+  const fetchSessions = React.useCallback(async () => {
+    if (!isAuthenticated) return;
+    setLoadingSessions(true);
+    try {
+      const sid = typeof window !== 'undefined' ? localStorage.getItem('portfolio_admin_session_id') || '' : '';
+      const res = await fetch(`/api/admin-sessions?sessionId=${encodeURIComponent(sid)}`, {
+        headers: { 'x-session-id': sid }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setActiveSessionsCount(data.activeSessionsCount || 0);
+        setSessions(data.sessions || []);
+        if (data.isCurrentSessionActive === false) {
+          alert('تم إنهاء جلستك على هذا الجهاز (تم تسجيل الخروج بواسطة الإدارة).');
+          logout();
+        }
+      }
+    } catch {
+      // ignore
+    } finally {
+      setLoadingSessions(false);
+    }
+  }, [isAuthenticated, logout]);
+
+  React.useEffect(() => {
+    if (isAuthenticated) {
+      fetchSessions();
+      const interval = setInterval(fetchSessions, 20000);
+      return () => clearInterval(interval);
+    }
+  }, [isAuthenticated, fetchSessions]);
+
+  // Handle Terminate Oldest Device Only
+  const handleTerminateOldest = async () => {
+    if (!window.confirm('هل أنت متأكد من رغبتك في تسجيل الخروج من أقدم جهاز مسجل فقط؟')) {
+      return;
+    }
+    setTerminatingOldest(true);
+    setSessionActionMessage(null);
+    try {
+      const sid = typeof window !== 'undefined' ? localStorage.getItem('portfolio_admin_session_id') || '' : '';
+      const res = await fetch('/api/admin-sessions?action=oldest', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-session-id': sid
+        }
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setSessionActionMessage({
+          type: 'success',
+          text: 'تم تسجيل الخروج بنجاح من أقدم جهاز نشط!'
+        });
+        await fetchSessions();
+      } else {
+        setSessionActionMessage({
+          type: 'error',
+          text: data.message || 'تعذر تسجيل الخروج من أقدم جهاز.'
+        });
+      }
+    } catch {
+      setSessionActionMessage({
+        type: 'error',
+        text: 'حدث خطأ أثناء الاتصال بالخادم.'
+      });
+    } finally {
+      setTerminatingOldest(false);
+    }
+  };
 
   // Handle Login
   const handleLoginSubmit = (e: React.FormEvent) => {
@@ -239,7 +332,7 @@ export const AdminPage: React.FC = () => {
       return;
     }
 
-    const passwordToSet = newPassword.trim() ? newPassword : (profile.adminPassword || 'admin123');
+    const passwordToSet = newPassword.trim() ? newPassword : (profile.adminPassword || 'KandelAmr###14');
     updateCredentials(newUsername, passwordToSet);
     updateProfile({ adminUsername: newUsername, adminPassword: passwordToSet });
     
@@ -293,7 +386,7 @@ export const AdminPage: React.FC = () => {
                     setUsernameInput(e.target.value);
                     setLoginError('');
                   }}
-                  placeholder="admin"
+                  placeholder="اسم المستخدم (Username)"
                   className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 focus:border-cyan-500 text-white text-sm outline-none font-mono transition-all text-left placeholder:text-slate-600"
                   required
                 />
@@ -337,10 +430,10 @@ export const AdminPage: React.FC = () => {
             </button>
           </form>
 
-          {/* Quick Notice about default credentials */}
+          {/* Security Notice */}
           <div className="mt-6 pt-5 border-t border-slate-800/80 text-center">
             <p className="text-[11px] font-mono text-slate-500">
-              البيانات الافتراضية لأول دخول: <span className="text-cyan-400 font-bold">admin</span> / <span className="text-cyan-400 font-bold">admin123</span>
+              منطقة إدارية مخصصة ومحمية &bull; يُسمح بالدخول للحساب المصرح له فقط
             </p>
             <a
               href="/"
@@ -496,12 +589,20 @@ export const AdminPage: React.FC = () => {
 
           <button
             onClick={() => setActiveTab('security')}
-            className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold w-full text-right transition-all shrink-0 md:shrink ${
+            className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold w-full text-right transition-all shrink-0 md:shrink ${
               activeTab === 'security' ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30' : 'text-slate-400 hover:text-white hover:bg-slate-900'
             }`}
           >
-            <KeyRound className="w-4 h-4 shrink-0" />
-            <span>تأكيد اليوزر والباسورد</span>
+            <div className="flex items-center gap-2.5">
+              <KeyRound className="w-4 h-4 shrink-0" />
+              <span>الأمان وإدارة الأجهزة</span>
+            </div>
+            {activeSessionsCount > 0 && (
+              <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[10px] font-mono">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse inline-block" />
+                {activeSessionsCount}
+              </span>
+            )}
           </button>
 
           <button
@@ -596,6 +697,46 @@ export const AdminPage: React.FC = () => {
                 </button>
               </div>
 
+              {/* Active Sessions & Devices Quick Card */}
+              <div className="p-5 rounded-2xl bg-slate-950/80 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shrink-0">
+                    <Laptop className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                      <span>الأجهزة المتصلة حالياً:</span>
+                      <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-mono font-bold flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                        {activeSessionsCount} {activeSessionsCount === 1 ? 'جهاز نشط' : 'أجهزة نشطة'}
+                      </span>
+                    </h3>
+                    <p className="text-xs text-slate-400 font-mono mt-1">
+                      يمكنك مراقبة كافة الأجهزة المسجلة أو تسجيل الخروج من أقدم جهاز لمنع التزاحم
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  {activeSessionsCount > 1 && (
+                    <button
+                      type="button"
+                      onClick={handleTerminateOldest}
+                      disabled={terminatingOldest}
+                      className="px-3.5 py-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 text-amber-400 text-xs font-mono font-semibold transition-all disabled:opacity-50 cursor-pointer"
+                    >
+                      {terminatingOldest ? 'جاري الخروج...' : 'الخروج من أقدم جهاز فقط'}
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('security')}
+                    className="px-4 py-2 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 border border-cyan-500/30 text-cyan-400 text-xs font-mono font-semibold transition-all cursor-pointer"
+                  >
+                    إدارة الأجهزة &larr;
+                  </button>
+                </div>
+              </div>
+
               <div className="p-6 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-4">
                 <h3 className="font-bold text-white text-sm flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-cyan-400" />
@@ -605,7 +746,7 @@ export const AdminPage: React.FC = () => {
                   <li>البورتفوليو الرئيسي أصبح للعرض فقط ولا يحتوي على أي أزرار أو نوافذ إدارية.</li>
                   <li>هذه الصفحة منفصلة تماماً ومحمية باسم مستخدم وكلمة مرور.</li>
                   <li>جميع التعديلات التي تجريها هنا تنعكس فورياً ومحلياً على البورتفوليو.</li>
-                  <li>يمكنك تغيير اسم المستخدم وكلمة المرور في أي وقت من تبويب <b>"تأكيد اليوزر والباسورد"</b>.</li>
+                  <li>يمكنك مراجعة الأجهزة النشطة والتحكم بها من تبويب <b>"الأمان وإدارة الأجهزة"</b>.</li>
                 </ul>
               </div>
             </div>
@@ -1807,81 +1948,237 @@ export const AdminPage: React.FC = () => {
             </div>
           )}
 
-          {/* TAB 6: SECURITY & PASSWORD CONFIRMATION */}
+          {/* TAB 6: SECURITY & DEVICES MANAGEMENT */}
           {activeTab === 'security' && (
-            <div className="space-y-6 max-w-xl bg-slate-950/80 p-6 rounded-3xl border border-slate-800">
-              <div>
-                <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                  <KeyRound className="w-5 h-5 text-cyan-400" />
-                  <span>تأكيد اليوزر والباسورد (بيانات الدخول)</span>
-                </h2>
-                <p className="text-xs text-slate-400 font-mono mt-0.5">
-                  تغيير وتأكيد اسم المستخدم وكلمة المرور الخاصة بلوحة التحكم
-                </p>
+            <div className="space-y-8 max-w-4xl">
+              {/* SECTION 1: ACTIVE SESSIONS & DEVICES */}
+              <div className="p-6 md:p-8 rounded-3xl bg-slate-950/80 border border-slate-800 space-y-6 shadow-xl">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-slate-800">
+                  <div>
+                    <h2 className="text-xl font-bold text-white flex items-center gap-2.5">
+                      <Laptop className="w-6 h-6 text-cyan-400" />
+                      <span>إدارة الأجهزة والجلسات النشطة</span>
+                    </h2>
+                    <p className="text-xs text-slate-400 font-mono mt-1">
+                      مراقبة الأجهزة المسجلة حالياً وإمكانية طرد أقدم جهاز لمنع التزاحم
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <span className="flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 text-xs font-mono font-bold">
+                      <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                      <span>{activeSessionsCount} {activeSessionsCount === 1 ? 'جهاز نشط' : 'أجهزة نشطة'}</span>
+                    </span>
+
+                    <button
+                      type="button"
+                      onClick={fetchSessions}
+                      disabled={loadingSessions}
+                      title="تحديث قائمة الأجهزة"
+                      className="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700 transition-all disabled:opacity-50 cursor-pointer"
+                    >
+                      <RefreshCw className={`w-4 h-4 ${loadingSessions ? 'animate-spin text-cyan-400' : ''}`} />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Session Action Alert */}
+                {sessionActionMessage && (
+                  <div className={`p-4 rounded-2xl border text-xs font-medium flex items-center gap-2.5 ${
+                    sessionActionMessage.type === 'success'
+                      ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-400'
+                      : 'bg-red-500/15 border-red-500/30 text-red-400'
+                  }`}>
+                    {sessionActionMessage.type === 'success' ? (
+                      <CheckCircle2 className="w-5 h-5 shrink-0" />
+                    ) : (
+                      <AlertCircle className="w-5 h-5 shrink-0" />
+                    )}
+                    <span>{sessionActionMessage.text}</span>
+                  </div>
+                )}
+
+                {/* Terminate Oldest Device Control */}
+                <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div className="flex items-start gap-3">
+                    <Clock className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="text-xs font-bold text-amber-300">طرد أقدم جهاز مسجل فقط</h4>
+                      <p className="text-[11px] text-amber-400/80 mt-0.5 leading-relaxed">
+                        عند وجود جلسات متعددة، يمكنك تسجيل الخروج فورياً من الجهاز الأقدم لضمان الأمان وإلغاء أي جلسة مهجورة.
+                      </p>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={handleTerminateOldest}
+                    disabled={terminatingOldest || activeSessionsCount <= 1}
+                    className={`px-4 py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all whitespace-nowrap cursor-pointer shrink-0 ${
+                      activeSessionsCount > 1
+                        ? 'bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-[0_0_15px_rgba(245,158,11,0.3)]'
+                        : 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700'
+                    }`}
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span>{terminatingOldest ? 'جاري الطرد...' : 'تسجيل الخروج من أقدم جهاز فقط'}</span>
+                  </button>
+                </div>
+
+                {/* Sessions Cards List */}
+                <div className="space-y-3">
+                  <h4 className="text-xs font-mono font-semibold text-slate-400">
+                    الأجهزة المتصلة المسجلة في النظام ({sessions.length}):
+                  </h4>
+
+                  {sessions.length === 0 ? (
+                    <div className="p-6 text-center rounded-2xl bg-slate-900/50 border border-slate-800 text-slate-500 text-xs font-mono">
+                      لا توجد أجهزة مسجلة حالياً أو جاري التحميل...
+                    </div>
+                  ) : (
+                    sessions.map((sess) => {
+                      const isMobile = /mobile|iphone|android|ipad/i.test(sess.deviceInfo || '');
+                      const formattedTime = sess.createdAt ? new Date(sess.createdAt).toLocaleString('ar-EG', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      }) : 'غير محدد';
+
+                      return (
+                        <div
+                          key={sess.id}
+                          className={`p-4 rounded-2xl border transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
+                            sess.isCurrent
+                              ? 'bg-cyan-950/20 border-cyan-500/40 shadow-[0_0_15px_rgba(56,189,248,0.1)]'
+                              : sess.isOldest
+                                ? 'bg-amber-950/20 border-amber-500/40'
+                                : 'bg-slate-900/40 border-slate-800/80'
+                          }`}
+                        >
+                          <div className="flex items-center gap-3.5">
+                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
+                              sess.isCurrent
+                                ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30'
+                                : sess.isOldest
+                                  ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
+                                  : 'bg-slate-800 text-slate-400'
+                            }`}>
+                              {isMobile ? <Smartphone className="w-5 h-5" /> : <Monitor className="w-5 h-5" />}
+                            </div>
+
+                            <div>
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <span className="text-sm font-bold text-white">
+                                  {sess.deviceInfo || 'متصفح غير معروف'}
+                                </span>
+                                {sess.isCurrent && (
+                                  <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold font-mono flex items-center gap-1">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                                    هذا الجهاز (الجلسة الحالية)
+                                  </span>
+                                )}
+                                {sess.isOldest && !sess.isCurrent && (
+                                  <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 text-[10px] font-bold font-mono">
+                                    أقدم جهاز مسجل
+                                  </span>
+                                )}
+                              </div>
+
+                              <div className="flex items-center gap-3 text-[11px] font-mono text-slate-400 mt-1 flex-wrap">
+                                <span>IP: <span className="text-slate-300">{sess.ipAddress || 'محلي'}</span></span>
+                                <span>&bull;</span>
+                                <span>وقت الدخول: <span className="text-slate-300">{formattedTime}</span></span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="text-left sm:text-right text-[11px] font-mono text-slate-500 shrink-0">
+                            معرّف الجلسة: <span className="text-slate-400 font-bold">{sess.id.slice(-8)}</span>
+                          </div>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
               </div>
 
-              {securitySuccess && (
-                <div className="p-3.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs font-medium flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 shrink-0" />
-                  <span>{securitySuccess}</span>
-                </div>
-              )}
-
-              {securityError && (
-                <div className="p-3.5 rounded-xl bg-red-500/15 border border-red-500/30 text-red-400 text-xs font-medium flex items-center gap-2">
-                  <AlertCircle className="w-4 h-4 shrink-0" />
-                  <span>{securityError}</span>
-                </div>
-              )}
-
-              <form onSubmit={handleSecurityUpdate} className="space-y-4">
+              {/* SECTION 2: USERNAME & PASSWORD SECURITY */}
+              <div className="p-6 md:p-8 rounded-3xl bg-slate-950/80 border border-slate-800 space-y-6 shadow-xl">
                 <div>
-                  <label className="block text-xs font-mono text-slate-300 mb-1.5 font-semibold">
-                    اسم المستخدم (Username)
-                  </label>
-                  <input
-                    type="text"
-                    value={newUsername}
-                    onChange={(e) => setNewUsername(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm font-mono outline-none focus:border-cyan-500"
-                    required
-                  />
+                  <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                    <KeyRound className="w-5 h-5 text-cyan-400" />
+                    <span>تأكيد اليوزر والباسورد (بيانات الدخول)</span>
+                  </h2>
+                  <p className="text-xs text-slate-400 font-mono mt-1">
+                    تغيير وتأكيد اسم المستخدم وكلمة المرور الخاصة بلوحة التحكم
+                  </p>
                 </div>
 
-                <div>
-                  <label className="block text-xs font-mono text-slate-300 mb-1.5 font-semibold">
-                    كلمة المرور الجديدة (New Password)
-                  </label>
-                  <input
-                    type="password"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    placeholder="اتركها فارغة إن لم ترغب في التغيير"
-                    className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm font-mono outline-none focus:border-cyan-500"
-                  />
-                </div>
+                {securitySuccess && (
+                  <div className="p-3.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs font-medium flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 shrink-0" />
+                    <span>{securitySuccess}</span>
+                  </div>
+                )}
 
-                <div>
-                  <label className="block text-xs font-mono text-slate-300 mb-1.5 font-semibold">
-                    تأكيد كلمة المرور الجديدة (Confirm Password)
-                  </label>
-                  <input
-                    type="password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    placeholder="أعد إدخال كلمة المرور للتأكيد"
-                    className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm font-mono outline-none focus:border-cyan-500"
-                  />
-                </div>
+                {securityError && (
+                  <div className="p-3.5 rounded-xl bg-red-500/15 border border-red-500/30 text-red-400 text-xs font-medium flex items-center gap-2">
+                    <AlertCircle className="w-4 h-4 shrink-0" />
+                    <span>{securityError}</span>
+                  </div>
+                )}
 
-                <button
-                  type="submit"
-                  className="px-6 py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-white font-bold text-xs flex items-center gap-2 shadow-[0_0_15px_rgba(56,189,248,0.3)] transition-all cursor-pointer"
-                >
-                  <Save className="w-4 h-4" />
-                  <span>حفظ وتأكيد بيانات الدخول</span>
-                </button>
-              </form>
+                <form onSubmit={handleSecurityUpdate} className="space-y-4 max-w-lg">
+                  <div>
+                    <label className="block text-xs font-mono text-slate-300 mb-1.5 font-semibold">
+                      اسم المستخدم (Username)
+                    </label>
+                    <input
+                      type="text"
+                      value={newUsername}
+                      onChange={(e) => setNewUsername(e.target.value)}
+                      className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm font-mono outline-none focus:border-cyan-500"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-mono text-slate-300 mb-1.5 font-semibold">
+                      كلمة المرور الجديدة (New Password)
+                    </label>
+                    <input
+                      type="password"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      placeholder="اتركها فارغة للاحتفاظ بكلمة المرور الحالية"
+                      className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm font-mono outline-none focus:border-cyan-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-mono text-slate-300 mb-1.5 font-semibold">
+                      تأكيد كلمة المرور الجديدة (Confirm Password)
+                    </label>
+                    <input
+                      type="password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      placeholder="أعد إدخال كلمة المرور للتأكيد"
+                      className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm font-mono outline-none focus:border-cyan-500"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="px-6 py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-white font-bold text-xs flex items-center gap-2 shadow-[0_0_15px_rgba(56,189,248,0.3)] transition-all cursor-pointer"
+                  >
+                    <Save className="w-4 h-4" />
+                    <span>حفظ وتأكيد بيانات الدخول</span>
+                  </button>
+                </form>
+              </div>
             </div>
           )}
 

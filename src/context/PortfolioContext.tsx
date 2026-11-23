@@ -3,7 +3,7 @@ import { ProfileInfo, Project, Certificate, SkillCategory, ContactMessage, Exper
 import { initialProfile, initialProjects, initialCertificates, initialSkillCategories, initialExperiences } from '../data/initialData';
 import { extractColorsFromImage, applyThemeColors } from '../utils/colorExtractor';
 
-const DATA_SEED_KEY = 'portfolio_seed_v9';
+const DATA_SEED_KEY = 'portfolio_seed_v10';
 
 interface PortfolioContextType {
   profile: ProfileInfo;
@@ -285,23 +285,42 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   // Auth methods
   const login = (username: string, password?: string) => {
-    const validUser = (profile.adminUsername || 'admin').toLowerCase();
-    const validPass = profile.adminPassword || 'admin123';
+    const validUser = (profile.adminUsername || 'amratefkandel').trim().toLowerCase();
+    const validPass = profile.adminPassword || 'KandelAmr###14';
     
     // Case 1: Both username and password provided
     if (password !== undefined) {
       if (username.trim().toLowerCase() === validUser && password === validPass) {
         setIsAuthenticated(true);
         sessionStorage.setItem('portfolio_admin_auth', 'true');
+        
+        // Register session in Supabase
+        const sid = `sess_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+        localStorage.setItem('portfolio_admin_session_id', sid);
+        fetch('/api/admin-sessions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sessionId: sid })
+        }).catch(() => {});
+
         return true;
       }
       return false;
     }
 
-    // Case 2: Single PIN or password provided (fallback)
-    if (username.trim() === validPass || username.trim() === profile.adminPin) {
+    // Case 2: Single PIN or master password provided
+    if (username.trim() === validPass) {
       setIsAuthenticated(true);
       sessionStorage.setItem('portfolio_admin_auth', 'true');
+      
+      const sid = `sess_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+      localStorage.setItem('portfolio_admin_session_id', sid);
+      fetch('/api/admin-sessions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId: sid })
+      }).catch(() => {});
+
       return true;
     }
 
@@ -309,6 +328,11 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   };
 
   const logout = () => {
+    const sid = localStorage.getItem('portfolio_admin_session_id');
+    if (sid) {
+      fetch(`/api/admin-sessions?sessionId=${sid}`, { method: 'DELETE' }).catch(() => {});
+      localStorage.removeItem('portfolio_admin_session_id');
+    }
     setIsAuthenticated(false);
     sessionStorage.removeItem('portfolio_admin_auth');
     setIsAdminOpen(false);

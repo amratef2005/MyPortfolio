@@ -97,24 +97,24 @@ export const AdminDashboard: React.FC = () => {
 
           <h3 className="text-2xl font-bold text-white mb-2">لوحة التحكم في البرتفوليو</h3>
           <p className="text-slate-400 text-xs font-mono mb-6">
-            أدخل رمز الـ PIN السري للمتابعة (الرمز الافتراضي: <span className="text-cyan-400 font-bold">1234</span>)
+            أدخل كلمة المرور الإدارية للمتابعة
           </p>
 
           <form onSubmit={handleLoginSubmit} className="space-y-4">
             <input
               type="password"
-              maxLength={8}
+              maxLength={64}
               value={pinInput}
               onChange={(e) => {
                 setPinInput(e.target.value);
                 setPinError(false);
               }}
-              placeholder="••••"
-              className="w-full text-center text-2xl tracking-[0.5em] py-3 rounded-xl bg-slate-950 border border-slate-800 focus:border-cyan-500 text-white outline-none font-mono"
+              placeholder="••••••••"
+              className="w-full text-center text-xl tracking-[0.2em] py-3 rounded-xl bg-slate-950 border border-slate-800 focus:border-cyan-500 text-white outline-none font-mono"
             />
 
             {pinError && (
-              <p className="text-red-400 text-xs font-mono">الرمز غير صحيح، حاول مجدداً.</p>
+              <p className="text-red-400 text-xs font-mono">كلمة المرور غير صحيحة، يرجى المحاولة مجدداً.</p>
             )}
 
             <button
