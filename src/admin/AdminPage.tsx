@@ -552,16 +552,16 @@ export const AdminPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#06080d] text-slate-100 flex flex-col font-cairo selection:bg-cyan-500/30 selection:text-cyan-200">
       {/* Top Header */}
-      <header className="px-6 py-4 bg-slate-950/90 border-b border-slate-800/80 sticky top-0 z-40 backdrop-blur-md flex items-center justify-between">
+      <header className="px-3 xs:px-4 sm:px-6 py-2.5 sm:py-3.5 bg-slate-950/90 border-b border-slate-800/80 sticky top-0 z-40 backdrop-blur-md flex flex-wrap sm:flex-nowrap items-center justify-between gap-2.5 sm:gap-4 pt-[max(0.625rem,env(safe-area-inset-top))]">
         {/* Navbar Live Brand Card & Quick Customizer Trigger (Matches Image 2) */}
         <button
           type="button"
           onClick={() => setIsBrandModalOpen(true)}
           title="انقر لتعديل هوية النافبار (الصورة، والاسم، والمسمى الوظيفي)"
-          className="flex items-center gap-3 group p-1.5 sm:px-3 sm:py-2 rounded-2xl bg-slate-900/60 hover:bg-slate-800/80 border border-slate-800 hover:border-cyan-500/40 transition-all text-start shadow-sm hover:shadow-[0_0_20px_rgba(56,189,248,0.2)] cursor-pointer"
+          className="flex items-center gap-2 xs:gap-2.5 sm:gap-3 group p-1.5 sm:px-3 sm:py-2 rounded-2xl bg-slate-900/60 hover:bg-slate-800/80 border border-slate-800 hover:border-cyan-500/40 transition-all text-start shadow-sm hover:shadow-[0_0_20px_rgba(56,189,248,0.2)] cursor-pointer min-w-0 flex-1 sm:flex-initial max-w-[calc(100%-165px)] sm:max-w-none"
         >
           {/* Avatar with Camera/Pencil overlay */}
-          <div className="relative w-10 h-10 sm:w-11 sm:h-11 rounded-xl overflow-hidden bg-gradient-to-tr from-cyan-500 to-indigo-600 p-0.5 shadow-[0_0_15px_rgba(56,189,248,0.35)] shrink-0">
+          <div className="relative w-9 h-9 sm:w-11 sm:h-11 rounded-xl overflow-hidden bg-gradient-to-tr from-cyan-500 to-indigo-600 p-0.5 shadow-[0_0_15px_rgba(56,189,248,0.35)] shrink-0">
             <img 
               src={profile.topAvatarUrl || profile.heroAvatarUrl || "/my.jpg"} 
               alt={profile.name} 
@@ -576,39 +576,40 @@ export const AdminPage: React.FC = () => {
           </div>
 
           {/* Name & Subtitle matching the Navbar Brand (Image 2) */}
-          <div className="flex flex-col">
-            <div className="flex items-center gap-2">
-              <span className="font-bold text-white text-sm sm:text-base tracking-wide group-hover:text-cyan-300 transition-colors">
-                {profile.name || 'Amr Atef Imam Kandel'}
+          <div className="flex flex-col min-w-0">
+            <div className="flex items-center gap-1.5 xs:gap-2">
+              <span className="font-bold text-white text-xs xs:text-sm sm:text-base tracking-wide group-hover:text-cyan-300 transition-colors truncate block">
+                <span className="sm:hidden">{profile.shortName || 'Amr Atef'}</span>
+                <span className="hidden sm:inline">{profile.name || 'Amr Atef Imam Kandel'}</span>
               </span>
-              <span className="hidden xs:inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-cyan-500/15 border border-cyan-500/30 text-cyan-400 text-[10px] font-mono group-hover:bg-cyan-500/25 transition-all">
+              <span className="hidden md:inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-cyan-500/15 border border-cyan-500/30 text-cyan-400 text-[10px] font-mono group-hover:bg-cyan-500/25 transition-all shrink-0">
                 <Pencil className="w-2.5 h-2.5" />
                 تعديل الهوية
               </span>
             </div>
-            <span className="text-[10px] sm:text-[11px] font-mono text-cyan-400/90 tracking-wider">
+            <span className="text-[10px] xs:text-[11px] sm:text-xs font-mono text-cyan-400/90 tracking-wider truncate block">
               {profile.title ? profile.title.toUpperCase() : '.NET BACKEND DEVELOPER'}
             </span>
           </div>
         </button>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
           <a
             href="/"
             target="_blank"
             rel="noreferrer"
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 text-xs font-mono font-semibold transition-all shadow-[0_0_12px_rgba(56,189,248,0.2)]"
+            className="flex items-center justify-center gap-1.5 h-11 min-h-[44px] px-2.5 sm:px-3.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 text-xs font-mono font-semibold transition-all shadow-[0_0_12px_rgba(56,189,248,0.2)] shrink-0 touch-manipulation"
           >
-            <ExternalLink className="w-3.5 h-3.5" />
+            <ExternalLink className="w-3.5 h-3.5 shrink-0" />
             <span className="hidden sm:inline">معاينة البورتفوليو الحقيقي</span>
             <span className="sm:hidden">البورتفوليو</span>
           </a>
 
           <button
             onClick={logout}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 text-xs font-mono font-semibold transition-all"
+            className="flex items-center justify-center gap-1.5 h-11 min-h-[44px] px-2.5 sm:px-3.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 text-xs font-mono font-semibold transition-all shrink-0 touch-manipulation"
           >
-            <LogOut className="w-3.5 h-3.5" />
+            <LogOut className="w-3.5 h-3.5 shrink-0 rtl-flip" />
             <span>خروج</span>
           </button>
         </div>
@@ -732,7 +733,7 @@ export const AdminPage: React.FC = () => {
         </aside>
 
         {/* Content Body */}
-        <main className="flex-1 p-6 md:p-8 overflow-y-auto max-w-6xl">
+        <main className="flex-1 p-3.5 sm:p-6 md:p-8 overflow-y-auto max-w-6xl w-full min-w-0 pb-[max(2rem,env(safe-area-inset-bottom))]">
           {/* TAB 1: OVERVIEW */}
           {activeTab === 'overview' && (
             <div className="space-y-6">
@@ -763,15 +764,15 @@ export const AdminPage: React.FC = () => {
               </div>
 
               {/* Quick Status Bar */}
-              <div className="p-5 rounded-2xl bg-slate-950/80 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0">
+              <div className="p-4 sm:p-5 rounded-2xl bg-slate-950/80 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 min-w-0">
+                <div className="flex items-start sm:items-center gap-3 min-w-0 flex-1">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0 mt-0.5 sm:mt-0">
                     <Radio className="w-5 h-5 animate-pulse" />
                   </div>
-                  <div>
-                    <h3 className="text-sm font-bold text-white flex items-center gap-2 flex-wrap">
+                  <div className="min-w-0 flex-1">
+                    <h3 className="text-xs sm:text-sm font-bold text-white flex items-center gap-2 flex-wrap">
                       <span>الحالة الحية الحالية:</span>
-                      <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-mono font-semibold ${
+                      <span className={`px-2.5 py-0.5 rounded-full text-xs font-mono font-semibold ${
                         (profileForm.availabilityStatus || 'available') === 'available'
                           ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
                           : ((profileForm.availabilityStatus === 'busy')
@@ -781,7 +782,7 @@ export const AdminPage: React.FC = () => {
                         {(profileForm.availabilityStatus || 'available') === 'available' ? 'متاح للعمل (Available) 🟢' : ((profileForm.availabilityStatus === 'busy') ? 'مشغول بمشاريع (Busy) 🟡' : 'غير متاح (Offline) ⚪')}
                       </span>
                     </h3>
-                    <p className="text-xs text-slate-400 font-mono mt-1">
+                    <p className="text-xs sm:text-sm text-slate-400 mt-1 leading-[1.75]">
                       واتساب: {(profileForm.whatsappStatus || 'online') === 'online' ? 'متصل للرد الفوري 🟢' : ((profileForm.whatsappStatus === 'delayed') ? 'الرد خلال ساعات 🟡' : 'غير متصل ⚪')}
                     </p>
                   </div>
@@ -789,40 +790,40 @@ export const AdminPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setActiveTab('status')}
-                  className="px-4 py-2 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 border border-cyan-500/30 text-cyan-400 text-xs font-mono font-semibold transition-all self-start sm:self-center"
+                  className="min-h-[44px] px-4 py-2.5 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 border border-cyan-500/30 text-cyan-400 text-xs font-mono font-semibold transition-all self-start sm:self-center shrink-0 flex items-center justify-center"
                 >
                   تعديل الحالة الآن &larr;
                 </button>
               </div>
 
               {/* Active Sessions & Devices Quick Card */}
-              <div className="p-5 rounded-2xl bg-slate-950/80 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shrink-0">
+              <div className="p-4 sm:p-5 rounded-2xl bg-slate-950/80 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 min-w-0">
+                <div className="flex items-start sm:items-center gap-3 min-w-0 flex-1">
+                  <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shrink-0 mt-0.5 sm:mt-0">
                     <Laptop className="w-5 h-5" />
                   </div>
-                  <div>
-                    <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                  <div className="min-w-0 flex-1">
+                    <h3 className="text-xs sm:text-sm font-bold text-white flex items-center gap-2 flex-wrap">
                       <span>الأجهزة المتصلة حالياً:</span>
                       <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-mono font-bold flex items-center gap-1.5">
                         <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                         {activeSessionsCount} {activeSessionsCount === 1 ? 'جهاز نشط' : 'أجهزة نشطة'}
                       </span>
                     </h3>
-                    <p className="text-xs text-slate-400 font-mono mt-1">
+                    <p className="text-xs sm:text-sm text-slate-400 mt-1 leading-[1.75] break-words">
                       {isCallerMaster
                         ? 'بصفتك الجهاز الرئيسي (أقدم جهاز)، يمكنك طرد أي جهاز أحدث أو مساواته معك في الصلاحيات'
                         : 'يمكنك مراجعة قائمة الأجهزة النشطة المسجلة حالياً في النظام'}
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap shrink-0">
                   {isCallerMaster && activeSessionsCount > 1 && (
                     <button
                       type="button"
                       onClick={handleTerminateNewest}
                       disabled={terminatingNewest}
-                      className="px-3.5 py-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 text-amber-400 text-xs font-mono font-semibold transition-all disabled:opacity-50 cursor-pointer"
+                      className="min-h-[44px] px-3.5 py-2.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 text-amber-400 text-xs font-mono font-semibold transition-all disabled:opacity-50 cursor-pointer flex items-center justify-center"
                     >
                       {terminatingNewest ? 'جاري الطرد...' : 'طرد أحدث جهاز مسجل'}
                     </button>
@@ -830,7 +831,7 @@ export const AdminPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setActiveTab('security')}
-                    className="px-4 py-2 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 border border-cyan-500/30 text-cyan-400 text-xs font-mono font-semibold transition-all cursor-pointer"
+                    className="min-h-[44px] px-4 py-2.5 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 border border-cyan-500/30 text-cyan-400 text-xs font-mono font-semibold transition-all cursor-pointer flex items-center justify-center"
                   >
                     إدارة الأجهزة &larr;
                   </button>
@@ -2052,20 +2053,20 @@ export const AdminPage: React.FC = () => {
           {activeTab === 'security' && (
             <div className="space-y-8 max-w-4xl">
               {/* SECTION 1: ACTIVE SESSIONS & DEVICES */}
-              <div className="p-6 md:p-8 rounded-3xl bg-slate-950/80 border border-slate-800 space-y-6 shadow-xl">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-slate-800">
-                  <div>
-                    <h2 className="text-xl font-bold text-white flex items-center gap-2.5">
-                      <Laptop className="w-6 h-6 text-cyan-400" />
-                      <span>إدارة الأجهزة والجلسات النشطة</span>
+              <div className="p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl bg-slate-950/80 border border-slate-800 space-y-5 sm:space-y-6 shadow-xl min-w-0">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 pb-4 sm:pb-5 border-b border-slate-800 min-w-0">
+                  <div className="min-w-0">
+                    <h2 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2.5">
+                      <Laptop className="w-5 sm:w-6 h-5 sm:h-6 text-cyan-400 shrink-0" />
+                      <span className="truncate">إدارة الأجهزة والجلسات النشطة</span>
                     </h2>
-                    <p className="text-xs text-slate-400 font-mono mt-1">
+                    <p className="text-xs sm:text-sm text-slate-400 mt-1 leading-[1.75] break-words">
                       مراقبة الأجهزة المسجلة حالياً وإمكانية طرد أقدم جهاز لمنع التزاحم
                     </p>
                   </div>
 
-                  <div className="flex items-center gap-3">
-                    <span className="flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 text-xs font-mono font-bold">
+                  <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
+                    <span className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 text-xs font-mono font-bold">
                       <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                       <span>{activeSessionsCount} {activeSessionsCount === 1 ? 'جهاز نشط' : 'أجهزة نشطة'}</span>
                     </span>
@@ -2075,7 +2076,7 @@ export const AdminPage: React.FC = () => {
                       onClick={fetchSessions}
                       disabled={loadingSessions}
                       title="تحديث قائمة الأجهزة"
-                      className="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700 transition-all disabled:opacity-50 cursor-pointer"
+                      className="h-11 w-11 min-h-[44px] min-w-[44px] rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700 transition-all disabled:opacity-50 cursor-pointer flex items-center justify-center shrink-0"
                     >
                       <RefreshCw className={`w-4 h-4 ${loadingSessions ? 'animate-spin text-cyan-400' : ''}`} />
                     </button>
@@ -2084,7 +2085,7 @@ export const AdminPage: React.FC = () => {
 
                 {/* Session Action Alert */}
                 {sessionActionMessage && (
-                  <div className={`p-4 rounded-2xl border text-xs font-medium flex items-center gap-2.5 ${
+                  <div className={`p-4 rounded-2xl border text-xs sm:text-sm font-medium flex items-center gap-2.5 ${
                     sessionActionMessage.type === 'success'
                       ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-400'
                       : 'bg-red-500/15 border-red-500/30 text-red-400'
@@ -2100,19 +2101,19 @@ export const AdminPage: React.FC = () => {
 
                 {/* Terminate Newest / Master Control Card */}
                 {isCallerMaster ? (
-                  <div className="p-5 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div className="flex items-start gap-3.5">
-                      <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center justify-center shrink-0">
+                  <div className="p-4 sm:p-5 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4 min-w-0">
+                    <div className="flex items-start gap-3.5 min-w-0 flex-1">
+                      <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center justify-center shrink-0 mt-0.5">
                         <Crown className="w-5 h-5 text-amber-400" />
                       </div>
-                      <div>
-                        <h4 className="text-xs font-bold text-amber-300 flex items-center gap-2">
+                      <div className="min-w-0 flex-1">
+                        <h4 className="text-xs sm:text-sm font-bold text-amber-300 flex items-center gap-2 flex-wrap">
                           <span>أنت مسجل كجهاز رئيسي (Master Device) 👑</span>
-                          <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-mono border border-amber-500/30">
+                          <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-xs font-mono border border-amber-500/30">
                             سلطة عليا
                           </span>
                         </h4>
-                        <p className="text-[11px] text-amber-400/80 mt-1 leading-relaxed">
+                        <p className="text-xs sm:text-sm text-amber-400/90 mt-1.5 leading-[1.75] break-words">
                           بصفتك أقدم جهاز (أو مفوضاً بصلاحيات كاملة)، يمكنك طرد أحدث الأجهزة المسجلة فورياً، أو اختيار أي جهاز بالأسفل لطرده أو مساواته معك في الصلاحيات.
                         </p>
                       </div>
@@ -2122,22 +2123,22 @@ export const AdminPage: React.FC = () => {
                       type="button"
                       onClick={handleTerminateNewest}
                       disabled={terminatingNewest || activeSessionsCount <= 1}
-                      className={`px-4 py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all whitespace-nowrap cursor-pointer shrink-0 ${
+                      className={`min-h-[44px] px-4 py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all whitespace-nowrap cursor-pointer shrink-0 ${
                         activeSessionsCount > 1
                           ? 'bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-[0_0_15px_rgba(245,158,11,0.3)]'
                           : 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700'
                       }`}
                     >
-                      <LogOut className="w-4 h-4" />
+                      <LogOut className="w-4 h-4 rtl-flip" />
                       <span>{terminatingNewest ? 'جاري الطرد...' : 'طرد أحدث جهاز مسجل'}</span>
                     </button>
                   </div>
                 ) : (
-                  <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 flex items-center gap-3">
-                    <ShieldAlert className="w-5 h-5 text-slate-400 shrink-0" />
-                    <div>
-                      <h4 className="text-xs font-bold text-slate-300">جلسة عادية تابعة (Standard Device) 💻</h4>
-                      <p className="text-[11px] text-slate-400 mt-0.5 leading-relaxed">
+                  <div className="p-3.5 sm:p-4 rounded-2xl bg-slate-900 border border-slate-800 flex items-start gap-3 min-w-0">
+                    <ShieldAlert className="w-5 h-5 text-slate-400 shrink-0 mt-0.5" />
+                    <div className="min-w-0 flex-1">
+                      <h4 className="text-xs sm:text-sm font-bold text-slate-300 leading-snug">جلسة عادية تابعة (Standard Device) 💻</h4>
+                      <p className="text-xs sm:text-sm text-slate-400 mt-1 leading-[1.75] break-words">
                         هذا الجهاز لا يملك صلاحية طرد الأجهزة الرئيسية. الصلاحية مقتصرة حصرياً على أقدم جهاز متصل أو الأجهزة التي تم تفويضها.
                       </p>
                     </div>
@@ -2168,7 +2169,7 @@ export const AdminPage: React.FC = () => {
                       return (
                         <div
                           key={sess.id}
-                          className={`p-4 rounded-2xl border transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 ${
+                          className={`p-3.5 sm:p-4 rounded-2xl border transition-all flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4 min-w-0 ${
                             sess.isCurrent
                               ? 'bg-cyan-950/20 border-cyan-500/40 shadow-[0_0_15px_rgba(56,189,248,0.1)]'
                               : sess.isPrimaryMaster
@@ -2178,8 +2179,8 @@ export const AdminPage: React.FC = () => {
                                   : 'bg-slate-900/40 border-slate-800/80'
                           }`}
                         >
-                          <div className="flex items-center gap-3.5">
-                            <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${
+                          <div className="flex items-start sm:items-center gap-3 sm:gap-3.5 min-w-0 flex-1">
+                            <div className={`w-10 sm:w-11 h-10 sm:h-11 rounded-xl flex items-center justify-center shrink-0 mt-0.5 sm:mt-0 ${
                               sess.isPrimaryMaster
                                 ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
                                 : sess.isMaster
@@ -2195,38 +2196,38 @@ export const AdminPage: React.FC = () => {
                               )}
                             </div>
 
-                            <div>
+                            <div className="min-w-0 flex-1">
                               <div className="flex items-center gap-2 flex-wrap">
-                                <span className="text-sm font-bold text-white">
+                                <span className="text-xs sm:text-sm font-bold text-white break-words">
                                   {sess.deviceInfo || 'متصفح غير معروف'}
                                 </span>
 
                                 {/* Role Badges */}
                                 {sess.isPrimaryMaster ? (
-                                  <span className="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] font-bold font-mono flex items-center gap-1">
+                                  <span className="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-xs font-bold font-mono flex items-center gap-1">
                                     <Crown className="w-3 h-3 text-amber-400" />
                                     الجهاز الرئيسي الأول (أقدم جهاز)
                                   </span>
                                 ) : sess.isMaster ? (
-                                  <span className="px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 text-[10px] font-bold font-mono flex items-center gap-1">
+                                  <span className="px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 text-xs font-bold font-mono flex items-center gap-1">
                                     <Shield className="w-3 h-3 text-indigo-400" />
                                     جهاز مفوض (صلاحيات كاملة)
                                   </span>
                                 ) : (
-                                  <span className="px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700 text-[10px] font-mono">
+                                  <span className="px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700 text-xs font-mono">
                                     جهاز تابع
                                   </span>
                                 )}
 
                                 {sess.isCurrent && (
-                                  <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold font-mono flex items-center gap-1">
+                                  <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-bold font-mono flex items-center gap-1">
                                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                                     هذا الجهاز (الجلسة الحالية)
                                   </span>
                                 )}
                               </div>
 
-                              <div className="flex items-center gap-3 text-[11px] font-mono text-slate-400 mt-1 flex-wrap">
+                              <div className="flex items-center gap-2 sm:gap-3 text-xs font-mono text-slate-400 mt-1.5 flex-wrap">
                                 <span>IP: <span className="text-slate-300">{sess.ipAddress || 'محلي'}</span></span>
                                 <span>&bull;</span>
                                 <span>وقت الدخول: <span className="text-slate-300">{formattedTime}</span></span>
@@ -2245,7 +2246,7 @@ export const AdminPage: React.FC = () => {
                                   type="button"
                                   onClick={() => handleToggleMaster(sess.id, !sess.isMaster, sess.deviceInfo)}
                                   disabled={actionTargetId === sess.id}
-                                  className={`px-3 py-1.5 rounded-xl text-[11px] font-mono font-semibold transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50 ${
+                                  className={`min-h-[40px] px-3.5 py-2 rounded-xl text-xs font-mono font-semibold transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50 ${
                                     sess.isMaster
                                       ? 'bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700'
                                       : 'bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 border border-cyan-500/30'
@@ -2263,10 +2264,10 @@ export const AdminPage: React.FC = () => {
                                   type="button"
                                   onClick={() => handleTerminateDevice(sess.id, sess.deviceInfo)}
                                   disabled={actionTargetId === sess.id}
-                                  className="px-3 py-1.5 rounded-xl bg-red-500/15 hover:bg-red-500/25 text-red-400 border border-red-500/30 text-[11px] font-mono font-semibold transition-all flex items-center gap-1 cursor-pointer disabled:opacity-50"
+                                  className="min-h-[40px] px-3.5 py-2 rounded-xl bg-red-500/15 hover:bg-red-500/25 text-red-400 border border-red-500/30 text-xs font-mono font-semibold transition-all flex items-center gap-1 cursor-pointer disabled:opacity-50"
                                   title="طرد هذا الجهاز وإلغاء جلسته فورياً"
                                 >
-                                  <LogOut className="w-3.5 h-3.5" />
+                                  <LogOut className="w-3.5 h-3.5 rtl-flip" />
                                   <span>طرد هذا الجهاز</span>
                                 </button>
                               )}
@@ -2281,26 +2282,26 @@ export const AdminPage: React.FC = () => {
 
               {/* SECTION 2: USERNAME & PASSWORD SECURITY (LOCKED & HIDDEN FOR NON-MASTER) */}
               {!isCallerMaster ? (
-                <div className="p-6 md:p-8 rounded-3xl bg-slate-950/80 border border-slate-800 space-y-3 shadow-xl">
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-500 shrink-0">
-                      <Lock className="w-6 h-6 text-slate-500" />
+                <div className="p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl bg-slate-950/80 border border-slate-800 space-y-3 shadow-xl min-w-0">
+                  <div className="flex items-start gap-3.5 sm:gap-4 min-w-0">
+                    <div className="w-11 sm:w-12 h-11 sm:h-12 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-500 shrink-0 mt-0.5">
+                      <Lock className="w-5 sm:w-6 h-5 sm:h-6 text-slate-500" />
                     </div>
-                    <div>
+                    <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <h3 className="text-base font-bold text-white">تأكيد وتغيير بيانات الدخول (محجوب ومحمي)</h3>
-                        <span className="px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700 text-[10px] font-mono">
+                        <h3 className="text-sm sm:text-base font-bold text-white">تأكيد وتغيير بيانات الدخول (محجوب ومحمي)</h3>
+                        <span className="px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700 text-xs font-mono">
                           صلاحية مقيدة 🔒
                         </span>
                       </div>
-                      <p className="text-xs text-slate-400 font-mono mt-1.5 leading-relaxed">
+                      <p className="text-xs sm:text-sm text-slate-400 mt-1.5 leading-[1.75] break-words">
                         تعديل اسم المستخدم وكلمة المرور محجوب ومقتصر حصرياً على <b>الجهاز الرئيسي الأول (أقدم جهاز)</b> أو الأجهزة التي تم تفويضها بمساواة الصلاحيات.
                       </p>
                     </div>
                   </div>
                 </div>
               ) : (
-                <div className="p-6 md:p-8 rounded-3xl bg-slate-950/80 border border-slate-800 space-y-6 shadow-xl">
+                <div className="p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl bg-slate-950/80 border border-slate-800 space-y-5 sm:space-y-6 shadow-xl min-w-0">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-800/80">
                     <div>
                       <h2 className="text-xl font-bold text-white flex items-center gap-2">
@@ -2524,13 +2525,13 @@ export const AdminPage: React.FC = () => {
           NAVBAR BRAND QUICK EDITOR MODAL (Directly edits Image 2 from Image 1)
           ========================================================================= */}
       {isBrandModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
-          <div className="relative w-full max-w-lg bg-slate-950 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl text-start space-y-6 max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
+          <div className="relative w-full max-w-lg bg-slate-950 border border-slate-800 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-2xl text-start space-y-5 sm:space-y-6 max-h-[90vh] overflow-y-auto">
             {/* Close Button */}
             <button
               type="button"
               onClick={() => setIsBrandModalOpen(false)}
-              className="absolute top-5 left-5 p-2 text-slate-400 hover:text-white rounded-xl hover:bg-slate-900 transition-colors"
+              className="absolute top-3 sm:top-4 left-3 sm:left-4 p-2 text-slate-400 hover:text-white rounded-xl hover:bg-slate-900 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
             >
               <X className="w-5 h-5" />
             </button>
@@ -2676,14 +2677,14 @@ export const AdminPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setIsBrandModalOpen(false)}
-                  className="px-4 py-2 rounded-xl border border-slate-800 text-slate-400 hover:text-white text-xs font-mono transition-colors"
+                  className="min-h-[44px] px-4 py-2.5 rounded-xl border border-slate-800 text-slate-400 hover:text-white text-xs font-mono transition-colors flex items-center justify-center"
                 >
                   إلغاء
                 </button>
 
                 <button
                   type="submit"
-                  className="px-6 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-white font-bold text-xs flex items-center gap-2 shadow-[0_0_15px_rgba(56,189,248,0.3)] transition-all"
+                  className="min-h-[44px] px-5 sm:px-6 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(56,189,248,0.3)] transition-all"
                 >
                   {brandSuccess ? (
                     <>

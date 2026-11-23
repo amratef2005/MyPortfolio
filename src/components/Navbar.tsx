@@ -17,10 +17,10 @@ export const Navbar: React.FC = () => {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 lg:px-8 py-3 bg-[#06080d]/65 backdrop-blur-2xl backdrop-saturate-150 border-b border-white/[0.08] shadow-[0_8px_32px_0_rgba(0,0,0,0.36),inset_0_1px_0_0_rgba(255,255,255,0.08)]">
-      <div className="max-w-7xl mx-auto flex items-center justify-between">
+    <nav className="fixed top-0 left-0 right-0 z-50 px-3 xs:px-4 sm:px-6 lg:px-8 py-2 sm:py-3 pt-[max(0.5rem,env(safe-area-inset-top))] bg-[#06080d]/80 backdrop-blur-2xl backdrop-saturate-150 border-b border-white/[0.08] shadow-[0_8px_32px_0_rgba(0,0,0,0.36),inset_0_1px_0_0_rgba(255,255,255,0.08)]">
+      <div className="max-w-7xl mx-auto flex items-center justify-between gap-2 sm:gap-4">
         {/* Brand / Logo */}
-        <a href="#hero" className="flex items-center gap-2.5 group">
+        <a href="#hero" className="flex items-center gap-2 xs:gap-2.5 group min-w-0 flex-1 sm:flex-initial">
           <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl overflow-hidden bg-gradient-to-tr from-cyan-500 to-indigo-600 p-0.5 shadow-[0_0_15px_rgba(56,189,248,0.35)] group-hover:shadow-[0_0_22px_rgba(56,189,248,0.6)] transition-all shrink-0">
             <img 
               src={profile.topAvatarUrl || profile.heroAvatarUrl || "/my.jpg"} 
@@ -33,11 +33,12 @@ export const Navbar: React.FC = () => {
               className="w-full h-full object-cover object-top rounded-[10px]" 
             />
           </div>
-          <div className="flex flex-col">
-            <span className="font-bold text-white text-sm sm:text-base tracking-wide group-hover:text-cyan-400 transition-colors">
-              {lang === 'ar' ? profile.nameAr : profile.name}
+          <div className="flex flex-col min-w-0">
+            <span className="font-bold text-white text-xs xs:text-sm sm:text-base tracking-wide group-hover:text-cyan-400 transition-colors truncate">
+              <span className="sm:hidden">{lang === 'ar' ? (profile.shortNameAr || 'عمرو عاطف') : (profile.shortName || 'Amr Atef')}</span>
+              <span className="hidden sm:inline">{lang === 'ar' ? profile.nameAr : profile.name}</span>
             </span>
-            <span className="text-[10px] sm:text-[11px] font-mono text-cyan-400/80 tracking-wider">
+            <span className="text-[10px] xs:text-[11px] sm:text-xs font-mono text-cyan-400/80 tracking-wider truncate">
               {lang === 'ar' ? 'مطور نظم خلفية .NET' : '.NET BACKEND DEVELOPER'}
             </span>
           </div>
@@ -58,14 +59,14 @@ export const Navbar: React.FC = () => {
         </div>
 
         {/* Action Controls */}
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-1.5 xs:gap-2 sm:gap-3 shrink-0">
           {/* CV Generator Trigger Button */}
           <button
             onClick={() => setIsCVModalOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-cyan-400 text-xs font-mono font-semibold transition-all shadow-[0_0_12px_rgba(56,189,248,0.2)]"
+            className="flex items-center justify-center gap-1.5 h-11 min-h-[44px] px-2.5 xs:px-3 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-cyan-400 text-xs font-mono font-semibold transition-all shadow-[0_0_12px_rgba(56,189,248,0.2)] shrink-0 touch-manipulation"
             title={lang === 'ar' ? 'أداة توليد السيرة الذاتية الذكية' : 'Generate Smart CV'}
           >
-            <FileText className="w-3.5 h-3.5 text-cyan-400" />
+            <FileText className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
             <span className="hidden sm:inline">{lang === 'ar' ? 'توليد السيرة الذاتية' : 'Generate CV'}</span>
             <span className="sm:hidden font-bold">{lang === 'ar' ? 'السيرة الذاتية' : 'CV'}</span>
           </button>
@@ -73,17 +74,17 @@ export const Navbar: React.FC = () => {
           {/* Language Toggle Button */}
           <button
             onClick={() => setLang(lang === 'ar' ? 'en' : 'ar')}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 hover:border-cyan-500/40 text-xs font-mono text-slate-200 transition-all shadow-sm"
+            className="flex items-center justify-center gap-1.5 h-11 min-h-[44px] px-2.5 xs:px-3 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 hover:border-cyan-500/40 text-xs font-mono text-slate-200 transition-all shadow-sm shrink-0 touch-manipulation"
             title={lang === 'ar' ? 'Switch to English' : 'التحويل للغة العربية'}
           >
-            <Globe className="w-3.5 h-3.5 text-cyan-400" />
+            <Globe className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
             <span className="font-bold">{lang === 'ar' ? 'EN' : 'عربي'}</span>
           </button>
 
           {/* Mobile Hamburger Menu Toggle */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white"
+            className="lg:hidden h-11 w-11 min-h-[44px] min-w-[44px] rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white shrink-0 flex items-center justify-center touch-manipulation"
             aria-label="Toggle menu"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -99,7 +100,7 @@ export const Navbar: React.FC = () => {
               key={link.href}
               href={link.href}
               onClick={() => setMobileMenuOpen(false)}
-              className="px-4 py-2.5 rounded-xl text-slate-200 hover:bg-slate-800/80 hover:text-cyan-400 text-sm font-medium transition-colors"
+              className="px-4 py-3 min-h-[44px] flex items-center rounded-xl text-slate-200 hover:bg-slate-800/80 hover:text-cyan-400 text-sm font-medium transition-colors"
             >
               {lang === 'ar' ? link.labelAr : link.labelEn}
             </a>

@@ -13,16 +13,58 @@
     --theme-glow: rgba(56, 189, 248, 0.35);
     --theme-glow-secondary: rgba(99, 102, 241, 0.25);
     --theme-glow-ambient: rgba(56, 189, 248, 0.15);
+    --sat: env(safe-area-inset-top, 0px);
+    --sar: env(safe-area-inset-right, 0px);
+    --sab: env(safe-area-inset-bottom, 0px);
+    --sal: env(safe-area-inset-left, 0px);
   }
 
   html {
     scroll-behavior: smooth;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    overflow-x: hidden;
+    max-width: 100vw;
   }
 
   body {
     @apply bg-[#030712] text-slate-100 overflow-x-hidden antialiased;
+    max-width: 100vw;
+    min-height: 100vh;
   }
+
+  /* Enhanced Arabic & RTL Typography */
+  [dir="rtl"],
+  html[lang="ar"],
+  .font-cairo {
+    line-height: 1.75;
+  }
+
+  [dir="rtl"] h1,
+  [dir="rtl"] h2,
+  [dir="rtl"] h3,
+  [dir="rtl"] h4,
+  [dir="rtl"] h5,
+  [dir="rtl"] h6,
+  html[lang="ar"] h1,
+  html[lang="ar"] h2,
+  html[lang="ar"] h3,
+  html[lang="ar"] h4,
+  html[lang="ar"] h5,
+  html[lang="ar"] h6 {
+    line-height: 1.4;
+    letter-spacing: normal !important;
+  }
+}
+
+/* RTL Directional Transformations */
+[dir="rtl"] .rtl-flip {
+  transform: scaleX(-1);
+}
+
+/* Touch Target Minimum 44x44px */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
 }
 
 /* Custom Adaptive Gradient Utilities */

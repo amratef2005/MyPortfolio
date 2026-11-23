@@ -52,36 +52,36 @@ export const CVModal: React.FC = () => {
   return (
     <div id="cv-modal-backdrop" className="fixed inset-0 z-50 flex flex-col bg-black/90 backdrop-blur-xl overflow-hidden animate-fadeIn">
       {/* Top Controls Toolbar */}
-      <div id="cv-modal-toolbar" className="px-4 sm:px-6 py-3 bg-[#080c14] border-b border-slate-800 flex flex-wrap items-center justify-between gap-3 shrink-0">
+      <div id="cv-modal-toolbar" className="px-3 sm:px-6 py-2.5 sm:py-3 pt-[max(0.65rem,env(safe-area-inset-top))] bg-[#080c14] border-b border-slate-800 flex flex-wrap items-center justify-between gap-2.5 sm:gap-3 shrink-0">
         {/* Title & Badge */}
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center text-white shrink-0 shadow-[0_0_15px_rgba(56,189,248,0.3)]">
+        <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1 sm:flex-initial">
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center text-white shrink-0 shadow-[0_0_15px_rgba(56,189,248,0.3)]">
             <FileCheck className="w-5 h-5" />
           </div>
-          <div>
-            <h3 className="font-bold text-white text-sm sm:text-base flex items-center gap-2">
-              <span>{lang === 'ar' ? 'السيرة الذاتية المهنية (ATS Resume)' : 'ATS-Optimized Standard Resume'}</span>
-              <span className="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded font-mono font-bold flex items-center gap-1">
+          <div className="min-w-0">
+            <h3 className="font-bold text-white text-xs xs:text-sm sm:text-base flex items-center gap-2 truncate">
+              <span className="truncate">{lang === 'ar' ? 'السيرة الذاتية المهنية (ATS Resume)' : 'ATS-Optimized Standard Resume'}</span>
+              <span className="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded font-mono font-bold flex items-center gap-1 shrink-0">
                 <ShieldCheck className="w-3 h-3" />
-                <span>{lang === 'ar' ? 'معتمد 100% لأنظمة ATS' : '100% ATS Verified'}</span>
+                <span>{lang === 'ar' ? 'معتمد 100%' : '100% ATS'}</span>
               </span>
             </h3>
-            <p className="text-[11px] text-slate-400 font-mono hidden sm:block">
+            <p className="text-xs text-slate-400 font-mono hidden sm:block">
               {lang === 'ar' ? 'معتمدة لأنظمة الفحص الآلي • تصميم قياسي احترافي • طباعة متجهة لمقاس A4' : 'Single-Column ATS Standard • 100% English • Direct A4 Vector Print'}
             </p>
           </div>
         </div>
 
         {/* Action Buttons: Print, Toggle Options & Close */}
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           {/* Toggle Config Sidebar on small screens */}
           <button
             onClick={() => setShowConfig(!showConfig)}
-            className="lg:hidden p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white text-xs flex items-center gap-1.5"
+            className="lg:hidden h-11 min-h-[44px] px-3 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white text-xs flex items-center justify-center gap-1.5 touch-manipulation"
             title={lang === 'ar' ? 'إعدادات الألوان' : 'Color Settings'}
           >
-            <Sliders className="w-4 h-4 text-cyan-400" />
-            <span className="text-[11px] font-mono">
+            <Sliders className="w-4 h-4 text-cyan-400 shrink-0" />
+            <span className="text-xs font-mono">
               {showConfig ? (lang === 'ar' ? 'إخفاء' : 'Hide') : (lang === 'ar' ? 'الألوان' : 'Colors')}
             </span>
           </button>
@@ -89,16 +89,16 @@ export const CVModal: React.FC = () => {
           {/* Print / Download Button */}
           <button
             onClick={handlePrint}
-            className="px-4 sm:px-5 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold text-xs sm:text-sm shadow-[0_0_20px_rgba(56,189,248,0.4)] flex items-center gap-2 transition-all"
+            className="h-11 min-h-[44px] px-3.5 sm:px-5 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold text-xs sm:text-sm shadow-[0_0_20px_rgba(56,189,248,0.4)] flex items-center justify-center gap-2 transition-all shrink-0 touch-manipulation"
           >
-            <Printer className="w-4 h-4" />
-            <span>{lang === 'ar' ? 'طباعة / حفظ PDF' : 'Download PDF / Print'}</span>
+            <Printer className="w-4 h-4 shrink-0" />
+            <span>{lang === 'ar' ? 'حفظ PDF' : 'Print / PDF'}</span>
           </button>
 
           {/* Close Modal */}
           <button
             onClick={() => setIsCVModalOpen(false)}
-            className="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white border border-slate-800 transition-colors"
+            className="h-11 w-11 min-h-[44px] min-w-[44px] rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white border border-slate-800 transition-colors flex items-center justify-center shrink-0 touch-manipulation"
             title={lang === 'ar' ? 'إغلاق' : 'Close'}
           >
             <X className="w-5 h-5" />
