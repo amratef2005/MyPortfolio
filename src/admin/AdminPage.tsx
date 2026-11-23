@@ -36,7 +36,10 @@ import {
   Smartphone,
   Monitor,
   Clock,
-  ShieldAlert
+  ShieldAlert,
+  Crown,
+  Shield,
+  UserCheck
 } from 'lucide-react';
 import { extractColorsFromImage, applyThemeColors, ExtractedPalette, DEFAULT_PALETTE } from '../utils/colorExtractor';
 import { compressImageFile } from '../utils/imageCompressor';
@@ -219,11 +222,17 @@ export const AdminPage: React.FC = () => {
     lastActive: string;
     isCurrent: boolean;
     isOldest: boolean;
+    isPrimaryMaster: boolean;
+    isMaster: boolean;
+    canBeTerminated: boolean;
+    canBePromoted: boolean;
   }
   const [sessions, setSessions] = useState<AdminSession[]>([]);
   const [activeSessionsCount, setActiveSessionsCount] = useState<number>(0);
+  const [isCallerMaster, setIsCallerMaster] = useState<boolean>(true);
   const [loadingSessions, setLoadingSessions] = useState<boolean>(false);
-  const [terminatingOldest, setTerminatingOldest] = useState<boolean>(false);
+  const [terminatingNewest, setTerminatingNewest] = useState<boolean>(false);
+  const [actionTargetId, setActionTargetId] = useState<string | null>(null);
   const [sessionActionMessage, setSessionActionMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   // Fetch active sessions from serverless API
@@ -239,6 +248,7 @@ export const AdminPage: React.FC = () => {
         const data = await res.json();
         setActiveSessionsCount(data.count ?? data.activeSessionsCount ?? (data.sessions ? data.sessions.length : 0));
         setSessions(data.sessions || []);
+        setIsCallerMaster(Boolean(data.isCallerMaster));
         if (sid && (data.isCurrentActive === false || data.isCurrentSessionActive === false)) {
           alert('تم إنهاء جلستك على هذا الجهاز (تم تسجيل الخروج بواسطة الإدارة).');
           logout();
@@ -259,16 +269,16 @@ export const AdminPage: React.FC = () => {
     }
   }, [isAuthenticated, fetchSessions]);
 
-  // Handle Terminate Oldest Device Only
-  const handleTerminateOldest = async () => {
-    if (!window.confirm('هل أنت متأكد من رغبتك في تسجيل الخروج من أقدم جهاز مسجل فقط؟')) {
+  // Handle Terminate Newest Device (Primary Master / Co-Master Only)
+  const handleTerminateNewest = async () => {
+    if (!window.confirm('هل أنت متأكد من رغبتك في طرد أحدث جهاز مسجل دخولاً؟')) {
       return;
     }
-    setTerminatingOldest(true);
+    setTerminatingNewest(true);
     setSessionActionMessage(null);
     try {
       const sid = typeof window !== 'undefined' ? localStorage.getItem('portfolio_admin_session_id') || '' : '';
-      const res = await fetch('/api/admin-sessions?action=oldest', {
+      const res = await fetch('/api/admin-sessions?action=newest', {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -279,13 +289,13 @@ export const AdminPage: React.FC = () => {
       if (res.ok && data.success) {
         setSessionActionMessage({
           type: 'success',
-          text: 'تم تسجيل الخروج بنجاح من أقدم جهاز نشط!'
+          text: data.message || 'تم طرد أحدث جهاز بنجاح!'
         });
         await fetchSessions();
       } else {
         setSessionActionMessage({
           type: 'error',
-          text: data.message || 'تعذر تسجيل الخروج من أقدم جهاز.'
+          text: data.message || 'تعذر طرد الجهاز الأحدث.'
         });
       }
     } catch {
@@ -294,7 +304,90 @@ export const AdminPage: React.FC = () => {
         text: 'حدث خطأ أثناء الاتصال بالخادم.'
       });
     } finally {
-      setTerminatingOldest(false);
+      setTerminatingNewest(false);
+    }
+  };
+
+  // Handle Terminate a Specific Subordinate Device
+  const handleTerminateDevice = async (targetId: string, targetName: string) => {
+    if (!window.confirm(`هل أنت متأكد من رغبتك في طرد هذا الجهاز (${targetName}) فورياً؟`)) {
+      return;
+    }
+    setActionTargetId(targetId);
+    setSessionActionMessage(null);
+    try {
+      const sid = typeof window !== 'undefined' ? localStorage.getItem('portfolio_admin_session_id') || '' : '';
+      const res = await fetch(`/api/admin-sessions?sessionId=${encodeURIComponent(targetId)}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-session-id': sid
+        }
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setSessionActionMessage({
+          type: 'success',
+          text: data.message || `تم طرد الجهاز بنجاح!`
+        });
+        await fetchSessions();
+      } else {
+        setSessionActionMessage({
+          type: 'error',
+          text: data.message || 'تعذر طرد الجهاز المستهدف.'
+        });
+      }
+    } catch {
+      setSessionActionMessage({
+        type: 'error',
+        text: 'حدث خطأ أثناء الاتصال بالخادم.'
+      });
+    } finally {
+      setActionTargetId(null);
+    }
+  };
+
+  // Handle Toggle Master / Promote to Equal Permissions
+  const handleToggleMaster = async (targetId: string, makeMaster: boolean, targetName: string) => {
+    const actionText = makeMaster ? 'ترقية هذا الجهاز ومساواته في الصلاحيات الكاملة' : 'إلغاء الصلاحيات الكاملة لهذا الجهاز';
+    if (!window.confirm(`هل أنت متأكد من ${actionText} (${targetName})؟`)) {
+      return;
+    }
+    setActionTargetId(targetId);
+    setSessionActionMessage(null);
+    try {
+      const sid = typeof window !== 'undefined' ? localStorage.getItem('portfolio_admin_session_id') || '' : '';
+      const res = await fetch('/api/admin-sessions', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-session-id': sid
+        },
+        body: JSON.stringify({
+          targetSessionId: targetId,
+          isMaster: makeMaster
+        })
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setSessionActionMessage({
+          type: 'success',
+          text: data.message || (makeMaster ? 'تمت ترقية الجهاز ومساواته في الصلاحيات بنجاح 👑' : 'تم إلغاء الترقية بنجاح')
+        });
+        await fetchSessions();
+      } else {
+        setSessionActionMessage({
+          type: 'error',
+          text: data.message || 'تعذر تعديل رتبة الجهاز.'
+        });
+      }
+    } catch {
+      setSessionActionMessage({
+        type: 'error',
+        text: 'حدث خطأ أثناء الاتصال بالخادم.'
+      });
+    } finally {
+      setActionTargetId(null);
     }
   };
 
@@ -712,19 +805,21 @@ export const AdminPage: React.FC = () => {
                       </span>
                     </h3>
                     <p className="text-xs text-slate-400 font-mono mt-1">
-                      يمكنك مراقبة كافة الأجهزة المسجلة أو تسجيل الخروج من أقدم جهاز لمنع التزاحم
+                      {isCallerMaster
+                        ? 'بصفتك الجهاز الرئيسي (أقدم جهاز)، يمكنك طرد أي جهاز أحدث أو مساواته معك في الصلاحيات'
+                        : 'يمكنك مراجعة قائمة الأجهزة النشطة المسجلة حالياً في النظام'}
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  {activeSessionsCount > 1 && (
+                  {isCallerMaster && activeSessionsCount > 1 && (
                     <button
                       type="button"
-                      onClick={handleTerminateOldest}
-                      disabled={terminatingOldest}
+                      onClick={handleTerminateNewest}
+                      disabled={terminatingNewest}
                       className="px-3.5 py-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 text-amber-400 text-xs font-mono font-semibold transition-all disabled:opacity-50 cursor-pointer"
                     >
-                      {terminatingOldest ? 'جاري الخروج...' : 'الخروج من أقدم جهاز فقط'}
+                      {terminatingNewest ? 'جاري الطرد...' : 'طرد أحدث جهاز مسجل'}
                     </button>
                   )}
                   <button
@@ -1998,32 +2093,51 @@ export const AdminPage: React.FC = () => {
                   </div>
                 )}
 
-                {/* Terminate Oldest Device Control */}
-                <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <div className="flex items-start gap-3">
-                    <Clock className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+                {/* Terminate Newest / Master Control Card */}
+                {isCallerMaster ? (
+                  <div className="p-5 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="flex items-start gap-3.5">
+                      <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center justify-center shrink-0">
+                        <Crown className="w-5 h-5 text-amber-400" />
+                      </div>
+                      <div>
+                        <h4 className="text-xs font-bold text-amber-300 flex items-center gap-2">
+                          <span>أنت مسجل كجهاز رئيسي (Master Device) 👑</span>
+                          <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-mono border border-amber-500/30">
+                            سلطة عليا
+                          </span>
+                        </h4>
+                        <p className="text-[11px] text-amber-400/80 mt-1 leading-relaxed">
+                          بصفتك أقدم جهاز (أو مفوضاً بصلاحيات كاملة)، يمكنك طرد أحدث الأجهزة المسجلة فورياً، أو اختيار أي جهاز بالأسفل لطرده أو مساواته معك في الصلاحيات.
+                        </p>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={handleTerminateNewest}
+                      disabled={terminatingNewest || activeSessionsCount <= 1}
+                      className={`px-4 py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all whitespace-nowrap cursor-pointer shrink-0 ${
+                        activeSessionsCount > 1
+                          ? 'bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-[0_0_15px_rgba(245,158,11,0.3)]'
+                          : 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700'
+                      }`}
+                    >
+                      <LogOut className="w-4 h-4" />
+                      <span>{terminatingNewest ? 'جاري الطرد...' : 'طرد أحدث جهاز مسجل'}</span>
+                    </button>
+                  </div>
+                ) : (
+                  <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 flex items-center gap-3">
+                    <ShieldAlert className="w-5 h-5 text-slate-400 shrink-0" />
                     <div>
-                      <h4 className="text-xs font-bold text-amber-300">طرد أقدم جهاز مسجل فقط</h4>
-                      <p className="text-[11px] text-amber-400/80 mt-0.5 leading-relaxed">
-                        عند وجود جلسات متعددة، يمكنك تسجيل الخروج فورياً من الجهاز الأقدم لضمان الأمان وإلغاء أي جلسة مهجورة.
+                      <h4 className="text-xs font-bold text-slate-300">جلسة عادية تابعة (Standard Device) 💻</h4>
+                      <p className="text-[11px] text-slate-400 mt-0.5 leading-relaxed">
+                        هذا الجهاز لا يملك صلاحية طرد الأجهزة الرئيسية. الصلاحية مقتصرة حصرياً على أقدم جهاز متصل أو الأجهزة التي تم تفويضها.
                       </p>
                     </div>
                   </div>
-
-                  <button
-                    type="button"
-                    onClick={handleTerminateOldest}
-                    disabled={terminatingOldest || activeSessionsCount <= 1}
-                    className={`px-4 py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all whitespace-nowrap cursor-pointer shrink-0 ${
-                      activeSessionsCount > 1
-                        ? 'bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-[0_0_15px_rgba(245,158,11,0.3)]'
-                        : 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700'
-                    }`}
-                  >
-                    <LogOut className="w-4 h-4" />
-                    <span>{terminatingOldest ? 'جاري الطرد...' : 'تسجيل الخروج من أقدم جهاز فقط'}</span>
-                  </button>
-                </div>
+                )}
 
                 {/* Sessions Cards List */}
                 <div className="space-y-3">
@@ -2049,23 +2163,31 @@ export const AdminPage: React.FC = () => {
                       return (
                         <div
                           key={sess.id}
-                          className={`p-4 rounded-2xl border transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
+                          className={`p-4 rounded-2xl border transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 ${
                             sess.isCurrent
                               ? 'bg-cyan-950/20 border-cyan-500/40 shadow-[0_0_15px_rgba(56,189,248,0.1)]'
-                              : sess.isOldest
+                              : sess.isPrimaryMaster
                                 ? 'bg-amber-950/20 border-amber-500/40'
-                                : 'bg-slate-900/40 border-slate-800/80'
+                                : sess.isMaster
+                                  ? 'bg-indigo-950/20 border-indigo-500/30'
+                                  : 'bg-slate-900/40 border-slate-800/80'
                           }`}
                         >
                           <div className="flex items-center gap-3.5">
-                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
-                              sess.isCurrent
-                                ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30'
-                                : sess.isOldest
-                                  ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
+                            <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${
+                              sess.isPrimaryMaster
+                                ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
+                                : sess.isMaster
+                                  ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30'
                                   : 'bg-slate-800 text-slate-400'
                             }`}>
-                              {isMobile ? <Smartphone className="w-5 h-5" /> : <Monitor className="w-5 h-5" />}
+                              {sess.isPrimaryMaster ? (
+                                <Crown className="w-5 h-5 text-amber-400" />
+                              ) : isMobile ? (
+                                <Smartphone className="w-5 h-5" />
+                              ) : (
+                                <Monitor className="w-5 h-5" />
+                              )}
                             </div>
 
                             <div>
@@ -2073,15 +2195,28 @@ export const AdminPage: React.FC = () => {
                                 <span className="text-sm font-bold text-white">
                                   {sess.deviceInfo || 'متصفح غير معروف'}
                                 </span>
+
+                                {/* Role Badges */}
+                                {sess.isPrimaryMaster ? (
+                                  <span className="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] font-bold font-mono flex items-center gap-1">
+                                    <Crown className="w-3 h-3 text-amber-400" />
+                                    الجهاز الرئيسي الأول (أقدم جهاز)
+                                  </span>
+                                ) : sess.isMaster ? (
+                                  <span className="px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 text-[10px] font-bold font-mono flex items-center gap-1">
+                                    <Shield className="w-3 h-3 text-indigo-400" />
+                                    جهاز مفوض (صلاحيات كاملة)
+                                  </span>
+                                ) : (
+                                  <span className="px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700 text-[10px] font-mono">
+                                    جهاز تابع
+                                  </span>
+                                )}
+
                                 {sess.isCurrent && (
                                   <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold font-mono flex items-center gap-1">
                                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                                     هذا الجهاز (الجلسة الحالية)
-                                  </span>
-                                )}
-                                {sess.isOldest && !sess.isCurrent && (
-                                  <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 text-[10px] font-bold font-mono">
-                                    أقدم جهاز مسجل
                                   </span>
                                 )}
                               </div>
@@ -2090,13 +2225,48 @@ export const AdminPage: React.FC = () => {
                                 <span>IP: <span className="text-slate-300">{sess.ipAddress || 'محلي'}</span></span>
                                 <span>&bull;</span>
                                 <span>وقت الدخول: <span className="text-slate-300">{formattedTime}</span></span>
+                                <span>&bull;</span>
+                                <span>المعرّف: <span className="text-slate-400">{sess.id.slice(-8)}</span></span>
                               </div>
                             </div>
                           </div>
 
-                          <div className="text-left sm:text-right text-[11px] font-mono text-slate-500 shrink-0">
-                            معرّف الجلسة: <span className="text-slate-400 font-bold">{sess.id.slice(-8)}</span>
-                          </div>
+                          {/* Action Buttons for Master Device */}
+                          {isCallerMaster && (
+                            <div className="flex items-center gap-2 flex-wrap shrink-0">
+                              {/* Promote / Demote Button */}
+                              {sess.canBePromoted && (
+                                <button
+                                  type="button"
+                                  onClick={() => handleToggleMaster(sess.id, !sess.isMaster, sess.deviceInfo)}
+                                  disabled={actionTargetId === sess.id}
+                                  className={`px-3 py-1.5 rounded-xl text-[11px] font-mono font-semibold transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50 ${
+                                    sess.isMaster
+                                      ? 'bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700'
+                                      : 'bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 border border-cyan-500/30'
+                                  }`}
+                                  title={sess.isMaster ? 'إلغاء الصلاحيات الكاملة' : 'مساواة هذا الجهاز في الصلاحيات مع الجهاز الرئيسي'}
+                                >
+                                  <Crown className="w-3.5 h-3.5 text-amber-400" />
+                                  <span>{sess.isMaster ? 'إلغاء الصلاحيات' : 'مساواة الصلاحيات (ترقية)'}</span>
+                                </button>
+                              )}
+
+                              {/* Kick Subordinate Device */}
+                              {sess.canBeTerminated && (
+                                <button
+                                  type="button"
+                                  onClick={() => handleTerminateDevice(sess.id, sess.deviceInfo)}
+                                  disabled={actionTargetId === sess.id}
+                                  className="px-3 py-1.5 rounded-xl bg-red-500/15 hover:bg-red-500/25 text-red-400 border border-red-500/30 text-[11px] font-mono font-semibold transition-all flex items-center gap-1 cursor-pointer disabled:opacity-50"
+                                  title="طرد هذا الجهاز وإلغاء جلسته فورياً"
+                                >
+                                  <LogOut className="w-3.5 h-3.5" />
+                                  <span>طرد هذا الجهاز</span>
+                                </button>
+                              )}
+                            </div>
+                          )}
                         </div>
                       );
                     })
