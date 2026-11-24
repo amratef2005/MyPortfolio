@@ -2,6 +2,7 @@
   "cleanUrls": true,
   "rewrites": [
     { "source": "/admin", "destination": "/admin.html" },
-    { "source": "/admin/(.*)", "destination": "/admin.html" }
+    { "source": "/admin/(.*)", "destination": "/admin.html" },
+    { "source": "/Amr_Kandel_Resume_ATS.pdf", "destination": "/api/cv-pdf" }
   ]
 }
