@@ -32,7 +32,7 @@ export interface Project {
   taglineAr: string;
   description: string;
   descriptionAr: string;
-  category: '.NET & Backend' | 'Full-Stack' | 'Cloud & SaaS';
+  category: 'UI/UX Design' | 'Mobile Apps' | 'Web & SaaS' | 'Design Systems' | string;
   featured: boolean;
   image?: string;
   badge: string;
@@ -74,6 +74,8 @@ export interface ProfileInfo {
   nameAr: string;
   shortName?: string;
   shortNameAr?: string;
+  brandName?: string;
+  brandNameAr?: string;
   title: string;
   titleAr: string;
   bio: string;
@@ -87,7 +89,16 @@ export interface ProfileInfo {
   whatsapp: string;
   resumeUrl: string;
   topAvatarUrl?: string; // Top image (Navbar)
-  heroAvatarUrl?: string; // 3D Interactive Hero Avatar
+  heroAvatarUrl?: string; // Image 1 (Hero Section)
+  aboutAvatarUrl?: string; // Image 2 (About Section)
+  heroImageScale?: number; // 0.7 to 1.5 (default 1)
+  heroImageOffsetY?: number; // -60 to 60 (default 0)
+  heroGlowIntensity?: number; // 0.4 to 1.8 (default 1)
+  heroShowRings?: boolean; // default true
+  aboutImageScale?: number; // 0.7 to 1.5 (default 1)
+  aboutImageOffsetY?: number; // -60 to 60 (default 0)
+  aboutGlowIntensity?: number; // 0.4 to 1.8 (default 1)
+  aboutShowRings?: boolean; // default true
   autoExtractColors?: boolean; // Automatically extract theme colors from avatar
   extractedColors?: {
     primary: string;
@@ -104,6 +115,26 @@ export interface ProfileInfo {
   adminUsername?: string; // default "admin"
   adminPassword?: string; // default "admin123"
   adminPin?: string;
+
+  // Custom Editable Headings & Names Across Sections
+  heroGreeting?: string;
+  heroGreetingAr?: string;
+  aboutSubtitle?: string;
+  aboutSubtitleAr?: string;
+  aboutHeading?: string;
+  aboutHeadingAr?: string;
+  experienceHeading?: string;
+  experienceHeadingAr?: string;
+  projectsHeading?: string;
+  projectsHeadingAr?: string;
+  certificatesHeading?: string;
+  certificatesHeadingAr?: string;
+  skillsHeading?: string;
+  skillsHeadingAr?: string;
+  contactHeading?: string;
+  contactHeadingAr?: string;
+  contactPrompt?: string;
+  contactPromptAr?: string;
 
   // 1. Work Availability & Presence Status
   availabilityStatus?: 'available' | 'busy' | 'offline';

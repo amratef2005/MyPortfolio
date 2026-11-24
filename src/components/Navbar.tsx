@@ -1,9 +1,9 @@
 import React from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
-import { ShieldCheck, Globe, Menu, X, FileText, Sparkles } from 'lucide-react';
+import { Globe, Menu, X, Linkedin, Github, Mail, Send } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
-  const { lang, setLang, setIsCVModalOpen, profile } = usePortfolio();
+  const { lang, setLang, profile, setIsAdminOpen } = usePortfolio();
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
 
   const navLinks = [
@@ -11,102 +11,144 @@ export const Navbar: React.FC = () => {
     { href: "#about", labelAr: "نبذة عني", labelEn: "About" },
     { href: "#experience", labelAr: "الخبرات", labelEn: "Experience" },
     { href: "#projects", labelAr: "المشاريع", labelEn: "Projects" },
-    { href: "#certificates", labelAr: "الشهادات و ITI", labelEn: "Certificates" },
+    { href: "#certificates", labelAr: "الشهادات", labelEn: "Certificates" },
     { href: "#skills", labelAr: "المهارات", labelEn: "Skills" },
     { href: "#contact", labelAr: "تواصل معي", labelEn: "Contact" },
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 px-3 xs:px-4 sm:px-6 lg:px-8 py-2 sm:py-3 pt-[max(0.5rem,env(safe-area-inset-top))] bg-[#06080d]/80 backdrop-blur-2xl backdrop-saturate-150 border-b border-white/[0.08] shadow-[0_8px_32px_0_rgba(0,0,0,0.36),inset_0_1px_0_0_rgba(255,255,255,0.08)]">
-      <div className="max-w-7xl mx-auto flex items-center justify-between gap-2 sm:gap-4">
-        {/* Brand / Logo */}
-        <a href="#hero" className="flex items-center gap-2 xs:gap-2.5 group min-w-0 flex-1 sm:flex-initial">
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl overflow-hidden bg-gradient-to-tr from-cyan-500 to-indigo-600 p-0.5 shadow-[0_0_15px_rgba(56,189,248,0.35)] group-hover:shadow-[0_0_22px_rgba(56,189,248,0.6)] transition-all shrink-0">
-            <img 
-              src={profile.topAvatarUrl || profile.heroAvatarUrl || "/my.jpg"} 
-              alt={profile.name} 
-              onError={(e) => {
-                const target = e.target as HTMLImageElement;
-                target.onerror = null;
-                target.src = "/my.jpg";
-              }}
-              className="w-full h-full object-cover object-top rounded-[10px]" 
-            />
-          </div>
-          <div className="flex flex-col min-w-0">
-            <span className="font-bold text-white text-xs xs:text-sm sm:text-base tracking-wide group-hover:text-cyan-400 transition-colors truncate">
-              <span className="sm:hidden">{lang === 'ar' ? (profile.shortNameAr || 'عمرو عاطف') : (profile.shortName || 'Amr Atef')}</span>
-              <span className="hidden sm:inline">{lang === 'ar' ? profile.nameAr : profile.name}</span>
-            </span>
-            <span className="text-[10px] xs:text-[11px] sm:text-xs font-mono text-cyan-400/80 tracking-wider truncate">
-              {lang === 'ar' ? 'مطور نظم خلفية .NET' : '.NET BACKEND DEVELOPER'}
-            </span>
-          </div>
+    <nav className="fixed top-0 left-0 right-0 z-50 px-3 xs:px-4 sm:px-6 lg:px-8 py-3 pt-[max(0.75rem,env(safe-area-inset-top))] bg-[#050505]/85 backdrop-blur-2xl border-b border-orange-500/15 shadow-[0_8px_30px_rgba(0,0,0,0.85)]">
+      <div className="max-w-7xl mx-auto flex items-center justify-between gap-3 sm:gap-6">
+        
+        {/* Brand / Logo: "Amr Kandel." with Burnt Orange Accent Dot */}
+        <a 
+          href="#hero" 
+          onDoubleClick={(e) => {
+            e.preventDefault();
+            setIsAdminOpen(true);
+          }}
+          className="flex items-center gap-2 group shrink-0 select-none cursor-pointer"
+          title={lang === 'ar' ? 'Amr Kandel (نقر مزدوج لفتح لوحة التحكم)' : 'Amr Kandel (Double-click to open Admin)'}
+        >
+          <span className="text-xl sm:text-2xl font-black tracking-tight text-white transition-colors duration-200">
+            {lang === 'ar' ? (profile.brandNameAr || profile.brandName || 'Amr Kandel') : (profile.brandName || 'Amr Kandel')}
+            <span className="text-[#FF5722] text-2xl sm:text-3xl font-black drop-shadow-[0_0_12px_rgba(255,87,34,0.8)]">.</span>
+          </span>
         </a>
 
-        {/* Desktop Links */}
-        <div className="hidden lg:flex items-center gap-6">
+        {/* Desktop Navigation Links */}
+        <div className="hidden lg:flex items-center gap-7">
           {navLinks.map((link) => (
             <a
               key={link.href}
               href={link.href}
-              className="text-xs sm:text-sm font-medium text-slate-300 hover:text-cyan-400 transition-colors duration-200 relative group py-1"
+              className="text-sm font-medium text-slate-300 hover:text-[#FF7A00] transition-colors duration-200 relative group py-1"
             >
               {lang === 'ar' ? link.labelAr : link.labelEn}
-              <span className="absolute bottom-0 right-0 w-0 h-0.5 bg-cyan-400 transition-all duration-300 group-hover:w-full group-hover:left-0" />
+              <span className="absolute bottom-0 right-0 w-0 h-0.5 bg-gradient-to-r from-[#FF5722] to-[#FF7A00] transition-all duration-300 group-hover:w-full group-hover:left-0" />
             </a>
           ))}
         </div>
 
-        {/* Action Controls */}
-        <div className="flex items-center gap-1.5 xs:gap-2 sm:gap-3 shrink-0">
-          {/* CV Generator Trigger Button */}
-          <button
-            onClick={() => setIsCVModalOpen(true)}
-            className="flex items-center justify-center gap-1.5 h-11 min-h-[44px] px-2.5 xs:px-3 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-cyan-400 text-xs font-mono font-semibold transition-all shadow-[0_0_12px_rgba(56,189,248,0.2)] shrink-0 touch-manipulation"
-            title={lang === 'ar' ? 'أداة توليد السيرة الذاتية الذكية' : 'Generate Smart CV'}
-          >
-            <FileText className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-            <span className="hidden sm:inline">{lang === 'ar' ? 'توليد السيرة الذاتية' : 'Generate CV'}</span>
-            <span className="sm:hidden font-bold">{lang === 'ar' ? 'السيرة الذاتية' : 'CV'}</span>
-          </button>
+        {/* Right Section: Social Icons + Hire Me + Lang Toggle */}
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          
+          {/* Social Icons (Desktop) */}
+          <div className="hidden sm:flex items-center gap-2 text-slate-400 border-e border-white/10 pe-3 me-1">
+            {profile.linkedin && (
+              <a
+                href={profile.linkedin}
+                target="_blank"
+                rel="noreferrer"
+                className="p-2 rounded-lg hover:text-[#FF7A00] hover:bg-orange-500/10 transition-colors"
+                title="LinkedIn"
+              >
+                <Linkedin className="w-4 h-4" />
+              </a>
+            )}
+            {profile.github && (
+              <a
+                href={profile.github}
+                target="_blank"
+                rel="noreferrer"
+                className="p-2 rounded-lg hover:text-[#FF7A00] hover:bg-orange-500/10 transition-colors"
+                title="GitHub"
+              >
+                <Github className="w-4 h-4" />
+              </a>
+            )}
+            <a
+              href={`mailto:${profile.email}`}
+              className="p-2 rounded-lg hover:text-[#FF7A00] hover:bg-orange-500/10 transition-colors"
+              title="Email"
+            >
+              <Mail className="w-4 h-4" />
+            </a>
+          </div>
 
-          {/* Language Toggle Button */}
+          {/* "Hire Me" Quick Action CTA */}
+          <a
+            href="#contact"
+            className="flex items-center justify-center gap-1.5 h-10 px-3 sm:px-4 rounded-xl bg-gradient-to-r from-[#FF5722] to-[#FF7A00] hover:from-[#FF6B00] hover:to-[#FF8A00] text-white text-xs sm:text-sm font-bold shadow-[0_0_20px_rgba(255,87,34,0.4)] hover:shadow-[0_0_28px_rgba(255,87,34,0.6)] transition-all shrink-0 active:scale-95"
+          >
+            <Send className="w-3.5 h-3.5" />
+            <span>{lang === 'ar' ? 'وظفني' : 'Hire Me'}</span>
+          </a>
+
+          {/* Language Toggle */}
           <button
             onClick={() => setLang(lang === 'ar' ? 'en' : 'ar')}
-            className="flex items-center justify-center gap-1.5 h-11 min-h-[44px] px-2.5 xs:px-3 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-800 hover:border-cyan-500/40 text-xs font-mono text-slate-200 transition-all shadow-sm shrink-0 touch-manipulation"
-            title={lang === 'ar' ? 'Switch to English' : 'التحويل للغة العربية'}
+            className="flex items-center justify-center gap-1 h-10 px-2.5 rounded-xl bg-[#121215] hover:bg-[#18181f] border border-white/10 text-xs font-mono text-slate-200 transition-colors"
+            title={lang === 'ar' ? 'Switch to English' : 'التحويل للعربية'}
           >
-            <Globe className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+            <Globe className="w-3.5 h-3.5 text-[#FF7A00]" />
             <span className="font-bold">{lang === 'ar' ? 'EN' : 'عربي'}</span>
           </button>
 
-          {/* Mobile Hamburger Menu Toggle */}
+          {/* Mobile Hamburger Toggle */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden h-11 w-11 min-h-[44px] min-w-[44px] rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white shrink-0 flex items-center justify-center touch-manipulation"
+            className="lg:hidden h-10 w-10 rounded-xl bg-[#121215] border border-white/10 text-slate-300 hover:text-white flex items-center justify-center"
             aria-label="Toggle menu"
           >
-            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            {mobileMenuOpen ? <X className="w-5 h-5 text-[#FF7A00]" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
       </div>
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden mt-3 pt-3 border-t border-slate-800 flex flex-col gap-1.5 pb-3">
+        <div className="lg:hidden mt-3 pt-3 border-t border-white/10 flex flex-col gap-2 pb-3">
           {navLinks.map((link) => (
             <a
               key={link.href}
               href={link.href}
               onClick={() => setMobileMenuOpen(false)}
-              className="px-4 py-3 min-h-[44px] flex items-center rounded-xl text-slate-200 hover:bg-slate-800/80 hover:text-cyan-400 text-sm font-medium transition-colors"
+              className="text-sm font-medium text-slate-300 hover:text-[#FF7A00] hover:bg-orange-500/10 px-3 py-2 rounded-lg transition-colors"
             >
               {lang === 'ar' ? link.labelAr : link.labelEn}
             </a>
           ))}
+          {/* Socials on Mobile */}
+          <div className="flex items-center gap-3 px-3 pt-2 border-t border-white/5 text-slate-400">
+            {profile.linkedin && (
+              <a href={profile.linkedin} target="_blank" rel="noreferrer" className="hover:text-[#FF7A00]">
+                <Linkedin className="w-5 h-5" />
+              </a>
+            )}
+            {profile.github && (
+              <a href={profile.github} target="_blank" rel="noreferrer" className="hover:text-[#FF7A00]">
+                <Github className="w-5 h-5" />
+              </a>
+            )}
+            <a href={`mailto:${profile.email}`} className="hover:text-[#FF7A00]">
+              <Mail className="w-5 h-5" />
+            </a>
+          </div>
         </div>
       )}
     </nav>
   );
 };
+
+export default Navbar;

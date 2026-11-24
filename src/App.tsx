@@ -1,5 +1,5 @@
 import React from 'react';
-import { PortfolioProvider } from './context/PortfolioContext';
+import { PortfolioProvider, usePortfolio } from './context/PortfolioContext';
 import { AnimatedBackground } from './components/AnimatedBackground';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
@@ -9,7 +9,27 @@ import { Projects } from './components/Projects';
 import { Certificates } from './components/Certificates';
 import { Skills } from './components/Skills';
 import { Contact } from './components/Contact';
+import { Footer } from './components/Footer';
 import { CVModal } from './components/cv/CVModal';
+import { AdminDashboard } from './admin/AdminDashboard';
+
+// Global keyboard shortcut to open Admin Panel (Ctrl+Shift+A or Cmd+Shift+A)
+const AdminShortcutHandler: React.FC = () => {
+  const { setIsAdminOpen } = usePortfolio();
+
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
+        e.preventDefault();
+        setIsAdminOpen(true);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [setIsAdminOpen]);
+
+  return null;
+};
 
 export const App: React.FC = () => {
   React.useEffect(() => {
@@ -55,8 +75,17 @@ export const App: React.FC = () => {
           <Contact />
         </main>
 
+        {/* Global Footer */}
+        <Footer />
+
+        {/* Global Admin Keyboard Shortcut Handler */}
+        <AdminShortcutHandler />
+
         {/* Dynamic CV / Resume Builder Modal */}
         <CVModal />
+
+        {/* Admin Dashboard CMS Modal */}
+        <AdminDashboard />
       </div>
     </PortfolioProvider>
   );

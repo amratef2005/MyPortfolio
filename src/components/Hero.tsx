@@ -1,156 +1,161 @@
 import React from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
-import { InteractiveAvatar } from './InteractiveAvatar';
+import { SignatureGlowAvatar } from './SignatureGlowAvatar';
 import { VoidEmergence } from './motion/KineticAssemble';
 import { motion } from 'framer-motion';
 import { 
-  FileDown, 
   Send, 
+  MapPin, 
   Sparkles, 
-  Layers, 
-  Database, 
-  Cpu, 
-  ArrowUpRight
+  ArrowUpRight,
+  Layers,
+  Palette,
+  CheckCircle2,
+  FileDown
 } from 'lucide-react';
 
 export const Hero: React.FC = () => {
-  const { profile, lang, setIsCVModalOpen } = usePortfolio();
+  const { profile, lang } = usePortfolio();
 
   return (
     <VoidEmergence className="overflow-hidden">
-      <section id="hero" className="relative min-h-[92vh] pt-24 sm:pt-32 pb-16 sm:pb-24 flex items-center justify-center">
-        {/* Background Soft Lighting Glows dynamically tinted from Avatar colors */}
+      <section id="hero" className="relative min-h-[92vh] pt-28 sm:pt-36 pb-16 sm:pb-24 flex items-center justify-center">
+        
+        {/* Soft Background Radial Light */}
         <div 
-          style={{
-            background: 'radial-gradient(circle, rgba(var(--theme-primary-rgb, 56, 189, 248), 0.16) 0%, transparent 70%)'
-          }}
-          className="absolute top-1/4 -right-10 w-[350px] sm:w-[500px] h-[350px] sm:h-[500px] rounded-full blur-[120px] pointer-events-none" 
+          className="absolute top-1/4 -right-16 w-[400px] sm:w-[600px] h-[400px] sm:h-[600px] rounded-full blur-[140px] pointer-events-none"
+          style={{ background: 'radial-gradient(circle, rgba(255, 87, 34, 0.18) 0%, transparent 70%)' }}
         />
         <div 
-          style={{
-            background: 'radial-gradient(circle, rgba(var(--theme-secondary-rgb, 99, 102, 241), 0.14) 0%, transparent 70%)'
-          }}
-          className="absolute bottom-10 -left-10 w-[350px] sm:w-[500px] h-[350px] sm:h-[500px] rounded-full blur-[120px] pointer-events-none" 
+          className="absolute bottom-10 -left-16 w-[350px] sm:w-[500px] h-[350px] sm:h-[500px] rounded-full blur-[130px] pointer-events-none"
+          style={{ background: 'radial-gradient(circle, rgba(230, 74, 25, 0.12) 0%, transparent 70%)' }}
         />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
-          {/* Left Column: Intro & Info */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-14 items-center">
+          
+          {/* Left Column: Greeting, Name, Orange Job Title, Location, Buttons */}
           <motion.div 
-            initial={{ opacity: 0, x: -25 }}
+            initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-            className="lg:col-span-7 flex flex-col gap-5 sm:gap-6 text-start z-10 order-2 lg:order-1"
+            transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+            className="lg:col-span-7 flex flex-col gap-6 text-start z-10 order-2 lg:order-1"
           >
-            {/* Status Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-slate-900/90 border border-cyan-500/30 text-cyan-400 text-xs sm:text-sm font-mono font-medium self-start shadow-[0_0_15px_rgba(56,189,248,0.15)] max-w-full flex-wrap sm:flex-nowrap leading-relaxed">
-              <Sparkles className="w-3.5 h-3.5 text-cyan-400 animate-spin-slow shrink-0" />
-              <span>{lang === 'ar' ? 'معمارية نظيفة • CQRS • .NET 10 • PostgreSQL' : 'Clean Architecture • CQRS • .NET 10 • PostgreSQL'}</span>
+            {/* Status / Availability Pill */}
+            <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-[#121215] border border-orange-500/25 text-[#FF7A00] text-xs sm:text-sm font-mono font-medium self-start shadow-[0_0_20px_rgba(255,87,34,0.15)]">
+              <span className="w-2 h-2 rounded-full bg-[#FF5722] animate-ping" />
+              <Sparkles className="w-3.5 h-3.5 text-[#FF7A00] shrink-0" />
+              <span>
+                {lang === 'ar' ? 'متاحة للمشاريع الحرة وعقود العمل' : 'Available for Freelance & Full-time Roles'}
+              </span>
             </div>
 
-            {/* Main Title with Fluid clamp() */}
+            {/* Greeting + Large Name + Burnt Orange Title */}
             <div>
-              <h1 className="text-[clamp(2rem,6vw,3.75rem)] font-black text-white leading-[1.2] tracking-tight">
-                {lang === 'ar' ? (
-                  <>
-                    أهلاً، أنا <span className="gradient-text-cyan">{profile.shortNameAr || 'عمرو عاطف'}</span>
-                  </>
-                ) : (
-                  <>
-                    Hi, I'm <span className="gradient-text-cyan">{profile.shortName || 'Amr Atef'}</span>
-                  </>
-                )}
+              <p className="text-xl sm:text-2xl font-light text-slate-300 tracking-wide font-sans">
+                {lang === 'ar' ? (profile.heroGreetingAr || 'مرحباً، أنا') : (profile.heroGreeting || 'Hello,')}
+              </p>
+              
+              <h1 className="text-[clamp(2.5rem,7vw,4.5rem)] font-black text-white leading-[1.15] tracking-tight mt-1">
+                {lang === 'ar' ? (profile.nameAr || profile.shortNameAr || 'عمرو قنديل') : (profile.name || profile.shortName || 'Amr Kandel')}
               </h1>
-              <p className="text-[clamp(1.15rem,3.2vw,1.65rem)] font-bold gradient-text-violet mt-2 font-mono leading-normal">
-                {lang === 'ar' ? profile.titleAr : profile.title}
-              </p>
-              <p className="text-xs sm:text-sm font-mono text-cyan-400/90 font-semibold tracking-wider mt-1.5 leading-relaxed">
-                C# &bull; ASP.NET Core &bull; SQL Server &bull; PostgreSQL
-              </p>
+
+              {/* Burnt Orange Title */}
+              <div className="inline-block mt-3">
+                <p className="text-[clamp(1.5rem,4vw,2.5rem)] font-extrabold text-[#FF5722] tracking-normal drop-shadow-[0_0_25px_rgba(255,87,34,0.45)]">
+                  {lang === 'ar' 
+                    ? (profile.titleAr || 'مطور نظم خلفية .NET ومصمم واجهات') 
+                    : (profile.title || '.NET Backend Developer & UI/UX Designer')}
+                </p>
+              </div>
+
+              {/* Location */}
+              <div className="flex items-center gap-2 text-slate-400 text-sm sm:text-base mt-2">
+                <MapPin className="w-4 h-4 text-[#FF7A00] shrink-0" />
+                <span>{lang === 'ar' ? (profile.locationAr || 'الإسماعيلية، مصر') : (profile.location || 'Ismailia, Egypt')}</span>
+              </div>
             </div>
 
-            {/* Bio Description with generous Arabic-compatible line-height */}
-            <p className="text-slate-300 text-sm sm:text-base lg:text-lg leading-[1.75] max-w-2xl">
-              {lang === 'ar' ? profile.bioAr : profile.bio}
+            {/* Bio snippet */}
+            <p className="text-slate-300 text-base sm:text-lg leading-[1.8] max-w-2xl font-normal">
+              {lang === 'ar'
+                ? 'أبتكر تجارب رقمية جذابة وبديهية تجمع بين أبحاث المستخدم الدقيقة، معمارية المعلومات المتقنة، والواجهات البصرية الحديثة التي تحقق أهداف الأعمال وتأسر انتباه المستخدمين.'
+                : 'Crafting intuitive, human-centered digital experiences that merge deep user research, robust design systems, and bold visual aesthetics to drive measurable business impact.'}
             </p>
 
-            {/* Key Engineering Pillars */}
-            <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 gap-3 my-2">
-              <div className="p-3.5 sm:p-4 rounded-2xl glass-panel flex items-center gap-3">
-                <Layers className="w-5 h-5 text-cyan-400 shrink-0" />
-                <div className="text-xs">
-                  <span className="block font-bold text-white text-xs sm:text-sm">
-                    {lang === 'ar' ? 'معمارية نظيفة' : 'Clean Architecture'}
-                  </span>
-                  <span className="text-slate-400 font-mono text-xs mt-0.5 block">
-                    {lang === 'ar' ? 'أنماط CQRS و Modular Monolith' : 'CQRS & Modular Monolith'}
-                  </span>
-                </div>
-              </div>
-
-              <div className="p-3.5 sm:p-4 rounded-2xl glass-panel flex items-center gap-3">
-                <Database className="w-5 h-5 text-indigo-400 shrink-0" />
-                <div className="text-xs">
-                  <span className="block font-bold text-white text-xs sm:text-sm">
-                    {lang === 'ar' ? 'SaaS متعدد المستأجرين' : 'Multi-Tenant SaaS'}
-                  </span>
-                  <span className="text-slate-400 font-mono text-xs mt-0.5 block">
-                    {lang === 'ar' ? 'عزل البيانات وتدوير التوكنات' : 'Isolation & Token Rotation'}
-                  </span>
-                </div>
-              </div>
-
-              <div className="p-3.5 sm:p-4 rounded-2xl glass-panel flex items-center gap-3 xs:col-span-2 sm:col-span-1">
-                <Cpu className="w-5 h-5 text-emerald-400 shrink-0" />
-                <div className="text-xs">
-                  <span className="block font-bold text-white text-xs sm:text-sm">
-                    {lang === 'ar' ? '49 اختباراً مؤتمتاً' : '49 Automated Tests'}
-                  </span>
-                  <span className="text-slate-400 font-mono text-xs mt-0.5 block">
-                    {lang === 'ar' ? 'اجتياز بنسبة 100%' : '100% Pass Rate'}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Action Buttons with accessible 44px min touch targets */}
-            <div className="flex flex-wrap items-center gap-3 sm:gap-4 pt-2">
-              <a
-                href="#projects"
-                className="w-full sm:w-auto min-h-[44px] px-6 py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold text-sm shadow-[0_0_20px_rgba(56,189,248,0.3)] hover:shadow-[0_0_25px_rgba(56,189,248,0.5)] transition-all flex items-center justify-center gap-2 group"
-              >
-                <span>{lang === 'ar' ? 'استعراض المشاريع العملاقة' : 'Explore Flagship Projects'}</span>
-                <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform shrink-0" />
-              </a>
-
-              <button
-                onClick={() => setIsCVModalOpen(true)}
-                className="w-full sm:w-auto min-h-[44px] px-6 py-3.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-cyan-500/30 hover:border-cyan-400 text-slate-100 font-semibold text-sm transition-all flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(56,189,248,0.15)] group"
-              >
-                <FileDown className="w-4 h-4 text-cyan-400 group-hover:scale-110 transition-transform shrink-0" />
-                <span>{lang === 'ar' ? 'توليد السيرة الذاتية الذكية' : 'Generate Custom CV (PDF)'}</span>
-              </button>
-
+            {/* Action Buttons: Hire Me + View Projects */}
+            <div className="flex flex-wrap items-center gap-4 pt-2">
+              {/* "Hire Me" Button with Burnt Orange Glow */}
               <a
                 href="#contact"
-                className="w-full sm:w-auto min-h-[44px] px-5 py-3.5 rounded-xl border border-slate-800 hover:border-slate-600 text-slate-300 font-semibold text-sm transition-all flex items-center justify-center gap-2"
+                className="flex items-center justify-center gap-2.5 h-12 sm:h-14 px-7 sm:px-9 rounded-2xl bg-gradient-to-r from-[#FF5722] via-[#FF6B00] to-[#FF7A00] hover:from-[#FF6B00] hover:to-[#FF8A00] text-white font-bold text-base shadow-[0_0_30px_rgba(255,87,34,0.45)] hover:shadow-[0_0_45px_rgba(255,87,34,0.7)] transition-all duration-300 active:scale-95"
               >
-                <Send className="w-4 h-4 text-indigo-400 shrink-0" />
-                <span>{lang === 'ar' ? 'تواصل معي' : 'Contact Me'}</span>
+                <Send className="w-4 h-4" />
+                <span>{lang === 'ar' ? 'وظفني الآن' : 'Hire Me'}</span>
+              </a>
+
+              {/* Secondary Button: Explore Projects */}
+              <a
+                href="#projects"
+                className="flex items-center justify-center gap-2.5 h-12 sm:h-14 px-6 sm:px-8 rounded-2xl bg-[#121215] hover:bg-[#18181f] border border-orange-500/30 hover:border-orange-500/60 text-slate-200 hover:text-white font-semibold text-base transition-all duration-300"
+              >
+                <span>{lang === 'ar' ? 'تصفح المشاريع' : 'Explore Projects'}</span>
+                <ArrowUpRight className="w-4 h-4 text-[#FF7A00]" />
               </a>
             </div>
+
+            {/* Quick Metrics Bar */}
+            <div className="grid grid-cols-3 gap-3 sm:gap-4 pt-4 border-t border-white/10 max-w-lg">
+              <div>
+                <span className="block text-2xl sm:text-3xl font-black text-[#FF5722]">
+                  +{profile.yearsOfExperience || 3}
+                </span>
+                <span className="text-xs text-slate-400 font-medium">
+                  {lang === 'ar' ? 'سنوات خبرة' : 'Years Experience'}
+                </span>
+              </div>
+              <div>
+                <span className="block text-2xl sm:text-3xl font-black text-[#FF7A00]">
+                  +{profile.completedProjects || 24}
+                </span>
+                <span className="text-xs text-slate-400 font-medium">
+                  {lang === 'ar' ? 'مشروع مكتمل' : 'Completed Projects'}
+                </span>
+              </div>
+              <div>
+                <span className="block text-2xl sm:text-3xl font-black text-white">
+                  100%
+                </span>
+                <span className="text-xs text-slate-400 font-medium">
+                  {lang === 'ar' ? 'رضا العملاء' : 'Client Satisfaction'}
+                </span>
+              </div>
+            </div>
+
           </motion.div>
 
-          {/* Right Column: 3D Interactive Avatar with Fast Void Emergence */}
+          {/* Right Column: Signature Circular Glow Silhouette Avatar */}
           <motion.div 
-            initial={{ opacity: 0, scale: 0.92 }}
+            initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.55, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-            className="lg:col-span-5 flex justify-center items-center z-10 order-1 lg:order-2"
+            transition={{ duration: 0.7, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            className="lg:col-span-5 flex items-center justify-center order-1 lg:order-2 z-10"
           >
-            <InteractiveAvatar imageSrc={profile.heroAvatarUrl || "/drama_hero.png"} />
+            <SignatureGlowAvatar
+              imageUrl={profile.heroAvatarUrl || "/drama_hero.png"}
+              alt={profile.name || "Amr Kandel"}
+              variant="hero"
+              scale={profile.heroImageScale ?? 1}
+              offsetY={profile.heroImageOffsetY ?? 0}
+              glowIntensity={profile.heroGlowIntensity ?? 1}
+              showRings={profile.heroShowRings ?? true}
+              showEditButton={false}
+            />
           </motion.div>
+
         </div>
       </section>
     </VoidEmergence>
   );
 };
+
+export default Hero;

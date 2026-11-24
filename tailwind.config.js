@@ -9,28 +9,42 @@ export default {
     extend: {
       colors: {
         dark: {
-          950: '#06080d',
-          900: '#0a0d14',
-          850: '#0f1420',
-          800: '#151b2b',
-          700: '#1e293b',
+          950: '#000000',
+          900: '#060608',
+          850: '#0c0d10',
+          800: '#121318',
+          750: '#181920',
+          700: '#22232c',
+        },
+        orange: {
+          brand: '#FF5722',
+          burnt: '#E64A19',
+          amber: '#FF7A00',
+          light: '#FF8A00',
+          fire: '#FF3D00',
         },
         cyber: {
-          cyan: '#38bdf8',
-          blue: '#3b82f6',
-          indigo: '#6366f1',
-          violet: '#8b5cf6',
-          emerald: '#10b981',
-          amber: '#f59e0b',
+          orange: '#FF5722',
+          amber: '#FF7A00',
+          crimson: '#E64A19',
+          gold: '#FFA726',
         }
       },
       fontFamily: {
         cairo: ['Cairo', 'sans-serif'],
+        sans: ['Inter', 'Cairo', 'sans-serif'],
         mono: ['JetBrains Mono', 'monospace'],
       },
       animation: {
         'spin-slow': 'spin 20s linear infinite',
         'pulse-glow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'breathe': 'breathe 4s ease-in-out infinite',
+      },
+      keyframes: {
+        breathe: {
+          '0%, 100%': { transform: 'scale(1)', opacity: '0.85' },
+          '50%': { transform: 'scale(1.08)', opacity: '1' },
+        }
       }
     },
   },

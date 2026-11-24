@@ -1,9 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { ProfileInfo, Project, Certificate, SkillCategory, ContactMessage, Experience } from '../types';
 import { initialProfile, initialProjects, initialCertificates, initialSkillCategories, initialExperiences } from '../data/initialData';
-import { extractColorsFromImage, applyThemeColors } from '../utils/colorExtractor';
 
-const DATA_SEED_KEY = 'portfolio_seed_v10';
+const DATA_SEED_KEY = 'portfolio_seed_v11';
 
 interface PortfolioContextType {
   profile: ProfileInfo;
@@ -78,8 +77,11 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         return {
           ...initialProfile,
           ...parsed,
+          brandName: parsed.brandName || initialProfile.brandName || 'Amr Kandel',
+          brandNameAr: parsed.brandNameAr || initialProfile.brandNameAr || 'عمرو قنديل',
           heroAvatarUrl: parsed.heroAvatarUrl || initialProfile.heroAvatarUrl || '/drama_hero.png',
-          autoExtractColors: parsed.autoExtractColors !== undefined ? parsed.autoExtractColors : true
+          aboutAvatarUrl: parsed.aboutAvatarUrl || initialProfile.aboutAvatarUrl || '/about_avatar.png',
+          autoExtractColors: false
         };
       }
       return initialProfile;
@@ -269,19 +271,6 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       : `${profile.name || 'Amr Atef'} | .NET Backend Developer`;
     localStorage.setItem('portfolio_lang', lang);
   }, [lang, profile]);
-
-  // Adaptive Color Theme Sync from Avatar Image
-  useEffect(() => {
-    if (profile.autoExtractColors !== false) {
-      if (profile.extractedColors && profile.extractedColors.primary) {
-        applyThemeColors(profile.extractedColors as any);
-      }
-      const avatarSrc = profile.heroAvatarUrl || profile.topAvatarUrl || '/drama_hero.png';
-      extractColorsFromImage(avatarSrc).then(palette => {
-        applyThemeColors(palette);
-      });
-    }
-  }, [profile.heroAvatarUrl, profile.topAvatarUrl, profile.autoExtractColors, profile.extractedColors]);
 
   // Auth methods
   const login = (username: string, password?: string) => {

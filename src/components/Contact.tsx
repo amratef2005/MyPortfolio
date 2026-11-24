@@ -1,6 +1,17 @@
 import React, { useState } from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
-import { Mail, MapPin, CheckCircle, Send, ArrowUpRight, Copy, Check, Linkedin, ExternalLink } from 'lucide-react';
+import { 
+  Mail, 
+  MapPin, 
+  Send, 
+  ArrowUpRight, 
+  Copy, 
+  Check, 
+  Linkedin, 
+  CheckCircle2, 
+  Sparkles,
+  MessageSquare
+} from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { AssembleItem } from './motion/KineticAssemble';
 
@@ -27,18 +38,10 @@ export const Contact: React.FC = () => {
     message: ''
   });
 
+  const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [copiedWhatsApp, setCopiedWhatsApp] = useState(false);
   const [copiedEmail, setCopiedEmail] = useState(false);
-  const [copiedLinkedIn, setCopiedLinkedIn] = useState(false);
-  const [copiedLocation, setCopiedLocation] = useState(false);
-
-  const copyWhatsApp = (e?: React.MouseEvent) => {
-    e?.stopPropagation();
-    navigator.clipboard.writeText(profile.phone || 'amratefkandel');
-    setCopiedWhatsApp(true);
-    setTimeout(() => setCopiedWhatsApp(false), 2000);
-  };
+  const [copiedWhatsApp, setCopiedWhatsApp] = useState(false);
 
   const copyEmail = (e?: React.MouseEvent) => {
     e?.stopPropagation();
@@ -47,445 +50,304 @@ export const Contact: React.FC = () => {
     setTimeout(() => setCopiedEmail(false), 2000);
   };
 
-  const copyLinkedIn = (e?: React.MouseEvent) => {
+  const copyWhatsApp = (e?: React.MouseEvent) => {
     e?.stopPropagation();
-    navigator.clipboard.writeText(profile.linkedin);
-    setCopiedLinkedIn(true);
-    setTimeout(() => setCopiedLinkedIn(false), 2000);
-  };
-
-  const copyLocation = (e?: React.MouseEvent) => {
-    e?.stopPropagation();
-    const locText = lang === 'ar' 
-      ? (profile.locationAr || 'الإسماعيلية، مصر')
-      : (profile.location || 'Ismailia, Egypt');
-    navigator.clipboard.writeText(locText);
-    setCopiedLocation(true);
-    setTimeout(() => setCopiedLocation(false), 2000);
-  };
-
-  const handleAvailabilityClick = () => {
-    const input = document.getElementById('contact-name-input') || document.getElementById('contact-message-input');
-    if (input) {
-      input.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      input.focus();
-    }
-  };
-
-  const handleEmailClick = () => {
-    window.location.href = `mailto:${profile.email}`;
+    navigator.clipboard.writeText(profile.phone || 'amratefkandel');
+    setCopiedWhatsApp(true);
+    setTimeout(() => setCopiedWhatsApp(false), 2000);
   };
 
   const getWhatsAppUrl = () => {
     const rawWa = (profile.whatsapp || '').trim();
-    if (rawWa && rawWa.startsWith('http') && !rawWa.includes('wa.me/?text=') && !rawWa.endsWith('wa.me/')) {
-      return rawWa;
-    }
+    if (rawWa && rawWa.startsWith('http')) return rawWa;
     const target = (profile.phone || rawWa || 'amratefkandel').replace(/^@/, '').trim();
-    if (target.startsWith('http')) return target;
     return `https://wa.me/${target}`;
   };
 
-  const handleWhatsAppClick = () => {
-    const url = getWhatsAppUrl();
-    window.open(url, '_blank', 'noopener,noreferrer');
-  };
-
-  const handleLinkedInClick = () => {
-    if (profile.linkedin) {
-      window.open(profile.linkedin, '_blank', 'noopener,noreferrer');
-    }
-  };
-
-  const handleLocationClick = () => {
-    const query = encodeURIComponent(profile.location || 'Ismailia, Egypt');
-    window.open(`https://www.google.com/maps/search/?api=1&query=${query}`, '_blank', 'noopener,noreferrer');
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.email || !formData.message) return;
 
-    addMessage(formData);
-    setSubmitted(true);
+    setSubmitting(true);
 
     try {
+      // 1. Post to Backend API
+      await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      }).catch(() => {
+        // Fallback gracefully if running purely offline
+      });
+
+      // 2. Add to Local State / Context
+      addMessage(formData);
+      setSubmitted(true);
+
+      // 3. Trigger Celebration Confetti
       confetti({
         particleCount: 80,
         spread: 70,
-        origin: { y: 0.6 }
+        origin: { y: 0.6 },
+        colors: ['#FF5722', '#FF7A00', '#FF8A00', '#FFFFFF']
       });
-    } catch {
-      // ignore
+    } finally {
+      setSubmitting(false);
     }
-
-    setFormData({ name: '', email: '', subject: '', message: '' });
-    setTimeout(() => setSubmitted(false), 6000);
   };
 
   return (
     <section id="contact" className="py-20 sm:py-28 relative overflow-hidden">
+      {/* Background Subtle Orange Glow */}
+      <div 
+        className="absolute bottom-0 right-1/4 w-[500px] h-[500px] rounded-full blur-[160px] pointer-events-none"
+        style={{ background: 'radial-gradient(circle, rgba(255, 87, 34, 0.14) 0%, transparent 70%)' }}
+      />
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header: Assembles from Top */}
+        
+        {/* Section Header: "Contact Me" & "Have Any Project? Let's Chat" */}
         <AssembleItem direction="top">
           <div className="text-center max-w-3xl mx-auto mb-14 sm:mb-18">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-cyan-400 text-xs font-mono mb-3">
-              <Mail className="w-3.5 h-3.5 text-cyan-400" />
-              <span>{lang === 'ar' ? 'قنوات التواصل المباشر' : 'Get in Touch'}</span>
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#121215] border border-orange-500/20 text-[#FF7A00] text-xs font-mono mb-3">
+              <MessageSquare className="w-3.5 h-3.5 text-[#FF5722]" />
+              <span>{lang === 'ar' ? 'تواصل معي' : 'Contact Me'}</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight">
+            
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-[1.2]">
               {lang === 'ar' ? (
                 <>
-                  دعنا نبني <span className="gradient-text-cyan">مشروعك القادم معاً</span>
+                  لديك مشروع جديد؟ <span className="text-[#FF5722] drop-shadow-[0_0_20px_rgba(255,87,34,0.4)]">دعنا نتحدث الآن</span>
                 </>
               ) : (
                 <>
-                  Let's Build Something <span className="gradient-text-cyan">Exceptional Together</span>
+                  Have Any Project? <span className="text-[#FF5722] drop-shadow-[0_0_20px_rgba(255,87,34,0.4)]">Let's Chat</span>
                 </>
               )}
             </h2>
+            
             <p className="text-slate-400 mt-4 text-sm sm:text-base leading-relaxed">
               {lang === 'ar'
-                ? 'متاح للمناقشات الفنية، المشاريع المؤسسية، والفرص الواعدة في هندسة النظم الخلفية.'
-                : 'Available for technical leadership, enterprise consulting, and high-impact backend engineering roles.'}
+                ? 'سواء كنت ترغب في بدء مشروع جديد، إعادة تصميم منتجك، أو استشارة سريعة في الـ UI/UX، يسعدني دائماً تواصلك.'
+                : 'Whether you have a new venture, want to redesign an existing product, or need a UI/UX consultation, I would love to hear from you.'}
             </p>
           </div>
         </AssembleItem>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 text-start items-start">
-          {/* Left Column: Direct Info - Assembles from Left & Disperses to Left */}
-          <AssembleItem direction="left" distance={130} rotation={-3} className="lg:col-span-5 space-y-4">
-            <div className="p-6 sm:p-8 rounded-3xl glass-panel border border-slate-800/80 space-y-5">
-              <div className="flex items-center justify-between">
-                <h3 className="text-xl font-bold text-white">
-                  {lang === 'ar' ? 'معلومات التواصل السريع' : 'Direct Channels'}
-                </h3>
-              </div>
-
-              {/* Current Work Availability Live Pill */}
-              {profile.showAvailabilityBadge !== false && (
-                <div 
-                  onClick={handleAvailabilityClick}
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleAvailabilityClick(); } }}
-                  title={lang === 'ar' ? 'انقر للتواصل المباشر عبر النموذج' : 'Click to scroll to message form'}
-                  className={`group p-3.5 rounded-2xl border flex items-center justify-between gap-3 cursor-pointer select-none transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg active:scale-[0.985] ${
-                    (profile.availabilityStatus || 'available') === 'available'
-                      ? 'bg-emerald-950/20 border-emerald-500/30 text-emerald-300 hover:border-emerald-500/60 hover:shadow-emerald-500/10'
-                      : (profile.availabilityStatus === 'busy'
-                        ? 'bg-amber-950/20 border-amber-500/30 text-amber-300 hover:border-amber-500/60 hover:shadow-amber-500/10'
-                        : 'bg-slate-900/70 border-slate-800 text-slate-400 hover:border-slate-700 hover:bg-slate-800/80')
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="relative flex h-2.5 w-2.5 shrink-0">
-                      {(profile.availabilityStatus || 'available') === 'available' && (
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                      )}
-                      <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${
-                        (profile.availabilityStatus || 'available') === 'available'
-                          ? 'bg-emerald-400'
-                          : (profile.availabilityStatus === 'busy' ? 'bg-amber-400' : 'bg-slate-500')
-                      }`} />
-                    </span>
-                    <div>
-                      <span className="block text-[10px] font-mono text-slate-400 uppercase tracking-wider">
-                        {lang === 'ar' ? 'الحالة الحالية للتوفر' : 'Current Status'}
-                      </span>
-                      <span className="text-xs sm:text-sm font-bold text-white group-hover:text-cyan-300 transition-colors">
-                        {lang === 'ar'
-                          ? (profile.availabilityNoteAr || ((profile.availabilityStatus || 'available') === 'available' ? 'جاهز للمشاريع والتحديات الهندسية' : (profile.availabilityStatus === 'busy' ? 'مشغول حالياً بمشاريع قائمة' : 'غير متاح حالياً')))
-                          : (profile.availabilityNoteEn || ((profile.availabilityStatus || 'available') === 'available' ? 'Available for High-Impact Roles' : (profile.availabilityStatus === 'busy' ? 'Busy with Ongoing Projects' : 'Currently Unavailable')))}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="opacity-0 group-hover:opacity-100 transition-all -translate-x-1 group-hover:translate-x-0 text-slate-400 group-hover:text-cyan-300">
-                    <Send className="w-4 h-4 rotate-45" />
-                  </div>
-                </div>
-              )}
+          
+          {/* Left Column: Direct Contact Info Channels */}
+          <AssembleItem direction="left" distance={100} className="lg:col-span-5 space-y-4">
+            <div className="p-6 sm:p-8 rounded-3xl bg-[#0e0e12] border border-white/10 space-y-5">
+              <h3 className="text-xl font-bold text-white mb-2">
+                {lang === 'ar' ? 'قنوات التواصل المباشرة' : 'Direct Channels'}
+              </h3>
 
               {/* Email */}
               <div 
-                onClick={handleEmailClick}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleEmailClick(); } }}
-                title={lang === 'ar' ? 'انقر لفتح البريد الإلكتروني مباشرة' : 'Click to send email directly'}
-                className="group flex items-center justify-between p-4 rounded-2xl bg-slate-900/70 border border-slate-800 hover:border-cyan-500/50 hover:bg-slate-800/80 hover:shadow-[0_0_20px_rgba(6,182,212,0.15)] cursor-pointer select-none transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.985]"
+                onClick={() => window.location.href = `mailto:${profile.email}`}
+                className="group flex items-center justify-between p-4 rounded-2xl bg-[#15151c] border border-white/5 hover:border-orange-500/40 cursor-pointer transition-all"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 group-hover:scale-110 group-hover:bg-cyan-500/20 transition-all shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-[#FF5722] shrink-0">
                     <Mail className="w-5 h-5" />
                   </div>
                   <div>
-                    <span className="block text-xs font-mono text-slate-400">
-                      {lang === 'ar' ? 'البريد الإلكتروني' : 'Email'}
+                    <span className="block text-[10px] font-mono text-slate-400 uppercase">
+                      {lang === 'ar' ? 'البريد الإلكتروني' : 'Email Address'}
                     </span>
-                    <span className="text-xs sm:text-sm font-semibold text-white group-hover:text-cyan-300 transition-colors truncate max-w-[170px] sm:max-w-none block">
+                    <span className="text-sm font-bold text-white group-hover:text-[#FF7A00] transition-colors truncate max-w-[180px] sm:max-w-none block">
                       {profile.email}
                     </span>
                   </div>
                 </div>
-                <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
-                  <a
-                    href={`mailto:${profile.email}`}
-                    className="p-2 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 transition-all"
-                    title={lang === 'ar' ? 'إرسال بريد إلكتروني' : 'Send Email'}
-                  >
-                    <ExternalLink className="w-4 h-4" />
-                  </a>
-                  <button
-                    onClick={copyEmail}
-                    className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
-                    title={lang === 'ar' ? 'نسخ البريد الإلكتروني' : 'Copy Email'}
-                  >
-                    {copiedEmail ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
-                  </button>
-                </div>
+                <button
+                  onClick={copyEmail}
+                  className="p-2 rounded-lg bg-white/5 hover:bg-orange-500/20 text-slate-400 hover:text-[#FF7A00] transition-colors"
+                  title="Copy email"
+                >
+                  {copiedEmail ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                </button>
               </div>
 
               {/* WhatsApp */}
               <div 
-                onClick={handleWhatsAppClick}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleWhatsAppClick(); } }}
-                title={lang === 'ar' ? 'انقر لفتح محادثة واتساب المباشرة' : 'Click to chat on WhatsApp'}
-                className="group flex items-center justify-between p-4 rounded-2xl bg-slate-900/70 border border-slate-800 hover:border-emerald-500/50 hover:bg-slate-800/80 hover:shadow-[0_0_20px_rgba(16,185,129,0.15)] cursor-pointer select-none transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.985]"
+                onClick={() => window.open(getWhatsAppUrl(), '_blank')}
+                className="group flex items-center justify-between p-4 rounded-2xl bg-[#15151c] border border-white/5 hover:border-emerald-500/40 cursor-pointer transition-all"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0 group-hover:scale-110 group-hover:bg-emerald-500/20 transition-all">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0">
                     <WhatsAppIcon className="w-5 h-5" />
                   </div>
                   <div>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="block text-xs font-mono text-slate-400">
-                        {lang === 'ar' ? 'واتساب' : 'WhatsApp'}
-                      </span>
-                      {profile.showWhatsAppStatus !== false && (
-                        <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-medium ${
-                          (profile.whatsappStatus || 'online') === 'online'
-                            ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'
-                            : (profile.whatsappStatus === 'delayed'
-                              ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30'
-                              : 'bg-slate-800 text-slate-400 border border-slate-700')
-                        }`}>
-                          <span className={`w-1.5 h-1.5 rounded-full ${
-                            (profile.whatsappStatus || 'online') === 'online'
-                              ? 'bg-emerald-400 animate-pulse'
-                              : (profile.whatsappStatus === 'delayed' ? 'bg-amber-400' : 'bg-slate-500')
-                          }`} />
-                          <span>
-                            {lang === 'ar'
-                              ? (profile.whatsappNoteAr || ((profile.whatsappStatus || 'online') === 'online' ? 'متاح للرد الفوري' : (profile.whatsappStatus === 'delayed' ? 'الرد خلال ساعات' : 'غير متصل')))
-                              : (profile.whatsappNoteEn || ((profile.whatsappStatus || 'online') === 'online' ? 'Online • Fast Reply' : (profile.whatsappStatus === 'delayed' ? 'Replies within hours' : 'Offline')))}
-                          </span>
-                        </span>
-                      )}
-                    </div>
-                    <span className="text-xs sm:text-sm font-semibold text-white group-hover:text-emerald-300 transition-colors">
-                      {profile.phone}
+                    <span className="block text-[10px] font-mono text-slate-400 uppercase">
+                      {lang === 'ar' ? 'محادثة واتساب سريعة' : 'WhatsApp Chat'}
+                    </span>
+                    <span className="text-sm font-bold text-white group-hover:text-emerald-400 transition-colors">
+                      {profile.phone || 'Online'}
                     </span>
                   </div>
                 </div>
-                <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
-                  <button
-                    onClick={handleWhatsAppClick}
-                    className="p-2 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 transition-all text-xs font-mono flex items-center gap-1"
-                    title={lang === 'ar' ? 'محادثة مباشرة عبر واتساب' : 'Direct WhatsApp Chat'}
-                  >
-                    <ExternalLink className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={copyWhatsApp}
-                    className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
-                    title={lang === 'ar' ? 'نسخ رقم الهاتف / واتساب' : 'Copy Phone'}
-                  >
-                    {copiedWhatsApp ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
-                  </button>
-                </div>
-              </div>
-
-              {/* LinkedIn */}
-              <div 
-                onClick={handleLinkedInClick}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleLinkedInClick(); } }}
-                title={lang === 'ar' ? 'انقر لزيارة الملف الشخصي على لينكد إن' : 'Click to visit LinkedIn profile'}
-                className="group flex items-center justify-between p-4 rounded-2xl bg-slate-900/70 border border-slate-800 hover:border-indigo-500/50 hover:bg-slate-800/80 hover:shadow-[0_0_20px_rgba(99,102,241,0.15)] cursor-pointer select-none transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.985]"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 group-hover:scale-110 group-hover:bg-indigo-500/20 transition-all shrink-0">
-                    <Linkedin className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <span className="block text-xs font-mono text-slate-400">
-                      {lang === 'ar' ? 'لينكد إن' : 'LinkedIn'}
-                    </span>
-                    <span className="text-xs sm:text-sm font-semibold text-white group-hover:text-indigo-300 transition-colors">
-                      {lang === 'ar' ? profile.nameAr : profile.name}
-                    </span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
-                  {profile.linkedin && (
-                    <a
-                      href={profile.linkedin}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-2 rounded-lg bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 transition-all text-xs font-mono flex items-center gap-1"
-                      title={lang === 'ar' ? 'زيارة الملف الشخصي على لينكد إن' : 'Visit LinkedIn Profile'}
-                    >
-                      <ExternalLink className="w-4 h-4" />
-                    </a>
-                  )}
-                  <button
-                    onClick={copyLinkedIn}
-                    className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
-                    title={lang === 'ar' ? 'نسخ رابط لينكد إن' : 'Copy LinkedIn'}
-                  >
-                    {copiedLinkedIn ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
-                  </button>
-                </div>
+                <button
+                  onClick={copyWhatsApp}
+                  className="p-2 rounded-lg bg-white/5 hover:bg-emerald-500/20 text-slate-400 hover:text-emerald-400 transition-colors"
+                  title="Copy WhatsApp"
+                >
+                  {copiedWhatsApp ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                </button>
               </div>
 
               {/* Location */}
-              <div 
-                onClick={handleLocationClick}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleLocationClick(); } }}
-                title={lang === 'ar' ? 'انقر لفتح الموقع على خرائط Google' : 'Click to view on Google Maps'}
-                className="group flex items-center justify-between p-4 rounded-2xl bg-slate-900/70 border border-slate-800 hover:border-sky-500/40 hover:bg-slate-800/80 hover:shadow-[0_0_20px_rgba(14,165,233,0.15)] cursor-pointer select-none transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.985]"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400 group-hover:scale-110 group-hover:bg-sky-500/20 transition-all shrink-0">
-                    <MapPin className="w-5 h-5 group-hover:-translate-y-0.5 transition-transform" />
-                  </div>
-                  <div>
-                    <span className="block text-xs font-mono text-slate-400">
-                      {lang === 'ar' ? 'الموقع / الإقامة' : 'Location'}
-                    </span>
-                    <span className="text-xs sm:text-sm font-semibold text-white group-hover:text-sky-300 transition-colors">
-                      {lang === 'ar' 
-                        ? `${profile.locationAr || 'الإسماعيلية، مصر'} (متاح للعمل عن بُعد وحضورياً)` 
-                        : `${profile.location || 'Ismailia, Egypt'} (Available for Remote & On-site)`}
-                    </span>
-                  </div>
+              <div className="flex items-center gap-3 p-4 rounded-2xl bg-[#15151c] border border-white/5">
+                <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-[#FF5722] shrink-0">
+                  <MapPin className="w-5 h-5" />
                 </div>
-                <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
-                  <button
-                    onClick={handleLocationClick}
-                    className="p-2 rounded-lg bg-sky-500/10 hover:bg-sky-500/20 text-sky-400 border border-sky-500/30 transition-all"
-                    title={lang === 'ar' ? 'فتح الموقع في خرائط Google' : 'Open in Google Maps'}
-                  >
-                    <ExternalLink className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={copyLocation}
-                    className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
-                    title={lang === 'ar' ? 'نسخ تفاصيل الموقع' : 'Copy Location'}
-                  >
-                    {copiedLocation ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </AssembleItem>
-
-          {/* Right Column: Message Form - Assembles from Right & Disperses to Right */}
-          <AssembleItem direction="right" distance={130} rotation={3} className="lg:col-span-7">
-            <div className="p-6 sm:p-8 rounded-3xl glass-panel border border-slate-800/80 relative">
-              <h3 className="text-xl font-bold text-white mb-6">
-                {lang === 'ar' ? 'إرسال رسالة مباشرة للمهندس' : 'Send a Direct Message'}
-              </h3>
-
-              {submitted && (
-                <div className="mb-6 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center gap-3 text-emerald-400 text-sm">
-                  <CheckCircle className="w-5 h-5 shrink-0" />
-                  <span>
-                    {lang === 'ar' 
-                      ? 'تم إرسال رسالتك بنجاح! تم حفظها وسأقوم بالرد عليك سريعاً.' 
-                      : 'Your message has been received! I will get back to you shortly.'}
+                <div>
+                  <span className="block text-[10px] font-mono text-slate-400 uppercase">
+                    {lang === 'ar' ? 'الموقع' : 'Location'}
+                  </span>
+                  <span className="text-sm font-bold text-white">
+                    {lang === 'ar' ? (profile.locationAr || 'القاهرة، مصر') : (profile.location || 'Cairo, Egypt')}
                   </span>
                 </div>
+              </div>
+
+              {/* Social Link: LinkedIn */}
+              {profile.linkedin && (
+                <a
+                  href={profile.linkedin}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center justify-between p-4 rounded-2xl bg-[#15151c] border border-white/5 hover:border-blue-500/40 text-slate-300 hover:text-white transition-colors"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 shrink-0">
+                      <Linkedin className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <span className="block text-[10px] font-mono text-slate-400 uppercase">LinkedIn</span>
+                      <span className="text-sm font-bold text-white">Connect on LinkedIn</span>
+                    </div>
+                  </div>
+                  <ArrowUpRight className="w-4 h-4 text-slate-400" />
+                </a>
               )}
 
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-mono text-slate-300 mb-2">
-                      {lang === 'ar' ? 'الاسم الكريم' : 'Your Name'}
-                    </label>
-                    <input
-                      id="contact-name-input"
-                      type="text"
-                      required
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      placeholder={lang === 'ar' ? 'م. محمد أحمد' : 'Alex Mercer'}
-                      className="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-800 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 text-white text-sm outline-none transition-all"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-mono text-slate-300 mb-2">
-                      {lang === 'ar' ? 'البريد الإلكتروني' : 'Email Address'}
-                    </label>
-                    <input
-                      type="email"
-                      required
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      placeholder="alex@company.com"
-                      className="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-800 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 text-white text-sm outline-none transition-all"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-mono text-slate-300 mb-2">
-                    {lang === 'ar' ? 'الموضوع أو نوع المشروع' : 'Subject / Project Focus'}
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.subject}
-                    onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                    placeholder={lang === 'ar' ? 'استشارة معمارية .NET / بناء نظام سحابي' : 'Enterprise Consulting / High Throughput Backend'}
-                    className="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-800 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 text-white text-sm outline-none transition-all"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-mono text-slate-300 mb-2">
-                    {lang === 'ar' ? 'تفاصيل الرسالة أو الاستفسار' : 'Message Details'}
-                  </label>
-                  <textarea
-                    id="contact-message-input"
-                    rows={4}
-                    required
-                    value={formData.message}
-                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                    placeholder={lang === 'ar' ? 'أخبرني عن أهداف النظام، حجم البيانات المتوقع، أو التحديات الهندسية...' : 'Briefly describe your system requirements, architecture goals, or role expectations...'}
-                    className="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-800 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 text-white text-sm outline-none transition-all resize-none"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  className="w-full py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold text-sm shadow-[0_0_20px_rgba(56,189,248,0.25)] hover:shadow-[0_0_25px_rgba(56,189,248,0.4)] transition-all flex items-center justify-center gap-2 group"
-                >
-                  <Send className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  <span>{lang === 'ar' ? 'إرسال الرسالة الآن' : 'Dispatch Message'}</span>
-                </button>
-              </form>
             </div>
           </AssembleItem>
+
+          {/* Right Column: Contact Message Form */}
+          <AssembleItem direction="right" distance={100} className="lg:col-span-7">
+            <div className="p-6 sm:p-8 rounded-3xl bg-[#0e0e12] border border-white/10 shadow-[0_15px_35px_rgba(0,0,0,0.7)]">
+              {submitted ? (
+                <div className="text-center py-12 space-y-4">
+                  <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mx-auto">
+                    <CheckCircle2 className="w-8 h-8" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-white">
+                    {lang === 'ar' ? 'تم استلام رسالتك بنجاح!' : 'Message Sent Successfully!'}
+                  </h3>
+                  <p className="text-slate-300 text-sm max-w-md mx-auto leading-relaxed">
+                    {lang === 'ar'
+                      ? 'شكراً لتواصلك، سأقوم بمراجعة تفاصيل مشروعك والرد عليك في أقرب وقت ممكن.'
+                      : 'Thank you for reaching out. I have received your note and will get back to you shortly.'}
+                  </p>
+                  <button
+                    onClick={() => {
+                      setSubmitted(false);
+                      setFormData({ name: '', email: '', subject: '', message: '' });
+                    }}
+                    className="mt-4 px-6 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-white text-xs font-mono font-semibold"
+                  >
+                    {lang === 'ar' ? 'إرسال رسالة أخرى' : 'Send Another Note'}
+                  </button>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* Name */}
+                    <div>
+                      <label className="block text-xs font-mono text-slate-400 uppercase mb-2">
+                        {lang === 'ar' ? 'الاسم الكامل' : 'Your Name'} *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={formData.name}
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        placeholder={lang === 'ar' ? 'سارة محمد' : 'Jane Doe'}
+                        className="w-full px-4 py-3 rounded-xl bg-[#15151c] border border-white/10 focus:border-[#FF5722] focus:ring-1 focus:ring-[#FF5722] text-white text-sm outline-none transition-colors"
+                      />
+                    </div>
+
+                    {/* Email */}
+                    <div>
+                      <label className="block text-xs font-mono text-slate-400 uppercase mb-2">
+                        {lang === 'ar' ? 'البريد الإلكتروني' : 'Email Address'} *
+                      </label>
+                      <input
+                        type="email"
+                        required
+                        value={formData.email}
+                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                        placeholder="jane@example.com"
+                        className="w-full px-4 py-3 rounded-xl bg-[#15151c] border border-white/10 focus:border-[#FF5722] focus:ring-1 focus:ring-[#FF5722] text-white text-sm outline-none transition-colors"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Subject / Project Type */}
+                  <div>
+                    <label className="block text-xs font-mono text-slate-400 uppercase mb-2">
+                      {lang === 'ar' ? 'نوع المشروع أو الموضوع' : 'Project Type or Subject'}
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.subject}
+                      onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                      placeholder={lang === 'ar' ? 'تصميم تطبيق موبايل جديد / موقع إلكتروني' : 'New Mobile App Design / Web UI'}
+                      className="w-full px-4 py-3 rounded-xl bg-[#15151c] border border-white/10 focus:border-[#FF5722] focus:ring-1 focus:ring-[#FF5722] text-white text-sm outline-none transition-colors"
+                    />
+                  </div>
+
+                  {/* Message */}
+                  <div>
+                    <label className="block text-xs font-mono text-slate-400 uppercase mb-2">
+                      {lang === 'ar' ? 'تفاصيل المشروع والرسالة' : 'Project Details & Goals'} *
+                    </label>
+                    <textarea
+                      rows={5}
+                      required
+                      value={formData.message}
+                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                      placeholder={lang === 'ar' ? 'أخبرني عن أهداف مشروعك، الفئة المستهدفة، والجدول الزمني المتوقع...' : 'Tell me about your product goals, timeline, and vision...'}
+                      className="w-full px-4 py-3 rounded-xl bg-[#15151c] border border-white/10 focus:border-[#FF5722] focus:ring-1 focus:ring-[#FF5722] text-white text-sm outline-none transition-colors resize-none"
+                    />
+                  </div>
+
+                  {/* Submit Button ("Let's Chat") */}
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="w-full flex items-center justify-center gap-2 h-14 rounded-2xl bg-gradient-to-r from-[#FF5722] via-[#FF6B00] to-[#FF7A00] hover:from-[#FF6B00] hover:to-[#FF8A00] text-white font-bold text-base shadow-[0_0_30px_rgba(255,87,34,0.4)] hover:shadow-[0_0_40px_rgba(255,87,34,0.6)] transition-all active:scale-98 disabled:opacity-50"
+                  >
+                    <Send className="w-4 h-4" />
+                    <span>
+                      {submitting
+                        ? (lang === 'ar' ? 'جاري الإرسال...' : 'Sending...')
+                        : (lang === 'ar' ? 'دعنا نتحدث (Let\'s Chat)' : "Let's Chat")}
+                    </span>
+                  </button>
+                </form>
+              )}
+            </div>
+          </AssembleItem>
+
         </div>
+
       </div>
     </section>
   );
 };
+
+export default Contact;

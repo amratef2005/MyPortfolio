@@ -2,6 +2,7 @@ import React from 'react';
 import { ProfileInfo, Project, Certificate, SkillCategory, Experience } from '../../types';
 
 export type AccentColor =
+  | 'burntOrange'
   | 'slate'
   | 'navy'
   | 'cyan'
@@ -37,13 +38,18 @@ export const CVDocument: React.FC<CVDocumentProps> = ({
   options,
   profile,
   projects,
-  experiences,
+  certificates,
+  skills,
+  experiences = [],
 }) => {
-  // Filter projects by selection
-  const selectedProjects = projects.filter(p => options.includedProjects.includes(p.id));
+  // Filter projects by user selection
+  const selectedProjects = projects.filter(p => 
+    options.includedProjects.length === 0 || options.includedProjects.includes(p.id)
+  );
 
   // Accent Colors mapping (subtle and ATS compliant)
   const colorMap: Record<AccentColor, { primary: string; divider: string; tag: string }> = {
+    burntOrange: { primary: '#FF5722', divider: '#FF7A00', tag: '#E64A19' },
     slate: { primary: '#0f172a', divider: '#334155', tag: '#475569' },
     navy: { primary: '#1e3a8a', divider: '#1d4ed8', tag: '#1e40af' },
     cyan: { primary: '#0284c7', divider: '#0284c7', tag: '#0284c7' },
@@ -59,53 +65,43 @@ export const CVDocument: React.FC<CVDocumentProps> = ({
   };
   const theme = colorMap[options.accentColor] || colorMap.slate;
 
-  // Curated ATS-Optimized Project Data directly from User CV
-  const projectEnglishData: Record<string, {
-    title: string;
-    role: string;
-    technologies: string[];
-    summary: string;
-    bullets: string[];
-  }> = {
-    'mot7km-saas': {
-      title: 'Multi-Tenant SaaS ERP & Digital Menu Platform',
-      role: 'Backend Developer',
-      technologies: ['C#', '.NET 10', 'ASP.NET Core', 'PostgreSQL', 'Entity Framework Core', 'Supabase', 'SignalR', 'GitHub Actions', 'IIS'],
-      summary: 'Developed the backend of a multi-tenant SaaS platform for restaurants, cafés, and businesses to manage their digital presence and operations.',
-      bullets: [
-        'Designed and implemented Clean Architecture with a Modular Monolith approach.',
-        'Developed RESTful APIs for business profiles, branches, menus, categories, products, and promotional campaigns.',
-        'Implemented multi-tenancy and tenant isolation to ensure secure separation of business data.',
-        'Developed authentication mechanisms supporting JWT, OAuth, and phone OTP.',
-        'Implemented secure session management using refresh token rotation, sliding expiration, and token reuse detection.',
-        'Applied SHA-256 hashing for refresh token storage.',
-        'Developed administrative dashboard APIs with business analytics and performance insights.',
-        'Integrated SignalR for real-time dashboard updates.',
-        'Implemented background batch processing for product view tracking to optimize database operations.',
-        'Configured automated deployment workflows using GitHub Actions and IIS.'
-      ]
+  // Fallback skills list if none configured
+  const defaultSkillCategories = [
+    {
+      name: 'Programming Languages',
+      skills: 'C#, SQL'
     },
-    'studysync-lms': {
-      title: 'Academic Management System',
-      role: 'Backend Developer',
-      technologies: ['C#', '.NET 10', 'ASP.NET Core', 'PostgreSQL', 'Entity Framework Core', 'Clean Architecture', 'CQRS'],
-      summary: 'Developed the backend of an academic management system to organize educational operations through a scalable and maintainable architecture.',
-      bullets: [
-        'Applied Clean Architecture to separate Domain, Application, Infrastructure, and Presentation layers.',
-        'Implemented CQRS to organize application commands and queries.',
-        'Developed authentication and session management functionality.',
-        'Implemented course management features and structured error-handling mechanisms.',
-        'Supported separate application portals for different user roles.',
-        'Contributed to automated testing and application reliability, achieving 49 passing automated tests with a 100% pass rate.'
-      ]
+    {
+      name: 'Backend Development',
+      skills: '.NET 10, ASP.NET Core Web API, RESTful API Development, Entity Framework Core, Dependency Injection, Middleware, Background Services'
+    },
+    {
+      name: 'Architecture & Design',
+      skills: 'Clean Architecture, Modular Monolith, CQRS, DTOs, Manual Mapping, Separation of Concerns'
+    },
+    {
+      name: 'Databases & ORM',
+      skills: 'Microsoft SQL Server, PostgreSQL, Supabase, Entity Framework Core, Database Migrations, Relational Database Design'
+    },
+    {
+      name: 'Authentication & Security',
+      skills: 'JWT Authentication, OAuth 2.0, Phone OTP Authentication, Refresh Token Rotation, SHA-256 Hashing, Multi-Tenant Authorization, Ownership Authorization, IDOR Prevention'
+    },
+    {
+      name: 'Real-Time & Performance',
+      skills: 'SignalR, Background Processing, Batch Processing, Asynchronous Programming'
+    },
+    {
+      name: 'Validation & Tools',
+      skills: 'FluentValidation, Swagger / OpenAPI, Postman, Git, GitHub, GitHub Actions, CI/CD, IIS'
     }
-  };
+  ];
 
   return (
     <div
       id="cv-sheet"
       dir="ltr"
-      className="bg-white text-slate-900 w-full max-w-[210mm] min-h-[297mm] p-8 sm:p-11 shadow-2xl rounded-none mx-auto font-sans text-left selection:bg-cyan-100"
+      className="bg-white text-slate-900 w-full max-w-[210mm] min-h-[297mm] p-8 sm:p-11 shadow-2xl rounded-none mx-auto font-sans text-left selection:bg-orange-100"
       style={{
         boxSizing: 'border-box',
         lineHeight: 1.45,
@@ -132,24 +128,32 @@ export const CVDocument: React.FC<CVDocumentProps> = ({
         </p>
 
         <p className="text-[11.5px] font-mono text-slate-600 mb-2 font-medium">
-          C# | ASP.NET Core | SQL Server | PostgreSQL
+          C# | ASP.NET Core | PostgreSQL | SQL Server | Clean Architecture
         </p>
 
         {/* ATS Standard Single-Line Contact Information */}
         <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs text-slate-700 font-medium">
           <span>{profile.location || 'Ismailia, Egypt'}</span>
           <span>•</span>
-          <a href={`mailto:${profile.email}`} className="text-slate-900 hover:underline">{profile.email}</a>
+          <a href={`mailto:${profile.email}`} className="text-slate-900 hover:underline">{profile.email || 'amratefkandel@gmail.com'}</a>
           <span>•</span>
-          <span>WhatsApp: {profile.phone || '@amratefkandel'}</span>
-          <span>•</span>
-          <a href="https://linkedin.com/in/amr-atef-kandel" target="_blank" rel="noreferrer" className="text-slate-900 hover:underline">
-            linkedin.com/in/amr-atef-kandel
-          </a>
-          <span>•</span>
-          <a href="https://github.com/amratef2005" target="_blank" rel="noreferrer" className="text-slate-900 hover:underline">
-            github.com/amratef2005
-          </a>
+          <span>{profile.phone || '+20 10 9999 9999'}</span>
+          {profile.linkedin && (
+            <>
+              <span>•</span>
+              <a href={profile.linkedin} target="_blank" rel="noreferrer" className="text-slate-900 hover:underline">
+                {profile.linkedin.replace(/^https?:\/\/(www\.)?/, '')}
+              </a>
+            </>
+          )}
+          {profile.github && (
+            <>
+              <span>•</span>
+              <a href={profile.github} target="_blank" rel="noreferrer" className="text-slate-900 hover:underline">
+                {profile.github.replace(/^https?:\/\/(www\.)?/, '')}
+              </a>
+            </>
+          )}
         </div>
       </header>
 
@@ -163,7 +167,8 @@ export const CVDocument: React.FC<CVDocumentProps> = ({
           suppressContentEditableWarning
           className="text-[11.5px] text-slate-800 leading-relaxed text-justify"
         >
-          Computer Science student and .NET Backend Developer with hands-on experience designing and developing scalable backend systems using C# and ASP.NET Core. Experienced in building RESTful APIs, implementing Clean Architecture and CQRS patterns, designing relational databases, and developing secure authentication and authorization mechanisms. Practical experience in multi-tenant SaaS applications, JWT authentication, OAuth 2.0, refresh token rotation, real-time communication using SignalR, and background processing. Collaborates with cross-functional teams, owning backend development and API integration with mobile and frontend applications. Interested in software architecture, backend security, database optimization, and maintainable software systems.
+          {profile.bio || 
+            "Computer Science student and .NET Backend Developer with hands-on experience designing and developing scalable backend systems using C# and ASP.NET Core. Experienced in building RESTful APIs, implementing Clean Architecture and CQRS patterns, designing relational databases, and developing secure authentication and authorization mechanisms. Practical experience in multi-tenant SaaS applications, JWT authentication, OAuth 2.0, refresh token rotation, real-time communication using SignalR, and background processing. Collaborates with cross-functional teams, owning backend development and API integration with mobile and frontend applications. Interested in software architecture, backend security, database optimization, and maintainable software systems."}
         </p>
       </section>
 
@@ -174,143 +179,108 @@ export const CVDocument: React.FC<CVDocumentProps> = ({
         </h2>
 
         <div className="space-y-1 text-[11px] text-slate-800">
-          <div className="flex items-baseline">
-            <span className="font-bold text-slate-950 font-mono w-48 shrink-0">• Programming Languages:</span>
-            <span>C#, SQL</span>
-          </div>
-
-          <div className="flex items-baseline">
-            <span className="font-bold text-slate-950 font-mono w-48 shrink-0">• Backend Development:</span>
-            <span>.NET 10, ASP.NET Core Web API, RESTful API Development, Entity Framework Core, Dependency Injection, Middleware, Background Services</span>
-          </div>
-
-          <div className="flex items-baseline">
-            <span className="font-bold text-slate-950 font-mono w-48 shrink-0">• Architecture & Design:</span>
-            <span>Clean Architecture, Modular Monolith, CQRS, DTOs, Manual Mapping, Separation of Concerns</span>
-          </div>
-
-          <div className="flex items-baseline">
-            <span className="font-bold text-slate-950 font-mono w-48 shrink-0">• Databases & ORM:</span>
-            <span>Microsoft SQL Server, PostgreSQL, Supabase, Entity Framework Core, Database Migrations, Relational Database Design</span>
-          </div>
-
-          <div className="flex items-baseline">
-            <span className="font-bold text-slate-950 font-mono w-48 shrink-0">• Authentication & Security:</span>
-            <span>JWT Authentication, OAuth 2.0, Phone OTP Authentication, Refresh Token Rotation, SHA-256 Hashing, Multi-Tenant Authorization, Ownership Authorization, IDOR Prevention</span>
-          </div>
-
-          <div className="flex items-baseline">
-            <span className="font-bold text-slate-950 font-mono w-48 shrink-0">• Real-Time & Performance:</span>
-            <span>SignalR, Background Processing, Batch Processing, Asynchronous Programming</span>
-          </div>
-
-          <div className="flex items-baseline">
-            <span className="font-bold text-slate-950 font-mono w-48 shrink-0">• Validation & Documentation:</span>
-            <span>FluentValidation, Swagger / OpenAPI, Postman</span>
-          </div>
-
-          <div className="flex items-baseline">
-            <span className="font-bold text-slate-950 font-mono w-48 shrink-0">• DevOps & Tools:</span>
-            <span>Git, GitHub, GitHub Actions, CI/CD, IIS Deployment</span>
-          </div>
+          {skills && skills.length > 0 ? (
+            skills.map((category, idx) => (
+              <div key={idx} className="flex items-baseline">
+                <span className="font-bold text-slate-950 font-mono w-48 shrink-0">• {category.name}:</span>
+                <span contentEditable={options.isEditable} suppressContentEditableWarning>
+                  {category.skills.map(s => s.name).join(', ')}
+                </span>
+              </div>
+            ))
+          ) : (
+            defaultSkillCategories.map((cat, idx) => (
+              <div key={idx} className="flex items-baseline">
+                <span className="font-bold text-slate-950 font-mono w-48 shrink-0">• {cat.name}:</span>
+                <span contentEditable={options.isEditable} suppressContentEditableWarning>
+                  {cat.skills}
+                </span>
+              </div>
+            ))
+          )}
         </div>
       </section>
 
       {/* ==================== 4. PROFESSIONAL WORK EXPERIENCE ==================== */}
-      <section className="mb-3.5 avoid-break">
-        <h2 className="text-xs font-bold font-mono tracking-widest uppercase text-slate-950 border-b border-slate-300 pb-0.5 mb-2">
-          Professional Work Experience
-        </h2>
+      {experiences && experiences.length > 0 && (
+        <section className="mb-3.5 avoid-break">
+          <h2 className="text-xs font-bold font-mono tracking-widest uppercase text-slate-950 border-b border-slate-300 pb-0.5 mb-2">
+            Professional Work Experience
+          </h2>
 
-        <div className="space-y-3.5">
-          <div className="avoid-break">
-            {/* Title and Role Line */}
-            <div className="flex items-baseline justify-between">
-              <div className="flex items-baseline gap-2 flex-wrap">
-                <h3
-                  contentEditable={options.isEditable}
-                  suppressContentEditableWarning
-                  className="text-xs font-bold text-slate-950 font-mono"
-                >
-                  MOT7KM – Multi-Tenant SaaS ERP & Digital Menu Platform
-                </h3>
-                <span className="text-[11px] text-slate-400 font-mono">|</span>
-                <span
-                  contentEditable={options.isEditable}
-                  suppressContentEditableWarning
-                  className="text-[11px] text-slate-700 font-semibold"
-                >
-                  .NET Backend Developer
-                </span>
+          <div className="space-y-3.5">
+            {experiences.map((exp) => (
+              <div key={exp.id} className="avoid-break">
+                {/* Title and Role Line */}
+                <div className="flex items-baseline justify-between">
+                  <div className="flex items-baseline gap-2 flex-wrap">
+                    <h3
+                      contentEditable={options.isEditable}
+                      suppressContentEditableWarning
+                      className="text-xs font-bold text-slate-950 font-mono"
+                    >
+                      {exp.company}
+                    </h3>
+                    <span className="text-[11px] text-slate-400 font-mono">|</span>
+                    <span
+                      contentEditable={options.isEditable}
+                      suppressContentEditableWarning
+                      className="text-[11px] text-slate-700 font-semibold"
+                    >
+                      {exp.role}
+                    </span>
+                  </div>
+                  <span className="text-[10.5px] font-mono text-slate-600 font-semibold shrink-0">
+                    {exp.period} {exp.location ? `| ${exp.location}` : ''}
+                  </span>
+                </div>
+
+                {/* Technologies */}
+                {exp.technologies && exp.technologies.length > 0 && (
+                  <p className="text-[10.5px] font-mono text-slate-700 mt-0.5">
+                    <strong className="text-slate-950 font-semibold">Technologies: </strong>
+                    <span contentEditable={options.isEditable} suppressContentEditableWarning>
+                      {exp.technologies.join(', ')}
+                    </span>
+                  </p>
+                )}
+
+                {/* Subtitle Summary */}
+                {exp.summary && (
+                  <p
+                    contentEditable={options.isEditable}
+                    suppressContentEditableWarning
+                    className="text-[11px] text-slate-800 italic mt-0.5"
+                  >
+                    {exp.summary}
+                  </p>
+                )}
+
+                {/* ATS Bullet Points */}
+                {exp.responsibilities && exp.responsibilities.length > 0 && (
+                  <ul className="list-disc list-outside text-[11px] text-slate-800 space-y-0.5 mt-1 pl-4 leading-relaxed">
+                    {exp.responsibilities.map((bullet, idx) => (
+                      <li key={idx} contentEditable={options.isEditable} suppressContentEditableWarning>
+                        {bullet}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
-              <span className="text-[10.5px] font-mono text-slate-600 font-semibold shrink-0">
-                2024 – Present | Remote
-              </span>
-            </div>
-
-            {/* Technologies */}
-            <p className="text-[10.5px] font-mono text-slate-700 mt-0.5">
-              <strong className="text-slate-950 font-semibold">Technologies: </strong>
-              C#, .NET 10, ASP.NET Core, PostgreSQL, Entity Framework Core, Supabase, SignalR, GitHub Actions, IIS
-            </p>
-
-            {/* Subtitle Summary */}
-            <p
-              contentEditable={options.isEditable}
-              suppressContentEditableWarning
-              className="text-[11px] text-slate-800 italic mt-0.5"
-            >
-              Architected and developed the backend for a production multi-tenant SaaS platform for restaurants and cafés to manage operations, menus, and real-time orders.
-            </p>
-
-            {/* ATS Bullet Points */}
-            <ul className="list-disc list-outside text-[11px] text-slate-800 space-y-0.5 mt-1 pl-4 leading-relaxed">
-              <li contentEditable={options.isEditable} suppressContentEditableWarning>
-                Designed and implemented Clean Architecture with a Modular Monolith approach for high maintainability.
-              </li>
-              <li contentEditable={options.isEditable} suppressContentEditableWarning>
-                Developed RESTful APIs for business profiles, branches, menus, categories, products, and promotional campaigns.
-              </li>
-              <li contentEditable={options.isEditable} suppressContentEditableWarning>
-                Implemented multi-tenancy and tenant isolation to ensure secure separation of business data and prevent IDOR vulnerabilities.
-              </li>
-              <li contentEditable={options.isEditable} suppressContentEditableWarning>
-                Developed authentication mechanisms supporting JWT, OAuth 2.0, and phone OTP.
-              </li>
-              <li contentEditable={options.isEditable} suppressContentEditableWarning>
-                Implemented secure session management using refresh token rotation, sliding expiration, and token reuse detection with SHA-256 hashing.
-              </li>
-              <li contentEditable={options.isEditable} suppressContentEditableWarning>
-                Developed administrative dashboard APIs with business analytics, branch performance insights, and SignalR real-time updates.
-              </li>
-              <li contentEditable={options.isEditable} suppressContentEditableWarning>
-                Implemented background batch processing for product view tracking to optimize database operations.
-              </li>
-              <li contentEditable={options.isEditable} suppressContentEditableWarning>
-                Configured automated deployment workflows using GitHub Actions and managed IIS hosting environments.
-              </li>
-            </ul>
+            ))}
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* ==================== 5. KEY TECHNICAL PROJECTS ==================== */}
-      <section className="mb-3.5">
-        <h2 className="text-xs font-bold font-mono tracking-widest uppercase text-slate-950 border-b border-slate-300 pb-0.5 mb-2">
-          Key Technical Projects
-        </h2>
+      {selectedProjects && selectedProjects.length > 0 && (
+        <section className="mb-3.5">
+          <h2 className="text-xs font-bold font-mono tracking-widest uppercase text-slate-950 border-b border-slate-300 pb-0.5 mb-2">
+            Key Technical Projects
+          </h2>
 
-        <div className="space-y-3.5">
-          {selectedProjects.map((p) => {
-            const data = projectEnglishData[p.id] || {
-              title: p.title,
-              role: 'Backend Developer',
-              technologies: p.technologies,
-              summary: p.description,
-              bullets: p.features
-            };
-
-            return (
+          <div className="space-y-3.5">
+            {selectedProjects.map((p) => (
               <div key={p.id} className="avoid-break">
                 {/* Title and Role Line */}
                 <div className="flex items-baseline justify-between">
@@ -320,7 +290,7 @@ export const CVDocument: React.FC<CVDocumentProps> = ({
                       suppressContentEditableWarning
                       className="text-xs font-bold text-slate-950 font-mono"
                     >
-                      {data.title}
+                      {p.title}
                     </h3>
                     <span className="text-[11px] text-slate-400 font-mono">|</span>
                     <span
@@ -328,61 +298,82 @@ export const CVDocument: React.FC<CVDocumentProps> = ({
                       suppressContentEditableWarning
                       className="text-[11px] text-slate-700 font-semibold"
                     >
-                      {data.role}
+                      {p.category || 'Software Project'}
                     </span>
                   </div>
-                  <span className="text-[10.5px] font-mono text-slate-600 font-semibold shrink-0">
-                    Academic Platform
-                  </span>
+                  {p.badge && (
+                    <span className="text-[10.5px] font-mono text-slate-600 font-semibold shrink-0">
+                      {p.badge}
+                    </span>
+                  )}
                 </div>
 
                 {/* Technologies */}
-                <p className="text-[10.5px] font-mono text-slate-700 mt-0.5">
-                  <strong className="text-slate-950 font-semibold">Technologies: </strong>
-                  {data.technologies.join(', ')}
-                </p>
+                {p.technologies && p.technologies.length > 0 && (
+                  <p className="text-[10.5px] font-mono text-slate-700 mt-0.5">
+                    <strong className="text-slate-950 font-semibold">Technologies: </strong>
+                    <span contentEditable={options.isEditable} suppressContentEditableWarning>
+                      {p.technologies.join(', ')}
+                    </span>
+                  </p>
+                )}
 
                 {/* Subtitle Summary */}
-                <p
-                  contentEditable={options.isEditable}
-                  suppressContentEditableWarning
-                  className="text-[11px] text-slate-800 italic mt-0.5"
-                >
-                  {data.summary}
-                </p>
+                {p.description && (
+                  <p
+                    contentEditable={options.isEditable}
+                    suppressContentEditableWarning
+                    className="text-[11px] text-slate-800 italic mt-0.5"
+                  >
+                    {p.description}
+                  </p>
+                )}
 
                 {/* ATS Bullet Points */}
-                <ul className="list-disc list-outside text-[11px] text-slate-800 space-y-0.5 mt-1 pl-4 leading-relaxed">
-                  {data.bullets.map((bullet, bIdx) => (
-                    <li
-                      key={bIdx}
-                      contentEditable={options.isEditable}
-                      suppressContentEditableWarning
-                    >
-                      {bullet}
-                    </li>
-                  ))}
-                </ul>
+                {p.features && p.features.length > 0 && (
+                  <ul className="list-disc list-outside text-[11px] text-slate-800 space-y-0.5 mt-1 pl-4 leading-relaxed">
+                    {p.features.map((feature, fIdx) => (
+                      <li
+                        key={fIdx}
+                        contentEditable={options.isEditable}
+                        suppressContentEditableWarning
+                      >
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
-            );
-          })}
-        </div>
-      </section>
+            ))}
+          </div>
+        </section>
+      )}
 
-      {/* ==================== 5. TEAMWORK & COLLABORATION ==================== */}
-      <section className="mb-3.5 avoid-break">
-        <h2 className="text-xs font-bold font-mono tracking-widest uppercase text-slate-950 border-b border-slate-300 pb-0.5 mb-1.5">
-          Teamwork & Collaboration
-        </h2>
-        <ul className="list-disc list-outside text-[11px] text-slate-800 space-y-0.5 pl-4 leading-relaxed">
-          <li>Worked in development teams of Backend, Mobile, and Frontend developers.</li>
-          <li>Took responsibility for backend architecture, API development, and database integration.</li>
-          <li>Collaborated with Mobile and Frontend developers to integrate backend services.</li>
-          <li>Participated in technical discussions and implementation decisions.</li>
-        </ul>
-      </section>
+      {/* ==================== 6. CERTIFICATES & ACCREDITATIONS ==================== */}
+      {certificates && certificates.length > 0 && (
+        <section className="mb-3.5 avoid-break">
+          <h2 className="text-xs font-bold font-mono tracking-widest uppercase text-slate-950 border-b border-slate-300 pb-0.5 mb-1.5">
+            Certifications & Accreditations
+          </h2>
+          <div className="space-y-1 text-[11px] text-slate-800">
+            {certificates.map((cert) => (
+              <div key={cert.id} className="flex items-baseline justify-between">
+                <div>
+                  <span className="font-bold text-slate-950">• {cert.title}</span>
+                  {cert.issuer && <span className="text-slate-600"> – {cert.issuer}</span>}
+                </div>
+                {cert.date && (
+                  <span className="font-mono text-slate-600 text-[10.5px] shrink-0">
+                    {cert.date}
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
-      {/* ==================== 6. EDUCATION ==================== */}
+      {/* ==================== 7. EDUCATION ==================== */}
       <section className="mb-3.5 avoid-break">
         <h2 className="text-xs font-bold font-mono tracking-widest uppercase text-slate-950 border-b border-slate-300 pb-0.5 mb-1.5">
           Education
@@ -391,11 +382,19 @@ export const CVDocument: React.FC<CVDocumentProps> = ({
         <div className="text-[11px] text-slate-800">
           <div className="flex items-start justify-between">
             <div>
-              <h3 className="font-bold text-slate-950">
-                Suez Canal University – Faculty of Science
+              <h3 
+                contentEditable={options.isEditable}
+                suppressContentEditableWarning
+                className="font-bold text-slate-950"
+              >
+                {(profile as any).university || 'Suez Canal University – Faculty of Science'}
               </h3>
-              <p className="text-slate-700">
-                Bachelor of Science (B.Sc.) in Mathematics – Computer Science Program | Fourth Year Student (In Progress)
+              <p 
+                contentEditable={options.isEditable}
+                suppressContentEditableWarning
+                className="text-slate-700"
+              >
+                {(profile as any).degree || 'Bachelor of Science (B.Sc.) in Mathematics – Computer Science Program | Fourth Year Student (In Progress)'}
               </p>
             </div>
             <span className="font-mono text-slate-700 font-bold shrink-0">In Progress</span>
@@ -403,13 +402,17 @@ export const CVDocument: React.FC<CVDocumentProps> = ({
         </div>
       </section>
 
-      {/* ==================== 7. LANGUAGES ==================== */}
+      {/* ==================== 8. LANGUAGES ==================== */}
       <section className="avoid-break">
         <h2 className="text-xs font-bold font-mono tracking-widest uppercase text-slate-950 border-b border-slate-300 pb-0.5 mb-1.5">
           Languages
         </h2>
-        <p className="text-[11px] text-slate-800">
-          <strong>Arabic:</strong> Native &bull; <strong>English:</strong> Intermediate
+        <p 
+          contentEditable={options.isEditable}
+          suppressContentEditableWarning
+          className="text-[11px] text-slate-800"
+        >
+          {(profile as any).languages || 'Arabic: Native • English: Intermediate'}
         </p>
       </section>
     </div>

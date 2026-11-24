@@ -1,147 +1,161 @@
 import React from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
-import { Award, GraduationCap, Code2, CheckCheck, Compass, Users } from 'lucide-react';
+import { SignatureGlowAvatar } from './SignatureGlowAvatar';
 import { AssembleItem } from './motion/KineticAssemble';
+import { 
+  FileDown, 
+  Sparkles, 
+  Heart, 
+  CheckCircle2, 
+  Layout, 
+  Users, 
+  Layers,
+  Compass
+} from 'lucide-react';
 
 export const About: React.FC = () => {
-  const { lang, profile } = usePortfolio();
+  const { lang, profile, setIsCVModalOpen } = usePortfolio();
+
+  const handleDownloadCV = () => {
+    setIsCVModalOpen(true);
+    setTimeout(() => {
+      window.print();
+    }, 350);
+  };
 
   return (
     <section id="about" className="py-20 sm:py-28 relative overflow-hidden">
+      {/* Background Subtle Orange Ambient Bloom */}
+      <div 
+        className="absolute top-1/2 -left-20 w-[450px] h-[450px] rounded-full blur-[140px] pointer-events-none"
+        style={{ background: 'radial-gradient(circle, rgba(255, 87, 34, 0.12) 0%, transparent 70%)' }}
+      />
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header: Assembles from Top and disperses up */}
-        <AssembleItem direction="top" className="text-center max-w-3xl mx-auto mb-14 sm:mb-18">
-          <div>
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-cyan-400 text-xs font-mono mb-3">
-              <Compass className="w-3.5 h-3.5 text-cyan-400" />
-              <span>{lang === 'ar' ? 'رحلتي الأكاديمية والهندسية' : 'Engineering & Academic Journey'}</span>
-            </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight">
-              {lang === 'ar' ? (
-                <>
-                  شغف بناء <span className="gradient-text-cyan">الأنظمة القابلة للتوسع</span> بأعلى المعايير
-                </>
-              ) : (
-                <>
-                  Designing & Developing <span className="gradient-text-cyan">Scalable Systems</span> With Craftsmanship
-                </>
-              )}
-            </h2>
-            <p className="text-slate-400 mt-4 text-sm sm:text-base leading-relaxed">
-              {lang === 'ar' 
-                ? 'طالب علوم حاسب ومطور نظم خلفية .NET، أركز على المعمارية النظيفة (Clean Architecture)، أنماط CQRS، وبناء أنظمة سحابية متعددة المستأجرين آمنة وعالية الكفاءة.'
-                : 'Computer Science student and .NET Backend Developer focused on Clean Architecture, CQRS patterns, secure multi-tenant SaaS, and scalable cloud APIs.'}
-            </p>
+        
+        {/* Two-Column Grid: Left Portrait with Circular Orange Glow, Right Content */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+          
+          {/* Left Column: Portrait with Signature Circular Orange Glow (Image 2) */}
+          <div className="lg:col-span-5 flex items-center justify-center">
+            <AssembleItem direction="left" distance={80}>
+              <SignatureGlowAvatar
+                imageUrl={profile.aboutAvatarUrl || "/about_avatar.png"}
+                alt={profile.name || "Amr Kandel"}
+                variant="about"
+                scale={profile.aboutImageScale ?? 1}
+                offsetY={profile.aboutImageOffsetY ?? 0}
+                glowIntensity={profile.aboutGlowIntensity ?? 1}
+                showRings={profile.aboutShowRings ?? true}
+                showEditButton={false}
+              />
+            </AssembleItem>
           </div>
-        </AssembleItem>
 
-        {/* 3 Pillars Grid: Left Card flies in from Left, Center from Depth, Right from Right */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 items-stretch mb-8">
-          {/* Card 1: Academic & Computer Science Foundation */}
-          <AssembleItem direction="left" distance={130} rotation={4} className="h-full">
-            <div className="glass-panel glass-panel-hover p-6 sm:p-8 rounded-3xl relative overflow-hidden group border border-slate-800/80 h-full flex flex-col justify-between">
-              <div>
-                <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 mb-6 group-hover:scale-110 transition-transform">
-                  <GraduationCap className="w-6 h-6" />
-                </div>
-                <h3 className="text-xl font-bold text-white mb-2.5">
-                  {lang === 'ar' ? 'جامعة قناة السويس - علوم حاسب' : 'Computer Science Foundation'}
-                </h3>
-                <p className="text-slate-300 text-sm leading-relaxed">
-                  {lang === 'ar' 
-                    ? 'طالب بالفرقة الرابعة بكلية العلوم – جامعة قناة السويس (برنامج الرياضيات وعلوم الحاسب). دراسة أكاديمية متعمقة في الخوارزميات، هياكل البيانات، وقواعد البيانات العلائقية ومبادئ هندسة البرمجيات.'
-                    : 'Fourth-year Computer Science student at Suez Canal University, Faculty of Science (B.Sc. in Mathematics – Computer Science Program). Solid theoretical and algorithmic groundwork for software engineering.'}
-                </p>
+          {/* Right Column: "Designing Is My Passion", Narrative & Download CV */}
+          <div className="lg:col-span-7 flex flex-col gap-6 text-start">
+            <AssembleItem direction="right" distance={80}>
+              
+              {/* Badge */}
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#121215] border border-orange-500/20 text-[#FF7A00] text-xs font-mono mb-2">
+                <Heart className="w-3.5 h-3.5 text-[#FF5722] fill-[#FF5722]/20" />
+                <span>{lang === 'ar' ? 'نبذة عني وشغفي' : 'About Me & Philosophy'}</span>
               </div>
-              <div className="mt-6 pt-4 border-t border-slate-800/80 flex items-center gap-2 text-xs font-mono text-cyan-400 font-semibold">
-                <CheckCheck className="w-4 h-4" />
-                <span>{lang === 'ar' ? 'بكالوريوس العلوم (الفرقة الرابعة)' : 'B.Sc. In Progress (Fourth Year)'}</span>
-              </div>
-            </div>
-          </AssembleItem>
 
-          {/* Card 2: Clean Architecture & CQRS */}
-          <AssembleItem direction="center" className="h-full">
-            <div className="glass-panel glass-panel-hover p-6 sm:p-8 rounded-3xl relative overflow-hidden group border border-slate-800/80 h-full flex flex-col justify-between">
-              <div>
-                <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 mb-6 group-hover:scale-110 transition-transform">
-                  <Code2 className="w-6 h-6" />
-                </div>
-                <h3 className="text-xl font-bold text-white mb-2.5">
-                  {lang === 'ar' ? 'معمارية نظيفة ونمط CQRS' : 'Clean Architecture & CQRS'}
-                </h3>
-                <p className="text-slate-300 text-sm leading-relaxed">
-                  {lang === 'ar' 
-                    ? 'فصل صارم بين طبقات الدومين والتطبيق والبنية التحتية، ونمط Modular Monolith، واستخدام أنماط CQRS لتنظيم ومعالجة الأوامر والاستعلامات بكفاءة مع اختبارات مؤتمتة بنسبة نجاح 100%.'
-                    : 'Strict separation of Domain, Application, Infrastructure, and Presentation layers. Modular Monolith design, CQRS pattern, and automated testing achieving 49 passing tests with a 100% pass rate.'}
-                </p>
-              </div>
-              <div className="mt-6 pt-4 border-t border-slate-800/80 flex items-center gap-2 text-xs font-mono text-indigo-400 font-semibold">
-                <CheckCheck className="w-4 h-4" />
-                <span>{lang === 'ar' ? '49 اختباراً مؤتمتاً ناجحاً (100%)' : '49 Automated Tests (100% Pass)'}</span>
-              </div>
-            </div>
-          </AssembleItem>
+              {/* Subtitle: "Designing Is My Passion" */}
+              <p className="text-sm sm:text-base font-mono uppercase tracking-widest text-[#FF7A00] font-bold">
+                {lang === 'ar' ? (profile.aboutSubtitleAr || 'التصميم هو شغفي وهويتي') : (profile.aboutSubtitle || 'Designing Is My Passion')}
+              </p>
 
-          {/* Card 3: Security & Multi-Tenancy */}
-          <AssembleItem direction="right" distance={130} rotation={4} className="h-full">
-            <div className="glass-panel glass-panel-hover p-6 sm:p-8 rounded-3xl relative overflow-hidden group border border-slate-800/80 h-full flex flex-col justify-between">
-              <div>
-                <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 mb-6 group-hover:scale-110 transition-transform">
-                  <Award className="w-6 h-6" />
+              {/* Section Main Title */}
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-[1.2]">
+                {lang === 'ar' ? (
+                  profile.aboutHeadingAr || (
+                    <>
+                      تحويل الأفكار المعقدة إلى <span className="text-[#FF5722] drop-shadow-[0_0_20px_rgba(255,87,34,0.4)]">تجارب بصرية سلسة</span>
+                    </>
+                  )
+                ) : (
+                  profile.aboutHeading || (
+                    <>
+                      Transforming Complex Ideas Into <span className="text-[#FF5722] drop-shadow-[0_0_20px_rgba(255,87,34,0.4)]">Delightful Experiences</span>
+                    </>
+                  )
+                )}
+              </h2>
+
+              {/* Main Bio Paragraph */}
+              <p className="text-slate-300 text-base sm:text-lg leading-[1.8] mt-2">
+                {lang === 'ar'
+                  ? 'أنا مصممة واجهات وتجربة مستخدم (UI/UX Designer) أؤمن بأن التصميم العظيم ليس مجرد مظهر جميل، بل هو حل متقن لمشكلات حقيقية. أدمج بين الفهم العميق لسيكولوجية المستخدم، واستراتيجيات أبحاث تجربة المستخدم (UX Research)، وبناء أنظمة التصميم القابلة للتوسع (Design Systems) التي تسهم في تسريع وتوحيد لغة المنتج بين فرق التصميم والتطوير.'
+                  : 'I am a passionate UI/UX Designer dedicated to crafting digital products that seamlessly bridge user needs with business goals. My work focuses on thorough user research, atomic design systems, rapid prototyping, and high-fidelity interaction design that delights users and scales effortlessly across web and mobile platforms.'}
+              </p>
+
+              {/* Core Strengths / Highlights Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 my-3">
+                <div className="p-4 rounded-2xl bg-[#0e0e12] border border-white/5 hover:border-orange-500/30 transition-all">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-[#FF5722] shrink-0">
+                      <Users className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-white text-sm sm:text-base">
+                        {lang === 'ar' ? 'تصميم متمحور حول الإنسان' : 'Human-Centered UX'}
+                      </h4>
+                      <p className="text-xs text-slate-400 mt-0.5">
+                        {lang === 'ar' ? 'أبحاث، استبيانات، واختبارات قابلية الاستخدام' : 'User personas, journey maps & usability tests'}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                <h3 className="text-xl font-bold text-white mb-2.5">
-                  {lang === 'ar' ? 'الأمان وتعدد المستأجرين (SaaS)' : 'SaaS Multi-Tenancy & Security'}
-                </h3>
-                <p className="text-slate-300 text-sm leading-relaxed">
-                  {lang === 'ar' 
-                    ? 'تصميم أنظمة جلسات انزلاقية (Sliding Expiration) مع تدوير الـ Refresh Tokens وتشفيرها بـ SHA-256 وكشف إعادة الاستخدام، وعزل بيانات المشتركين تلقائياً ومنع ثغرات IDOR.'
-                    : 'Engineered sliding session token rotation, token reuse detection, SHA-256 token hashing, strict multi-tenant isolation, JWT/OAuth/OTP authentication, and IDOR prevention.'}
-                </p>
+
+                <div className="p-4 rounded-2xl bg-[#0e0e12] border border-white/5 hover:border-orange-500/30 transition-all">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-[#FF7A00] shrink-0">
+                      <Layers className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-white text-sm sm:text-base">
+                        {lang === 'ar' ? 'أنظمة تصميم متكاملة' : 'Scalable Design Systems'}
+                      </h4>
+                      <p className="text-xs text-slate-400 mt-0.5">
+                        {lang === 'ar' ? 'مكونات متناسقة ونماذج تفاعلية عالية الدقة' : 'Design tokens, auto-layout & Figma variants'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="mt-6 pt-4 border-t border-slate-800/80 flex items-center gap-2 text-xs font-mono text-emerald-400 font-semibold">
-                <CheckCheck className="w-4 h-4" />
-                <span>{lang === 'ar' ? 'حماية وعزل بيانات عالي الأمان' : 'Production-Grade Security'}</span>
+
+              {/* Dynamic CV Generation & Download Button */}
+              <div className="pt-2 flex flex-wrap items-center gap-4">
+                <button
+                  type="button"
+                  onClick={handleDownloadCV}
+                  className="flex items-center justify-center gap-2.5 h-12 sm:h-14 px-8 rounded-2xl bg-gradient-to-r from-[#FF5722] to-[#FF7A00] hover:from-[#FF6B00] hover:to-[#FF8A00] text-white font-bold text-base shadow-[0_0_25px_rgba(255,87,34,0.4)] hover:shadow-[0_0_40px_rgba(255,87,34,0.65)] transition-all active:scale-95 cursor-pointer"
+                >
+                  <FileDown className="w-5 h-5" />
+                  <span>{lang === 'ar' ? 'توليد وتحميل السيرة الذاتية (PDF)' : 'Download CV (PDF)'}</span>
+                </button>
+
+                {/* Optional Smart Builder Preview Trigger */}
+                <button
+                  type="button"
+                  onClick={() => setIsCVModalOpen(true)}
+                  className="flex items-center justify-center gap-2 h-12 sm:h-14 px-6 rounded-2xl bg-[#121215] hover:bg-[#18181f] border border-white/10 text-slate-300 hover:text-white font-medium text-sm transition-colors cursor-pointer"
+                >
+                  <Sparkles className="w-4 h-4 text-[#FF7A00]" />
+                  <span>{lang === 'ar' ? 'معاينة وتعديل السيرة الذاتية' : 'Preview & Edit CV'}</span>
+                </button>
               </div>
-            </div>
-          </AssembleItem>
+
+            </AssembleItem>
+          </div>
+
         </div>
 
-        {/* Teamwork & Collaboration Banner */}
-        <AssembleItem direction="bottom" distance={60}>
-          <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-slate-800/80 bg-gradient-to-r from-slate-900/90 via-slate-900/60 to-slate-900/90">
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shrink-0 mt-1 md:mt-0">
-                  <Users className="w-6 h-6" />
-                </div>
-                <div>
-                  <h3 className="text-lg sm:text-xl font-bold text-white mb-1.5 flex items-center gap-2">
-                    <span>{lang === 'ar' ? 'العمل الجماعي والتعاون البرمجي' : 'Teamwork & Collaboration'}</span>
-                    <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
-                      Cross-Functional
-                    </span>
-                  </h3>
-                  <p className="text-slate-300 text-xs sm:text-sm leading-relaxed max-w-3xl">
-                    {lang === 'ar'
-                      ? 'العمل ضمن فرق تطوير برمجية متكاملة تضم مطوري Backend و Mobile و Frontend؛ تولي مسؤولية معمارية النظام الخلفي، تطوير الـ APIs، وتكامل قواعد البيانات، مع المشاركة الفعالة في المناقشات والقرارات الهندسية.'
-                      : 'Worked in development teams of Backend, Mobile, and Frontend developers. Took responsibility for backend architecture, API development, and database integration while collaborating to integrate backend services and contributing to technical decisions.'}
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex flex-wrap items-center gap-2 shrink-0 self-stretch md:self-auto justify-end">
-                <span className="px-3 py-1.5 rounded-xl bg-slate-800/80 border border-slate-700 text-slate-300 text-xs font-mono">
-                  {lang === 'ar' ? 'تكامل API سلس' : 'Smooth API Integration'}
-                </span>
-                <span className="px-3 py-1.5 rounded-xl bg-slate-800/80 border border-slate-700 text-slate-300 text-xs font-mono">
-                  {lang === 'ar' ? 'قرارات معمارية مشتركة' : 'Architectural Discussions'}
-                </span>
-              </div>
-            </div>
-          </div>
-        </AssembleItem>
       </div>
     </section>
   );
 };
+
+export default About;

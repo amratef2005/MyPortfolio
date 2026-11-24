@@ -41,7 +41,6 @@ import {
   Shield,
   UserCheck
 } from 'lucide-react';
-import { extractColorsFromImage, applyThemeColors, ExtractedPalette, DEFAULT_PALETTE } from '../utils/colorExtractor';
 import { compressImageFile } from '../utils/imageCompressor';
 
 export const AdminPage: React.FC = () => {
@@ -90,8 +89,6 @@ export const AdminPage: React.FC = () => {
 
   // Profile Form State
   const [profileForm, setProfileForm] = useState(profile);
-  const [extractingColors, setExtractingColors] = useState(false);
-  const [colorSuccess, setColorSuccess] = useState('');
 
   // Navbar Brand Quick Editor State
   const [isBrandModalOpen, setIsBrandModalOpen] = useState(false);
@@ -165,9 +162,6 @@ export const AdminPage: React.FC = () => {
       const compressedDataUrl = await compressImageFile(file, 800, 0.88);
       if (compressedDataUrl) {
         setProfileForm(prev => ({ ...prev, heroAvatarUrl: compressedDataUrl }));
-        if (profileForm.autoExtractColors !== false) {
-          await triggerColorExtraction(compressedDataUrl);
-        }
       }
     } catch (err) {
       console.error('Hero image compression error:', err);
@@ -184,25 +178,6 @@ export const AdminPage: React.FC = () => {
       }
     } catch (err) {
       console.error('Top image compression error:', err);
-    }
-  };
-
-  const triggerColorExtraction = async (imageSrc: string) => {
-    setExtractingColors(true);
-    setColorSuccess('');
-    try {
-      const palette = await extractColorsFromImage(imageSrc);
-      applyThemeColors(palette);
-      setProfileForm(prev => ({
-        ...prev,
-        extractedColors: palette
-      }));
-      setColorSuccess('تم استخراج ألوان الثيم وتطبيقها بنجاح!');
-      setTimeout(() => setColorSuccess(''), 4000);
-    } catch (err) {
-      console.warn('Extraction error:', err);
-    } finally {
-      setExtractingColors(false);
     }
   };
 
@@ -1754,9 +1729,6 @@ export const AdminPage: React.FC = () => {
                           type="button"
                           onClick={() => {
                             setProfileForm(prev => ({ ...prev, heroAvatarUrl: item.url }));
-                            if (profileForm.autoExtractColors !== false) {
-                              triggerColorExtraction(item.url);
-                            }
                           }}
                           className={`p-2.5 rounded-xl text-start border transition-all flex flex-col justify-between text-xs ${
                             (profileForm.heroAvatarUrl || '/drama_hero.png') === item.url
@@ -1854,163 +1826,6 @@ export const AdminPage: React.FC = () => {
                         />
                       </label>
                     </div>
-                  </div>
-                </div>
-
-                {/* 3. Adaptive Dynamic Color Extractor */}
-                <div className="p-4 rounded-2xl bg-gradient-to-br from-indigo-950/30 via-slate-950 to-cyan-950/30 border border-indigo-500/30 space-y-4">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-9 h-9 rounded-xl bg-indigo-500/20 border border-indigo-500/40 flex items-center justify-center text-indigo-400">
-                        <Palette className="w-5 h-5" />
-                      </div>
-                      <div>
-                        <h4 className="text-sm font-bold text-white">محرك استخراج الألوان من الصورة (Adaptive Color Engine)</h4>
-                        <p className="text-xs text-slate-400">يقوم بتحليل ألوان صورتك تلقائياً وتلوين الهالات والنصوص والخلفية بتناغم تام.</p>
-                      </div>
-                    </div>
-
-                    {/* Auto-Extract Toggle */}
-                    <label className="inline-flex items-center gap-2 cursor-pointer select-none">
-                      <input
-                        type="checkbox"
-                        checked={profileForm.autoExtractColors !== false}
-                        onChange={(e) => {
-                          const enabled = e.target.checked;
-                          setProfileForm(prev => ({ ...prev, autoExtractColors: enabled }));
-                          if (enabled) {
-                            triggerColorExtraction(profileForm.heroAvatarUrl || '/drama_hero.png');
-                          }
-                        }}
-                        className="w-4 h-4 accent-cyan-500 rounded"
-                      />
-                      <span className="text-xs font-bold text-cyan-300">تفعيل استخراج الألوان تلقائياً</span>
-                    </label>
-                  </div>
-
-                  {/* Color Swatches Grid */}
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1">
-                    <div className="p-3 rounded-xl bg-slate-900/90 border border-slate-800 space-y-1.5">
-                      <div className="flex items-center justify-between">
-                        <span className="text-[11px] font-mono text-slate-400">الأساسي (Primary)</span>
-                        <div
-                          className="w-4 h-4 rounded-full border border-white/30 shadow-sm"
-                          style={{ background: profileForm.extractedColors?.primary || '#38bdf8' }}
-                        />
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <input
-                          type="color"
-                          value={profileForm.extractedColors?.primary || '#38bdf8'}
-                          onChange={(e) => {
-                            const newHex = e.target.value;
-                            const palette = {
-                              ...(profileForm.extractedColors || DEFAULT_PALETTE),
-                              primary: newHex
-                            };
-                            applyThemeColors(palette as any);
-                            setProfileForm(prev => ({ ...prev, extractedColors: palette as any }));
-                          }}
-                          className="w-6 h-6 rounded cursor-pointer border-0 bg-transparent"
-                        />
-                        <span className="text-xs font-mono font-bold text-white">
-                          {profileForm.extractedColors?.primary || '#38bdf8'}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="p-3 rounded-xl bg-slate-900/90 border border-slate-800 space-y-1.5">
-                      <div className="flex items-center justify-between">
-                        <span className="text-[11px] font-mono text-slate-400">الثانوي (Secondary)</span>
-                        <div
-                          className="w-4 h-4 rounded-full border border-white/30 shadow-sm"
-                          style={{ background: profileForm.extractedColors?.secondary || '#6366f1' }}
-                        />
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <input
-                          type="color"
-                          value={profileForm.extractedColors?.secondary || '#6366f1'}
-                          onChange={(e) => {
-                            const newHex = e.target.value;
-                            const palette = {
-                              ...(profileForm.extractedColors || DEFAULT_PALETTE),
-                              secondary: newHex
-                            };
-                            applyThemeColors(palette as any);
-                            setProfileForm(prev => ({ ...prev, extractedColors: palette as any }));
-                          }}
-                          className="w-6 h-6 rounded cursor-pointer border-0 bg-transparent"
-                        />
-                        <span className="text-xs font-mono font-bold text-white">
-                          {profileForm.extractedColors?.secondary || '#6366f1'}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="p-3 rounded-xl bg-slate-900/90 border border-slate-800 space-y-1.5">
-                      <div className="flex items-center justify-between">
-                        <span className="text-[11px] font-mono text-slate-400">المكمل (Accent)</span>
-                        <div
-                          className="w-4 h-4 rounded-full border border-white/30 shadow-sm"
-                          style={{ background: profileForm.extractedColors?.accent || '#06b6d4' }}
-                        />
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <input
-                          type="color"
-                          value={profileForm.extractedColors?.accent || '#06b6d4'}
-                          onChange={(e) => {
-                            const newHex = e.target.value;
-                            const palette = {
-                              ...(profileForm.extractedColors || DEFAULT_PALETTE),
-                              accent: newHex
-                            };
-                            applyThemeColors(palette as any);
-                            setProfileForm(prev => ({ ...prev, extractedColors: palette as any }));
-                          }}
-                          className="w-6 h-6 rounded cursor-pointer border-0 bg-transparent"
-                        />
-                        <span className="text-xs font-mono font-bold text-white">
-                          {profileForm.extractedColors?.accent || '#06b6d4'}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="p-3 rounded-xl bg-slate-900/90 border border-slate-800 space-y-1.5">
-                      <div className="flex items-center justify-between">
-                        <span className="text-[11px] font-mono text-slate-400">الهالة (Glow)</span>
-                        <div
-                          className="w-4 h-4 rounded-full shadow-[0_0_8px_currentColor]"
-                          style={{ background: profileForm.extractedColors?.primary || '#38bdf8' }}
-                        />
-                      </div>
-                      <div className="pt-1">
-                        <span className="text-[11px] font-mono text-cyan-300 block truncate">
-                          {profileForm.extractedColors?.glow || 'Active Aura Glow'}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Re-extract Action Button */}
-                  <div className="flex flex-wrap items-center gap-3 pt-1">
-                    <button
-                      type="button"
-                      disabled={extractingColors}
-                      onClick={() => triggerColorExtraction(profileForm.heroAvatarUrl || '/drama_hero.png')}
-                      className="px-4 py-2 rounded-xl bg-indigo-500/20 hover:bg-indigo-500/30 border border-indigo-500/40 text-indigo-300 text-xs font-mono font-bold flex items-center gap-2 transition-all disabled:opacity-50"
-                    >
-                      <RefreshCw className={`w-3.5 h-3.5 ${extractingColors ? 'animate-spin' : ''}`} />
-                      <span>{extractingColors ? 'جاري تحليل الألوان...' : 'إعادة استخراج الألوان من الصورة الآن'}</span>
-                    </button>
-
-                    {colorSuccess && (
-                      <span className="text-xs text-emerald-400 font-mono flex items-center gap-1.5 animate-fadeIn">
-                        <CheckCircle2 className="w-3.5 h-3.5" />
-                        {colorSuccess}
-                      </span>
-                    )}
                   </div>
                 </div>
               </div>

@@ -19,7 +19,7 @@ export const CVModal: React.FC = () => {
   const [options, setOptions] = useState<CVOptions>({
     template: 'classic', // Fixed to ATS-Standard
     language: 'en',      // Strictly English
-    accentColor: 'slate',
+    accentColor: 'burntOrange',
     includedProjects: projects.map(p => p.id),
     roleTitle: '',
     isEditable: true,
@@ -35,6 +35,7 @@ export const CVModal: React.FC = () => {
   };
 
   const accentThemes: { id: AccentColor; name: string; nameAr: string; hex: string }[] = [
+    { id: 'burntOrange', name: 'Burnt Orange', nameAr: 'برتقالي البرتفوليو', hex: '#FF5722' },
     { id: 'slate', name: 'Classic Slate', nameAr: 'رمادي كلاسيكي', hex: '#0f172a' },
     { id: 'navy', name: 'Executive Navy', nameAr: 'كحلي تنفيذي', hex: '#1e3a8a' },
     { id: 'cyan', name: 'Tech Cyan', nameAr: 'أزرق تقني', hex: '#0284c7' },

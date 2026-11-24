@@ -17,14 +17,14 @@ export interface ExtractedPalette {
 }
 
 export const DEFAULT_PALETTE: ExtractedPalette = {
-  primary: '#38bdf8',
-  primaryRgb: '56, 189, 248',
-  secondary: '#6366f1',
-  secondaryRgb: '99, 102, 241',
-  accent: '#06b6d4',
-  accentRgb: '6, 182, 212',
-  glow: 'rgba(56, 189, 248, 0.35)',
-  glowSecondary: 'rgba(99, 102, 241, 0.25)'
+  primary: '#FF5722',
+  primaryRgb: '255, 87, 34',
+  secondary: '#FF7A00',
+  secondaryRgb: '255, 122, 0',
+  accent: '#E64A19',
+  accentRgb: '230, 74, 25',
+  glow: 'rgba(255, 87, 34, 0.45)',
+  glowSecondary: 'rgba(255, 122, 0, 0.3)'
 };
 
 // Convert RGB to HSL

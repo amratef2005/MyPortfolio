@@ -40,8 +40,8 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) 
 
         {/* Badge & Title */}
         <div className="mt-2 mb-4">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-mono font-semibold mb-3">
-            <Sparkles className="w-3.5 h-3.5" />
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/30 text-[#FF7A00] text-xs font-mono font-semibold mb-3">
+            <Sparkles className="w-3.5 h-3.5 text-[#FF5722]" />
             <span>{lang === 'ar' ? (project.badgeAr || project.badge) : project.badge}</span>
           </div>
           <h2 className="text-2xl sm:text-3xl font-black text-white">
@@ -53,10 +53,10 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) 
         </div>
 
         {/* Performance Metrics Bar */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 my-6 p-4 rounded-2xl bg-dark-950/70 border border-slate-800">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 my-6 p-4 rounded-2xl bg-[#09090b] border border-orange-500/20">
           {project.metrics.map((metric, idx) => (
             <div key={idx} className="text-center p-2">
-              <span className="block text-cyan-400 font-mono font-bold text-base sm:text-lg">
+              <span className="block text-[#FF5722] font-mono font-bold text-base sm:text-lg">
                 {lang === 'ar' ? (metric.valueAr || metric.value) : metric.value}
               </span>
               <span className="text-slate-400 text-xs font-medium">
@@ -69,8 +69,8 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) 
         {/* Project Description */}
         <div className="mb-6">
           <h4 className="text-white font-bold text-base mb-2 flex items-center gap-2">
-            <Server className="w-4 h-4 text-cyan-400" />
-            <span>{lang === 'ar' ? 'نظرة عامة على النظام' : 'System Overview'}</span>
+            <Server className="w-4 h-4 text-[#FF7A00]" />
+            <span>{lang === 'ar' ? 'نظرة عامة على دراسة الحالة' : 'Case Study Overview'}</span>
           </h4>
           <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
             {lang === 'ar' ? project.descriptionAr : project.description}
@@ -80,14 +80,14 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) 
         {/* Architecture Breakdown */}
         <div className="mb-6">
           <h4 className="text-white font-bold text-base mb-3 flex items-center gap-2">
-            <Layers className="w-4 h-4 text-indigo-400" />
-            <span>{lang === 'ar' ? 'الأنماط المعمارية المطبقة' : 'Architectural Patterns'}</span>
+            <Layers className="w-4 h-4 text-[#FF5722]" />
+            <span>{lang === 'ar' ? 'المنهجية وتجربة المستخدم' : 'UX Methodology & Architecture'}</span>
           </h4>
           <div className="flex flex-wrap gap-2">
             {(lang === 'ar' && project.architectureAr ? project.architectureAr : project.architecture).map((arch, idx) => (
               <span 
                 key={idx}
-                className="px-3 py-1.5 rounded-lg bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-mono font-medium"
+                className="px-3 py-1.5 rounded-lg bg-orange-500/10 border border-orange-500/30 text-orange-300 text-xs font-mono font-medium"
               >
                 {arch}
               </span>
@@ -114,14 +114,14 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) 
         {/* Technologies Stack */}
         <div className="mb-8">
           <h4 className="text-white font-bold text-base mb-3 flex items-center gap-2">
-            <Cpu className="w-4 h-4 text-cyan-400" />
+            <Cpu className="w-4 h-4 text-[#FF7A00]" />
             <span>{lang === 'ar' ? 'التقنيات والمكتبات المستخدمة' : 'Technologies & Libraries'}</span>
           </h4>
           <div className="flex flex-wrap gap-2">
             {project.technologies.map((tech, idx) => (
               <span 
                 key={idx}
-                className="px-3 py-1 rounded-md bg-slate-800 border border-slate-700 text-slate-300 text-xs font-mono"
+                className="px-3 py-1 rounded-md bg-[#18181f] border border-white/5 text-slate-300 text-xs font-mono"
               >
                 {tech}
               </span>
@@ -130,13 +130,13 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) 
         </div>
 
         {/* Action Links */}
-        <div className="flex items-center gap-4 pt-4 border-t border-slate-800">
+        <div className="flex items-center gap-4 pt-4 border-t border-white/10">
           {project.githubUrl && (
             <a
               href={project.githubUrl}
               target="_blank"
               rel="noreferrer"
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-semibold transition-colors"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#18181f] hover:bg-[#22222b] text-slate-200 text-sm font-semibold transition-colors border border-white/10"
             >
               <Github className="w-4 h-4" />
               <span>{lang === 'ar' ? 'مستودع الكود (GitHub)' : 'GitHub Repository'}</span>
@@ -147,10 +147,10 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) 
               href={project.liveUrl}
               target="_blank"
               rel="noreferrer"
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-sm font-semibold transition-colors shadow-[0_0_15px_rgba(56,189,248,0.4)]"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#FF5722] to-[#FF7A00] hover:from-[#FF6B00] hover:to-[#FF8A00] text-white text-sm font-semibold transition-colors shadow-[0_0_20px_rgba(255,87,34,0.4)]"
             >
               <ExternalLink className="w-4 h-4" />
-              <span>{lang === 'ar' ? 'معاينة المنصة الحية' : 'Live Demonstration'}</span>
+              <span>{lang === 'ar' ? 'معاينة النموذج الحي' : 'Live Interactive Demo'}</span>
             </a>
           )}
           <button
