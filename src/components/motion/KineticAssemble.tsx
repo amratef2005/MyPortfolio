@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion, MotionStyle } from 'framer-motion';
 
 export type AssembleDirection = 'left' | 'right' | 'top' | 'bottom' | 'center';
@@ -28,6 +28,8 @@ export const AssembleItem: React.FC<AssembleItemProps> = ({
   delay = 0,
   style = {}
 }) => {
+  const [settled, setSettled] = useState(false);
+
   // Gentle, refined offset
   const getInitial = () => {
     switch (direction) {
@@ -61,8 +63,9 @@ export const AssembleItem: React.FC<AssembleItemProps> = ({
         }
       }}
       viewport={{ once: true, amount: 0.08 }}
+      onAnimationComplete={() => setSettled(true)}
       style={{
-        willChange: 'transform, opacity',
+        willChange: settled ? 'auto' : 'transform, opacity',
         ...style
       }}
       className={`transform-gpu ${className}`}
@@ -85,6 +88,8 @@ export const VoidEmergence: React.FC<VoidEmergenceProps> = ({
   children,
   className = ''
 }) => {
+  const [settled, setSettled] = useState(false);
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.98 }}
@@ -97,7 +102,8 @@ export const VoidEmergence: React.FC<VoidEmergenceProps> = ({
         }
       }}
       viewport={{ once: true, amount: 0.1 }}
-      style={{ willChange: 'transform, opacity' }}
+      onAnimationComplete={() => setSettled(true)}
+      style={{ willChange: settled ? 'auto' : 'transform, opacity' }}
       className={`relative transform-gpu ${className}`}
     >
       {children}

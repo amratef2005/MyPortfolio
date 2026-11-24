@@ -23,11 +23,11 @@ export const Hero: React.FC = () => {
         
         {/* Soft Background Radial Light */}
         <div 
-          className="absolute top-1/4 -right-16 w-[400px] sm:w-[600px] h-[400px] sm:h-[600px] rounded-full blur-[140px] pointer-events-none"
+          className="absolute top-1/4 -right-16 w-[400px] sm:w-[600px] h-[400px] sm:h-[600px] rounded-full blur-[64px] pointer-events-none"
           style={{ background: 'radial-gradient(circle, rgba(255, 87, 34, 0.18) 0%, transparent 70%)' }}
         />
         <div 
-          className="absolute bottom-10 -left-16 w-[350px] sm:w-[500px] h-[350px] sm:h-[500px] rounded-full blur-[130px] pointer-events-none"
+          className="absolute bottom-10 -left-16 w-[350px] sm:w-[500px] h-[350px] sm:h-[500px] rounded-full blur-[60px] pointer-events-none"
           style={{ background: 'radial-gradient(circle, rgba(230, 74, 25, 0.12) 0%, transparent 70%)' }}
         />
 

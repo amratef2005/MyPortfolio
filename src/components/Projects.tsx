@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { usePortfolio } from '../context/PortfolioContext';
 import { Project } from '../types';
 import { ProjectModal } from './ProjectModal';
@@ -53,7 +54,7 @@ export const Projects: React.FC = () => {
     <section id="projects" className="py-8 sm:py-16 lg:py-20 relative overflow-hidden">
       {/* Background Soft Orange Glow */}
       <div 
-        className="absolute top-1/2 left-0 w-[450px] h-[450px] rounded-full blur-[140px] pointer-events-none"
+        className="absolute top-1/2 left-0 w-[450px] h-[450px] rounded-full blur-[64px] pointer-events-none"
         style={{ background: 'radial-gradient(circle, rgba(255, 87, 34, 0.1) 0%, transparent 70%)' }}
       />
 
@@ -83,19 +84,27 @@ export const Projects: React.FC = () => {
             {/* Filter Pills with Horizontal Scroll on Mobile */}
             {categories.length > 1 && (
               <div className="flex items-center gap-1.5 bg-[#0e0e12] p-1.5 rounded-2xl border border-white/10 self-start md:self-auto overflow-x-auto max-w-full shrink-0 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-                {categories.map((cat) => (
-                  <button
-                    key={cat.id}
-                    onClick={() => setFilter(cat.id)}
-                    className={`px-3.5 sm:px-4 py-2 rounded-xl text-xs font-mono font-semibold whitespace-nowrap transition-all shrink-0 ${
-                      filter === cat.id
-                        ? 'bg-gradient-to-r from-[#FF5722] to-[#FF7A00] text-white shadow-[0_0_15px_rgba(255,87,34,0.4)]'
-                        : 'text-slate-400 hover:text-white hover:bg-white/5'
-                    }`}
-                  >
-                    {lang === 'ar' ? cat.labelAr : cat.labelEn}
-                  </button>
-                ))}
+                {categories.map((cat) => {
+                  const isActive = filter === cat.id;
+                  return (
+                    <button
+                      key={cat.id}
+                      onClick={() => setFilter(cat.id)}
+                      className={`relative px-3.5 sm:px-4 py-2 rounded-xl text-xs font-mono font-semibold whitespace-nowrap transition-colors shrink-0 ${
+                        isActive ? 'text-white' : 'text-slate-400 hover:text-white hover:bg-white/5'
+                      }`}
+                    >
+                      {isActive && (
+                        <motion.span
+                          layoutId="projectFilterPill"
+                          transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                          className="absolute inset-0 rounded-xl bg-gradient-to-r from-[#FF5722] to-[#FF7A00] shadow-[0_0_15px_rgba(255,87,34,0.4)]"
+                        />
+                      )}
+                      <span className="relative z-10">{lang === 'ar' ? cat.labelAr : cat.labelEn}</span>
+                    </button>
+                  );
+                })}
               </div>
             )}
           </div>
@@ -110,7 +119,7 @@ export const Projects: React.FC = () => {
               <AssembleItem 
                 key={project.id}
                 direction={isLeft ? 'left' : 'right'}
-                distance={100}
+                distance={28}
                 className="h-full"
               >
                 <div className="rounded-3xl bg-[#0e0e12] border border-white/10 hover:border-orange-500/40 p-4 sm:p-6 lg:p-7 flex flex-col justify-between group overflow-hidden transition-all duration-300 shadow-[0_12px_32px_rgba(0,0,0,0.7)] hover:shadow-[0_16px_40px_rgba(255,87,34,0.18)] h-full relative">
