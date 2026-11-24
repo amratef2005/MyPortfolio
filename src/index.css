@@ -459,6 +459,40 @@
   }
 }
 
+/* Mobile Performance Optimizations for Steady 60-120 FPS Touch Scrolling */
+@media (max-width: 768px) {
+  .aurora-orb-1,
+  .aurora-orb-2,
+  .aurora-orb-3,
+  .aurora-orb-4,
+  .aurora-orb-5 {
+    animation: none !important;
+    transform: none !important;
+  }
+
+  .glass-panel,
+  .glass-card,
+  .ios-glass {
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+  }
+}
+
+/* Smooth, Chill Card & Button Micro-Interactions (Apple / Linear style) */
+.glass-card,
+.glass-panel {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+              border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+              box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .glass-card:hover,
+  .glass-panel:hover {
+    transform: translateY(-3px) scale(1.004);
+  }
+}
+
 /* Fade In */
 @keyframes fadeIn {
   from {

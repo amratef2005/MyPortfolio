@@ -17,7 +17,7 @@ interface SignatureGlowAvatarProps {
 
 export const SignatureGlowAvatar: React.FC<SignatureGlowAvatarProps> = ({
   imageUrl = '/drama_hero.png',
-  alt = 'UI/UX Designer Profile',
+  alt = 'Amr Atef - .NET Backend Developer',
   variant = 'hero',
   className = '',
   showRings = true,
@@ -157,6 +157,8 @@ export const SignatureGlowAvatar: React.FC<SignatureGlowAvatarProps> = ({
         <img
           src={imageUrl}
           alt={alt}
+          loading={isHero ? "eager" : "lazy"}
+          decoding="async"
           onError={(e) => {
             const target = e.target as HTMLImageElement;
             target.onerror = null;

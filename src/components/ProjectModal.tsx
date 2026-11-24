@@ -9,7 +9,6 @@ import {
   Cpu, 
   Database, 
   CheckCircle2, 
-  Sparkles,
   ShieldCheck,
   Server
 } from 'lucide-react';
@@ -41,7 +40,7 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) 
         {/* Badge & Title */}
         <div className="mt-2 mb-4">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/30 text-[#FF7A00] text-xs font-mono font-semibold mb-3">
-            <Sparkles className="w-3.5 h-3.5 text-[#FF5722]" />
+            <CheckCircle2 className="w-3.5 h-3.5 text-[#FF5722]" />
             <span>{lang === 'ar' ? (project.badgeAr || project.badge) : project.badge}</span>
           </div>
           <h2 className="text-2xl sm:text-3xl font-black text-white">

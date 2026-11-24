@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React from 'react';
 import { motion, MotionStyle } from 'framer-motion';
 
 export type AssembleDirection = 'left' | 'right' | 'top' | 'bottom' | 'center';
@@ -14,48 +14,33 @@ interface AssembleItemProps {
 }
 
 /**
- * AssembleItem (High-Performance GPU-Accelerated):
- * - Uses Framer Motion whileInView with hardware-accelerated transforms.
- * - When entering viewport: Snappily flies in & converges from edges into position.
- * - When in reading viewport: 100% assembled, stable, interactive, zero lag.
- * - When scrolling past/away: Quickly scatters/disperses outward.
+ * AssembleItem (High-Performance Apple/Linear Style):
+ * - Smooth, subtle upward/directional emergence with zero chaotic tilt.
+ * - Hardware accelerated (transform-gpu, will-change).
+ * - once: true prevents annoying re-scattering on scroll and guarantees 60-120fps touch scrolling.
  */
 export const AssembleItem: React.FC<AssembleItemProps> = ({
   children,
   direction = 'bottom',
   className = '',
-  distance = 70,
-  rotation = 3,
+  distance = 24,
+  rotation = 0,
   delay = 0,
   style = {}
 }) => {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    checkMobile();
-    window.addEventListener('resize', checkMobile, { passive: true });
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  const effDistance = isMobile ? Math.min(distance * 0.4, 25) : distance;
-  const effRot = isMobile ? 0 : rotation;
-
-  // Initial / Scatter Out State (Periphery)
+  // Gentle, refined offset
   const getInitial = () => {
     switch (direction) {
       case 'left':
-        return { x: -effDistance, y: 0, rotate: -effRot, scale: 0.96, opacity: 0 };
+        return { x: -distance, y: 0, opacity: 0 };
       case 'right':
-        return { x: effDistance, y: 0, rotate: effRot, scale: 0.96, opacity: 0 };
+        return { x: distance, y: 0, opacity: 0 };
       case 'top':
-        return { x: 0, y: -effDistance * 0.7, rotate: 0, scale: 0.97, opacity: 0 };
+        return { x: 0, y: -distance, opacity: 0 };
       case 'bottom':
-        return { x: 0, y: effDistance * 0.7, rotate: 0, scale: 0.97, opacity: 0 };
+        return { x: 0, y: distance, opacity: 0 };
       case 'center':
-        return { x: 0, y: 0, rotate: 0, scale: 0.88, opacity: 0 };
+        return { x: 0, y: 0, scale: 0.95, opacity: 0 };
     }
   };
 
@@ -65,18 +50,17 @@ export const AssembleItem: React.FC<AssembleItemProps> = ({
       whileInView={{
         x: 0,
         y: 0,
-        rotate: 0,
         scale: 1,
         opacity: 1,
         transition: {
           type: 'spring',
-          stiffness: 220,
-          damping: 22,
-          mass: 0.6,
-          delay: isMobile ? 0 : delay
+          stiffness: 190,
+          damping: 24,
+          mass: 0.5,
+          delay: delay
         }
       }}
-      viewport={{ once: false, amount: 0.12 }}
+      viewport={{ once: true, amount: 0.08 }}
       style={{
         willChange: 'transform, opacity',
         ...style
@@ -94,9 +78,8 @@ interface VoidEmergenceProps {
 }
 
 /**
- * VoidEmergence (High-Performance):
- * - Initial load: Smooth, fast emergence from darkness in 0.5s.
- * - Scroll down: Quickly fades out into darkness when leaving view.
+ * VoidEmergence (Smooth & Chill Ambient Entrance):
+ * - Clean fade-in with micro scale transition (0.97 -> 1).
  */
 export const VoidEmergence: React.FC<VoidEmergenceProps> = ({
   children,
@@ -104,16 +87,16 @@ export const VoidEmergence: React.FC<VoidEmergenceProps> = ({
 }) => {
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.96 }}
+      initial={{ opacity: 0, scale: 0.98 }}
       whileInView={{
         opacity: 1,
         scale: 1,
         transition: {
-          duration: 0.55,
-          ease: [0.22, 1, 0.36, 1]
+          duration: 0.6,
+          ease: [0.16, 1, 0.3, 1]
         }
       }}
-      viewport={{ once: false, amount: 0.25 }}
+      viewport={{ once: true, amount: 0.1 }}
       style={{ willChange: 'transform, opacity' }}
       className={`relative transform-gpu ${className}`}
     >

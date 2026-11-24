@@ -2,8 +2,10 @@ import React from 'react';
 import { ProfileInfo, Project, Certificate, SkillCategory, Experience } from '../../types';
 
 export type AccentColor =
-  | 'burntOrange'
+  | 'monochrome'
   | 'slate'
+  | 'charcoal'
+  | 'burntOrange'
   | 'navy'
   | 'cyan'
   | 'cobalt'
@@ -13,8 +15,7 @@ export type AccentColor =
   | 'rose'
   | 'ruby'
   | 'amber'
-  | 'violet'
-  | 'charcoal';
+  | 'violet';
 
 export interface CVOptions {
   template: 'classic';
@@ -49,8 +50,10 @@ export const CVDocument: React.FC<CVDocumentProps> = ({
 
   // Accent Colors mapping (subtle and ATS compliant)
   const colorMap: Record<AccentColor, { primary: string; divider: string; tag: string }> = {
+    monochrome: { primary: '#0f172a', divider: '#0f172a', tag: '#1e293b' },
+    slate: { primary: '#0f172a', divider: '#0f172a', tag: '#1e293b' },
+    charcoal: { primary: '#334155', divider: '#475569', tag: '#1e293b' },
     burntOrange: { primary: '#FF5722', divider: '#FF7A00', tag: '#E64A19' },
-    slate: { primary: '#0f172a', divider: '#334155', tag: '#475569' },
     navy: { primary: '#1e3a8a', divider: '#1d4ed8', tag: '#1e40af' },
     cyan: { primary: '#0284c7', divider: '#0284c7', tag: '#0284c7' },
     cobalt: { primary: '#1d4ed8', divider: '#2563eb', tag: '#1e40af' },
@@ -61,9 +64,8 @@ export const CVDocument: React.FC<CVDocumentProps> = ({
     ruby: { primary: '#991b1b', divider: '#b91c1c', tag: '#7f1d1d' },
     amber: { primary: '#b45309', divider: '#d97706', tag: '#92400e' },
     violet: { primary: '#6d28d9', divider: '#7c3aed', tag: '#5b21b6' },
-    charcoal: { primary: '#334155', divider: '#475569', tag: '#1e293b' },
   };
-  const theme = colorMap[options.accentColor] || colorMap.slate;
+  const theme = colorMap[options.accentColor] || colorMap.monochrome;
 
   // Fallback skills list if none configured
   const defaultSkillCategories = [
@@ -101,7 +103,7 @@ export const CVDocument: React.FC<CVDocumentProps> = ({
     <div
       id="cv-sheet"
       dir="ltr"
-      className="bg-white text-slate-900 w-full max-w-[210mm] min-h-[297mm] p-8 sm:p-11 shadow-2xl rounded-none mx-auto font-sans text-left selection:bg-orange-100"
+      className="bg-white text-slate-900 w-full max-w-[210mm] min-h-[297mm] p-8 sm:p-11 shadow-2xl rounded-none mx-auto font-sans text-left selection:bg-slate-200"
       style={{
         boxSizing: 'border-box',
         lineHeight: 1.45,
@@ -159,7 +161,7 @@ export const CVDocument: React.FC<CVDocumentProps> = ({
 
       {/* ==================== 2. PROFESSIONAL SUMMARY ==================== */}
       <section className="mb-3.5 avoid-break">
-        <h2 className="text-xs font-bold font-mono tracking-widest uppercase text-slate-950 border-b border-slate-300 pb-0.5 mb-1.5">
+        <h2 className="text-xs font-bold font-mono tracking-widest uppercase text-slate-950 border-b border-slate-800 pb-0.5 mb-1.5">
           Professional Summary
         </h2>
         <p
@@ -174,7 +176,7 @@ export const CVDocument: React.FC<CVDocumentProps> = ({
 
       {/* ==================== 3. TECHNICAL SKILLS ==================== */}
       <section className="mb-3.5 avoid-break">
-        <h2 className="text-xs font-bold font-mono tracking-widest uppercase text-slate-950 border-b border-slate-300 pb-0.5 mb-1.5">
+        <h2 className="text-xs font-bold font-mono tracking-widest uppercase text-slate-950 border-b border-slate-800 pb-0.5 mb-1.5">
           Technical Skills
         </h2>
 
@@ -204,7 +206,7 @@ export const CVDocument: React.FC<CVDocumentProps> = ({
       {/* ==================== 4. PROFESSIONAL WORK EXPERIENCE ==================== */}
       {experiences && experiences.length > 0 && (
         <section className="mb-3.5 avoid-break">
-          <h2 className="text-xs font-bold font-mono tracking-widest uppercase text-slate-950 border-b border-slate-300 pb-0.5 mb-2">
+          <h2 className="text-xs font-bold font-mono tracking-widest uppercase text-slate-950 border-b border-slate-800 pb-0.5 mb-2">
             Professional Work Experience
           </h2>
 
@@ -275,7 +277,7 @@ export const CVDocument: React.FC<CVDocumentProps> = ({
       {/* ==================== 5. KEY TECHNICAL PROJECTS ==================== */}
       {selectedProjects && selectedProjects.length > 0 && (
         <section className="mb-3.5">
-          <h2 className="text-xs font-bold font-mono tracking-widest uppercase text-slate-950 border-b border-slate-300 pb-0.5 mb-2">
+          <h2 className="text-xs font-bold font-mono tracking-widest uppercase text-slate-950 border-b border-slate-800 pb-0.5 mb-2">
             Key Technical Projects
           </h2>
 
@@ -351,7 +353,7 @@ export const CVDocument: React.FC<CVDocumentProps> = ({
 
       {/* ==================== TEAMWORK & COLLABORATION ==================== */}
       <section className="mb-3.5 avoid-break">
-        <h2 className="text-xs font-bold font-mono tracking-widest uppercase text-slate-950 border-b border-slate-300 pb-0.5 mb-1.5">
+        <h2 className="text-xs font-bold font-mono tracking-widest uppercase text-slate-950 border-b border-slate-800 pb-0.5 mb-1.5">
           Teamwork & Collaboration
         </h2>
         <ul className="list-disc list-outside text-[11px] text-slate-800 space-y-0.5 mt-1 pl-4 leading-relaxed">
@@ -365,7 +367,7 @@ export const CVDocument: React.FC<CVDocumentProps> = ({
       {/* ==================== 6. CERTIFICATES & ACCREDITATIONS ==================== */}
       {certificates && certificates.length > 0 && (
         <section className="mb-3.5 avoid-break">
-          <h2 className="text-xs font-bold font-mono tracking-widest uppercase text-slate-950 border-b border-slate-300 pb-0.5 mb-1.5">
+          <h2 className="text-xs font-bold font-mono tracking-widest uppercase text-slate-950 border-b border-slate-800 pb-0.5 mb-1.5">
             Certifications & Accreditations
           </h2>
           <div className="space-y-1 text-[11px] text-slate-800">
@@ -388,7 +390,7 @@ export const CVDocument: React.FC<CVDocumentProps> = ({
 
       {/* ==================== 7. EDUCATION ==================== */}
       <section className="mb-3.5 avoid-break">
-        <h2 className="text-xs font-bold font-mono tracking-widest uppercase text-slate-950 border-b border-slate-300 pb-0.5 mb-1.5">
+        <h2 className="text-xs font-bold font-mono tracking-widest uppercase text-slate-950 border-b border-slate-800 pb-0.5 mb-1.5">
           Education
         </h2>
 
@@ -417,7 +419,7 @@ export const CVDocument: React.FC<CVDocumentProps> = ({
 
       {/* ==================== 8. LANGUAGES ==================== */}
       <section className="avoid-break">
-        <h2 className="text-xs font-bold font-mono tracking-widest uppercase text-slate-950 border-b border-slate-300 pb-0.5 mb-1.5">
+        <h2 className="text-xs font-bold font-mono tracking-widest uppercase text-slate-950 border-b border-slate-800 pb-0.5 mb-1.5">
           Languages
         </h2>
         <p 

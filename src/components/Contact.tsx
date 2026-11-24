@@ -9,7 +9,6 @@ import {
   Check, 
   Linkedin, 
   CheckCircle2, 
-  Sparkles,
   MessageSquare
 } from 'lucide-react';
 import confetti from 'canvas-confetti';

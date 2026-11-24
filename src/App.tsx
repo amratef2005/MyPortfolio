@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { PortfolioProvider, usePortfolio } from './context/PortfolioContext';
 import { AnimatedBackground } from './components/AnimatedBackground';
 import { Navbar } from './components/Navbar';
@@ -10,8 +10,14 @@ import { Certificates } from './components/Certificates';
 import { Skills } from './components/Skills';
 import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
-import { CVModal } from './components/cv/CVModal';
-import { AdminDashboard } from './admin/AdminDashboard';
+
+// Code-splitting & Lazy loading for heavy modals to ensure lightning-fast mobile loading
+const LazyCVModal = React.lazy(() =>
+  import('./components/cv/CVModal').then(module => ({ default: module.CVModal }))
+);
+const LazyAdminDashboard = React.lazy(() =>
+  import('./admin/AdminDashboard').then(module => ({ default: module.AdminDashboard }))
+);
 
 // Global keyboard shortcut to open Admin Panel (Ctrl+Shift+A or Cmd+Shift+A)
 const AdminShortcutHandler: React.FC = () => {
@@ -31,6 +37,18 @@ const AdminShortcutHandler: React.FC = () => {
   return null;
 };
 
+// Lazy Modals Manager
+const ModalsContainer: React.FC = () => {
+  const { isCVModalOpen, isAdminOpen } = usePortfolio();
+
+  return (
+    <Suspense fallback={null}>
+      {isCVModalOpen && <LazyCVModal />}
+      {isAdminOpen && <LazyAdminDashboard />}
+    </Suspense>
+  );
+};
+
 export const App: React.FC = () => {
   React.useEffect(() => {
     // Disable browser automatic scroll restoration and scroll to top on load
@@ -39,20 +57,23 @@ export const App: React.FC = () => {
     }
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
 
-    // High-performance spotlight: ONLY compute for the card actively hovered (Zero reflow on scroll)
-    const handleMouseMove = (e: MouseEvent) => {
-      const target = e.target as HTMLElement | null;
-      if (!target) return;
-      const card = target.closest<HTMLElement>('.glass-panel, .glass-card, .ios-glass');
-      if (card) {
-        const rect = card.getBoundingClientRect();
-        card.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
-        card.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
-      }
-    };
+    // High-performance spotlight: ONLY compute for desktop pointers (Zero mobile overhead)
+    const isFinePointer = typeof window !== 'undefined' && window.matchMedia('(pointer: fine)').matches;
+    if (isFinePointer) {
+      const handleMouseMove = (e: MouseEvent) => {
+        const target = e.target as HTMLElement | null;
+        if (!target) return;
+        const card = target.closest<HTMLElement>('.glass-panel, .glass-card, .ios-glass');
+        if (card) {
+          const rect = card.getBoundingClientRect();
+          card.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
+          card.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
+        }
+      };
 
-    window.addEventListener('mousemove', handleMouseMove, { passive: true });
-    return () => window.removeEventListener('mousemove', handleMouseMove);
+      window.addEventListener('mousemove', handleMouseMove, { passive: true });
+      return () => window.removeEventListener('mousemove', handleMouseMove);
+    }
   }, []);
 
   return (
@@ -81,11 +102,8 @@ export const App: React.FC = () => {
         {/* Global Admin Keyboard Shortcut Handler */}
         <AdminShortcutHandler />
 
-        {/* Dynamic CV / Resume Builder Modal */}
-        <CVModal />
-
-        {/* Admin Dashboard CMS Modal */}
-        <AdminDashboard />
+        {/* Dynamic Modals loaded strictly on-demand */}
+        <ModalsContainer />
       </div>
     </PortfolioProvider>
   );

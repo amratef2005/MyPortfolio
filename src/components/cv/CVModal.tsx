@@ -22,7 +22,7 @@ export const CVModal: React.FC = () => {
   const [options, setOptions] = useState<CVOptions>({
     template: 'classic', // Fixed to ATS-Standard
     language: 'en',      // Strictly English
-    accentColor: 'burntOrange',
+    accentColor: 'monochrome',
     includedProjects: projects.map(p => p.id),
     roleTitle: '',
     isEditable: true,
@@ -55,8 +55,10 @@ export const CVModal: React.FC = () => {
   };
 
   const accentThemes: { id: AccentColor; name: string; nameAr: string; hex: string }[] = [
+    { id: 'monochrome', name: 'Classic Monochrome', nameAr: 'أبيض وأسود كلاسيكي (ATS)', hex: '#0f172a' },
+    { id: 'slate', name: 'Classic Slate', nameAr: 'رمادي كلاسيكي', hex: '#1e293b' },
+    { id: 'charcoal', name: 'Minimal Charcoal', nameAr: 'فحمي بسيط', hex: '#334155' },
     { id: 'burntOrange', name: 'Burnt Orange', nameAr: 'برتقالي البرتفوليو', hex: '#FF5722' },
-    { id: 'slate', name: 'Classic Slate', nameAr: 'رمادي كلاسيكي', hex: '#0f172a' },
     { id: 'navy', name: 'Executive Navy', nameAr: 'كحلي تنفيذي', hex: '#1e3a8a' },
     { id: 'cyan', name: 'Tech Cyan', nameAr: 'أزرق تقني', hex: '#0284c7' },
     { id: 'cobalt', name: 'Royal Cobalt', nameAr: 'أزرق ملكي', hex: '#1d4ed8' },
@@ -67,7 +69,6 @@ export const CVModal: React.FC = () => {
     { id: 'ruby', name: 'Deep Ruby', nameAr: 'ياقوتي داكن', hex: '#991b1b' },
     { id: 'amber', name: 'Warm Amber', nameAr: 'عنبري دافئ', hex: '#b45309' },
     { id: 'violet', name: 'Royal Violet', nameAr: 'بنفسجي ملكي', hex: '#6d28d9' },
-    { id: 'charcoal', name: 'Minimal Charcoal', nameAr: 'فحمي بسيط', hex: '#334155' },
   ];
 
   return (
@@ -76,14 +77,14 @@ export const CVModal: React.FC = () => {
       <div id="cv-modal-toolbar" className="px-3 sm:px-6 py-2.5 sm:py-3 pt-[max(0.65rem,env(safe-area-inset-top))] bg-[#080c14] border-b border-slate-800 flex flex-wrap items-center justify-between gap-2.5 sm:gap-3 shrink-0">
         {/* Title & Badge */}
         <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1 sm:flex-initial">
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center text-white shrink-0 shadow-[0_0_15px_rgba(56,189,248,0.3)]">
-            <FileCheck className="w-5 h-5" />
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-white shrink-0 shadow-md">
+            <FileCheck className="w-5 h-5 text-white" />
           </div>
           <div className="min-w-0">
             <h3 className="font-bold text-white text-xs xs:text-sm sm:text-base flex items-center gap-2 truncate">
               <span className="truncate">{lang === 'ar' ? 'السيرة الذاتية المهنية (ATS Resume)' : 'ATS-Optimized Standard Resume'}</span>
-              <span className="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded font-mono font-bold flex items-center gap-1 shrink-0">
-                <ShieldCheck className="w-3 h-3" />
+              <span className="text-[10px] bg-white/10 text-slate-200 border border-white/20 px-2 py-0.5 rounded font-mono font-bold flex items-center gap-1 shrink-0">
+                <ShieldCheck className="w-3 h-3 text-slate-300" />
                 <span>{lang === 'ar' ? 'معتمد 100%' : '100% ATS'}</span>
               </span>
             </h3>

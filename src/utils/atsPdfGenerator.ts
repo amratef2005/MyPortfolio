@@ -13,8 +13,10 @@ interface GenerateAtsPdfParams {
 
 // Map accent colors to RGB hex strings
 const accentColorMap: Record<AccentColor, { r: number; g: number; b: number; hex: string }> = {
-  burntOrange: { r: 255, g: 87, b: 34, hex: '#FF5722' },
+  monochrome: { r: 15, g: 23, b: 42, hex: '#0f172a' },
   slate: { r: 15, g: 23, b: 42, hex: '#0f172a' },
+  charcoal: { r: 51, g: 65, b: 85, hex: '#334155' },
+  burntOrange: { r: 255, g: 87, b: 34, hex: '#FF5722' },
   navy: { r: 30, g: 58, b: 138, hex: '#1e3a8a' },
   cyan: { r: 2, g: 132, b: 199, hex: '#0284c7' },
   cobalt: { r: 29, g: 78, b: 216, hex: '#1d4ed8' },
@@ -25,7 +27,6 @@ const accentColorMap: Record<AccentColor, { r: number; g: number; b: number; hex
   ruby: { r: 153, g: 27, b: 27, hex: '#991b1b' },
   amber: { r: 180, g: 83, b: 9, hex: '#b45309' },
   violet: { r: 109, g: 40, b: 217, hex: '#6d28d9' },
-  charcoal: { r: 51, g: 65, b: 85, hex: '#334155' },
 };
 
 export const generateAtsPdfDocument = ({
@@ -50,7 +51,7 @@ export const generateAtsPdfDocument = ({
 
   let currentY = 16;
 
-  const theme = accentColorMap[options.accentColor] || accentColorMap.burntOrange;
+  const theme = accentColorMap[options.accentColor] || accentColorMap.monochrome;
 
   // Helper: Check space and add page if needed
   const ensureSpace = (neededHeight: number) => {

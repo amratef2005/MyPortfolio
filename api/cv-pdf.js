@@ -15,8 +15,8 @@ export default async function handler(req, res) {
     const contentWidth = pageWidth - marginX * 2;
     let currentY = 16;
 
-    // Default Burnt Orange Theme (#FF5722)
-    const primaryRGB = [255, 87, 34];
+    // Classic ATS Monochrome Black (#0f172a)
+    const primaryRGB = [15, 23, 42];
 
     // Helper: Draw Section Header
     const drawSectionHeader = (title) => {

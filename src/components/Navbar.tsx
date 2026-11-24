@@ -118,7 +118,7 @@ export const Navbar: React.FC = () => {
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden mt-3 pt-3 border-t border-white/10 flex flex-col gap-2 pb-3">
+        <div className="lg:hidden mt-3 pt-3 border-t border-white/10 flex flex-col gap-2 pb-3 animate-fadeIn">
           {navLinks.map((link) => (
             <a
               key={link.href}

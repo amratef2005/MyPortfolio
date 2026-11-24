@@ -23,7 +23,7 @@ import {
   LogOut,
   Image as ImageIcon,
   Type,
-  Sparkles,
+  Layers,
   RefreshCw
 } from 'lucide-react';
 
@@ -631,7 +631,7 @@ export const AdminDashboard: React.FC = () => {
                 {/* Section 1: Logo & Brand Name */}
                 <div className="p-6 rounded-3xl bg-[#121215] border border-white/10 space-y-4">
                   <h5 className="font-bold text-white text-base flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-[#FF5722]" />
+                    <Layers className="w-4 h-4 text-[#FF5722]" />
                     <span>1. اسم الشعار في الشريط العلوي (Navbar Brand Name)</span>
                   </h5>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -735,7 +735,7 @@ export const AdminDashboard: React.FC = () => {
                 {/* Section 3: About Section Headings */}
                 <div className="p-6 rounded-3xl bg-[#121215] border border-white/10 space-y-4">
                   <h5 className="font-bold text-white text-base flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-[#FF5722]" />
+                    <Layers className="w-4 h-4 text-[#FF5722]" />
                     <span>3. عناوين قسم نبذة عني (About Section)</span>
                   </h5>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

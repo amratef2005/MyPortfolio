@@ -2,10 +2,9 @@ import React, { useState } from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
 import { SignatureGlowAvatar } from './SignatureGlowAvatar';
 import { AssembleItem } from './motion/KineticAssemble';
-import { downloadAtsPdf } from '../utils/atsPdfGenerator';
 import { 
   FileDown, 
-  Sparkles, 
+  FileText, 
   Heart, 
   CheckCircle2, 
   Layout, 
@@ -20,9 +19,10 @@ export const About: React.FC = () => {
   const { lang, profile, experiences, projects, certificates, skills, setIsCVModalOpen } = usePortfolio();
   const [downloading, setDownloading] = useState(false);
 
-  const handleDownloadCV = () => {
+  const handleDownloadCV = async () => {
     setDownloading(true);
     try {
+      const { downloadAtsPdf } = await import('../utils/atsPdfGenerator');
       downloadAtsPdf({
         profile,
         experiences,
@@ -32,7 +32,7 @@ export const About: React.FC = () => {
         options: {
           template: 'classic',
           language: 'en',
-          accentColor: 'burntOrange',
+          accentColor: 'monochrome',
           includedProjects: [],
           isEditable: false,
         }
@@ -157,18 +157,18 @@ export const About: React.FC = () => {
                 </div>
               </div>
 
-              {/* Dynamic CV Generation & Download Button */}
+              {/* Dynamic CV Generation & Download Button (Luxury Monochrome Design) */}
               <div className="pt-2 flex flex-wrap items-center gap-4">
                 <button
                   type="button"
                   disabled={downloading}
                   onClick={handleDownloadCV}
-                  className="flex items-center justify-center gap-2.5 h-12 sm:h-14 px-8 rounded-2xl bg-gradient-to-r from-[#FF5722] to-[#FF7A00] hover:from-[#FF6B00] hover:to-[#FF8A00] text-white font-bold text-base shadow-[0_0_25px_rgba(255,87,34,0.4)] hover:shadow-[0_0_40px_rgba(255,87,34,0.65)] transition-all active:scale-95 cursor-pointer disabled:opacity-75"
+                  className="flex items-center justify-center gap-2.5 h-12 sm:h-14 px-8 rounded-2xl bg-white text-slate-950 hover:bg-slate-100 font-bold text-base shadow-[0_0_25px_rgba(255,255,255,0.22)] hover:shadow-[0_0_35px_rgba(255,255,255,0.4)] transition-all duration-300 active:scale-95 cursor-pointer disabled:opacity-75"
                 >
                   {downloading ? (
                     <Loader2 className="w-5 h-5 animate-spin" />
                   ) : (
-                    <FileDown className="w-5 h-5" />
+                    <FileDown className="w-5 h-5 text-slate-950" />
                   )}
                   <span>
                     {downloading
@@ -181,9 +181,9 @@ export const About: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setIsCVModalOpen(true)}
-                  className="flex items-center justify-center gap-2 h-12 sm:h-14 px-6 rounded-2xl bg-[#121215] hover:bg-[#18181f] border border-white/10 text-slate-300 hover:text-white font-medium text-sm transition-colors cursor-pointer"
+                  className="flex items-center justify-center gap-2 h-12 sm:h-14 px-6 rounded-2xl bg-[#0e0e12] hover:bg-[#141418] border border-white/20 hover:border-white/40 text-slate-200 hover:text-white font-medium text-sm transition-all duration-300 cursor-pointer"
                 >
-                  <Sparkles className="w-4 h-4 text-[#FF7A00]" />
+                  <FileText className="w-4 h-4 text-slate-300" />
                   <span>{lang === 'ar' ? 'معاينة وتعديل السيرة الذاتية' : 'Preview & Edit CV'}</span>
                 </button>
               </div>

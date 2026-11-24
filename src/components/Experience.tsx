@@ -6,7 +6,6 @@ import {
   Calendar, 
   MapPin, 
   ExternalLink, 
-  Sparkles, 
   Layers, 
   CheckCircle2,
   Award

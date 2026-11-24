@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
-import { X, Upload, Sliders, Sparkles, Check, RotateCcw, Image as ImageIcon } from 'lucide-react';
+import { X, Upload, Sliders, Check, RotateCcw, Image as ImageIcon } from 'lucide-react';
 import { SignatureGlowAvatar } from './SignatureGlowAvatar';
 
 interface ImageCustomizerModalProps {
@@ -318,7 +318,7 @@ export const ImageCustomizerModal: React.FC<ImageCustomizerModalProps> = ({
                 onClick={handleSave}
                 className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-gradient-to-r from-[#FF5722] to-[#FF7A00] hover:from-[#FF6B00] hover:to-[#FF8A00] text-white font-bold text-sm shadow-[0_0_25px_rgba(255,87,34,0.4)] active:scale-95 transition-all"
               >
-                {saved ? <Check className="w-4 h-4 text-emerald-300" /> : <Sparkles className="w-4 h-4" />}
+                {saved ? <Check className="w-4 h-4 text-emerald-300" /> : <Sliders className="w-4 h-4" />}
                 <span>
                   {saved 
                     ? (lang === 'ar' ? 'تم الحفظ بنجاح!' : 'Saved Successfully!') 

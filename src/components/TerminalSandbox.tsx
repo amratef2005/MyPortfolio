@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
-import { Terminal, CornerDownLeft, Play, Sparkles } from 'lucide-react';
+import { Terminal, CornerDownLeft, Play } from 'lucide-react';
 
 interface CommandOutput {
   command: string;

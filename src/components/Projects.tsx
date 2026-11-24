@@ -10,7 +10,6 @@ import {
   ExternalLink, 
   Eye, 
   Palette,
-  Sparkles,
   CheckCircle2,
   ShieldCheck,
   Cpu

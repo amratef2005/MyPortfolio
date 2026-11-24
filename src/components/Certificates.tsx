@@ -30,18 +30,18 @@ export const Certificates: React.FC = () => {
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-[1.2]">
               {lang === 'ar' ? (
                 <>
-                  اعتمادات موثوقة في <span className="text-[#FF5722] drop-shadow-[0_0_20px_rgba(255,87,34,0.4)]">التصميم وهندسة البرمجيات</span>
+                  اعتمادات موثوقة في <span className="text-[#FF5722] drop-shadow-[0_0_20px_rgba(255,87,34,0.4)]">تطوير النظم الخلفية وهندسة البرمجيات</span>
                 </>
               ) : (
                 <>
-                  Certified Excellence in <span className="text-[#FF5722] drop-shadow-[0_0_20px_rgba(255,87,34,0.4)]">Design & Product Architecture</span>
+                  Certified Excellence in <span className="text-[#FF5722] drop-shadow-[0_0_20px_rgba(255,87,34,0.4)]">Backend Engineering & Architecture</span>
                 </>
               )}
             </h2>
             <p className="text-slate-400 mt-4 text-sm sm:text-base leading-relaxed">
               {lang === 'ar'
-                ? 'شهادات معتمدة تثبت الكفاءة في أبحاث المستخدم، تصميم الواجهات، وأحدث الممارسات المنهجية.'
-                : 'Recognized professional credentials validating user experience methodologies, interactive design, and technical mastery.'}
+                ? 'شهادات واعتمادات مهنية تثبت الكفاءة في تطوير النظم الخلفية، معمارية البرمجيات، وأحدث التقنيات الهندسية.'
+                : 'Recognized professional credentials validating backend architecture, enterprise engineering, and modern software standards.'}
             </p>
           </div>
         </AssembleItem>

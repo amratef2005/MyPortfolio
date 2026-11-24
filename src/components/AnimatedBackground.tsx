@@ -73,24 +73,24 @@ export const AnimatedBackground: React.FC = () => {
         className="absolute top-0 left-0 w-[440px] h-[440px] rounded-full blur-[90px] opacity-0 transition-opacity duration-500 pointer-events-none will-change-transform"
       />
 
-      {/* Ambient Aurora Glows */}
+      {/* Ambient Aurora Glows (Optimized sizing & blur on mobile for 60-120 FPS) */}
       <div 
         style={{
-          background: 'radial-gradient(circle, rgba(var(--theme-primary-rgb, 255, 87, 34), 0.16) 0%, transparent 70%)'
+          background: 'radial-gradient(circle, rgba(var(--theme-primary-rgb, 255, 87, 34), 0.14) 0%, transparent 70%)'
         }}
-        className="aurora-orb aurora-orb-1 absolute -top-[10%] -right-[5%] w-[480px] sm:w-[650px] h-[480px] sm:h-[650px] rounded-full blur-[80px] sm:blur-[110px] will-change-transform" 
+        className="aurora-orb aurora-orb-1 absolute -top-[10%] -right-[5%] w-[320px] sm:w-[650px] h-[320px] sm:h-[650px] rounded-full blur-[50px] sm:blur-[110px] will-change-transform" 
       />
       <div 
         style={{
-          background: 'radial-gradient(circle, rgba(var(--theme-secondary-rgb, 255, 122, 0), 0.13) 0%, transparent 70%)'
+          background: 'radial-gradient(circle, rgba(var(--theme-secondary-rgb, 255, 122, 0), 0.11) 0%, transparent 70%)'
         }}
-        className="aurora-orb aurora-orb-2 absolute top-[28%] -left-[10%] w-[450px] sm:w-[600px] h-[450px] sm:h-[600px] rounded-full blur-[80px] sm:blur-[120px] will-change-transform" 
+        className="aurora-orb aurora-orb-2 absolute top-[28%] -left-[10%] w-[300px] sm:w-[600px] h-[300px] sm:h-[600px] rounded-full blur-[50px] sm:blur-[120px] will-change-transform" 
       />
       <div 
         style={{
-          background: 'radial-gradient(circle, rgba(var(--theme-accent-rgb, 230, 74, 25), 0.12) 0%, transparent 70%)'
+          background: 'radial-gradient(circle, rgba(var(--theme-accent-rgb, 230, 74, 25), 0.10) 0%, transparent 70%)'
         }}
-        className="aurora-orb aurora-orb-3 absolute top-[55%] -right-[8%] w-[420px] sm:w-[550px] h-[420px] sm:h-[550px] rounded-full blur-[70px] sm:blur-[100px] will-change-transform" 
+        className="aurora-orb aurora-orb-3 absolute top-[55%] -right-[8%] w-[280px] sm:w-[550px] h-[280px] sm:h-[550px] rounded-full blur-[45px] sm:blur-[100px] will-change-transform" 
       />
 
       {/* Apple-style Frosted Micro-Dot Mesh */}

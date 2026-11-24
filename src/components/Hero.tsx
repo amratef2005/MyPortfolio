@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import { 
   Send, 
   MapPin, 
-  Sparkles, 
+  Activity, 
   ArrowUpRight,
   Layers,
   Palette,
@@ -35,15 +35,15 @@ export const Hero: React.FC = () => {
           
           {/* Left Column: Greeting, Name, Orange Job Title, Location, Buttons */}
           <motion.div 
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.65, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
             className="lg:col-span-7 flex flex-col gap-6 text-start z-10 order-2 lg:order-1"
           >
             {/* Status / Availability Pill */}
             <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-[#121215] border border-orange-500/25 text-[#FF7A00] text-xs sm:text-sm font-mono font-medium self-start shadow-[0_0_20px_rgba(255,87,34,0.15)]">
               <span className="w-2 h-2 rounded-full bg-[#FF5722] animate-ping" />
-              <Sparkles className="w-3.5 h-3.5 text-[#FF7A00] shrink-0" />
+              <Activity className="w-3.5 h-3.5 text-[#FF7A00] shrink-0" />
               <span>
                 {lang === 'ar' ? 'متاحة للمشاريع الحرة وعقود العمل' : 'Available for Freelance & Full-time Roles'}
               </span>
@@ -142,9 +142,9 @@ export const Hero: React.FC = () => {
 
           {/* Right Column: Signature Circular Glow Silhouette Avatar */}
           <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.7, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.7, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
             className="lg:col-span-5 flex items-center justify-center order-1 lg:order-2 z-10"
           >
             <SignatureGlowAvatar

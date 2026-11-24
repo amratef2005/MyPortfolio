@@ -2,7 +2,6 @@ import React from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
 import { 
   Cpu, 
-  Sparkles, 
   Server, 
   Database, 
   ShieldCheck, 
@@ -210,7 +209,7 @@ export const Skills: React.FC = () => {
           <AssembleItem direction="top">
             <div className="text-start mb-10">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-[#FF7A00] text-xs font-mono mb-2">
-                <Sparkles className="w-3.5 h-3.5" />
+                <Terminal className="w-3.5 h-3.5 text-[#FF5722]" />
                 <span>{lang === 'ar' ? 'المجالات الهندسية المتخصصة' : 'Specialized Engineering Areas'}</span>
               </div>
               <h3 className="text-2xl sm:text-3xl font-black text-white">
