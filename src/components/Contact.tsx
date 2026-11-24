@@ -97,7 +97,7 @@ export const Contact: React.FC = () => {
   };
 
   return (
-    <section id="contact" className="py-20 sm:py-28 relative overflow-hidden">
+    <section id="contact" className="py-12 sm:py-20 lg:py-28 relative overflow-hidden">
       {/* Background Subtle Orange Glow */}
       <div 
         className="absolute bottom-0 right-1/4 w-[500px] h-[500px] rounded-full blur-[160px] pointer-events-none"
@@ -108,7 +108,7 @@ export const Contact: React.FC = () => {
         
         {/* Section Header: "Contact Me" & "Have Any Project? Let's Chat" */}
         <AssembleItem direction="top">
-          <div className="text-center max-w-3xl mx-auto mb-14 sm:mb-18">
+          <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12 lg:mb-16">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#121215] border border-orange-500/20 text-[#FF7A00] text-xs font-mono mb-3">
               <MessageSquare className="w-3.5 h-3.5 text-[#FF5722]" />
               <span>{lang === 'ar' ? 'تواصل معي' : 'Contact Me'}</span>

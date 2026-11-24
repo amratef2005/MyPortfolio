@@ -8,8 +8,10 @@ export const Certificates: React.FC = () => {
   const { certificates, lang } = usePortfolio();
   const [selectedCert, setSelectedCert] = useState<Certificate | null>(null);
 
+  if (!certificates || certificates.length === 0) return null;
+
   return (
-    <section id="certificates" className="py-20 sm:py-28 relative overflow-hidden">
+    <section id="certificates" className="py-12 sm:py-20 lg:py-28 relative overflow-hidden">
       {/* Background Soft Glow */}
       <div 
         className="absolute top-1/3 -right-20 w-[420px] h-[420px] rounded-full blur-[140px] pointer-events-none"
@@ -20,7 +22,7 @@ export const Certificates: React.FC = () => {
         
         {/* Section Header */}
         <AssembleItem direction="top">
-          <div className="text-center max-w-3xl mx-auto mb-14 sm:mb-18">
+          <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12 lg:mb-16">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#121215] border border-orange-500/20 text-[#FF7A00] text-xs font-mono mb-3">
               <Award className="w-3.5 h-3.5 text-[#FF5722]" />
               <span>{lang === 'ar' ? 'الشهادات والاعتمادات الاحترافية' : 'Verified Credentials & Certificates'}</span>
@@ -56,7 +58,7 @@ export const Certificates: React.FC = () => {
                 distance={100}
                 className="h-full"
               >
-                <div className="p-6 sm:p-8 rounded-3xl bg-[#0e0e12] border border-white/10 hover:border-orange-500/40 flex flex-col justify-between group overflow-hidden transition-all duration-300 shadow-[0_10px_30px_rgba(0,0,0,0.6)] hover:shadow-[0_15px_35px_rgba(255,87,34,0.15)] h-full relative">
+                <div className="p-4 sm:p-6 lg:p-8 rounded-3xl bg-[#0e0e12] border border-white/10 hover:border-orange-500/40 flex flex-col justify-between group overflow-hidden transition-all duration-300 shadow-[0_10px_30px_rgba(0,0,0,0.6)] hover:shadow-[0_15px_35px_rgba(255,87,34,0.15)] h-full relative">
                   
                   {/* Subtle Corner Ambient Light */}
                   <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/5 rounded-full blur-2xl group-hover:bg-orange-500/15 transition-all pointer-events-none" />

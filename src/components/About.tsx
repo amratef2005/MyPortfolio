@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
 import { SignatureGlowAvatar } from './SignatureGlowAvatar';
 import { AssembleItem } from './motion/KineticAssemble';
+import { downloadAtsPdf } from '../utils/atsPdfGenerator';
 import { 
   FileDown, 
   Sparkles, 
@@ -10,21 +11,39 @@ import {
   Layout, 
   Users, 
   Layers,
-  Compass
+  Compass,
+  Loader2,
+  Cpu
 } from 'lucide-react';
 
 export const About: React.FC = () => {
-  const { lang, profile, setIsCVModalOpen } = usePortfolio();
+  const { lang, profile, experiences, projects, certificates, skills, setIsCVModalOpen } = usePortfolio();
+  const [downloading, setDownloading] = useState(false);
 
   const handleDownloadCV = () => {
-    setIsCVModalOpen(true);
-    setTimeout(() => {
-      window.print();
-    }, 350);
+    setDownloading(true);
+    try {
+      downloadAtsPdf({
+        profile,
+        experiences,
+        projects,
+        certificates,
+        skills,
+        options: {
+          template: 'classic',
+          language: 'en',
+          accentColor: 'burntOrange',
+          includedProjects: [],
+          isEditable: false,
+        }
+      });
+    } finally {
+      setTimeout(() => setDownloading(false), 600);
+    }
   };
 
   return (
-    <section id="about" className="py-20 sm:py-28 relative overflow-hidden">
+    <section id="about" className="py-12 sm:py-20 lg:py-28 relative overflow-hidden">
       {/* Background Subtle Orange Ambient Bloom */}
       <div 
         className="absolute top-1/2 -left-20 w-[450px] h-[450px] rounded-full blur-[140px] pointer-events-none"
@@ -58,68 +77,80 @@ export const About: React.FC = () => {
               
               {/* Badge */}
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#121215] border border-orange-500/20 text-[#FF7A00] text-xs font-mono mb-2">
-                <Heart className="w-3.5 h-3.5 text-[#FF5722] fill-[#FF5722]/20" />
-                <span>{lang === 'ar' ? 'نبذة عني وشغفي' : 'About Me & Philosophy'}</span>
+                <Cpu className="w-3.5 h-3.5 text-[#FF5722]" />
+                <span>{lang === 'ar' ? 'نبذة عني والتخصص' : 'About Me & Specialization'}</span>
               </div>
 
-              {/* Subtitle: "Designing Is My Passion" */}
+              {/* Subtitle: "Backend Architecture & Engineering" */}
               <p className="text-sm sm:text-base font-mono uppercase tracking-widest text-[#FF7A00] font-bold">
-                {lang === 'ar' ? (profile.aboutSubtitleAr || 'التصميم هو شغفي وهويتي') : (profile.aboutSubtitle || 'Designing Is My Passion')}
+                {lang === 'ar' ? (profile.aboutSubtitleAr || 'هندسة ومعمارية النظم الخلفية') : (profile.aboutSubtitle || 'Backend Architecture & Engineering')}
               </p>
 
               {/* Section Main Title */}
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-[1.2]">
                 {lang === 'ar' ? (
-                  profile.aboutHeadingAr || (
-                    <>
-                      تحويل الأفكار المعقدة إلى <span className="text-[#FF5722] drop-shadow-[0_0_20px_rgba(255,87,34,0.4)]">تجارب بصرية سلسة</span>
-                    </>
-                  )
+                  <>
+                    بناء أنظمة خلفية فائقة الأداء <span className="text-[#FF5722] drop-shadow-[0_0_20px_rgba(255,87,34,0.4)]">وقابلة للتوسع بأعلى أمان</span>
+                  </>
                 ) : (
-                  profile.aboutHeading || (
-                    <>
-                      Transforming Complex Ideas Into <span className="text-[#FF5722] drop-shadow-[0_0_20px_rgba(255,87,34,0.4)]">Delightful Experiences</span>
-                    </>
-                  )
+                  <>
+                    Building Resilient, Scalable & <span className="text-[#FF5722] drop-shadow-[0_0_20px_rgba(255,87,34,0.4)]">High-Throughput Systems</span>
+                  </>
                 )}
               </h2>
 
               {/* Main Bio Paragraph */}
-              <p className="text-slate-300 text-base sm:text-lg leading-[1.8] mt-2">
-                {lang === 'ar'
-                  ? 'أنا مصممة واجهات وتجربة مستخدم (UI/UX Designer) أؤمن بأن التصميم العظيم ليس مجرد مظهر جميل، بل هو حل متقن لمشكلات حقيقية. أدمج بين الفهم العميق لسيكولوجية المستخدم، واستراتيجيات أبحاث تجربة المستخدم (UX Research)، وبناء أنظمة التصميم القابلة للتوسع (Design Systems) التي تسهم في تسريع وتوحيد لغة المنتج بين فرق التصميم والتطوير.'
-                  : 'I am a passionate UI/UX Designer dedicated to crafting digital products that seamlessly bridge user needs with business goals. My work focuses on thorough user research, atomic design systems, rapid prototyping, and high-fidelity interaction design that delights users and scales effortlessly across web and mobile platforms.'}
-              </p>
+              <div className="text-slate-300 text-sm sm:text-base leading-[1.8] mt-2 space-y-3">
+                {lang === 'ar' ? (
+                  <>
+                    <p>
+                      طالب علوم حاسب ومطور نظم خلفية .NET بخبرة عملية في تصميم وتطوير أنظمة خلفية قابلة للتوسع باستخدام C# و ASP.NET Core. خبرة في بناء واجهات RESTful APIs، وتطبيق معمارية Clean Architecture ونمط CQRS، وتصميم قواعد البيانات العلائقية، وتطوير آليات مصادقة وتفويض آمنة.
+                    </p>
+                    <p className="text-slate-400 text-xs sm:text-sm">
+                      خبرة تطبيقية في منصات SaaS السحابية متعددة المستأجرين، ومصادقة JWT، وOAuth 2.0، وتدوير Refresh Tokens، والاتصال اللحظي عبر SignalR، ومعالجة المهام الخلفية. أعمل بتعاون وثيق مع فرق العمل المتكاملة لقيادة التطوير الخلفي وربط الخدمات مع تطبيقات الموبايل والواجهات الأمامية.
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <p>
+                      Computer Science student and .NET Backend Developer with hands-on experience designing and developing scalable backend systems using C# and ASP.NET Core. Experienced in building RESTful APIs, implementing Clean Architecture and CQRS patterns, designing relational databases, and developing secure authentication and authorization mechanisms.
+                    </p>
+                    <p className="text-slate-400 text-xs sm:text-sm">
+                      Practical experience in multi-tenant SaaS applications, JWT authentication, OAuth 2.0, refresh token rotation, real-time communication using SignalR, and background processing. Collaborates with cross-functional teams, owning backend development and API integration with mobile and frontend applications.
+                    </p>
+                  </>
+                )}
+              </div>
 
               {/* Core Strengths / Highlights Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 my-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 my-3">
                 <div className="p-4 rounded-2xl bg-[#0e0e12] border border-white/5 hover:border-orange-500/30 transition-all">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-[#FF5722] shrink-0">
-                      <Users className="w-5 h-5" />
+                  <div className="flex items-start gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-[#FF5722] shrink-0 mt-0.5">
+                      <Layers className="w-5 h-5" />
                     </div>
                     <div>
                       <h4 className="font-bold text-white text-sm sm:text-base">
-                        {lang === 'ar' ? 'تصميم متمحور حول الإنسان' : 'Human-Centered UX'}
+                        {lang === 'ar' ? 'معمارية سحابية ونظم SaaS' : 'Multi-Tenant SaaS & Clean Arch'}
                       </h4>
-                      <p className="text-xs text-slate-400 mt-0.5">
-                        {lang === 'ar' ? 'أبحاث، استبيانات، واختبارات قابلية الاستخدام' : 'User personas, journey maps & usability tests'}
+                      <p className="text-xs text-slate-400 mt-1">
+                        {lang === 'ar' ? 'Clean Architecture، Modular Monolith، وعزل بيانات المستأجرين' : 'Modular Monolith, tenant isolation & CQRS'}
                       </p>
                     </div>
                   </div>
                 </div>
 
                 <div className="p-4 rounded-2xl bg-[#0e0e12] border border-white/5 hover:border-orange-500/30 transition-all">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-[#FF7A00] shrink-0">
-                      <Layers className="w-5 h-5" />
+                  <div className="flex items-start gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-[#FF7A00] shrink-0 mt-0.5">
+                      <Users className="w-5 h-5" />
                     </div>
                     <div>
                       <h4 className="font-bold text-white text-sm sm:text-base">
-                        {lang === 'ar' ? 'أنظمة تصميم متكاملة' : 'Scalable Design Systems'}
+                        {lang === 'ar' ? 'عمل جماعي وتكامل مع الفرق' : 'Cross-Functional Teamwork'}
                       </h4>
-                      <p className="text-xs text-slate-400 mt-0.5">
-                        {lang === 'ar' ? 'مكونات متناسقة ونماذج تفاعلية عالية الدقة' : 'Design tokens, auto-layout & Figma variants'}
+                      <p className="text-xs text-slate-400 mt-1">
+                        {lang === 'ar' ? 'تعاون وثيق وتكامل الخدمات مع مطوري Mobile و Frontend' : 'Seamless API integration with Mobile & Frontend teams'}
                       </p>
                     </div>
                   </div>
@@ -130,11 +161,20 @@ export const About: React.FC = () => {
               <div className="pt-2 flex flex-wrap items-center gap-4">
                 <button
                   type="button"
+                  disabled={downloading}
                   onClick={handleDownloadCV}
-                  className="flex items-center justify-center gap-2.5 h-12 sm:h-14 px-8 rounded-2xl bg-gradient-to-r from-[#FF5722] to-[#FF7A00] hover:from-[#FF6B00] hover:to-[#FF8A00] text-white font-bold text-base shadow-[0_0_25px_rgba(255,87,34,0.4)] hover:shadow-[0_0_40px_rgba(255,87,34,0.65)] transition-all active:scale-95 cursor-pointer"
+                  className="flex items-center justify-center gap-2.5 h-12 sm:h-14 px-8 rounded-2xl bg-gradient-to-r from-[#FF5722] to-[#FF7A00] hover:from-[#FF6B00] hover:to-[#FF8A00] text-white font-bold text-base shadow-[0_0_25px_rgba(255,87,34,0.4)] hover:shadow-[0_0_40px_rgba(255,87,34,0.65)] transition-all active:scale-95 cursor-pointer disabled:opacity-75"
                 >
-                  <FileDown className="w-5 h-5" />
-                  <span>{lang === 'ar' ? 'توليد وتحميل السيرة الذاتية (PDF)' : 'Download CV (PDF)'}</span>
+                  {downloading ? (
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                  ) : (
+                    <FileDown className="w-5 h-5" />
+                  )}
+                  <span>
+                    {downloading
+                      ? (lang === 'ar' ? 'جارٍ توليد وتحميل PDF...' : 'Generating ATS PDF...')
+                      : (lang === 'ar' ? 'تحميل السيرة الذاتية (PDF)' : 'Download CV (ATS PDF)')}
+                  </span>
                 </button>
 
                 {/* Optional Smart Builder Preview Trigger */}

@@ -78,54 +78,82 @@ export const SignatureGlowAvatar: React.FC<SignatureGlowAvatarProps> = ({
       className={`relative flex items-center justify-center select-none ${containerSizes} ${className}`}
       style={{ perspective: 1000 }}
     >
-      {/* 1. Deep Core Radiant Aura Bloom (Signature Circular Orange Glow) */}
+      {/* 1. Cinematic Multi-Layer Volumetric Studio Lighting */}
       <motion.div
         style={{ x: auraX, y: auraY, opacity: Math.min(1.5, Math.max(0.3, glowIntensity)) }}
         className={`absolute rounded-full pointer-events-none ${auraSizes} z-0`}
       >
-        {/* Intense Core Glow */}
+        {/* Core Radiance with Dual-Tone Burnt Orange & Amber Glow */}
         <div 
           className="w-full h-full rounded-full animate-breathe"
           style={{
-            background: 'radial-gradient(circle, rgba(255, 87, 34, 0.85) 0%, rgba(255, 122, 0, 0.55) 38%, rgba(230, 74, 25, 0.3) 60%, transparent 75%)',
+            background: 'radial-gradient(circle at 48% 42%, rgba(255, 122, 0, 0.95) 0%, rgba(255, 87, 34, 0.7) 35%, rgba(210, 50, 10, 0.35) 60%, transparent 75%)',
             filter: `blur(${Math.round(45 * glowIntensity)}px)`,
           }}
         />
 
-        {/* Ambient Outer Halo */}
+        {/* Ambient Outer Halo with Soft Studio Fill Bloom */}
         <div 
-          className="absolute inset-[-20%] rounded-full opacity-70 pointer-events-none"
+          className="absolute inset-[-25%] rounded-full opacity-80 pointer-events-none"
           style={{
-            background: 'radial-gradient(circle, rgba(255, 107, 0, 0.4) 0%, rgba(255, 61, 0, 0.15) 50%, transparent 70%)',
-            filter: `blur(${Math.round(70 * glowIntensity)}px)`,
+            background: 'radial-gradient(circle, rgba(255, 120, 0, 0.45) 0%, rgba(255, 60, 0, 0.2) 45%, transparent 70%)',
+            filter: `blur(${Math.round(75 * glowIntensity)}px)`,
+          }}
+        />
+
+        {/* Cinematic Top-Down Keylight Beam */}
+        <div 
+          className="absolute -top-16 inset-x-0 h-44 opacity-60 pointer-events-none"
+          style={{
+            background: 'radial-gradient(ellipse at 50% 0%, rgba(255, 150, 50, 0.6) 0%, rgba(255, 87, 34, 0.2) 50%, transparent 75%)',
+            filter: 'blur(30px)',
           }}
         />
       </motion.div>
 
-      {/* 2. Concentric Orbit Accent Rings */}
+      {/* 2. Concentric Orbit Accent Rings with Specular Light */}
       {showRings && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-[1]">
-          {/* Main Frame Circle */}
+          {/* Main Frame Circle with Glowing Amber Border */}
           <div 
-            className={`rounded-full border border-orange-500/30 ${
+            className={`rounded-full border border-orange-500/35 ${
               isHero ? 'w-[270px] h-[270px] xs:w-[320px] xs:h-[320px] sm:w-[390px] sm:h-[390px]' : 'w-[250px] h-[250px] sm:w-[330px] sm:h-[330px]'
-            } shadow-[0_0_40px_rgba(255,87,34,0.35),inset_0_0_30px_rgba(255,122,0,0.15)]`}
+            } shadow-[0_0_45px_rgba(255,87,34,0.45),inset_0_0_35px_rgba(255,122,0,0.2)]`}
           />
-          {/* Outer Dashed Orbit */}
+          {/* Outer Dashed Orbit with Cinematic Shimmer */}
           <div 
-            className={`absolute rounded-full border border-dashed border-orange-400/20 animate-spin-slow ${
+            className={`absolute rounded-full border border-dashed border-orange-400/25 animate-spin-slow ${
               isHero ? 'w-[310px] h-[310px] xs:w-[360px] xs:h-[360px] sm:w-[440px] sm:h-[440px]' : 'w-[290px] h-[290px] sm:w-[370px] sm:h-[370px]'
             }`}
           />
         </div>
       )}
 
-      {/* 3. The Portrait Silhouette Frame */}
+      {/* 3. The Portrait Silhouette Frame with Cinematic Rim Highlight */}
       <motion.div
         style={{ rotateX, rotateY }}
         transition={{ type: 'spring', damping: 20, stiffness: 200 }}
         className="relative z-10 w-full h-full flex items-end justify-center overflow-visible"
       >
+        {/* Subtle Silhouette Rim Backlight Effect */}
+        <div 
+          className="absolute inset-0 flex items-end justify-center pointer-events-none opacity-40 blur-sm"
+          style={{
+            filter: 'drop-shadow(0 0 16px rgba(255, 122, 0, 0.8))',
+          }}
+        >
+          <img
+            src={imageUrl}
+            alt=""
+            aria-hidden="true"
+            style={{
+              transform: `scale(${scale * 1.02}) translateY(${offsetY}px)`,
+              transformOrigin: 'bottom center',
+            }}
+            className="max-h-full w-auto object-contain object-bottom"
+          />
+        </div>
+
         <img
           src={imageUrl}
           alt={alt}
@@ -138,11 +166,11 @@ export const SignatureGlowAvatar: React.FC<SignatureGlowAvatarProps> = ({
             transform: `scale(${scale}) translateY(${offsetY}px)`,
             transformOrigin: 'bottom center',
           }}
-          className="max-h-full w-auto object-contain object-bottom drop-shadow-[0_20px_35px_rgba(0,0,0,0.9)] filter brightness-105 contrast-105 transition-transform duration-200 pointer-events-none"
+          className="max-h-full w-auto object-contain object-bottom drop-shadow-[0_20px_35px_rgba(0,0,0,0.9)] filter brightness-105 contrast-105 transition-transform duration-200 pointer-events-none relative z-10"
         />
 
         {/* Bottom subtle gradient fade to anchor with page */}
-        <div className="absolute bottom-0 inset-x-0 h-16 bg-gradient-to-t from-[#050505] via-[#050505]/40 to-transparent pointer-events-none" />
+        <div className="absolute bottom-0 inset-x-0 h-16 bg-gradient-to-t from-[#050505] via-[#050505]/40 to-transparent pointer-events-none z-20" />
       </motion.div>
 
       {/* 4. On-Avatar Quick Edit Trigger Button */}

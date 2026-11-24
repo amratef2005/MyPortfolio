@@ -3,7 +3,7 @@ import { usePortfolio } from '../context/PortfolioContext';
 import { Globe, Menu, X, Linkedin, Github, Mail, Send } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
-  const { lang, setLang, profile, setIsAdminOpen } = usePortfolio();
+  const { lang, setLang, profile, certificates, setIsAdminOpen } = usePortfolio();
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
 
   const navLinks = [
@@ -11,7 +11,7 @@ export const Navbar: React.FC = () => {
     { href: "#about", labelAr: "نبذة عني", labelEn: "About" },
     { href: "#experience", labelAr: "الخبرات", labelEn: "Experience" },
     { href: "#projects", labelAr: "المشاريع", labelEn: "Projects" },
-    { href: "#certificates", labelAr: "الشهادات", labelEn: "Certificates" },
+    ...(certificates && certificates.length > 0 ? [{ href: "#certificates", labelAr: "الشهادات", labelEn: "Certificates" }] : []),
     { href: "#skills", labelAr: "المهارات", labelEn: "Skills" },
     { href: "#contact", labelAr: "تواصل معي", labelEn: "Contact" },
   ];

@@ -19,7 +19,7 @@ export const Hero: React.FC = () => {
 
   return (
     <VoidEmergence className="overflow-hidden">
-      <section id="hero" className="relative min-h-[92vh] pt-28 sm:pt-36 pb-16 sm:pb-24 flex items-center justify-center">
+      <section id="hero" className="relative min-h-[90vh] pt-24 sm:pt-36 pb-12 sm:pb-20 lg:pb-24 flex items-center justify-center">
         
         {/* Soft Background Radial Light */}
         <div 
@@ -52,20 +52,27 @@ export const Hero: React.FC = () => {
             {/* Greeting + Large Name + Burnt Orange Title */}
             <div>
               <p className="text-xl sm:text-2xl font-light text-slate-300 tracking-wide font-sans">
-                {lang === 'ar' ? (profile.heroGreetingAr || 'مرحباً، أنا') : (profile.heroGreeting || 'Hello,')}
+                {lang === 'ar' ? (profile.heroGreetingAr || 'مرحباً، أنا') : (profile.heroGreeting || 'Hello, I am')}
               </p>
               
-              <h1 className="text-[clamp(2.5rem,7vw,4.5rem)] font-black text-white leading-[1.15] tracking-tight mt-1">
-                {lang === 'ar' ? (profile.nameAr || profile.shortNameAr || 'عمرو قنديل') : (profile.name || profile.shortName || 'Amr Kandel')}
+              <h1 className="text-[clamp(2.2rem,6vw,4rem)] font-black text-white leading-[1.15] tracking-tight mt-1">
+                {lang === 'ar' ? (profile.nameAr || profile.shortNameAr || 'عمرو عاطف إمام محمود') : (profile.name || profile.shortName || 'Amr Atef Imam Mahmoud')}
               </h1>
 
               {/* Burnt Orange Title */}
-              <div className="inline-block mt-3">
-                <p className="text-[clamp(1.5rem,4vw,2.5rem)] font-extrabold text-[#FF5722] tracking-normal drop-shadow-[0_0_25px_rgba(255,87,34,0.45)]">
+              <div className="inline-block mt-2">
+                <p className="text-[clamp(1.4rem,3.8vw,2.3rem)] font-extrabold text-[#FF5722] tracking-normal drop-shadow-[0_0_25px_rgba(255,87,34,0.45)]">
                   {lang === 'ar' 
-                    ? (profile.titleAr || 'مطور نظم خلفية .NET ومصمم واجهات') 
-                    : (profile.title || '.NET Backend Developer & UI/UX Designer')}
+                    ? (profile.titleAr || 'مطور نظم خلفية .NET') 
+                    : (profile.title || '.NET Backend Developer')}
                 </p>
+              </div>
+
+              {/* Core Technologies Banner */}
+              <div className="mt-1">
+                <span className="text-xs sm:text-sm font-mono text-orange-400/95 font-semibold tracking-wider">
+                  C# • ASP.NET Core • SQL Server • PostgreSQL
+                </span>
               </div>
 
               {/* Location */}
@@ -78,8 +85,8 @@ export const Hero: React.FC = () => {
             {/* Bio snippet */}
             <p className="text-slate-300 text-base sm:text-lg leading-[1.8] max-w-2xl font-normal">
               {lang === 'ar'
-                ? 'أبتكر تجارب رقمية جذابة وبديهية تجمع بين أبحاث المستخدم الدقيقة، معمارية المعلومات المتقنة، والواجهات البصرية الحديثة التي تحقق أهداف الأعمال وتأسر انتباه المستخدمين.'
-                : 'Crafting intuitive, human-centered digital experiences that merge deep user research, robust design systems, and bold visual aesthetics to drive measurable business impact.'}
+                ? (profile.bioAr ? profile.bioAr.split('\n')[0] : 'طالب علوم حاسب ومطور نظم خلفية .NET بخبرة عملية في تصميم وتطوير أنظمة خلفية قابلة للتوسع باستخدام C# و ASP.NET Core، وبناء واجهات RESTful APIs وتطبيق Clean Architecture و CQRS.')
+                : (profile.bio ? profile.bio.split('\n')[0] : 'Computer Science student and .NET Backend Developer with hands-on experience designing and developing scalable backend systems using C# and ASP.NET Core, building RESTful APIs, and implementing Clean Architecture & CQRS.')}
             </p>
 
             {/* Action Buttons: Hire Me + View Projects */}

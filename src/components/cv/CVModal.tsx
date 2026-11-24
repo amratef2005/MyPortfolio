@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { usePortfolio } from '../../context/PortfolioContext';
 import { CVDocument, CVOptions, AccentColor } from './CVDocument';
+import { downloadAtsPdf } from '../../utils/atsPdfGenerator';
 import { 
   X, 
   Printer, 
@@ -10,7 +11,9 @@ import {
   ZoomOut, 
   Sliders,
   ShieldCheck,
-  Palette
+  Palette,
+  Download,
+  Loader2
 } from 'lucide-react';
 
 export const CVModal: React.FC = () => {
@@ -27,11 +30,28 @@ export const CVModal: React.FC = () => {
 
   const [zoom, setZoom] = useState<number>(100);
   const [showConfig, setShowConfig] = useState<boolean>(true);
+  const [isDownloading, setIsDownloading] = useState<boolean>(false);
 
   if (!isCVModalOpen) return null;
 
   const handlePrint = () => {
     window.print();
+  };
+
+  const handleDownloadPdf = () => {
+    setIsDownloading(true);
+    try {
+      downloadAtsPdf({
+        profile,
+        experiences,
+        projects,
+        certificates,
+        skills,
+        options,
+      });
+    } finally {
+      setTimeout(() => setIsDownloading(false), 600);
+    }
   };
 
   const accentThemes: { id: AccentColor; name: string; nameAr: string; hex: string }[] = [
@@ -87,13 +107,33 @@ export const CVModal: React.FC = () => {
             </span>
           </button>
 
-          {/* Print / Download Button */}
+          {/* Direct ATS PDF Download Button */}
+          <button
+            onClick={handleDownloadPdf}
+            disabled={isDownloading}
+            className="h-11 min-h-[44px] px-3.5 sm:px-5 py-2 rounded-xl bg-gradient-to-r from-[#FF5722] via-[#FF6B00] to-[#FF7A00] hover:from-[#FF6B00] hover:to-[#FF8A00] text-white font-bold text-xs sm:text-sm shadow-[0_0_22px_rgba(255,87,34,0.45)] hover:shadow-[0_0_30px_rgba(255,87,34,0.7)] flex items-center justify-center gap-2 transition-all shrink-0 touch-manipulation cursor-pointer disabled:opacity-75"
+            title={lang === 'ar' ? 'تنزيل ملف PDF متوافق مع ATS' : 'Download ATS-Compliant PDF'}
+          >
+            {isDownloading ? (
+              <Loader2 className="w-4 h-4 animate-spin shrink-0" />
+            ) : (
+              <Download className="w-4 h-4 shrink-0" />
+            )}
+            <span>
+              {isDownloading
+                ? (lang === 'ar' ? 'جارٍ التوليد...' : 'Generating...')
+                : (lang === 'ar' ? 'تنزيل PDF (ATS)' : 'Download PDF')}
+            </span>
+          </button>
+
+          {/* Print / System Dialog Button */}
           <button
             onClick={handlePrint}
-            className="h-11 min-h-[44px] px-3.5 sm:px-5 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold text-xs sm:text-sm shadow-[0_0_20px_rgba(56,189,248,0.4)] flex items-center justify-center gap-2 transition-all shrink-0 touch-manipulation"
+            className="hidden sm:flex h-11 min-h-[44px] px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700/80 text-slate-300 hover:text-white font-medium text-xs sm:text-sm items-center justify-center gap-1.5 transition-all shrink-0 touch-manipulation"
+            title={lang === 'ar' ? 'طباعة عبر المتصفح' : 'Print via Browser'}
           >
             <Printer className="w-4 h-4 shrink-0" />
-            <span>{lang === 'ar' ? 'حفظ PDF' : 'Print / PDF'}</span>
+            <span>{lang === 'ar' ? 'طباعة' : 'Print'}</span>
           </button>
 
           {/* Close Modal */}

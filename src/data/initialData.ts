@@ -1,16 +1,16 @@
 import { ProfileInfo, Project, Certificate, SkillCategory, Experience } from '../types';
 
 export const initialProfile: ProfileInfo = {
-  name: "Amr Kandel",
-  nameAr: "عمرو قنديل",
-  shortName: "Amr Kandel",
-  shortNameAr: "عمرو قنديل",
-  brandName: "Amr Kandel",
-  brandNameAr: "عمرو قنديل",
-  title: ".NET Backend Developer & UI/UX Designer",
-  titleAr: "مطور نظم خلفية .NET ومصمم واجهات",
-  bio: "Computer Science student and Full-Stack Developer & UI/UX Designer with hands-on experience designing and developing scalable software systems, clean architectures, and modern digital interfaces. Passionate about crafting high-performance backends and intuitive user experiences.",
-  bioAr: "طالب علوم حاسب ومطور نظم وبرمجيات ومصمم واجهات بخبرة عملية في تصميم وتطوير معمارية النظم المتقدمة والواجهات الرقمية التفاعلية الحديثة.",
+  name: "Amr Atef Imam Mahmoud",
+  nameAr: "عمرو عاطف إمام محمود",
+  shortName: "Amr Atef",
+  shortNameAr: "عمرو عاطف",
+  brandName: "Amr Atef",
+  brandNameAr: "عمرو عاطف",
+  title: ".NET Backend Developer",
+  titleAr: "مطور نظم خلفية .NET",
+  bio: "Computer Science student and .NET Backend Developer with hands-on experience designing and developing scalable backend systems using C# and ASP.NET Core. Experienced in building RESTful APIs, implementing Clean Architecture and CQRS patterns, designing relational databases, and developing secure authentication and authorization mechanisms.\n\nPractical experience in multi-tenant SaaS applications, JWT authentication, OAuth 2.0, refresh token rotation, real-time communication using SignalR, and background processing. Collaborates with cross-functional teams, owning backend development and API integration with mobile and frontend applications. Interested in software architecture, backend security, database optimization, and maintainable software systems.",
+  bioAr: "طالب علوم حاسب ومطور نظم خلفية .NET بخبرة عملية في تصميم وتطوير أنظمة خلفية قابلة للتوسع باستخدام C# و ASP.NET Core. خبرة في بناء واجهات RESTful APIs، وتطبيق معمارية Clean Architecture ونمط CQRS، وتصميم قواعد البيانات العلائقية، وتطوير آليات مصادقة وتفويض آمنة.\n\nخبرة تطبيقية في منصات SaaS السحابية متعددة المستأجرين، ومصادقة JWT، وOAuth 2.0، وتدوير Refresh Tokens، والاتصال اللحظي عبر SignalR، ومعالجة المهام الخلفية. أعمل بتعاون وثيق مع فرق العمل المتكاملة لقيادة التطوير الخلفي وربط الخدمات مع تطبيقات الموبايل والواجهات الأمامية. شغوف بهندسة البرمجيات، أمان النظم الخلفية، تحسين قواعد البيانات، وبناء أنظمة برمجية عالية الاستقرار.",
   email: "amratefkandel@gmail.com",
   phone: "@amratefkandel",
   location: "Ismailia, Egypt",
@@ -18,39 +18,39 @@ export const initialProfile: ProfileInfo = {
   github: "https://github.com/amratef2005",
   linkedin: "https://linkedin.com/in/amr-atef-kandel",
   whatsapp: "https://wa.me/amratefkandel",
-  resumeUrl: "/Amr_Atef_Resume.pdf",
+  resumeUrl: "/Amr_Kandel_Resume_ATS.pdf",
   topAvatarUrl: "/my.jpg",
   heroAvatarUrl: "/drama_hero.png",
   aboutAvatarUrl: "/about_avatar.png",
   autoExtractColors: false,
-  yearsOfExperience: 3,
-  completedProjects: 15,
+  yearsOfExperience: 2,
+  completedProjects: 10,
   adminUsername: "amratefkandel",
   adminPassword: "KandelAmr###14",
   adminPin: "1414",
 
   // Custom Editable Headings & Names Across Sections
-  heroGreeting: "Hello,",
+  heroGreeting: "Hello, I am",
   heroGreetingAr: "مرحباً، أنا",
-  aboutSubtitle: "Designing Is My Passion",
-  aboutSubtitleAr: "التصميم هو شغفي وهويتي",
-  aboutHeading: "Transforming Complex Ideas Into Delightful Experiences",
-  aboutHeadingAr: "تحويل الأفكار المعقدة إلى تجارب بصرية سلسة",
-  experienceHeading: "Milestones Shaping Digital Products",
-  experienceHeadingAr: "محطات تصنع الفارق في المنتجات الرقمية",
-  projectsHeading: "Crafted Projects Driven by User Empathy & Growth",
-  projectsHeadingAr: "تصاميم استثنائية تركز على المستخدم والنمو",
-  certificatesHeading: "Certified Excellence in Design & Product Architecture",
-  certificatesHeadingAr: "اعتمادات موثوقة في التصميم وهندسة البرمجيات",
-  skillsHeading: "Technical Mastery Measured in Bold Percentages",
-  skillsHeadingAr: "أدوات احترافية بنسب إتقان عالية ودقيقة",
+  aboutSubtitle: "Backend Architecture & Engineering",
+  aboutSubtitleAr: "هندسة ومعمارية النظم الخلفية",
+  aboutHeading: "Building Resilient, Scalable & High-Throughput Systems",
+  aboutHeadingAr: "بناء أنظمة خلفية فائقة الأداء وقابلة للتوسع بأعلى معايير الأمان",
+  experienceHeading: "Production Backend Experience",
+  experienceHeadingAr: "الخبرات العملية في تطوير النظم الخلفية",
+  projectsHeading: "Key Technical Architecture Projects",
+  projectsHeadingAr: "المشاريع التقنية والمعمارية البرمجية",
+  certificatesHeading: "Credentials & Accreditations",
+  certificatesHeadingAr: "الشهادات والاعتمادات",
+  skillsHeading: "Backend Technical Competencies",
+  skillsHeadingAr: "القدرات والمهارات التقنية في النظم الخلفية",
   contactHeading: "Have Any Project? Let's Chat",
-  contactHeadingAr: "لديك مشروع جديد؟ دعنا نتحدث الآن",
+  contactHeadingAr: "لديك مشروع أو استشارة هندسية؟ دعنا نتحدث",
 
   // 1. Work Availability & Presence Status
   availabilityStatus: "available",
-  availabilityNoteAr: "جاهز للفرص الهندسية والمشاريع المبتكرة",
-  availabilityNoteEn: "Available for High-Impact Backend Roles",
+  availabilityNoteAr: "متاح للمشاريع والفرص الهندسية",
+  availabilityNoteEn: "Available for Backend Roles & Contracts",
   showAvailabilityBadge: true,
 
   // 2. WhatsApp Live Response Status
@@ -63,7 +63,7 @@ export const initialProfile: ProfileInfo = {
   university: "Suez Canal University – Faculty of Science",
   universityAr: "جامعة قناة السويس – كلية العلوم",
   degree: "Bachelor of Science (B.Sc.) in Mathematics – Computer Science Program | Fourth Year Student (In Progress)",
-  degreeAr: "بكالوريوس العلوم في الرياضيات وعلوم الحاسب | طالب بالفرقة الرابعة",
+  degreeAr: "بكالوريوس العلوم في الرياضيات وعلوم الحاسب | طالب بالفرقة الرابعة (قيد الدراسة)",
   languages: "Arabic: Native | English: Intermediate",
   languagesAr: "العربية: لغة أم | الإنجليزية: مستوى متوسط",
 
@@ -85,23 +85,47 @@ export const initialProfile: ProfileInfo = {
 export const initialExperiences: Experience[] = [
   {
     id: "mot7km-saas",
-    role: ".NET Backend Developer",
-    roleAr: "مطور نظم خلفية .NET",
-    company: "MOT7KM – Multi-Tenant SaaS ERP & Digital Menu Platform",
-    companyAr: "منصة مُتحكِّم (MOT7KM) لإدارة المطاعم والمنيو السحابي",
+    role: "Backend Developer",
+    roleAr: "مطور نظم خلفية",
+    company: "Multi-Tenant SaaS ERP & Digital Menu Platform",
+    companyAr: "منصة إدارة المطاعم والمنيو السحابي متعددة المستأجرين (SaaS)",
     period: "2024 – Present",
     periodAr: "2024 – حتى الآن",
     location: "Remote • Egypt",
     locationAr: "عن بُعد • مصر",
-    type: "Production SaaS • High Throughput",
+    type: "Production SaaS • High Concurrency",
     typeAr: "نظام SaaS إنتاجي حي",
     badge: "Multi-Tenant SaaS • Backend Developer",
     badgeAr: "نظام SaaS متعدد المستأجرين • مطور نظم خلفية",
-    summary: "Architected and developed the complete backend for a high-performance multi-tenant SaaS platform empowering restaurants and cafés to manage digital presence, menus, orders, branch analytics, and real-time operations.",
-    summaryAr: "تصميم وتطوير النظام الخلفي الكامل لمنصة SaaS تجارية متعددة المستأجرين فائقة الأداء، تمكّن المطاعم والكافيهات من إدارة حضورهم الرقمي، القوائم، الفروع، والتحليلات اللحظية.",
-    architecture: ["Clean Architecture", "Modular Monolith", "Multi-Tenancy & Tenant Isolation", "Refresh Token Rotation (SHA-256)", "Background Batch Processing", "SignalR WebSockets"],
-    architectureAr: ["معمارية نظيفة (Clean Architecture)", "نواة موديولار موحدة (Modular Monolith)", "تعدد المستأجرين وعزل البيانات (Multi-Tenancy)", "تدوير التوكنات وتشفير SHA-256", "معالجة الدفعات في الخلفية", "اتصال لحظي SignalR"],
-    technologies: ["C#", ".NET 10", "ASP.NET Core", "PostgreSQL", "Entity Framework Core", "Supabase", "SignalR", "GitHub Actions", "IIS"],
+    summary: "Developed the backend of a multi-tenant SaaS platform for restaurants, cafés, and businesses to manage their digital presence and operations.",
+    summaryAr: "تطوير النظام الخلفي لمنصة SaaS تجارية متعددة المستأجرين تمكّن المطاعم، الكافيهات، والأنشطة التجارية من إدارة حضورهم الرقمي وعملياتهم التشغيلية بكفاءة عالية.",
+    architecture: [
+      "Clean Architecture",
+      "Modular Monolith",
+      "Multi-Tenancy & Tenant Isolation",
+      "Refresh Token Rotation (SHA-256)",
+      "Background Batch Processing",
+      "SignalR WebSockets"
+    ],
+    architectureAr: [
+      "معمارية نظيفة (Clean Architecture)",
+      "نواة موديولار موحدة (Modular Monolith)",
+      "تعدد المستأجرين وعزل البيانات (Multi-Tenancy)",
+      "تدوير التوكنات وتشفير SHA-256",
+      "معالجة الدفعات في الخلفية",
+      "اتصال لحظي SignalR"
+    ],
+    technologies: [
+      "C#",
+      ".NET 10",
+      "ASP.NET Core",
+      "PostgreSQL",
+      "Entity Framework Core",
+      "Supabase",
+      "SignalR",
+      "GitHub Actions",
+      "IIS"
+    ],
     metrics: [
       { label: "Architecture", labelAr: "المعمارية الأساسية", value: "Modular Monolith", valueAr: "نواة موديولار" },
       { label: "Security & Tokens", labelAr: "الأمان والجلسات", value: "SHA-256 Rotation", valueAr: "تدوير التوكنات بـ SHA-256" },
@@ -109,9 +133,9 @@ export const initialExperiences: Experience[] = [
       { label: "Real-time & Batch", labelAr: "الاتصال اللحظي والدفعات", value: "SignalR + Batch Queue", valueAr: "SignalR + معالجة دفعات" }
     ],
     responsibilities: [
-      "Designed and implemented Clean Architecture with a Modular Monolith approach for high maintainability.",
+      "Designed and implemented Clean Architecture with a Modular Monolith approach.",
       "Developed RESTful APIs for business profiles, branches, menus, categories, products, and promotional campaigns.",
-      "Implemented multi-tenancy and tenant isolation to ensure secure separation of business data and prevent IDOR vulnerabilities.",
+      "Implemented multi-tenancy and tenant isolation to ensure secure separation of business data.",
       "Developed authentication mechanisms supporting JWT, OAuth, and phone OTP.",
       "Implemented secure session management using refresh token rotation, sliding expiration, and token reuse detection.",
       "Applied SHA-256 hashing for refresh token storage.",
@@ -121,12 +145,12 @@ export const initialExperiences: Experience[] = [
       "Configured automated deployment workflows using GitHub Actions and IIS."
     ],
     responsibilitiesAr: [
-      "تصميم وتطبيق معمارية Clean Architecture بنمط Modular Monolith لضمان قابلية التوسع وسهولة الصيانة.",
+      "تصميم وتطبيق معمارية Clean Architecture بنمط Modular Monolith لضمان قابلية التوسع والصيانة.",
       "تطوير واجهات برمجة تطبيقات RESTful APIs لملفات الأنشطة التجارية، الفروع، قوائم الطعام، التصنيفات، المنتجات، وحملات العروض الترويجية.",
       "تطبيق نظام تعدد المستأجرين (Multi-Tenancy) وعزل البيانات لضمان فصل آمن ومحكم لبيانات كل نشاط تجاري ومنع ثغرات IDOR.",
       "تطوير آليات مصادقة هجينة تدعم JWT، و OAuth، والتحقق عبر رقم الهاتف (Phone OTP).",
       "تطبيق إدارة جلسات آمنة باستخدام تدوير الـ Refresh Tokens، وانتهاء الصلاحية الانزلاقي (Sliding Expiration)، وكشف إعادة الاستخدام.",
-      "استخدام خوارزمية SHA-256 لتشفير وحفظ الـ Refresh Tokens في قاعدة البيانات.",
+      "استخدام خوارزمية SHA-256 لتشفير وحفظ الـ Refresh Tokens في قاعدة البيانات بأعلى معايير الأمان.",
       "تطوير واجهات لوحة التحكم الإدارية (Dashboard APIs) لتقديم تحليلات الأعمال وإحصائيات الأداء التفصيلية.",
       "دمج مكتبة SignalR لتحديثات لوحة التحكم والإشعارات في الوقت الفعلي (Real-time Updates).",
       "تنفيذ معالجة دفعات خلفية (Background Batch Processing) لتتبع مشاهدات المنتجات وتحسين استهلاك موارد قاعدة البيانات.",
@@ -139,9 +163,9 @@ export const initialExperiences: Experience[] = [
 
 export const initialProjects: Project[] = [
   {
-    id: "studysync-lms",
+    id: "academic-management-system",
     title: "Academic Management System",
-    titleAr: "نظام الإدارة الأكاديمية (StudySync)",
+    titleAr: "نظام الإدارة الأكاديمية",
     tagline: "Academic Management System with Clean Architecture, CQRS & Automated Testing",
     taglineAr: "نظام إدارة أكاديمية متكامل بمعمارية Clean Architecture ونمط CQRS واختبارات مؤتمتة",
     description: "Developed the backend of an academic management system to organize educational operations through a scalable and maintainable architecture. Applied Clean Architecture to separate Domain, Application, Infrastructure, and Presentation layers, implemented CQRS to organize application commands and queries, developed authentication and session management, course management, structured error handling, supported separate portals for different user roles, and achieved 49 passing automated tests with a 100% pass rate.",
@@ -180,88 +204,105 @@ export const initialProjects: Project[] = [
   }
 ];
 
-export const initialCertificates: Certificate[] = [
-  {
-    id: "iti-diploma",
-    title: "Information Technology Institute (ITI)",
-    titleAr: "دبلومة معهد تكنولوجيا المعلومات (ITI) - وزارة الاتصالات",
-    issuer: "Ministry of Communications and Information Technology (MCIT)",
-    issuerAr: "معهد تكنولوجيا المعلومات (ITI)",
-    date: "2024",
-    fileUrl: "/iti.pdf",
-    previewImage: "/certificate.png",
-    badge: "Professional Training",
-    badgeAr: "تدريب مهني معتمد",
-    description: "Intensive professional training program covering modern software engineering, advanced C#, ASP.NET Core, database administration, software architecture, and agile enterprise development.",
-    descriptionAr: "تدريب مكثف على هندسة البرمجيات الاحترافية، تقنيات C# المتقدمة، معمارية الأنظمة، وتطوير الأنظمة المؤسسية وفق أحدث معايير السوق العالمية."
-  },
-  {
-    id: "csharp-certification",
-    title: "Advanced C# & .NET Engineering Certificate",
-    titleAr: "شهادة هندسة وتطوير C# و .NET المتقدمة",
-    issuer: "Accredited Technical Institute",
-    issuerAr: "جهة تقنية معتمدة",
-    date: "2024",
-    fileUrl: "/cshar.pdf",
-    previewImage: "/certificate.png",
-    badge: "Official Certification",
-    badgeAr: "شهادة هندسية معتمدة",
-    description: "Specialized validation in advanced C# language features, asynchronous programming, LINQ, memory management, and EF Core performance optimization.",
-    descriptionAr: "شهادة تخصصية في إتقان لغة C# الحديثة، البرمجة غير المتزامنة (Async/Await)، إدارة الذاكرة، والتحسين الفائق لاستعلامات EF Core."
-  }
-];
+// Empty list since no certificates were included in the provided CV data
+export const initialCertificates: Certificate[] = [];
 
 export const initialSkillCategories: SkillCategory[] = [
   {
-    name: "Backend Development & Languages",
-    nameAr: "تطوير النظم الخلفية ولغات البرمجة",
-    icon: "Server",
+    name: "Programming Languages",
+    nameAr: "لغات البرمجة",
+    icon: "Code",
     skills: [
       { name: "C#", level: 95, tag: "Primary Language", tagAr: "لغة التطوير الأساسية" },
-      { name: "SQL", level: 92, tag: "Relational Queries", tagAr: "استعلامات علائقية" },
-      { name: ".NET 10 / ASP.NET Core Web API", level: 95, tag: "RESTful APIs", tagAr: "واجهات برمجية REST" },
+      { name: "SQL", level: 92, tag: "Relational Queries", tagAr: "استعلامات علائقية" }
+    ]
+  },
+  {
+    name: "Backend Development",
+    nameAr: "تطوير النظم الخلفية",
+    icon: "Server",
+    skills: [
+      { name: ".NET 10", level: 95, tag: "Core Framework", tagAr: "أحدث إصدار إطار العمل" },
+      { name: "ASP.NET Core Web API", level: 95, tag: "RESTful Services", tagAr: "واجهات برمجية REST" },
+      { name: "RESTful API Development", level: 94, tag: "API Design", tagAr: "تصميم واجهات برمجية" },
       { name: "Entity Framework Core", level: 92, tag: "ORM & Optimization", tagAr: "إدارة البيانات و ORM" },
-      { name: "Dependency Injection & Middleware", level: 90, tag: "Core Architecture", tagAr: "حقن التبعيات والبرمجيات الوسيطة" },
+      { name: "Dependency Injection", level: 92, tag: "IoC & Inversion", tagAr: "حقن التبعيات" },
+      { name: "Middleware", level: 90, tag: "Request Pipeline", tagAr: "معالجة الطلبات" },
       { name: "Background Services", level: 88, tag: "Async Workers", tagAr: "خدمات المعالجة الخلفية" }
     ]
   },
   {
-    name: "Architecture & System Design",
+    name: "Architecture & Design",
     nameAr: "المعمارية وتصميم الأنظمة",
     icon: "Cpu",
     skills: [
       { name: "Clean Architecture", level: 95, tag: "Domain Separation", tagAr: "معمارية نظيفة وفصل الطبقات" },
       { name: "Modular Monolith", level: 90, tag: "Modular Design", tagAr: "نواة موديولار موحدة" },
-      { name: "CQRS Pattern", level: 92, tag: "Commands & Queries", tagAr: "فصل الأوامر والاستعلامات" },
-      { name: "DTOs & Manual Mapping", level: 94, tag: "Data Transformation", tagAr: "تحويل ونقل البيانات" },
+      { name: "CQRS", level: 92, tag: "Commands & Queries", tagAr: "فصل الأوامر والاستعلامات" },
+      { name: "DTOs", level: 94, tag: "Data Transfer", tagAr: "كائنات نقل البيانات" },
+      { name: "Manual Mapping", level: 92, tag: "High Performance", tagAr: "تحويل يدوي عالي الأداء" },
       { name: "Separation of Concerns", level: 95, tag: "Best Practices", tagAr: "فصل المسؤوليات والاهتمامات" }
     ]
   },
   {
-    name: "Databases, ORM & Real-Time",
-    nameAr: "قواعد البيانات والاتصال اللحظي",
+    name: "Databases & ORM",
+    nameAr: "قواعد البيانات وإدارة الـ ORM",
     icon: "Database",
     skills: [
       { name: "Microsoft SQL Server", level: 90, tag: "Enterprise DB", tagAr: "قواعد بيانات مؤسسية" },
-      { name: "PostgreSQL & Supabase", level: 92, tag: "Relational Cloud DB", tagAr: "قواعد بيانات سحابية" },
-      { name: "Database Migrations & Relational Design", level: 90, tag: "Schema Design", tagAr: "تصميم المخططات وترقية البيانات" },
-      { name: "SignalR (Real-Time Communication)", level: 88, tag: "WebSockets", tagAr: "اتصال لحظي وتحديثات فورية" },
-      { name: "Background & Batch Processing", level: 88, tag: "Performance Tuning", tagAr: "معالجة دفعات في الخلفية" },
-      { name: "Asynchronous Programming", level: 94, tag: "High Concurrency", tagAr: "برمجة غير متزامنة عالية الأداء" }
+      { name: "PostgreSQL", level: 92, tag: "Relational DB", tagAr: "قواعد بيانات علائقية" },
+      { name: "Supabase", level: 90, tag: "Cloud DB", tagAr: "قواعد بيانات سحابية" },
+      { name: "Entity Framework Core", level: 92, tag: "ORM", tagAr: "محرك ORM" },
+      { name: "Database Migrations", level: 90, tag: "Schema Migration", tagAr: "ترقية وهجرة المخططات" },
+      { name: "Relational Database Design", level: 92, tag: "Normalization", tagAr: "تصميم المخططات العلائقية" }
     ]
   },
   {
-    name: "Security, Validation & DevOps",
-    nameAr: "الأمان، التحقق وأدوات النشر",
+    name: "Authentication & Security",
+    nameAr: "المصادقة وأمن الأنظمة",
+    icon: "Shield",
+    skills: [
+      { name: "JWT Authentication", level: 94, tag: "Token Security", tagAr: "توكنات المصادقة" },
+      { name: "OAuth 2.0", level: 90, tag: "Delegated Auth", tagAr: "المصادقة المفوضة" },
+      { name: "Phone OTP Authentication", level: 92, tag: "Two-Factor Auth", tagAr: "تحقق رمز الهاتف" },
+      { name: "Refresh Token Rotation", level: 94, tag: "Session Security", tagAr: "تدوير التوكنات الآمن" },
+      { name: "SHA-256 Hashing", level: 92, tag: "Cryptography", tagAr: "تشفير التجزئة" },
+      { name: "Multi-Tenant Authorization", level: 92, tag: "Tenant Isolation", tagAr: "عزل صلاحيات المستأجرين" },
+      { name: "Ownership Authorization", level: 90, tag: "Access Control", tagAr: "التحكم في ملكية الموارد" },
+      { name: "IDOR Prevention", level: 94, tag: "Security Hardening", tagAr: "حماية ضد ثغرات IDOR" }
+    ]
+  },
+  {
+    name: "Real-Time & Performance",
+    nameAr: "الاتصال اللحظي وتحسين الأداء",
+    icon: "Zap",
+    skills: [
+      { name: "SignalR", level: 90, tag: "WebSockets", tagAr: "اتصال لحظي وتحديثات فورية" },
+      { name: "Background Processing", level: 90, tag: "Async Tasks", tagAr: "معالجة المهام الخلفية" },
+      { name: "Batch Processing", level: 88, tag: "Batch Optimization", tagAr: "معالجة الدفعات المجمعة" },
+      { name: "Asynchronous Programming", level: 95, tag: "High Concurrency", tagAr: "برمجة غير متزامنة فائقة السرعة" }
+    ]
+  },
+  {
+    name: "Validation & Documentation",
+    nameAr: "التحقق والتوثيق البرمجي",
+    icon: "FileCheck",
+    skills: [
+      { name: "FluentValidation", level: 94, tag: "Clean Validation", tagAr: "تحقق برمجي متقن" },
+      { name: "Swagger / OpenAPI", level: 92, tag: "Interactive Docs", tagAr: "توثيق تفاعلي للـ APIs" },
+      { name: "Postman", level: 92, tag: "API Testing", tagAr: "اختبار وتوثيق الواجهات" }
+    ]
+  },
+  {
+    name: "DevOps & Tools",
+    nameAr: "أدوات التطوير والأتمتة",
     icon: "Cloud",
     skills: [
-      { name: "JWT & OAuth 2.0 Authentication", level: 94, tag: "Auth Standards", tagAr: "معايير المصادقة الحديثة" },
-      { name: "Phone OTP & Refresh Token Rotation", level: 92, tag: "Session Security", tagAr: "تدوير التوكنات وأمان الجلسات" },
-      { name: "SHA-256 Hashing & IDOR Prevention", level: 92, tag: "Data Protection", tagAr: "تشفير وحماية ضد ثغرات IDOR" },
-      { name: "Multi-Tenant & Ownership Authorization", level: 90, tag: "Tenant Isolation", tagAr: "عزل المستأجرين والصلاحيات" },
-      { name: "FluentValidation & Swagger / OpenAPI", level: 92, tag: "Docs & Validation", tagAr: "توثيق الـ API والتحقق" },
-      { name: "Git, GitHub & GitHub Actions (CI/CD)", level: 88, tag: "Automation", tagAr: "أتمتة خطوط النشر CI/CD" },
-      { name: "IIS Deployment", level: 86, tag: "Hosting & Servers", tagAr: "نشر وإدارة خوادم IIS" }
+      { name: "Git", level: 92, tag: "Version Control", tagAr: "إدارة الإصدارات" },
+      { name: "GitHub", level: 92, tag: "Collaboration", tagAr: "التعاون البرمجي" },
+      { name: "GitHub Actions", level: 90, tag: "CI/CD Automation", tagAr: "أتمتة خطوط البناء والنشر" },
+      { name: "CI/CD", level: 88, tag: "Continuous Delivery", tagAr: "التسليم والنشر المستمر" },
+      { name: "IIS Deployment", level: 86, tag: "Windows Server Hosting", tagAr: "نشر وإدارة خوادم IIS" }
     ]
   }
 ];

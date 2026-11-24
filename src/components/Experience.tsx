@@ -16,7 +16,7 @@ export const Experience: React.FC = () => {
   const { experiences, profile, lang } = usePortfolio();
 
   return (
-    <section id="experience" className="py-20 sm:py-28 relative overflow-hidden">
+    <section id="experience" className="py-12 sm:py-20 lg:py-28 relative overflow-hidden">
       {/* Background Subtle Orange Glow */}
       <div 
         className="absolute top-1/3 -right-20 w-[450px] h-[450px] rounded-full blur-[150px] pointer-events-none"
@@ -27,7 +27,7 @@ export const Experience: React.FC = () => {
         
         {/* Section Header + Large Experience Number Highlight */}
         <AssembleItem direction="top">
-          <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-16 gap-8">
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-8 sm:mb-12 lg:mb-16 gap-6 sm:gap-8">
             <div className="text-start max-w-2xl">
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#121215] border border-orange-500/20 text-[#FF7A00] text-xs font-mono mb-3">
                 <Briefcase className="w-3.5 h-3.5 text-[#FF5722]" />
@@ -46,22 +46,22 @@ export const Experience: React.FC = () => {
               </h2>
               <p className="text-slate-400 mt-4 text-sm sm:text-base leading-relaxed">
                 {lang === 'ar'
-                  ? 'خط زمني لتطوري المهني ومساهماتي في قيادة وتصميم واجهات وتجارب استخدام للعديد من المنصات والتطبيقات.'
-                  : 'A vertical timeline of my roles and contributions designing intuitive user flows and high-impact digital experiences.'}
+                  ? 'مسيرة مهنية في تصميم وبناء النظم الخلفية، المعماريات البرمجية، وتطوير منصات SaaS وقواعد البيانات.'
+                  : 'Professional track record architecting and developing backend systems, scalable SaaS platforms, and relational databases.'}
               </p>
             </div>
 
             {/* Prominent Orange Number for Years of Experience */}
             <div className="flex items-center gap-5 p-5 sm:p-6 rounded-3xl bg-[#0e0e12] border border-orange-500/30 shadow-[0_0_35px_rgba(255,87,34,0.15)] self-start lg:self-auto shrink-0">
               <span className="text-5xl sm:text-6xl lg:text-7xl font-black text-[#FF5722] drop-shadow-[0_0_25px_rgba(255,87,34,0.5)] font-mono">
-                +{profile.yearsOfExperience || 3}
+                +{profile.yearsOfExperience || 2}
               </span>
               <div className="flex flex-col">
                 <span className="text-white font-bold text-base sm:text-lg leading-tight">
                   {lang === 'ar' ? 'سنوات من الخبرة' : 'Years of Experience'}
                 </span>
                 <span className="text-xs sm:text-sm text-slate-400 mt-1 max-w-[180px]">
-                  {lang === 'ar' ? 'في تصميم الـ UI/UX وتطوير أنظمة التصميم' : 'in UI/UX Design & Design Systems'}
+                  {lang === 'ar' ? 'في تطوير النظم الخلفية ومعمارية البرمجيات' : 'in .NET Backend Engineering & Architecture'}
                 </span>
               </div>
             </div>
@@ -97,7 +97,7 @@ export const Experience: React.FC = () => {
                   {/* Card Content Column */}
                   <div className="w-full sm:w-1/2 ps-12 sm:ps-0 sm:px-8">
                     <AssembleItem direction={isEven ? 'left' : 'right'} distance={60}>
-                      <div className="p-6 sm:p-8 rounded-3xl bg-[#0e0e12]/90 border border-white/10 hover:border-orange-500/40 transition-all duration-300 shadow-[0_10px_30px_rgba(0,0,0,0.6)] group relative overflow-hidden">
+                      <div className="p-4 sm:p-6 lg:p-8 rounded-3xl bg-[#0e0e12]/90 border border-white/10 hover:border-orange-500/40 transition-all duration-300 shadow-[0_10px_30px_rgba(0,0,0,0.6)] group relative overflow-hidden">
                         
                         {/* Hover Ambient Corner Glow */}
                         <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 rounded-full blur-2xl group-hover:bg-orange-500/20 transition-all pointer-events-none" />

@@ -115,7 +115,7 @@ export const CVDocument: React.FC<CVDocumentProps> = ({
           suppressContentEditableWarning
           className="text-2xl sm:text-3xl font-black text-slate-950 uppercase tracking-wider mb-1"
         >
-          {profile.name || 'Amr Atef Imam Kandel'}
+          {profile.name || 'Amr Atef Imam Mahmoud'}
         </h1>
 
         <p
@@ -128,7 +128,7 @@ export const CVDocument: React.FC<CVDocumentProps> = ({
         </p>
 
         <p className="text-[11.5px] font-mono text-slate-600 mb-2 font-medium">
-          C# | ASP.NET Core | PostgreSQL | SQL Server | Clean Architecture
+          C# | ASP.NET Core | SQL Server | PostgreSQL
         </p>
 
         {/* ATS Standard Single-Line Contact Information */}
@@ -137,7 +137,7 @@ export const CVDocument: React.FC<CVDocumentProps> = ({
           <span>•</span>
           <a href={`mailto:${profile.email}`} className="text-slate-900 hover:underline">{profile.email || 'amratefkandel@gmail.com'}</a>
           <span>•</span>
-          <span>{profile.phone || '+20 10 9999 9999'}</span>
+          <span>WhatsApp: @amratefkandel</span>
           {profile.linkedin && (
             <>
               <span>•</span>
@@ -348,6 +348,19 @@ export const CVDocument: React.FC<CVDocumentProps> = ({
           </div>
         </section>
       )}
+
+      {/* ==================== TEAMWORK & COLLABORATION ==================== */}
+      <section className="mb-3.5 avoid-break">
+        <h2 className="text-xs font-bold font-mono tracking-widest uppercase text-slate-950 border-b border-slate-300 pb-0.5 mb-1.5">
+          Teamwork & Collaboration
+        </h2>
+        <ul className="list-disc list-outside text-[11px] text-slate-800 space-y-0.5 mt-1 pl-4 leading-relaxed">
+          <li contentEditable={options.isEditable} suppressContentEditableWarning>Worked in development teams of Backend, Mobile, and Frontend developers.</li>
+          <li contentEditable={options.isEditable} suppressContentEditableWarning>Took responsibility for backend architecture, API development, and database integration.</li>
+          <li contentEditable={options.isEditable} suppressContentEditableWarning>Collaborated with Mobile and Frontend developers to integrate backend services.</li>
+          <li contentEditable={options.isEditable} suppressContentEditableWarning>Participated in technical discussions and implementation decisions.</li>
+        </ul>
+      </section>
 
       {/* ==================== 6. CERTIFICATES & ACCREDITATIONS ==================== */}
       {certificates && certificates.length > 0 && (

@@ -10,7 +10,10 @@ import {
   ExternalLink, 
   Eye, 
   Palette,
-  Sparkles
+  Sparkles,
+  CheckCircle2,
+  ShieldCheck,
+  Cpu
 } from 'lucide-react';
 
 export const Projects: React.FC = () => {
@@ -22,13 +25,10 @@ export const Projects: React.FC = () => {
   const categories = useMemo(() => {
     const rawCategories = Array.from(new Set(projects.map(p => p.category))).filter(Boolean);
     const catMap: Record<string, { labelAr: string; labelEn: string }> = {
-      'UI/UX Design': { labelAr: 'تصميم واجهات وتجربة مستخدم', labelEn: 'UI/UX Design' },
-      'Mobile Apps': { labelAr: 'تطبيقات الهاتف', labelEn: 'Mobile Apps' },
-      'Web & SaaS': { labelAr: 'مواقع ومنصات سحابية', labelEn: 'Web & SaaS' },
-      'Design Systems': { labelAr: 'أنظمة التصميم', labelEn: 'Design Systems' },
-      'Full-Stack': { labelAr: 'تطوير وتصميم', labelEn: 'Full-Stack' },
-      '.NET & Backend': { labelAr: 'أنظمة خلفية', labelEn: 'Backend' },
-      'Cloud & SaaS': { labelAr: 'سحابي و SaaS', labelEn: 'Cloud & SaaS' },
+      '.NET & Backend': { labelAr: 'أنظمة خلفية .NET', labelEn: '.NET & Backend' },
+      'Clean Architecture': { labelAr: 'معمارية نظيفة', labelEn: 'Clean Architecture' },
+      'Web & SaaS': { labelAr: 'منصات سحابية', labelEn: 'Web & SaaS' },
+      'Backend': { labelAr: 'أنظمة خلفية', labelEn: 'Backend' },
     };
 
     const list = [{ id: 'All', labelAr: 'الكل', labelEn: 'All' }];
@@ -51,7 +51,7 @@ export const Projects: React.FC = () => {
     : projects.filter(p => p.category === filter);
 
   return (
-    <section id="projects" className="py-20 sm:py-28 relative overflow-hidden">
+    <section id="projects" className="py-12 sm:py-20 lg:py-28 relative overflow-hidden">
       {/* Background Soft Orange Glow */}
       <div 
         className="absolute top-1/2 left-0 w-[450px] h-[450px] rounded-full blur-[140px] pointer-events-none"
@@ -62,33 +62,33 @@ export const Projects: React.FC = () => {
         
         {/* Section Title & Filter Tabs */}
         <AssembleItem direction="top">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 sm:mb-16 gap-6">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 sm:mb-12 lg:mb-16 gap-6">
             <div className="text-start">
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#121215] border border-orange-500/20 text-[#FF7A00] text-xs font-mono mb-3">
-                <Palette className="w-3.5 h-3.5 text-[#FF5722]" />
-                <span>{lang === 'ar' ? 'معرض الأعمال ودراسات الحالة' : 'Selected Works & Case Studies'}</span>
+                <Layers className="w-3.5 h-3.5 text-[#FF5722]" />
+                <span>{lang === 'ar' ? 'المشاريع والمعمارية التقنية' : 'Architecture & Backend Projects'}</span>
               </div>
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-[1.2]">
                 {lang === 'ar' ? (
                   <>
-                    تصاميم استثنائية تركز على <span className="text-[#FF5722] drop-shadow-[0_0_20px_rgba(255,87,34,0.4)]">المستخدم والنمو</span>
+                    مشاريع برمجية بمعمارية نظيفة <span className="text-[#FF5722] drop-shadow-[0_0_20px_rgba(255,87,34,0.4)]">وفصل محكم للطبقات</span>
                   </>
                 ) : (
                   <>
-                    Crafted Projects Driven by <span className="text-[#FF5722] drop-shadow-[0_0_20px_rgba(255,87,34,0.4)]">User Empathy & Growth</span>
+                    Architectural Systems Driven by <span className="text-[#FF5722] drop-shadow-[0_0_20px_rgba(255,87,34,0.4)]">Clean Code & Reliability</span>
                   </>
                 )}
               </h2>
             </div>
 
-            {/* Filter Pills */}
+            {/* Filter Pills with Horizontal Scroll on Mobile */}
             {categories.length > 1 && (
               <div className="flex items-center gap-1.5 bg-[#0e0e12] p-1.5 rounded-2xl border border-white/10 self-start md:self-auto overflow-x-auto max-w-full shrink-0 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
                 {categories.map((cat) => (
                   <button
                     key={cat.id}
                     onClick={() => setFilter(cat.id)}
-                    className={`px-4 py-2 rounded-xl text-xs font-mono font-semibold whitespace-nowrap transition-all shrink-0 ${
+                    className={`px-3.5 sm:px-4 py-2 rounded-xl text-xs font-mono font-semibold whitespace-nowrap transition-all shrink-0 ${
                       filter === cat.id
                         ? 'bg-gradient-to-r from-[#FF5722] to-[#FF7A00] text-white shadow-[0_0_15px_rgba(255,87,34,0.4)]'
                         : 'text-slate-400 hover:text-white hover:bg-white/5'
@@ -103,7 +103,7 @@ export const Projects: React.FC = () => {
         </AssembleItem>
 
         {/* Projects Cards Grid */}
-        <div className={filteredProjects.length === 1 ? 'max-w-4xl mx-auto' : 'grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch'}>
+        <div className={filteredProjects.length === 1 ? 'max-w-4xl mx-auto' : 'grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 items-stretch'}>
           {filteredProjects.map((project, idx) => {
             const isLeft = idx % 2 === 0;
 
@@ -114,34 +114,87 @@ export const Projects: React.FC = () => {
                 distance={100}
                 className="h-full"
               >
-                <div className="rounded-3xl bg-[#0e0e12] border border-white/10 hover:border-orange-500/40 p-6 sm:p-7 flex flex-col justify-between group overflow-hidden transition-all duration-300 shadow-[0_12px_32px_rgba(0,0,0,0.7)] hover:shadow-[0_16px_40px_rgba(255,87,34,0.15)] h-full relative">
+                <div className="rounded-3xl bg-[#0e0e12] border border-white/10 hover:border-orange-500/40 p-4 sm:p-6 lg:p-7 flex flex-col justify-between group overflow-hidden transition-all duration-300 shadow-[0_12px_32px_rgba(0,0,0,0.7)] hover:shadow-[0_16px_40px_rgba(255,87,34,0.18)] h-full relative">
                   
                   {/* Top Glowing Gradient Bar */}
                   <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#FF5722] via-[#FF7A00] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
                   <div>
-                    {/* Project Visual / Thumbnail Mockup Preview */}
-                    <div className="relative w-full h-48 sm:h-56 rounded-2xl overflow-hidden bg-[#18181f] border border-white/5 mb-6 group-hover:border-orange-500/30 transition-colors flex items-center justify-center">
+                    {/* Project Visual / Thumbnail Mockup Preview with Cinematic Lighting */}
+                    <div className="relative w-full h-56 sm:h-64 rounded-2xl overflow-hidden bg-[#101015] border border-white/10 mb-6 group-hover:border-orange-500/40 transition-all duration-500 flex items-center justify-center shadow-[0_10px_30px_rgba(0,0,0,0.8)] group-hover:shadow-[0_16px_45px_rgba(255,87,34,0.22)]">
+                      
+                      {/* Ambient Volumetric Backdrop Light */}
+                      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,87,34,0.18)_0%,rgba(255,122,0,0.06)_40%,transparent_75%)] pointer-events-none opacity-60 group-hover:opacity-100 transition-opacity duration-500" />
+                      
+                      {/* Specular Light Sheen Sweep Across Mockup */}
+                      <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none z-20" />
+                      
+                      {/* Inner Cinematic Vignette */}
+                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_40%,rgba(5,5,8,0.7)_100%)] pointer-events-none z-10" />
+
                       {project.image ? (
                         <img 
                           src={project.image} 
                           alt={project.title} 
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 filter brightness-95 group-hover:brightness-105"
                         />
                       ) : (
-                        <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-[#15151c] to-[#09090b] text-slate-500 group-hover:text-orange-400/80 transition-colors p-6 text-center">
-                          <Layers className="w-12 h-12 mb-3 text-[#FF5722]/60 group-hover:text-[#FF5722] transition-colors" />
-                          <span className="font-mono text-xs uppercase tracking-wider text-slate-400">
-                            {lang === 'ar' ? (project.category || 'دراسة حالة وتصميم تفاعلي') : (project.category || 'Case Study & Interactive Design')}
-                          </span>
+                        /* Cinematic High-Tech Architectural Mockup Frame */
+                        <div className="w-full h-full flex flex-col items-center justify-center relative p-6 z-10">
+                          {/* Glowing Schematic Frame */}
+                          <div className="w-full max-w-[270px] sm:max-w-xs p-5 rounded-2xl bg-[#08080c]/90 border border-orange-500/25 group-hover:border-orange-500/50 shadow-[0_0_35px_rgba(255,87,34,0.12),inset_0_0_20px_rgba(255,87,34,0.06)] flex flex-col items-center justify-center transition-all duration-300">
+                            
+                            {/* Glowing Central Icon with Dual Ring */}
+                            <div className="relative mb-3 flex items-center justify-center">
+                              <div className="absolute inset-0 rounded-xl bg-gradient-to-tr from-[#FF5722] to-[#FF7A00] blur-lg opacity-40 group-hover:opacity-80 transition-opacity" />
+                              <div className="w-12 h-12 rounded-xl bg-[#121218] border border-orange-500/40 flex items-center justify-center text-[#FF5722] relative z-10 shadow-lg">
+                                <Layers className="w-6 h-6 text-[#FF5722] group-hover:scale-110 transition-transform duration-300" />
+                              </div>
+                            </div>
+
+                            {/* Tech Stack Subtitle */}
+                            <span className="font-mono text-[11px] sm:text-xs font-bold text-orange-400 tracking-widest uppercase">
+                              {lang === 'ar' ? (project.category || 'نظم خلفية ومعمارية') : (project.category || '.NET & BACKEND')}
+                            </span>
+                            
+                            <span className="text-[10px] font-mono text-slate-400 mt-1.5 flex items-center gap-1.5">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+                              <span className="text-emerald-400 font-semibold">{lang === 'ar' ? 'معمارية نظيفة • 100% نجاح' : 'Clean Arch • 100% Pass'}</span>
+                            </span>
+                          </div>
                         </div>
                       )}
 
-                      {/* Floating Badge */}
-                      <div className="absolute top-3 start-3">
-                        <span className="px-3 py-1 rounded-full bg-[#050505]/85 backdrop-blur-md border border-orange-500/30 text-[#FF7A00] text-xs font-mono font-bold shadow-lg">
-                          {lang === 'ar' ? (project.badgeAr || project.badge || 'UI/UX Case Study') : (project.badge || 'UI/UX Case Study')}
-                        </span>
+                      {/* Top Badges Bar: Cleanly split start and end to avoid ANY collision on mobile */}
+                      <div className="absolute top-3 inset-x-3 flex items-center justify-between gap-2 z-30 pointer-events-none">
+                        {/* Start Badge: Architecture Tag */}
+                        <div className="max-w-[65%] truncate">
+                          <span className="inline-flex items-center gap-1 px-2.5 sm:px-3 py-1 rounded-full bg-[#050505]/90 backdrop-blur-md border border-orange-500/35 text-[#FF7A00] text-[10px] sm:text-xs font-mono font-bold shadow-lg truncate">
+                            <span className="truncate">
+                              {(() => {
+                                const raw = lang === 'ar' ? (project.badgeAr || project.badge) : project.badge;
+                                if (!raw) return 'Clean Architecture';
+                                return raw.split('•')[0].trim();
+                              })()}
+                            </span>
+                          </span>
+                        </div>
+
+                        {/* End Badge: Verified Tests or Passing Rate */}
+                        <div>
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#050505]/90 backdrop-blur-md border border-emerald-500/35 text-emerald-400 text-[10px] sm:text-xs font-mono font-bold shadow-lg shrink-0">
+                            <CheckCircle2 className="w-3 h-3 text-emerald-400 shrink-0" />
+                            <span>
+                              {(() => {
+                                const raw = lang === 'ar' ? (project.badgeAr || project.badge) : project.badge;
+                                if (raw && raw.includes('•')) {
+                                  return raw.split('•')[1].trim();
+                                }
+                                return '100% Passing';
+                              })()}
+                            </span>
+                          </span>
+                        </div>
                       </div>
                     </div>
 
