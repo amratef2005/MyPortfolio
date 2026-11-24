@@ -77,8 +77,8 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         return {
           ...initialProfile,
           ...parsed,
-          brandName: parsed.brandName || initialProfile.brandName || 'Amr Kandel',
-          brandNameAr: parsed.brandNameAr || initialProfile.brandNameAr || 'عمرو قنديل',
+          brandName: initialProfile.brandName || 'Amr Atef',
+          brandNameAr: initialProfile.brandNameAr || 'عمرو عاطف',
           heroAvatarUrl: parsed.heroAvatarUrl || initialProfile.heroAvatarUrl || '/drama_hero.png',
           aboutAvatarUrl: parsed.aboutAvatarUrl || initialProfile.aboutAvatarUrl || '/about_avatar.png',
           autoExtractColors: false
@@ -209,7 +209,12 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         if (!data) return;
         if (data.profile) {
           setProfile(prev => {
-            const merged = { ...prev, ...data.profile };
+            const merged = { 
+              ...prev, 
+              ...data.profile,
+              brandName: data.profile.brandName || initialProfile.brandName || 'Amr Atef',
+              brandNameAr: data.profile.brandNameAr || initialProfile.brandNameAr || 'عمرو عاطف',
+            };
             localStorage.setItem('portfolio_profile', JSON.stringify(merged));
             return merged;
           });

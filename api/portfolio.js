@@ -27,8 +27,10 @@ export default async function handler(req, res) {
     const profile = pRow ? {
       name: pRow.name,
       nameAr: pRow.name_ar,
-      shortName: pRow.short_name || pRow.name,
-      shortNameAr: pRow.short_name_ar || pRow.name_ar,
+      shortName: pRow.short_name || pRow.name || 'Amr Atef',
+      shortNameAr: pRow.short_name_ar || pRow.name_ar || 'عمرو عاطف',
+      brandName: pRow.short_name || 'Amr Atef',
+      brandNameAr: pRow.short_name_ar || 'عمرو عاطف',
       title: pRow.title,
       titleAr: pRow.title_ar,
       bio: pRow.bio,

@@ -16,7 +16,7 @@ export const Experience: React.FC = () => {
   const { experiences, profile, lang } = usePortfolio();
 
   return (
-    <section id="experience" className="py-12 sm:py-20 lg:py-28 relative overflow-hidden">
+    <section id="experience" className="py-8 sm:py-16 lg:py-20 relative overflow-hidden">
       {/* Background Subtle Orange Glow */}
       <div 
         className="absolute top-1/3 -right-20 w-[450px] h-[450px] rounded-full blur-[150px] pointer-events-none"
@@ -36,11 +36,11 @@ export const Experience: React.FC = () => {
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-[1.2]">
                 {lang === 'ar' ? (
                   <>
-                    محطات تصنع <span className="text-[#FF5722] drop-shadow-[0_0_20px_rgba(255,87,34,0.4)]">الفارق في المنتجات الرقمية</span>
+                    خبرة عملية في بناء <span className="text-[#FF5722] drop-shadow-[0_0_20px_rgba(255,87,34,0.4)]">النظم الخلفية والمنصات السحابية</span>
                   </>
                 ) : (
                   <>
-                    Milestones Shaping <span className="text-[#FF5722] drop-shadow-[0_0_20px_rgba(255,87,34,0.4)]">Digital Products</span>
+                    Production Experience in <span className="text-[#FF5722] drop-shadow-[0_0_20px_rgba(255,87,34,0.4)]">Backend Systems & Architecture</span>
                   </>
                 )}
               </h2>

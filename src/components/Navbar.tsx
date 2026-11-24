@@ -20,7 +20,7 @@ export const Navbar: React.FC = () => {
     <nav className="fixed top-0 left-0 right-0 z-50 px-3 xs:px-4 sm:px-6 lg:px-8 py-3 pt-[max(0.75rem,env(safe-area-inset-top))] bg-[#050505]/85 backdrop-blur-2xl border-b border-orange-500/15 shadow-[0_8px_30px_rgba(0,0,0,0.85)]">
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-3 sm:gap-6">
         
-        {/* Brand / Logo: "Amr Kandel." with Burnt Orange Accent Dot */}
+        {/* Brand / Logo: "Amr Atef." with Burnt Orange Accent Dot */}
         <a 
           href="#hero" 
           onDoubleClick={(e) => {
@@ -28,10 +28,10 @@ export const Navbar: React.FC = () => {
             setIsAdminOpen(true);
           }}
           className="flex items-center gap-2 group shrink-0 select-none cursor-pointer"
-          title={lang === 'ar' ? 'Amr Kandel (نقر مزدوج لفتح لوحة التحكم)' : 'Amr Kandel (Double-click to open Admin)'}
+          title={lang === 'ar' ? 'Amr Atef (نقر مزدوج لفتح لوحة التحكم)' : 'Amr Atef (Double-click to open Admin)'}
         >
           <span className="text-xl sm:text-2xl font-black tracking-tight text-white transition-colors duration-200">
-            {lang === 'ar' ? (profile.brandNameAr || profile.brandName || 'Amr Kandel') : (profile.brandName || 'Amr Kandel')}
+            {lang === 'ar' ? (profile.brandNameAr || profile.brandName || 'عمرو عاطف') : (profile.brandName || 'Amr Atef')}
             <span className="text-[#FF5722] text-2xl sm:text-3xl font-black drop-shadow-[0_0_12px_rgba(255,87,34,0.8)]">.</span>
           </span>
         </a>

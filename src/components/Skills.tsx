@@ -109,7 +109,7 @@ export const Skills: React.FC = () => {
   ];
 
   return (
-    <section id="skills" className="py-12 sm:py-20 lg:py-28 relative overflow-hidden">
+    <section id="skills" className="py-8 sm:py-16 lg:py-20 relative overflow-hidden">
       {/* Ambient Radial Lighting */}
       <div 
         className="absolute top-1/4 -left-20 w-[450px] h-[450px] rounded-full blur-[140px] pointer-events-none"
@@ -179,7 +179,7 @@ export const Skills: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
           {displaySkills.map((skill, idx) => (
             <AssembleItem key={idx} direction="top" distance={40 + idx * 10}>
-              <div className="p-5 sm:p-6 rounded-3xl bg-[#0e0e12] border border-white/10 hover:border-orange-500/40 transition-all duration-300 group relative overflow-hidden shadow-[0_8px_24px_rgba(0,0,0,0.6)]">
+              <div className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-[#0e0e12] border border-white/10 hover:border-orange-500/40 transition-all duration-300 group relative overflow-hidden shadow-[0_8px_24px_rgba(0,0,0,0.6)]">
                 {/* Big Orange Percentage Number */}
                 <div className="flex items-baseline justify-between mb-3">
                   <span className="text-3xl sm:text-4xl font-black text-[#FF5722] font-mono group-hover:text-[#FF7A00] transition-colors drop-shadow-[0_0_15px_rgba(255,87,34,0.3)]">
@@ -222,7 +222,7 @@ export const Skills: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
             {backendDomains.map((domain, sIdx) => (
               <AssembleItem key={sIdx} direction="top" distance={50 + sIdx * 10}>
-                <div className="p-5 rounded-3xl bg-[#0e0e12] border border-white/5 hover:border-orange-500/30 transition-all duration-300 group h-full flex flex-col justify-between">
+                <div className="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-[#0e0e12] border border-white/5 hover:border-orange-500/30 transition-all duration-300 group h-full flex flex-col justify-between">
                   <div>
                     <div className="w-11 h-11 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                       {domain.icon}

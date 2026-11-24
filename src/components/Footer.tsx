@@ -11,7 +11,7 @@ export const Footer: React.FC = () => {
         {/* Branding & Rights */}
         <div className="flex flex-col items-center md:items-start gap-1">
           <p className="font-bold text-white text-base">
-            {lang === 'ar' ? (profile.nameAr || profile.shortNameAr || 'عمرو قنديل') : (profile.name || profile.shortName || 'Amr Kandel')}
+            {lang === 'ar' ? (profile.nameAr || profile.shortNameAr || 'عمرو عاطف') : (profile.name || profile.shortName || 'Amr Atef')}
             <span className="text-[#FF5722] font-black">.</span>
             <span className="text-slate-400 text-xs font-mono font-normal ms-2">
               {lang === 'ar' ? profile.titleAr : profile.title}
@@ -19,8 +19,8 @@ export const Footer: React.FC = () => {
           </p>
           <p className="text-xs text-slate-500">
             {lang === 'ar' 
-              ? `© ${new Date().getFullYear()} جميع الحقوق محفوظة. تم التصميم والتطوير بأعلى معايير UI/UX وهندسة الويب الحديثة.`
-              : `© ${new Date().getFullYear()} All rights reserved. Designed & built with modern UI/UX & web engineering standards.`}
+              ? `© ${new Date().getFullYear()} عمرو عاطف. مبني بمعمارية Clean Architecture وهندسة برمجية حديثة.`
+              : `© ${new Date().getFullYear()} Amr Atef. Engineered with Clean Architecture & Modern Software Standards.`}
           </p>
         </div>
 

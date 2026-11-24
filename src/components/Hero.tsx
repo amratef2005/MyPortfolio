@@ -19,7 +19,7 @@ export const Hero: React.FC = () => {
 
   return (
     <VoidEmergence className="overflow-hidden">
-      <section id="hero" className="relative min-h-[90vh] pt-24 sm:pt-36 pb-12 sm:pb-20 lg:pb-24 flex items-center justify-center">
+      <section id="hero" className="relative min-h-[85vh] pt-20 sm:pt-32 pb-8 sm:pb-16 lg:pb-20 flex items-center justify-center">
         
         {/* Soft Background Radial Light */}
         <div 
@@ -129,11 +129,11 @@ export const Hero: React.FC = () => {
                 </span>
               </div>
               <div>
-                <span className="block text-2xl sm:text-3xl font-black text-white">
+                <span className="block text-2xl sm:text-3xl font-black text-emerald-400">
                   100%
                 </span>
                 <span className="text-xs text-slate-400 font-medium">
-                  {lang === 'ar' ? 'رضا العملاء' : 'Client Satisfaction'}
+                  {lang === 'ar' ? 'اجتياز الاختبارات (49)' : 'Test Pass Rate (49)'}
                 </span>
               </div>
             </div>
@@ -149,7 +149,7 @@ export const Hero: React.FC = () => {
           >
             <SignatureGlowAvatar
               imageUrl={profile.heroAvatarUrl || "/drama_hero.png"}
-              alt={profile.name || "Amr Kandel"}
+              alt={profile.name || "Amr Atef"}
               variant="hero"
               scale={profile.heroImageScale ?? 1}
               offsetY={profile.heroImageOffsetY ?? 0}

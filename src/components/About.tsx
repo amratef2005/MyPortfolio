@@ -43,7 +43,7 @@ export const About: React.FC = () => {
   };
 
   return (
-    <section id="about" className="py-12 sm:py-20 lg:py-28 relative overflow-hidden">
+    <section id="about" className="py-8 sm:py-16 lg:py-20 relative overflow-hidden">
       {/* Background Subtle Orange Ambient Bloom */}
       <div 
         className="absolute top-1/2 -left-20 w-[450px] h-[450px] rounded-full blur-[140px] pointer-events-none"
@@ -60,7 +60,7 @@ export const About: React.FC = () => {
             <AssembleItem direction="left" distance={80}>
               <SignatureGlowAvatar
                 imageUrl={profile.aboutAvatarUrl || "/about_avatar.png"}
-                alt={profile.name || "Amr Kandel"}
+                alt={profile.name || "Amr Atef"}
                 variant="about"
                 scale={profile.aboutImageScale ?? 1}
                 offsetY={profile.aboutImageOffsetY ?? 0}

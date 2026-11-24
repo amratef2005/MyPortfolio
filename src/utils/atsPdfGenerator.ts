@@ -421,7 +421,7 @@ export const generateAtsPdfDocument = ({
     doc.setFontSize(7.5);
     doc.setTextColor(148, 163, 184);
     doc.text(
-      `Amr Kandel – ATS Standard Resume  •  Page ${i} of ${totalPages}`,
+      `Amr Atef – ATS Standard Resume  •  Page ${i} of ${totalPages}`,
       pageWidth / 2,
       pageHeight - 8,
       { align: 'center' }

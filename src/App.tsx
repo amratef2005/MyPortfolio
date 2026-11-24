@@ -64,8 +64,8 @@ export const App: React.FC = () => {
         {/* Navigation Bar */}
         <Navbar />
 
-        {/* Core Content Flow with Harmonious Spacing */}
-        <main className="space-y-4 sm:space-y-8">
+        {/* Core Content Flow with Compact Professional Mobile Spacing */}
+        <main className="space-y-0">
           <Hero />
           <About />
           <Experience />

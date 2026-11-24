@@ -11,7 +11,7 @@ export const Certificates: React.FC = () => {
   if (!certificates || certificates.length === 0) return null;
 
   return (
-    <section id="certificates" className="py-12 sm:py-20 lg:py-28 relative overflow-hidden">
+    <section id="certificates" className="py-8 sm:py-16 lg:py-20 relative overflow-hidden">
       {/* Background Soft Glow */}
       <div 
         className="absolute top-1/3 -right-20 w-[420px] h-[420px] rounded-full blur-[140px] pointer-events-none"
