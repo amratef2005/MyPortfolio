@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
 import { SignatureGlowAvatar } from './SignatureGlowAvatar';
 import { AssembleItem } from './motion/KineticAssemble';
-import { 
-  FileDown, 
-  FileText, 
-  Heart, 
-  CheckCircle2, 
-  Layout, 
-  Users, 
+import {
+  FileDown,
+  FileText,
+  Heart,
+  CheckCircle2,
+  Layout,
+  Users,
   Layers,
   Compass,
   Loader2,
@@ -45,16 +45,16 @@ export const About: React.FC = () => {
   return (
     <section id="about" className="py-8 sm:py-16 lg:py-20 relative overflow-hidden">
       {/* Background Subtle Orange Ambient Bloom */}
-      <div 
+      <div
         className="absolute top-1/2 -left-20 w-[450px] h-[450px] rounded-full blur-[140px] pointer-events-none"
         style={{ background: 'radial-gradient(circle, rgba(255, 87, 34, 0.12) 0%, transparent 70%)' }}
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         {/* Two-Column Grid: Left Portrait with Circular Orange Glow, Right Content */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-          
+
           {/* Left Column: Portrait with Signature Circular Orange Glow (Image 2) */}
           <div className="lg:col-span-5 flex items-center justify-center">
             <AssembleItem direction="left" distance={80}>
@@ -74,7 +74,7 @@ export const About: React.FC = () => {
           {/* Right Column: "Designing Is My Passion", Narrative & Download CV */}
           <div className="lg:col-span-7 flex flex-col gap-6 text-start">
             <AssembleItem direction="right" distance={80}>
-              
+
               {/* Badge */}
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#121215] border border-orange-500/20 text-[#FF7A00] text-xs font-mono mb-2">
                 <Cpu className="w-3.5 h-3.5 text-[#FF5722]" />
@@ -163,12 +163,12 @@ export const About: React.FC = () => {
                   type="button"
                   disabled={downloading}
                   onClick={handleDownloadCV}
-                  className="flex items-center justify-center gap-2.5 h-12 sm:h-14 px-8 rounded-2xl bg-white text-slate-950 hover:bg-slate-100 font-bold text-base shadow-[0_0_25px_rgba(255,255,255,0.22)] hover:shadow-[0_0_35px_rgba(255,255,255,0.4)] transition-all duration-300 active:scale-95 cursor-pointer disabled:opacity-75"
+                  className="flex items-center justify-center gap-2.5 h-12 sm:h-14 px-8 rounded-2xl bg-gradient-to-r from-[#FF5722] to-[#FF7A00] hover:from-[#FF6B00] hover:to-[#FF8A00] text-white font-bold text-base shadow-[0_0_25px_rgba(255,87,34,0.4)] hover:shadow-[0_0_35px_rgba(255,87,34,0.6)] transition-all duration-300 active:scale-95 cursor-pointer disabled:opacity-75"
                 >
                   {downloading ? (
                     <Loader2 className="w-5 h-5 animate-spin" />
                   ) : (
-                    <FileDown className="w-5 h-5 text-slate-950" />
+                    <FileDown className="w-5 h-5 text-white" />
                   )}
                   <span>
                     {downloading
