@@ -1,6 +1,6 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { Camera, Sliders } from 'lucide-react';
+import { Camera } from 'lucide-react';
 
 interface SignatureGlowAvatarProps {
   imageUrl?: string;
@@ -28,6 +28,14 @@ export const SignatureGlowAvatar: React.FC<SignatureGlowAvatarProps> = ({
   onEditClick,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const rectRef = useRef<DOMRect | null>(null);
+  const [isFinePointer, setIsFinePointer] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setIsFinePointer(window.matchMedia('(pointer: fine)').matches);
+    }
+  }, []);
 
   // Smooth mouse tilt & parallax
   const mouseX = useMotionValue(0);
@@ -37,14 +45,22 @@ export const SignatureGlowAvatar: React.FC<SignatureGlowAvatarProps> = ({
   const smoothX = useSpring(mouseX, springConfig);
   const smoothY = useSpring(mouseY, springConfig);
 
-  const rotateX = useTransform(smoothY, [-0.5, 0.5], [8, -8]);
-  const rotateY = useTransform(smoothX, [-0.5, 0.5], [-8, 8]);
-  const auraX = useTransform(smoothX, [-0.5, 0.5], [-15, 15]);
-  const auraY = useTransform(smoothY, [-0.5, 0.5], [-15, 15]);
+  const rotateX = useTransform(smoothY, [-0.5, 0.5], [7, -7]);
+  const rotateY = useTransform(smoothX, [-0.5, 0.5], [-7, 7]);
+  const auraX = useTransform(smoothX, [-0.5, 0.5], [-14, 14]);
+  const auraY = useTransform(smoothY, [-0.5, 0.5], [-14, 14]);
+  const lightX = useTransform(smoothX, [-0.5, 0.5], [-28, 28]);
+  const lightY = useTransform(smoothY, [-0.5, 0.5], [-20, 20]);
+
+  const handleMouseEnter = () => {
+    if (!isFinePointer || !containerRef.current) return;
+    rectRef.current = containerRef.current.getBoundingClientRect();
+  };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
+    if (!isFinePointer || !containerRef.current) return;
+    const rect = rectRef.current || containerRef.current.getBoundingClientRect();
+    rectRef.current = rect;
     const x = (e.clientX - rect.left) / rect.width - 0.5;
     const y = (e.clientY - rect.top) / rect.height - 0.5;
     mouseX.set(x);
@@ -52,6 +68,7 @@ export const SignatureGlowAvatar: React.FC<SignatureGlowAvatarProps> = ({
   };
 
   const handleMouseLeave = () => {
+    rectRef.current = null;
     mouseX.set(0);
     mouseY.set(0);
   };
@@ -73,40 +90,36 @@ export const SignatureGlowAvatar: React.FC<SignatureGlowAvatarProps> = ({
   return (
     <div
       ref={containerRef}
+      onMouseEnter={handleMouseEnter}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       className={`relative flex items-center justify-center select-none ${containerSizes} ${className}`}
       style={{ perspective: 1000 }}
     >
-      {/* 1. Cinematic Multi-Layer Volumetric Studio Lighting */}
+      {/* 1. Optimized Studio Backlight Aura (Soft radial gradients, low-cost GPU blur) */}
       <motion.div
-        style={{ x: auraX, y: auraY, opacity: Math.min(1.5, Math.max(0.3, glowIntensity)) }}
+        style={{
+          x: isFinePointer ? auraX : 0,
+          y: isFinePointer ? auraY : 0,
+          opacity: Math.min(1.5, Math.max(0.3, glowIntensity)),
+        }}
         className={`absolute rounded-full pointer-events-none ${auraSizes} z-0`}
       >
-        {/* Core Radiance with Dual-Tone Burnt Orange & Amber Glow */}
-        <div 
+        {/* Core Radiance + Outer Studio Bloom merged */}
+        <div
           className="w-full h-full rounded-full animate-breathe"
           style={{
-            background: 'radial-gradient(circle at 48% 42%, rgba(255, 122, 0, 0.95) 0%, rgba(255, 87, 34, 0.7) 35%, rgba(210, 50, 10, 0.35) 60%, transparent 75%)',
-            filter: `blur(${Math.round(45 * glowIntensity)}px)`,
+            background:
+              'radial-gradient(circle at 50% 42%, rgba(255, 132, 24, 0.85) 0%, rgba(255, 87, 34, 0.52) 34%, rgba(210, 50, 10, 0.18) 58%, transparent 74%)',
+            filter: `blur(${Math.min(34, Math.round(26 * glowIntensity))}px)`,
           }}
         />
-
-        {/* Ambient Outer Halo with Soft Studio Fill Bloom */}
-        <div 
-          className="absolute inset-[-25%] rounded-full opacity-80 pointer-events-none"
+        {/* Subtle Top-Down Keylight Halo */}
+        <div
+          className="absolute -top-12 inset-x-0 h-36 opacity-55 pointer-events-none"
           style={{
-            background: 'radial-gradient(circle, rgba(255, 120, 0, 0.45) 0%, rgba(255, 60, 0, 0.2) 45%, transparent 70%)',
-            filter: `blur(${Math.round(75 * glowIntensity)}px)`,
-          }}
-        />
-
-        {/* Cinematic Top-Down Keylight Beam */}
-        <div 
-          className="absolute -top-16 inset-x-0 h-44 opacity-60 pointer-events-none"
-          style={{
-            background: 'radial-gradient(ellipse at 50% 0%, rgba(255, 150, 50, 0.6) 0%, rgba(255, 87, 34, 0.2) 50%, transparent 75%)',
-            filter: 'blur(30px)',
+            background:
+              'radial-gradient(ellipse at 50% 0%, rgba(255, 165, 70, 0.55) 0%, rgba(255, 87, 34, 0.18) 50%, transparent 75%)',
           }}
         />
       </motion.div>
@@ -129,50 +142,96 @@ export const SignatureGlowAvatar: React.FC<SignatureGlowAvatarProps> = ({
         </div>
       )}
 
-      {/* 3. The Portrait Silhouette Frame with Cinematic Rim Highlight */}
+      {/* 3. Portrait Silhouette + Feathered Edges + Cinematic Face Lighting */}
       <motion.div
-        style={{ rotateX, rotateY }}
+        style={isFinePointer ? { rotateX, rotateY } : undefined}
         transition={{ type: 'spring', damping: 20, stiffness: 200 }}
         className="relative z-10 w-full h-full flex items-end justify-center overflow-visible"
       >
-        {/* Subtle Silhouette Rim Backlight Effect */}
-        <div 
-          className="absolute inset-0 flex items-end justify-center pointer-events-none opacity-40 blur-sm"
+        {/* Isolated & Feathered Portrait Container (melts any rectangular PNG edges) */}
+        <div
+          className="relative w-full h-full flex items-end justify-center"
           style={{
-            filter: 'drop-shadow(0 0 16px rgba(255, 122, 0, 0.8))',
+            isolation: 'isolate',
+            maskImage:
+              'radial-gradient(ellipse 76% 84% at 50% 48%, black 56%, transparent 96%)',
+            WebkitMaskImage:
+              'radial-gradient(ellipse 76% 84% at 50% 48%, black 56%, transparent 96%)',
           }}
         >
+          {/* Main Portrait with Balanced Cinematic Color Grading */}
           <img
             src={imageUrl}
-            alt=""
-            aria-hidden="true"
-            style={{
-              transform: `scale(${scale * 1.02}) translateY(${offsetY}px)`,
-              transformOrigin: 'bottom center',
+            alt={alt}
+            loading={isHero ? 'eager' : 'lazy'}
+            fetchPriority={isHero ? 'high' : 'auto'}
+            decoding="async"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.onerror = null;
+              target.src = '/my_transparent.png';
             }}
-            className="max-h-full w-auto object-contain object-bottom"
+            style={{
+              transform: `scale(${scale}) translateY(${offsetY}px)`,
+              transformOrigin: 'bottom center',
+              filter: 'contrast(1.06) saturate(1.04) brightness(1.01)',
+            }}
+            className="max-h-full w-auto object-contain object-bottom transition-transform duration-200 pointer-events-none relative z-10"
           />
+
+          {/* Masked Foreground Cinematic Lighting (Clips strictly to face/body silhouette) */}
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 pointer-events-none z-20 overflow-hidden"
+            style={{
+              transform: `scale(${scale}) translateY(${offsetY}px)`,
+              transformOrigin: 'bottom center',
+              maskImage: `url(${imageUrl})`,
+              WebkitMaskImage: `url(${imageUrl})`,
+              maskSize: 'contain',
+              WebkitMaskSize: 'contain',
+              maskPosition: 'bottom center',
+              WebkitMaskPosition: 'bottom center',
+              maskRepeat: 'no-repeat',
+              WebkitMaskRepeat: 'no-repeat',
+            }}
+          >
+            {/* Focused Warm Key Light on face & cheekbone (mouse-reactive on desktop) */}
+            <motion.div
+              style={{
+                x: isFinePointer ? lightX : 0,
+                y: isFinePointer ? lightY : 0,
+                background:
+                  'radial-gradient(ellipse 46% 40% at 58% 30%, rgba(255, 168, 88, 0.36) 0%, rgba(255, 108, 42, 0.16) 48%, transparent 78%)',
+                mixBlendMode: 'soft-light',
+              }}
+              className="absolute inset-[-8%]"
+            />
+
+            {/* Subtle Warm Rim Light along right shoulder & cheek without washing out hair */}
+            <div
+              style={{
+                background:
+                  'radial-gradient(ellipse 35% 58% at 78% 48%, rgba(255, 150, 70, 0.24) 0%, transparent 70%)',
+                mixBlendMode: 'soft-light',
+              }}
+              className="absolute inset-0"
+            />
+
+            {/* Subtle Cool Teal Shadow Fill on opposite side for Teal & Orange contrast */}
+            <div
+              style={{
+                background:
+                  'radial-gradient(ellipse 52% 60% at 20% 44%, rgba(56, 189, 248, 0.16) 0%, transparent 65%)',
+                mixBlendMode: 'soft-light',
+              }}
+              className="absolute inset-0"
+            />
+          </div>
         </div>
 
-        <img
-          src={imageUrl}
-          alt={alt}
-          loading={isHero ? "eager" : "lazy"}
-          decoding="async"
-          onError={(e) => {
-            const target = e.target as HTMLImageElement;
-            target.onerror = null;
-            target.src = '/my_transparent.png';
-          }}
-          style={{
-            transform: `scale(${scale}) translateY(${offsetY}px)`,
-            transformOrigin: 'bottom center',
-          }}
-          className="max-h-full w-auto object-contain object-bottom drop-shadow-[0_20px_35px_rgba(0,0,0,0.9)] filter brightness-105 contrast-105 transition-transform duration-200 pointer-events-none relative z-10"
-        />
-
-        {/* Bottom subtle gradient fade to anchor with page */}
-        <div className="absolute bottom-0 inset-x-0 h-16 bg-gradient-to-t from-[#050505] via-[#050505]/40 to-transparent pointer-events-none z-20" />
+        {/* Smooth Bottom Fade to anchor suit seamlessly into page background */}
+        <div className="absolute bottom-0 inset-x-0 h-28 bg-gradient-to-t from-[#050505] via-[#050505]/70 to-transparent pointer-events-none z-30" />
       </motion.div>
 
       {/* 4. On-Avatar Quick Edit Trigger Button */}
