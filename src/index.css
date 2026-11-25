@@ -156,6 +156,21 @@
     border-color: rgba(var(--theme-primary-rgb, 255, 87, 34), 0.65);
     box-shadow: 0 0 0 3px rgba(var(--theme-primary-rgb, 255, 87, 34), 0.14);
   }
+
+  /* Dark-mode Browser / iOS Safari AutoFill styling */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  textarea:-webkit-autofill,
+  textarea:-webkit-autofill:hover,
+  textarea:-webkit-autofill:focus,
+  select:-webkit-autofill {
+    -webkit-text-fill-color: #f8fafc !important;
+    caret-color: #f8fafc;
+    -webkit-box-shadow: 0 0 0 1000px #0b0c10 inset !important;
+    box-shadow: 0 0 0 1000px #0b0c10 inset !important;
+    transition: background-color 9999s ease-out 0s;
+  }
 }
 
 /* RTL Directional Transformations */

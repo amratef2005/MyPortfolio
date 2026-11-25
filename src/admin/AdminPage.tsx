@@ -430,7 +430,7 @@ export const AdminPage: React.FC = () => {
   };
 
   // Handle Login
-  const handleLoginSubmit = (e: React.FormEvent) => {
+  const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!usernameInput.trim() || !passwordInput.trim()) {
       setLoginError('يرجى إدخال اسم المستخدم وكلمة المرور');
@@ -439,6 +439,21 @@ export const AdminPage: React.FC = () => {
 
     const success = login(usernameInput, passwordInput, rememberDevice);
     if (success) {
+      // Prompt browser password managers cleanly via Credential Management API when supported
+      try {
+        const CredCtor = (window as any).PasswordCredential;
+        if (CredCtor && (navigator as any).credentials?.store) {
+          const cred = new CredCtor({
+            id: usernameInput.trim(),
+            password: passwordInput,
+            name: profile.name || 'Portfolio Admin',
+          });
+          await (navigator as any).credentials.store(cred);
+        }
+      } catch {
+        // Ignore gracefully on browsers like Safari iOS that rely purely on form semantics
+      }
+
       setLoginError('');
       setUsernameInput('');
       setPasswordInput('');
@@ -516,15 +531,21 @@ export const AdminPage: React.FC = () => {
             </div>
           )}
 
-          <form onSubmit={handleLoginSubmit} className="space-y-4 text-right">
+          <form method="post" action="/admin" autoComplete="on" onSubmit={handleLoginSubmit} className="space-y-4 text-right">
             <div>
-              <label className="block text-xs font-mono text-slate-300 mb-1.5 font-semibold">
+              <label htmlFor="admin-username" className="block text-xs font-mono text-slate-300 mb-1.5 font-semibold">
                 اسم المستخدم (Username)
               </label>
               <div className="relative">
                 <input
+                  id="admin-username"
+                  name="username"
                   type="text"
                   dir="ltr"
+                  autoComplete="username"
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                  spellCheck={false}
                   value={usernameInput}
                   onChange={(e) => {
                     setUsernameInput(e.target.value);
@@ -539,13 +560,19 @@ export const AdminPage: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-mono text-slate-300 mb-1.5 font-semibold">
+              <label htmlFor="admin-password" className="block text-xs font-mono text-slate-300 mb-1.5 font-semibold">
                 كلمة المرور (Password)
               </label>
               <div className="relative">
                 <input
+                  id="admin-password"
+                  name="password"
                   type={showPassword ? "text" : "password"}
                   dir="ltr"
+                  autoComplete="current-password"
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                  spellCheck={false}
                   value={passwordInput}
                   onChange={(e) => {
                     setPasswordInput(e.target.value);
@@ -1610,18 +1637,24 @@ export const AdminPage: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-mono text-slate-300 mb-1">الاسم الكامل (English - Top & CV)</label>
+                  <label htmlFor="profile-name-en" className="block text-xs font-mono text-slate-300 mb-1">الاسم الكامل (English - Top & CV)</label>
                   <input
+                    id="profile-name-en"
+                    name="name"
                     type="text"
+                    autoComplete="name"
                     value={profileForm.name}
                     onChange={(e) => setProfileForm({ ...profileForm, name: e.target.value })}
                     className="w-full px-3 py-2 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm font-mono"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-mono text-slate-300 mb-1">الاسم المختصر (English - Hero)</label>
+                  <label htmlFor="profile-shortname-en" className="block text-xs font-mono text-slate-300 mb-1">الاسم المختصر (English - Hero)</label>
                   <input
+                    id="profile-shortname-en"
+                    name="given-name"
                     type="text"
+                    autoComplete="nickname"
                     value={profileForm.shortName || 'Amr Atef'}
                     onChange={(e) => setProfileForm({ ...profileForm, shortName: e.target.value })}
                     className="w-full px-3 py-2 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm font-mono"
@@ -1648,9 +1681,12 @@ export const AdminPage: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-mono text-slate-300 mb-1">المسمى الوظيفي (English - Title)</label>
+                  <label htmlFor="profile-title-en" className="block text-xs font-mono text-slate-300 mb-1">المسمى الوظيفي (English - Title)</label>
                   <input
+                    id="profile-title-en"
+                    name="organization-title"
                     type="text"
+                    autoComplete="organization-title"
                     value={profileForm.title}
                     onChange={(e) => setProfileForm({ ...profileForm, title: e.target.value })}
                     className="w-full px-3 py-2 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm font-mono"
@@ -1666,45 +1702,68 @@ export const AdminPage: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-mono text-slate-300 mb-1">رابط GitHub</label>
+                  <label htmlFor="profile-github" className="block text-xs font-mono text-slate-300 mb-1">رابط GitHub</label>
                   <input
-                    type="text"
+                    id="profile-github"
+                    name="github"
+                    type="url"
+                    dir="ltr"
+                    autoComplete="url"
+                    autoCapitalize="none"
                     value={profileForm.github}
                     onChange={(e) => setProfileForm({ ...profileForm, github: e.target.value })}
                     className="w-full px-3 py-2 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm font-mono"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-mono text-slate-300 mb-1">رابط LinkedIn</label>
+                  <label htmlFor="profile-linkedin" className="block text-xs font-mono text-slate-300 mb-1">رابط LinkedIn</label>
                   <input
-                    type="text"
+                    id="profile-linkedin"
+                    name="linkedin"
+                    type="url"
+                    dir="ltr"
+                    autoComplete="url"
+                    autoCapitalize="none"
                     value={profileForm.linkedin}
                     onChange={(e) => setProfileForm({ ...profileForm, linkedin: e.target.value })}
                     className="w-full px-3 py-2 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm font-mono"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-mono text-slate-300 mb-1">البريد الإلكتروني</label>
+                  <label htmlFor="profile-email" className="block text-xs font-mono text-slate-300 mb-1">البريد الإلكتروني</label>
                   <input
+                    id="profile-email"
+                    name="email"
                     type="email"
+                    dir="ltr"
+                    inputMode="email"
+                    autoComplete="email"
+                    autoCapitalize="none"
                     value={profileForm.email}
                     onChange={(e) => setProfileForm({ ...profileForm, email: e.target.value })}
                     className="w-full px-3 py-2 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm font-mono"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-mono text-slate-300 mb-1">واتساب (WhatsApp)</label>
+                  <label htmlFor="profile-phone" className="block text-xs font-mono text-slate-300 mb-1">واتساب (WhatsApp)</label>
                   <input
+                    id="profile-phone"
+                    name="tel"
                     type="text"
+                    dir="ltr"
+                    autoComplete="tel"
                     value={profileForm.phone}
                     onChange={(e) => setProfileForm({ ...profileForm, phone: e.target.value })}
                     className="w-full px-3 py-2 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm font-mono"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-mono text-slate-300 mb-1">الموقع الجغرافي (English)</label>
+                  <label htmlFor="profile-location-en" className="block text-xs font-mono text-slate-300 mb-1">الموقع الجغرافي (English)</label>
                   <input
+                    id="profile-location-en"
+                    name="location"
                     type="text"
+                    autoComplete="address-level2"
                     value={profileForm.location}
                     onChange={(e) => setProfileForm({ ...profileForm, location: e.target.value })}
                     className="w-full px-3 py-2 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm font-mono"
@@ -1974,13 +2033,19 @@ export const AdminPage: React.FC = () => {
                     </div>
                   )}
 
-                  <form onSubmit={handleSecurityUpdate} className="space-y-4 max-w-lg">
+                  <form method="post" autoComplete="on" onSubmit={handleSecurityUpdate} className="space-y-4 max-w-lg">
                     <div>
-                      <label className="block text-xs font-mono text-slate-300 mb-1.5 font-semibold">
+                      <label htmlFor="security-username" className="block text-xs font-mono text-slate-300 mb-1.5 font-semibold">
                         اسم المستخدم (Username)
                       </label>
                       <input
+                        id="security-username"
+                        name="username"
                         type="text"
+                        dir="ltr"
+                        autoComplete="username"
+                        autoCapitalize="none"
+                        autoCorrect="off"
                         value={newUsername}
                         onChange={(e) => setNewUsername(e.target.value)}
                         className="w-full px-4 py-2.5 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm font-mono outline-none focus:border-theme-primary"
@@ -1989,11 +2054,17 @@ export const AdminPage: React.FC = () => {
                     </div>
 
                     <div>
-                      <label className="block text-xs font-mono text-slate-300 mb-1.5 font-semibold">
+                      <label htmlFor="security-new-password" className="block text-xs font-mono text-slate-300 mb-1.5 font-semibold">
                         كلمة المرور الجديدة (New Password)
                       </label>
                       <input
+                        id="security-new-password"
+                        name="new-password"
                         type="password"
+                        dir="ltr"
+                        autoComplete="new-password"
+                        autoCapitalize="none"
+                        autoCorrect="off"
                         value={newPassword}
                         onChange={(e) => setNewPassword(e.target.value)}
                         placeholder="اتركها فارغة للاحتفاظ بكلمة المرور الحالية"
@@ -2002,11 +2073,17 @@ export const AdminPage: React.FC = () => {
                     </div>
 
                     <div>
-                      <label className="block text-xs font-mono text-slate-300 mb-1.5 font-semibold">
+                      <label htmlFor="security-confirm-password" className="block text-xs font-mono text-slate-300 mb-1.5 font-semibold">
                         تأكيد كلمة المرور الجديدة (Confirm Password)
                       </label>
                       <input
+                        id="security-confirm-password"
+                        name="confirm-password"
                         type="password"
+                        dir="ltr"
+                        autoComplete="new-password"
+                        autoCapitalize="none"
+                        autoCorrect="off"
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         placeholder="أعد إدخال كلمة المرور للتأكيد"

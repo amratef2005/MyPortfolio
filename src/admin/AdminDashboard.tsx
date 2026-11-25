@@ -220,9 +220,15 @@ export const AdminDashboard: React.FC = () => {
           <h3 className="text-2xl font-bold text-white mb-2">{t.loginTitle}</h3>
           <p className="text-slate-400 text-xs font-mono mb-6">{t.loginSubtitle}</p>
 
-          <form onSubmit={handleLoginSubmit} className="space-y-4">
+          <form method="post" autoComplete="on" onSubmit={handleLoginSubmit} className="space-y-4">
             <input
+              id="modal-admin-password"
+              name="password"
               type="password"
+              dir="ltr"
+              autoComplete="current-password"
+              autoCapitalize="none"
+              autoCorrect="off"
               value={pinInput}
               onChange={(e) => {
                 setPinInput(e.target.value);
@@ -1288,18 +1294,28 @@ export const AdminDashboard: React.FC = () => {
                 <h4 className="text-xl font-bold text-white mb-2">تعديل البيانات الشخصية والسيرة الذاتية</h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-mono text-slate-300 mb-1">البريد الإلكتروني</label>
+                    <label htmlFor="modal-profile-email" className="block text-xs font-mono text-slate-300 mb-1">البريد الإلكتروني</label>
                     <input
+                      id="modal-profile-email"
+                      name="email"
                       type="email"
+                      dir="ltr"
+                      inputMode="email"
+                      autoComplete="email"
+                      autoCapitalize="none"
                       value={profileForm.email}
                       onChange={(e) => setProfileForm({ ...profileForm, email: e.target.value })}
                       className="w-full px-3 py-2 rounded-xl bg-[#08090C] border border-white/10 text-white text-sm font-mono outline-none focus:border-theme-primary"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-mono text-slate-300 mb-1">واتساب (WhatsApp)</label>
+                    <label htmlFor="modal-profile-phone" className="block text-xs font-mono text-slate-300 mb-1">واتساب (WhatsApp)</label>
                     <input
+                      id="modal-profile-phone"
+                      name="tel"
                       type="text"
+                      dir="ltr"
+                      autoComplete="tel"
                       value={profileForm.phone}
                       onChange={(e) => setProfileForm({ ...profileForm, phone: e.target.value })}
                       placeholder="amratefkandel"
@@ -1307,18 +1323,28 @@ export const AdminDashboard: React.FC = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-mono text-slate-300 mb-1">رابط لينكد إن (LinkedIn)</label>
+                    <label htmlFor="modal-profile-linkedin" className="block text-xs font-mono text-slate-300 mb-1">رابط لينكد إن (LinkedIn)</label>
                     <input
-                      type="text"
+                      id="modal-profile-linkedin"
+                      name="linkedin"
+                      type="url"
+                      dir="ltr"
+                      autoComplete="url"
+                      autoCapitalize="none"
                       value={profileForm.linkedin || ''}
                       onChange={(e) => setProfileForm({ ...profileForm, linkedin: e.target.value })}
                       className="w-full px-3 py-2 rounded-xl bg-[#08090C] border border-white/10 text-white text-sm font-mono outline-none focus:border-theme-primary"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-mono text-slate-300 mb-1">رابط جيت هاب (GitHub)</label>
+                    <label htmlFor="modal-profile-github" className="block text-xs font-mono text-slate-300 mb-1">رابط جيت هاب (GitHub)</label>
                     <input
-                      type="text"
+                      id="modal-profile-github"
+                      name="github"
+                      type="url"
+                      dir="ltr"
+                      autoComplete="url"
+                      autoCapitalize="none"
                       value={profileForm.github || ''}
                       onChange={(e) => setProfileForm({ ...profileForm, github: e.target.value })}
                       className="w-full px-3 py-2 rounded-xl bg-[#08090C] border border-white/10 text-white text-sm font-mono outline-none focus:border-theme-primary"

@@ -312,6 +312,7 @@ export const Contact: React.FC = () => {
                 ) : (
                   <motion.form
                     key="contact-form"
+                    autoComplete="on"
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -8 }}
@@ -322,11 +323,14 @@ export const Contact: React.FC = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {/* Name */}
                     <div>
-                      <label className="block text-xs font-mono text-slate-400 uppercase mb-2">
+                      <label htmlFor="contact-name" className="block text-xs font-mono text-slate-400 uppercase mb-2">
                         {lang === 'ar' ? 'الاسم الكامل' : 'Your Name'} *
                       </label>
                       <input
+                        id="contact-name"
+                        name="name"
                         type="text"
+                        autoComplete="name"
                         required
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -337,11 +341,17 @@ export const Contact: React.FC = () => {
 
                     {/* Email */}
                     <div>
-                      <label className="block text-xs font-mono text-slate-400 uppercase mb-2">
+                      <label htmlFor="contact-email" className="block text-xs font-mono text-slate-400 uppercase mb-2">
                         {lang === 'ar' ? 'البريد الإلكتروني' : 'Email Address'} *
                       </label>
                       <input
+                        id="contact-email"
+                        name="email"
                         type="email"
+                        dir="ltr"
+                        inputMode="email"
+                        autoComplete="email"
+                        autoCapitalize="none"
                         required
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -353,11 +363,14 @@ export const Contact: React.FC = () => {
 
                   {/* Subject / Project Type */}
                   <div>
-                    <label className="block text-xs font-mono text-slate-400 uppercase mb-2">
+                    <label htmlFor="contact-subject" className="block text-xs font-mono text-slate-400 uppercase mb-2">
                       {lang === 'ar' ? 'نوع المشروع أو الموضوع' : 'Project Type or Subject'}
                     </label>
                     <input
+                      id="contact-subject"
+                      name="subject"
                       type="text"
+                      autoComplete="on"
                       value={formData.subject}
                       onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                       placeholder={lang === 'ar' ? 'نظام SaaS خلفي / واجهة ASP.NET Core API' : 'Multi-Tenant SaaS Backend / ASP.NET Core API'}
@@ -367,10 +380,12 @@ export const Contact: React.FC = () => {
 
                   {/* Message */}
                   <div>
-                    <label className="block text-xs font-mono text-slate-400 uppercase mb-2">
+                    <label htmlFor="contact-message" className="block text-xs font-mono text-slate-400 uppercase mb-2">
                       {lang === 'ar' ? 'تفاصيل المشروع والرسالة' : 'Project Details & Goals'} *
                     </label>
                     <textarea
+                      id="contact-message"
+                      name="message"
                       rows={5}
                       required
                       value={formData.message}
