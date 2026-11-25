@@ -59,7 +59,8 @@ export default async function handler(req, res) {
       showWhatsAppStatus: pRow.show_whatsapp_status !== false,
       heroAvatarUrl: pRow.hero_avatar_url || '/drama_hero.png',
       autoExtractColors: pRow.auto_extract_colors !== false,
-      extractedColors: pRow.extracted_colors || null
+      extractedColors: pRow.extracted_colors || null,
+      fontPreset: pRow.font_preset || null
     } : null;
 
     const projects = projectsRes.rows

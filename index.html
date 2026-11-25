@@ -39,6 +39,62 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@400;600;700;800&family=Dancing+Script:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script>
+      // Pre-paint synchronous theme, font, and direction hydration to prevent default-color FOUC
+      (function () {
+        try {
+          var rawCache = localStorage.getItem('portfolio_theme_cache');
+          var rawProfile = localStorage.getItem('portfolio_profile');
+          var cache = rawCache ? JSON.parse(rawCache) : null;
+          var prof = rawProfile ? JSON.parse(rawProfile) : null;
+          var c = (cache && cache.extractedColors) || (prof && prof.extractedColors);
+          var fp = (cache && cache.fontPreset) || (prof && prof.fontPreset);
+          var root = document.documentElement.style;
+          if (c && c.primary) {
+            var toRgb = function (hex) {
+              var clean = String(hex).replace('#', '').trim();
+              if (clean.length === 3) clean = clean[0] + clean[0] + clean[1] + clean[1] + clean[2] + clean[2];
+              var n = parseInt(clean, 16);
+              if (isNaN(n)) return '255, 87, 34';
+              return ((n >> 16) & 255) + ', ' + ((n >> 8) & 255) + ', ' + (n & 255);
+            };
+            var pRgb = c.primaryRgb || toRgb(c.primary);
+            var sHex = c.secondary || c.primary;
+            var sRgb = c.secondaryRgb || toRgb(sHex);
+            var aHex = c.accent || c.primary;
+            var aRgb = c.accentRgb || toRgb(aHex);
+            root.setProperty('--theme-primary', c.primary);
+            root.setProperty('--theme-primary-rgb', pRgb);
+            root.setProperty('--theme-primary-space', pRgb.replace(/,\s*/g, ' '));
+            root.setProperty('--theme-secondary', sHex);
+            root.setProperty('--theme-secondary-rgb', sRgb);
+            root.setProperty('--theme-secondary-space', sRgb.replace(/,\s*/g, ' '));
+            root.setProperty('--theme-accent', aHex);
+            root.setProperty('--theme-accent-rgb', aRgb);
+            root.setProperty('--theme-accent-space', aRgb.replace(/,\s*/g, ' '));
+            root.setProperty('--theme-glow', c.glow || ('rgba(' + pRgb + ', 0.45)'));
+            root.setProperty('--theme-glow-secondary', c.glowSecondary || ('rgba(' + sRgb + ', 0.3)'));
+            root.setProperty('--theme-glow-ambient', 'rgba(' + pRgb + ', 0.15)');
+          }
+          var fonts = {
+            'plex-jakarta': ['"Plus Jakarta Sans", "Inter", sans-serif', '"Space Grotesk", "Plus Jakarta Sans", sans-serif', '"IBM Plex Sans Arabic", "Cairo", sans-serif', '"IBM Plex Sans Arabic", "Cairo", sans-serif'],
+            'cairo-outfit': ['"Inter", "Plus Jakarta Sans", sans-serif', '"Outfit", "Inter", sans-serif', '"Cairo", "IBM Plex Sans Arabic", sans-serif', '"Cairo", "IBM Plex Sans Arabic", sans-serif'],
+            'alexandria-dm': ['"DM Sans", "Inter", sans-serif', '"DM Sans", "Space Grotesk", sans-serif', '"Alexandria", "IBM Plex Sans Arabic", sans-serif', '"Alexandria", "IBM Plex Sans Arabic", sans-serif'],
+            'ruqaa-dancing': ['"Dancing Script", cursive', '"Dancing Script", cursive', '"Aref Ruqaa", "Cairo", serif', '"Aref Ruqaa", "Cairo", serif']
+          };
+          var preset = fp && fonts[fp];
+          if (preset) {
+            root.setProperty('--font-sans-en', preset[0]);
+            root.setProperty('--font-display-en', preset[1]);
+            root.setProperty('--font-sans-ar', preset[2]);
+            root.setProperty('--font-display-ar', preset[3]);
+          }
+          var savedLang = localStorage.getItem('portfolio_lang');
+          if (savedLang === 'ar' || savedLang === 'en') {
+            document.documentElement.lang = savedLang;
+            document.documentElement.dir = savedLang === 'ar' ? 'rtl' : 'ltr';
+          }
+        } catch (e) {}
+      })();
       // Always reset scroll to the top on page reload/refresh
       if ('scrollRestoration' in history) {
         history.scrollRestoration = 'manual';

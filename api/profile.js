@@ -53,7 +53,8 @@ export default async function handler(req, res) {
       ADD COLUMN IF NOT EXISTS show_whatsapp_status BOOLEAN DEFAULT TRUE,
       ADD COLUMN IF NOT EXISTS hero_avatar_url TEXT DEFAULT '/drama_hero.png',
       ADD COLUMN IF NOT EXISTS auto_extract_colors BOOLEAN DEFAULT TRUE,
-      ADD COLUMN IF NOT EXISTS extracted_colors JSONB;
+      ADD COLUMN IF NOT EXISTS extracted_colors JSONB,
+      ADD COLUMN IF NOT EXISTS font_preset VARCHAR(64);
     `).catch(() => {});
 
     await pool.query(`
@@ -91,6 +92,7 @@ export default async function handler(req, res) {
         hero_avatar_url = COALESCE($31, hero_avatar_url),
         auto_extract_colors = COALESCE($32, auto_extract_colors),
         extracted_colors = COALESCE($33, extracted_colors),
+        font_preset = COALESCE($34, font_preset),
         updated_at = NOW()
       WHERE id = 'main_profile'
     `, [
@@ -107,7 +109,8 @@ export default async function handler(req, res) {
       data.showWhatsAppStatus,
       data.heroAvatarUrl,
       data.autoExtractColors,
-      data.extractedColors ? JSON.stringify(data.extractedColors) : null
+      data.extractedColors ? JSON.stringify(data.extractedColors) : null,
+      data.fontPreset || null
     ]);
 
     return res.status(200).json({ success: true });

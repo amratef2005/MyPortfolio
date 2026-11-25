@@ -297,3 +297,28 @@ export function applyFontPreset(presetId?: FontPresetId) {
   root.setProperty('--font-sans-ar', preset.sansAr);
   root.setProperty('--font-display-ar', preset.displayAr);
 }
+
+export const THEME_CACHE_KEY = 'portfolio_theme_cache';
+
+/** Stores a compact theme cache so pre-paint scripts can hydrate colors/fonts immediately on reload. */
+export function persistThemeCache(
+  extractedColors?: ProfileInfo['extractedColors'],
+  fontPreset?: FontPresetId
+) {
+  if (typeof window === 'undefined' || !window.localStorage) return;
+  try {
+    if (!extractedColors?.primary && !fontPreset) {
+      localStorage.removeItem(THEME_CACHE_KEY);
+      return;
+    }
+    localStorage.setItem(
+      THEME_CACHE_KEY,
+      JSON.stringify({
+        extractedColors: extractedColors?.primary ? extractedColors : null,
+        fontPreset: fontPreset || null,
+      })
+    );
+  } catch {
+    // ignore storage quota errors
+  }
+}

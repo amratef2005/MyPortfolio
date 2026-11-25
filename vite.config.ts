@@ -77,7 +77,10 @@ function supabaseBackendPlugin(): Plugin {
               completedProjects: pRow.completed_projects || 12,
               adminUsername: pRow.admin_username || 'admin',
               adminPassword: pRow.admin_password || 'admin123',
-              adminPin: pRow.admin_pin || '1234'
+              adminPin: pRow.admin_pin || '1234',
+              heroAvatarUrl: pRow.hero_avatar_url || '/drama_hero.png',
+              extractedColors: pRow.extracted_colors || null,
+              fontPreset: pRow.font_preset || null
             } : null;
 
             const projects = projectsRes.rows.map(r => ({
@@ -149,6 +152,11 @@ function supabaseBackendPlugin(): Plugin {
           try {
             const data = await readBody();
             await pool.query(`
+              ALTER TABLE public.portfolio_profile
+              ADD COLUMN IF NOT EXISTS extracted_colors JSONB,
+              ADD COLUMN IF NOT EXISTS font_preset VARCHAR(64);
+            `).catch(() => {});
+            await pool.query(`
               UPDATE public.portfolio_profile SET
                 name = COALESCE($1, name),
                 name_ar = COALESCE($2, name_ar),
@@ -172,6 +180,8 @@ function supabaseBackendPlugin(): Plugin {
                 admin_username = COALESCE($20, admin_username),
                 admin_password = COALESCE($21, admin_password),
                 admin_pin = COALESCE($22, admin_pin),
+                extracted_colors = COALESCE($23, extracted_colors),
+                font_preset = COALESCE($24, font_preset),
                 updated_at = NOW()
               WHERE id = 'main_profile'
             `, [
@@ -181,7 +191,9 @@ function supabaseBackendPlugin(): Plugin {
               data.github, data.linkedin, data.whatsapp,
               data.resumeUrl, data.topAvatarUrl, data.yearsOfExperience,
               data.completedProjects, data.adminUsername, data.adminPassword,
-              data.adminPin
+              data.adminPin,
+              data.extractedColors ? JSON.stringify(data.extractedColors) : null,
+              data.fontPreset || null
             ]);
             return jsonResponse(200, { success: true });
           } catch (err: any) {

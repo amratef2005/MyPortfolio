@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { ProfileInfo, Project, Certificate, SkillCategory, ContactMessage, Experience } from '../types';
 import { initialProfile, initialProjects, initialCertificates, initialSkillCategories, initialExperiences } from '../data/initialData';
-import { applyThemeColors, applyFontPreset } from '../utils/themeUtils';
+import { applyThemeColors, applyFontPreset, persistThemeCache } from '../utils/themeUtils';
 
 const DATA_SEED_KEY = 'portfolio_seed_v13';
 
@@ -95,8 +95,15 @@ const broadcastChange = (type: string, payload: any) => {
 };
 
 export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Load state from LocalStorage or fall back to defaults
+  // Load state from LocalStorage or fall back to defaults, and hydrate theme synchronously
   const [profile, setProfile] = useState<ProfileInfo>(() => {
+    const hydrateAndReturn = (resolved: ProfileInfo): ProfileInfo => {
+      applyThemeColors(resolved.extractedColors);
+      applyFontPreset(resolved.fontPreset);
+      persistThemeCache(resolved.extractedColors, resolved.fontPreset);
+      return resolved;
+    };
+
     const isSeeded = localStorage.getItem(DATA_SEED_KEY);
     if (!isSeeded) {
       localStorage.setItem(DATA_SEED_KEY, 'true');
@@ -105,15 +112,15 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       localStorage.setItem('portfolio_projects', JSON.stringify(initialProjects));
       localStorage.setItem('portfolio_certificates', JSON.stringify(initialCertificates));
       localStorage.setItem('portfolio_skills', JSON.stringify(initialSkillCategories));
-      return initialProfile;
+      return hydrateAndReturn(initialProfile);
     }
 
     const saved = localStorage.getItem('portfolio_profile');
-    if (!saved) return initialProfile;
+    if (!saved) return hydrateAndReturn(initialProfile);
     try {
       const parsed = JSON.parse(saved);
       if (parsed && typeof parsed === 'object') {
-        return {
+        return hydrateAndReturn({
           ...initialProfile,
           ...parsed,
           brandName: parsed.brandName || initialProfile.brandName || 'Amr Atef',
@@ -121,11 +128,11 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           heroAvatarUrl: parsed.heroAvatarUrl || initialProfile.heroAvatarUrl || '/drama_hero.png',
           aboutAvatarUrl: parsed.aboutAvatarUrl || initialProfile.aboutAvatarUrl || '/about_avatar.png',
           autoExtractColors: false
-        };
+        });
       }
-      return initialProfile;
+      return hydrateAndReturn(initialProfile);
     } catch {
-      return initialProfile;
+      return hydrateAndReturn(initialProfile);
     }
   });
 
@@ -268,11 +275,14 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
             const merged = { 
               ...prev, 
               ...data.profile,
+              extractedColors: data.profile.extractedColors ?? prev.extractedColors,
+              fontPreset: data.profile.fontPreset ?? prev.fontPreset,
               yearsOfExperience: needsYearsSync ? 1 : (data.profile.yearsOfExperience ?? 1),
               brandName: data.profile.brandName || initialProfile.brandName || 'Amr Atef',
               brandNameAr: data.profile.brandNameAr || initialProfile.brandNameAr || 'عمرو عاطف',
             };
             localStorage.setItem('portfolio_profile', JSON.stringify(merged));
+            persistThemeCache(merged.extractedColors, merged.fontPreset);
             if (needsYearsSync) {
               localStorage.setItem(syncKey, 'true');
               fetch('/api/profile', {
@@ -313,6 +323,7 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     localStorage.setItem('portfolio_profile', JSON.stringify(profile));
     applyThemeColors(profile.extractedColors);
     applyFontPreset(profile.fontPreset);
+    persistThemeCache(profile.extractedColors, profile.fontPreset);
   }, [profile]);
 
   // Live-sync profile & theme changes across tabs (e.g. /admin.html -> /)
@@ -441,6 +452,9 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       } catch (err) {
         console.warn('localStorage quota warning:', err);
       }
+      applyThemeColors(nextProfile.extractedColors);
+      applyFontPreset(nextProfile.fontPreset);
+      persistThemeCache(nextProfile.extractedColors, nextProfile.fontPreset);
       broadcastChange('UPDATE_PROFILE', nextProfile);
       const sid = typeof window !== 'undefined' ? localStorage.getItem('portfolio_admin_session_id') || '' : '';
       fetch('/api/profile', {
@@ -645,6 +659,9 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     setSkills(initialSkillCategories);
     setMessages([]);
     localStorage.clear();
+    applyThemeColors(undefined);
+    applyFontPreset(undefined);
+    persistThemeCache(undefined, undefined);
     broadcastChange('UPDATE_PROFILE', initialProfile);
     broadcastChange('UPDATE_EXPERIENCES', initialExperiences);
     broadcastChange('UPDATE_PROJECTS', initialProjects);
