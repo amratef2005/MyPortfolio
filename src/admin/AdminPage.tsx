@@ -496,16 +496,17 @@ export const AdminPage: React.FC = () => {
               <div className="relative">
                 <input
                   type="text"
+                  dir="ltr"
                   value={usernameInput}
                   onChange={(e) => {
                     setUsernameInput(e.target.value);
                     setLoginError('');
                   }}
                   placeholder="اسم المستخدم (Username)"
-                  className="w-full px-4 py-3 rounded-xl bg-[#08090C] border border-white/[0.08] focus:border-theme-primary text-white text-sm outline-none font-mono transition-all text-left placeholder:text-slate-600"
+                  className="w-full pl-4 pr-10 py-3 rounded-xl bg-[#08090C] border border-white/[0.08] focus:border-theme-primary text-white text-sm outline-none font-mono transition-all text-left placeholder:text-slate-600"
                   required
                 />
-                <User className="w-4 h-4 text-slate-500 absolute top-3.5 right-3.5 pointer-events-none" />
+                <User className="w-4 h-4 text-slate-500 absolute top-1/2 -translate-y-1/2 right-3.5 pointer-events-none" />
               </div>
             </div>
 
@@ -516,23 +517,31 @@ export const AdminPage: React.FC = () => {
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
+                  dir="ltr"
                   value={passwordInput}
                   onChange={(e) => {
                     setPasswordInput(e.target.value);
                     setLoginError('');
                   }}
                   placeholder="••••••••"
-                  className="w-full px-4 py-3 pr-10 rounded-xl bg-[#08090C] border border-white/[0.08] focus:border-theme-primary text-white text-sm outline-none font-mono transition-all text-left placeholder:text-slate-600"
+                  className="w-full pl-4 pr-20 py-3 rounded-xl bg-[#08090C] border border-white/[0.08] focus:border-theme-primary text-white text-sm outline-none font-mono transition-all text-left placeholder:text-slate-600"
                   required
                 />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute top-3.5 left-3 text-slate-400 hover:text-white"
+                <div
+                  dir="ltr"
+                  className="absolute top-1/2 -translate-y-1/2 right-3.5 flex items-center gap-2"
                 >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
-                <KeyRound className="w-4 h-4 text-slate-500 absolute top-3.5 right-3.5 pointer-events-none" />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    aria-label={showPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'}
+                    className="p-1 rounded-md text-slate-400 hover:text-white transition-colors cursor-pointer"
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                  <span className="h-4 w-px bg-white/10 pointer-events-none" aria-hidden="true" />
+                  <KeyRound className="w-4 h-4 text-slate-500 pointer-events-none" />
+                </div>
               </div>
             </div>
 

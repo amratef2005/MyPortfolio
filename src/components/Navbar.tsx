@@ -94,10 +94,10 @@ export const Navbar: React.FC = () => {
   return (
     <nav
       ref={navRef}
-      className={`fixed top-0 left-0 right-0 z-50 px-3 xs:px-4 sm:px-6 lg:px-8 py-3 pt-[max(0.75rem,env(safe-area-inset-top))] transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 transform-gpu px-3 xs:px-4 sm:px-6 lg:px-8 py-3 pt-[max(0.75rem,env(safe-area-inset-top))] transition-all duration-300 ${
         isScrolled
-          ? 'bg-[#050505]/92 backdrop-blur-2xl border-b border-theme-primary/25 shadow-[0_10px_35px_rgba(0,0,0,0.9)]'
-          : 'bg-[#050505]/75 backdrop-blur-xl border-b border-theme-primary/15 shadow-[0_8px_30px_rgba(0,0,0,0.75)]'
+          ? 'bg-[#050505]/92 backdrop-blur-md sm:backdrop-blur-2xl border-b border-theme-primary/25 shadow-[0_10px_35px_rgba(0,0,0,0.9)]'
+          : 'bg-[#050505]/80 backdrop-blur-sm sm:backdrop-blur-xl border-b border-theme-primary/15 shadow-[0_8px_30px_rgba(0,0,0,0.75)]'
       }`}
     >
       {/* Top-Edge Scroll Progress Indicator (GPU scaleX driven) */}

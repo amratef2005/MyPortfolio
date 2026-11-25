@@ -1,34 +1,47 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, ComponentType } from 'react';
 import { MotionConfig } from 'framer-motion';
 import { PortfolioProvider, usePortfolio } from './context/PortfolioContext';
 import { AnimatedBackground } from './components/AnimatedBackground';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { About } from './components/About';
+import { Footer } from './components/Footer';
+import { SectionErrorBoundary } from './components/SectionErrorBoundary';
 
-// Code-splitting & Lazy loading for below-the-fold sections & heavy modals
-const LazyExperience = React.lazy(() =>
+/** Retries failed dynamic imports once before surfacing to ErrorBoundary (helps flaky mobile 4G). */
+function lazyWithRetry<T extends ComponentType<any>>(
+  loader: () => Promise<{ default: T }>
+) {
+  return React.lazy(async () => {
+    try {
+      return await loader();
+    } catch {
+      await new Promise((resolve) => setTimeout(resolve, 450));
+      return loader();
+    }
+  });
+}
+
+// Code-splitting & Lazy loading for heavy below-the-fold sections & modals
+const LazyExperience = lazyWithRetry(() =>
   import('./components/Experience').then(module => ({ default: module.Experience }))
 );
-const LazyProjects = React.lazy(() =>
+const LazyProjects = lazyWithRetry(() =>
   import('./components/Projects').then(module => ({ default: module.Projects }))
 );
-const LazyCertificates = React.lazy(() =>
+const LazyCertificates = lazyWithRetry(() =>
   import('./components/Certificates').then(module => ({ default: module.Certificates }))
 );
-const LazySkills = React.lazy(() =>
+const LazySkills = lazyWithRetry(() =>
   import('./components/Skills').then(module => ({ default: module.Skills }))
 );
-const LazyContact = React.lazy(() =>
+const LazyContact = lazyWithRetry(() =>
   import('./components/Contact').then(module => ({ default: module.Contact }))
 );
-const LazyFooter = React.lazy(() =>
-  import('./components/Footer').then(module => ({ default: module.Footer }))
-);
-const LazyCVModal = React.lazy(() =>
+const LazyCVModal = lazyWithRetry(() =>
   import('./components/cv/CVModal').then(module => ({ default: module.CVModal }))
 );
-const LazyAdminDashboard = React.lazy(() =>
+const LazyAdminDashboard = lazyWithRetry(() =>
   import('./admin/AdminDashboard').then(module => ({ default: module.AdminDashboard }))
 );
 
@@ -108,39 +121,43 @@ export const App: React.FC = () => {
 
   return (
     <MotionConfig reducedMotion="user">
-      <PortfolioProvider>
-        <div className="relative min-h-screen text-slate-100 selection:bg-theme-primary/30 selection:text-theme-secondary">
-          {/* Living Animated Ambient Background (Direct GPU Driven) */}
-          <AnimatedBackground />
+      <SectionErrorBoundary>
+        <PortfolioProvider>
+          <div className="relative min-h-screen text-slate-100 selection:bg-theme-primary/30 selection:text-theme-secondary">
+            {/* Living Animated Ambient Background (Direct GPU Driven) */}
+            <AnimatedBackground />
 
-          {/* Navigation Bar */}
-          <Navbar />
+            {/* Navigation Bar */}
+            <Navbar />
 
-          {/* Core Content Flow with Compact Professional Mobile Spacing */}
-          <main className="space-y-0">
-            <Hero />
-            <About />
-            <Suspense fallback={null}>
-              <div className="defer-section"><LazyExperience /></div>
-              <div className="defer-section"><LazyProjects /></div>
-              <div className="defer-section"><LazyCertificates /></div>
-              <div className="defer-section"><LazySkills /></div>
-              <div className="defer-section"><LazyContact /></div>
-            </Suspense>
-          </main>
+            {/* Core Content Flow with Compact Professional Mobile Spacing */}
+            <main className="relative z-10 space-y-0">
+              <Hero />
+              <About />
+              <SectionErrorBoundary>
+                <Suspense fallback={null}>
+                  <div className="defer-section"><LazyExperience /></div>
+                  <div className="defer-section"><LazyProjects /></div>
+                  <div className="defer-section"><LazyCertificates /></div>
+                  <div className="defer-section"><LazySkills /></div>
+                  <div className="defer-section"><LazyContact /></div>
+                </Suspense>
+              </SectionErrorBoundary>
+            </main>
 
-          {/* Global Footer */}
-          <Suspense fallback={null}>
-            <div className="defer-section"><LazyFooter /></div>
-          </Suspense>
+            {/* Global Footer (Statically Bundled for Instant Bottom Scroll Availability) */}
+            <div className="defer-section relative z-10"><Footer /></div>
 
-          {/* Global Admin Keyboard Shortcut Handler */}
-          <AdminShortcutHandler />
+            {/* Global Admin Keyboard Shortcut Handler */}
+            <AdminShortcutHandler />
 
-          {/* Dynamic Modals loaded strictly on-demand */}
-          <ModalsContainer />
-        </div>
-      </PortfolioProvider>
+            {/* Dynamic Modals loaded strictly on-demand */}
+            <SectionErrorBoundary>
+              <ModalsContainer />
+            </SectionErrorBoundary>
+          </div>
+        </PortfolioProvider>
+      </SectionErrorBoundary>
     </MotionConfig>
   );
 };

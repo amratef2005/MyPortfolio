@@ -1,6 +1,5 @@
 import React, { useMemo, useCallback } from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
-import { AssembleItem } from './motion/KineticAssemble';
 import { ArrowUp, ArrowUpRight, Github, Linkedin, Mail, MapPin, Terminal } from 'lucide-react';
 
 export const Footer: React.FC = () => {
@@ -50,14 +49,13 @@ export const Footer: React.FC = () => {
       {/* Top Theme Gradient Accent Line */}
       <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-theme-primary/50 to-transparent pointer-events-none" />
 
-      {/* Subtle Ambient Bottom Theme Glow */}
+      {/* Subtle Ambient Bottom Theme Glow (Mobile-safe blur radius) */}
       <div
-        className="absolute -bottom-24 left-1/2 -translate-x-1/2 w-[560px] h-[220px] rounded-full blur-[90px] pointer-events-none"
+        className="absolute -bottom-16 left-1/2 -translate-x-1/2 w-[360px] sm:w-[560px] h-[160px] sm:h-[220px] rounded-full blur-[44px] sm:blur-[72px] pointer-events-none"
         style={{ background: 'radial-gradient(circle, rgba(var(--theme-primary-rgb), 0.1) 0%, transparent 70%)' }}
       />
 
-      <AssembleItem direction="bottom" distance={20} delay={0.1} duration={0.78}>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8 space-y-10">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8 space-y-10">
         {/* Main 3-Column Bento Grid */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10 text-start">
           {/* Column 1: Brand, Specialization & Availability */}
@@ -203,8 +201,7 @@ export const Footer: React.FC = () => {
             <span>C# • ASP.NET Core • Clean Architecture</span>
           </div>
         </div>
-        </div>
-      </AssembleItem>
+      </div>
     </footer>
   );
 };

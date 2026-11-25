@@ -197,7 +197,13 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   const [messages, setMessages] = useState<ContactMessage[]>(() => {
     const saved = localStorage.getItem('portfolio_messages');
-    return saved ? JSON.parse(saved) : [];
+    if (!saved) return [];
+    try {
+      const parsed = JSON.parse(saved);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
   });
 
   const [lang, setLang] = useState<'ar' | 'en'>(() => {

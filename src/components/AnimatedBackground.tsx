@@ -76,7 +76,7 @@ export const AnimatedBackground: React.FC = () => {
 
   return (
     <div
-      className="pointer-events-none fixed inset-0 -z-10 overflow-hidden select-none"
+      className="pointer-events-none fixed inset-0 z-0 overflow-hidden select-none transform-gpu"
       aria-hidden="true"
     >
       {/* Base Deep Midnight Canvas */}

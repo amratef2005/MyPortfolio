@@ -9,7 +9,7 @@ export type AssembleDirection = 'left' | 'right' | 'top' | 'bottom' | 'center';
  * - Higher viewport threshold (0.18) + subtle base delay so visitors clearly catch every transition.
  */
 export const MOTION_EASE = [0.22, 1, 0.36, 1] as const;
-export const MOTION_VIEWPORT = { once: true, amount: 0.18 } as const;
+export const MOTION_VIEWPORT = { once: true, amount: 0.08 } as const;
 
 interface AssembleItemProps {
   children: React.ReactNode;
@@ -35,7 +35,7 @@ export const AssembleItem: React.FC<AssembleItemProps> = ({
   distance = 22,
   delay = 0.12,
   duration = 0.78,
-  amount = 0.18,
+  amount = 0.08,
   style = {}
 }) => {
   const [settled, setSettled] = useState(false);
@@ -143,7 +143,7 @@ export const StaggerGroup: React.FC<StaggerGroupProps> = ({
   mode = 'inView',
   delay = 0.14,
   stagger = 0.1,
-  amount = 0.16,
+  amount = 0.08,
 }) => {
   const variants: Variants = {
     hidden: {},
