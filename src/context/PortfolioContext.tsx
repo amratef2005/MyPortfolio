@@ -116,8 +116,8 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         return {
           ...initialProfile,
           ...parsed,
-          brandName: initialProfile.brandName || 'Amr Atef',
-          brandNameAr: initialProfile.brandNameAr || 'عمرو عاطف',
+          brandName: parsed.brandName || initialProfile.brandName || 'Amr Atef',
+          brandNameAr: parsed.brandNameAr || initialProfile.brandNameAr || 'عمرو عاطف',
           heroAvatarUrl: parsed.heroAvatarUrl || initialProfile.heroAvatarUrl || '/drama_hero.png',
           aboutAvatarUrl: parsed.aboutAvatarUrl || initialProfile.aboutAvatarUrl || '/about_avatar.png',
           autoExtractColors: false
@@ -135,7 +135,16 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     try {
       const parsed = JSON.parse(saved);
       if (Array.isArray(parsed) && parsed.length > 0) {
-        return parsed;
+        return parsed.map((exp: Experience) =>
+          exp.id === 'mot7km-saas'
+            ? {
+                ...exp,
+                period: 'May 2026 – Present',
+                periodAr: 'مايو 2026 – حتى الآن',
+                liveUrl: 'https://mot7km.store',
+              }
+            : exp
+        );
       }
       return initialExperiences;
     } catch {
@@ -247,14 +256,25 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       .then(data => {
         if (!data) return;
         if (data.profile) {
+          const syncKey = 'portfolio_sync_2026_v1';
+          const needsYearsSync = !localStorage.getItem(syncKey);
           setProfile(prev => {
             const merged = { 
               ...prev, 
               ...data.profile,
+              yearsOfExperience: needsYearsSync ? 1 : (data.profile.yearsOfExperience ?? 1),
               brandName: data.profile.brandName || initialProfile.brandName || 'Amr Atef',
               brandNameAr: data.profile.brandNameAr || initialProfile.brandNameAr || 'عمرو عاطف',
             };
             localStorage.setItem('portfolio_profile', JSON.stringify(merged));
+            if (needsYearsSync) {
+              localStorage.setItem(syncKey, 'true');
+              fetch('/api/profile', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ yearsOfExperience: 1 }),
+              }).catch(() => {});
+            }
             return merged;
           });
         }

@@ -145,7 +145,7 @@ export const Skills: React.FC = () => {
 
         {/* Highlight Card: Bio Intro + Test Pass Rate */}
         <AssembleItem direction="top" distance={50}>
-          <div className="mb-10 sm:mb-14 p-4 sm:p-6 lg:p-8 rounded-3xl bg-[#0e0e12] border border-theme-primary/25 flex flex-col md:flex-row items-center justify-between gap-6 shadow-[0_10px_30px_rgba(0,0,0,0.6)]">
+          <div className="premium-card mb-10 sm:mb-14 p-4 sm:p-6 lg:p-8 rounded-3xl border border-theme-primary/25 flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="text-start max-w-2xl">
               <h3 className="text-xl font-bold text-white mb-2">
                 {lang === 'ar' ? 'خبرة عملية مبنية على بناء مشاريع واقعية' : 'Hands-on Production Architecture'}
@@ -178,7 +178,7 @@ export const Skills: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
           {displaySkills.map((skill, idx) => (
             <AssembleItem key={idx} direction="top" distance={40 + idx * 10}>
-              <div className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-[#0e0e12] border border-white/10 hover:border-theme-primary/40 transition-all duration-300 group relative overflow-hidden shadow-[0_8px_24px_rgba(0,0,0,0.6)]">
+              <div className="premium-card p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-white/10 hover:border-theme-primary/40 group relative overflow-hidden">
                 {/* Big Theme Percentage Number */}
                 <div className="flex items-baseline justify-between mb-3">
                   <span className="text-3xl sm:text-4xl font-black text-theme-primary font-mono group-hover:text-theme-secondary transition-colors drop-shadow-[0_0_15px_rgba(var(--theme-primary-rgb),0.3)]">
@@ -221,7 +221,7 @@ export const Skills: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
             {backendDomains.map((domain, sIdx) => (
               <AssembleItem key={sIdx} direction="top" distance={50 + sIdx * 10}>
-                <div className="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-[#0e0e12] border border-white/5 hover:border-theme-primary/30 transition-all duration-300 group h-full flex flex-col justify-between">
+                <div className="premium-card p-4 sm:p-5 rounded-2xl sm:rounded-3xl border border-white/10 hover:border-theme-primary/35 group h-full flex flex-col justify-between">
                   <div>
                     <div className="w-11 h-11 rounded-2xl bg-theme-primary/10 border border-theme-primary/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                       {domain.icon}

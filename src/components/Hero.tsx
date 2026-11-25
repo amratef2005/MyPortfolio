@@ -41,7 +41,7 @@ export const Hero: React.FC = () => {
             className="lg:col-span-7 flex flex-col gap-6 text-start z-10 order-2 lg:order-1"
           >
             {/* Status / Availability Pill */}
-            <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-[#121215] border border-theme-primary/25 text-theme-secondary text-xs sm:text-sm font-mono font-medium self-start shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.15)]">
+            <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-[#121215]/90 backdrop-blur-md border border-theme-primary/25 text-theme-secondary text-xs sm:text-sm font-mono font-medium self-start shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.15)]">
               <span className="w-2 h-2 rounded-full bg-theme-primary animate-ping" />
               <Activity className="w-3.5 h-3.5 text-theme-secondary shrink-0" />
               <span>
@@ -94,7 +94,7 @@ export const Hero: React.FC = () => {
               {/* "Hire Me" Button with Theme Gradient & Glow */}
               <a
                 href="#contact"
-                className="flex items-center justify-center gap-2.5 h-12 sm:h-14 px-7 sm:px-9 rounded-2xl bg-gradient-to-r from-theme-primary to-theme-secondary hover:brightness-110 text-white font-bold text-base shadow-[0_0_30px_rgba(var(--theme-primary-rgb),0.45)] hover:shadow-[0_0_45px_rgba(var(--theme-primary-rgb),0.7)] transition-all duration-300 active:scale-95"
+                className="btn-sheen flex items-center justify-center gap-2.5 h-12 sm:h-14 px-7 sm:px-9 rounded-2xl bg-gradient-to-r from-theme-primary to-theme-secondary hover:brightness-110 text-white font-bold text-base shadow-[0_0_30px_rgba(var(--theme-primary-rgb),0.45)] hover:shadow-[0_0_45px_rgba(var(--theme-primary-rgb),0.7)] transition-all duration-300 active:scale-95"
               >
                 <Send className="w-4 h-4" />
                 <span>{lang === 'ar' ? 'وظفني الآن' : 'Hire Me'}</span>
@@ -114,7 +114,7 @@ export const Hero: React.FC = () => {
             <div className="grid grid-cols-3 gap-3 sm:gap-4 pt-4 border-t border-white/10 max-w-lg">
               <div>
                 <span className="block text-2xl sm:text-3xl font-black text-theme-primary">
-                  +{profile.yearsOfExperience || 3}
+                  +{profile.yearsOfExperience ?? 1}
                 </span>
                 <span className="text-xs text-slate-400 font-medium">
                   {lang === 'ar' ? 'سنوات خبرة' : 'Years Experience'}

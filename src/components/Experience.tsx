@@ -51,16 +51,16 @@ export const Experience: React.FC = () => {
             </div>
 
             {/* Prominent Theme Number for Years of Experience */}
-            <div className="flex items-center gap-5 p-5 sm:p-6 rounded-3xl bg-[#0e0e12] border border-theme-primary/30 shadow-[0_0_35px_rgba(var(--theme-primary-rgb),0.15)] self-start lg:self-auto shrink-0">
+            <div className="premium-card flex items-center gap-5 p-5 sm:p-6 rounded-3xl border border-theme-primary/30 self-start lg:self-auto shrink-0">
               <span className="text-5xl sm:text-6xl lg:text-7xl font-black text-theme-primary drop-shadow-[0_0_25px_rgba(var(--theme-primary-rgb),0.5)] font-mono">
-                +{profile.yearsOfExperience || 2}
+                +{profile.yearsOfExperience ?? 1}
               </span>
               <div className="flex flex-col">
                 <span className="text-white font-bold text-base sm:text-lg leading-tight">
                   {lang === 'ar' ? 'سنوات من الخبرة' : 'Years of Experience'}
                 </span>
-                <span className="text-xs sm:text-sm text-slate-400 mt-1 max-w-[180px]">
-                  {lang === 'ar' ? 'في تطوير النظم الخلفية ومعمارية البرمجيات' : 'in .NET Backend Engineering & Architecture'}
+                <span className="text-xs sm:text-sm text-slate-400 mt-1 max-w-[190px]">
+                  {lang === 'ar' ? 'في تطوير النظم الخلفية منذ 2025' : 'in .NET Backend Engineering since 2025'}
                 </span>
               </div>
             </div>
@@ -96,7 +96,7 @@ export const Experience: React.FC = () => {
                   {/* Card Content Column */}
                   <div className="w-full sm:w-1/2 ps-12 sm:ps-0 sm:px-8">
                     <AssembleItem direction={isEven ? 'left' : 'right'} distance={60}>
-                      <div className="p-4 sm:p-6 lg:p-8 rounded-3xl bg-[#0e0e12]/90 border border-white/10 hover:border-theme-primary/40 transition-all duration-300 shadow-[0_10px_30px_rgba(0,0,0,0.6)] group relative overflow-hidden">
+                      <div className="premium-card p-4 sm:p-6 lg:p-8 rounded-3xl border border-white/10 hover:border-theme-primary/40 group relative overflow-hidden">
                         
                         {/* Hover Ambient Corner Glow */}
                         <div className="absolute top-0 right-0 w-32 h-32 bg-theme-primary/10 rounded-full blur-2xl group-hover:bg-theme-primary/20 transition-all pointer-events-none" />

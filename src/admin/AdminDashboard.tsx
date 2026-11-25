@@ -165,7 +165,14 @@ export const AdminDashboard: React.FC = () => {
 
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
-        <div className="relative w-full max-w-md bg-[#0e131f] border border-white/15 rounded-3xl p-8 shadow-2xl text-center">
+        <div className="relative w-full max-w-md quantix-card rounded-3xl p-8 shadow-[0_25px_70px_rgba(0,0,0,0.9)] text-center overflow-hidden">
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -top-20 inset-x-0 h-40 opacity-45"
+            style={{
+              background: 'radial-gradient(ellipse at 50% 0%, rgba(var(--theme-primary-rgb), 0.25), transparent 70%)',
+            }}
+          />
           <button
             onClick={() => setIsAdminOpen(false)}
             className="absolute top-5 end-5 p-2 text-slate-400 hover:text-white"
@@ -218,7 +225,7 @@ export const AdminDashboard: React.FC = () => {
                 background: 'linear-gradient(135deg, var(--theme-primary), var(--theme-secondary))',
                 boxShadow: '0 8px 24px -6px rgba(var(--theme-primary-rgb), 0.5)',
               }}
-              className="w-full py-3 rounded-xl text-white font-bold text-sm transition-all flex items-center justify-center gap-2 hover:brightness-110"
+              className="btn-sheen w-full py-3 rounded-xl text-white font-bold text-sm transition-all flex items-center justify-center gap-2 hover:brightness-110 cursor-pointer"
             >
               <Unlock className="w-4 h-4" />
               <span>{t.loginButton}</span>
@@ -261,7 +268,11 @@ export const AdminDashboard: React.FC = () => {
         {/* Right Main Column: Top Breadcrumb Bar + Content */}
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden bg-[#08090C]">
           {/* Quantix Top Header */}
-          <header className="px-4 sm:px-7 py-3.5 bg-[#0A0B0F]/90 border-b border-white/[0.07] flex items-center justify-between gap-4 shrink-0">
+          <header className="relative px-4 sm:px-7 py-3.5 bg-[#0A0B0F]/90 border-b border-white/[0.07] flex items-center justify-between gap-4 shrink-0">
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-theme-primary/35 to-transparent"
+            />
             {/* Breadcrumb */}
             <div className="flex items-center gap-2 text-xs sm:text-sm min-w-0">
               <Home className="w-4 h-4 text-slate-500 shrink-0" />
@@ -334,6 +345,7 @@ export const AdminDashboard: React.FC = () => {
 
           {/* Tab Content Panel */}
           <div className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto text-start">
+            <div key={activeTab} className="animate-fadeIn">
 
             {/* ========================================================= */}
             {/* TAB: DUAL IMAGE MANAGER (صورة 1 في الرئيسية وصورة 2 في About) */}
@@ -796,7 +808,7 @@ export const AdminDashboard: React.FC = () => {
                         type="number"
                         min={1}
                         max={30}
-                        value={profileForm.yearsOfExperience || 3}
+                        value={profileForm.yearsOfExperience ?? 1}
                         onChange={(e) => setProfileForm({ ...profileForm, yearsOfExperience: Number(e.target.value) })}
                         className="w-full px-4 py-2.5 rounded-xl bg-[#08090C] border border-white/10 text-theme-primary font-mono font-bold text-base outline-none focus:border-theme-primary"
                       />
@@ -1424,6 +1436,7 @@ export const AdminDashboard: React.FC = () => {
               </div>
             )}
 
+            </div>
           </div>
 
         </div>

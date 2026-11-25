@@ -23,7 +23,7 @@ export const initialProfile: ProfileInfo = {
   heroAvatarUrl: "/drama_hero.png",
   aboutAvatarUrl: "/about_avatar.png",
   autoExtractColors: false,
-  yearsOfExperience: 2,
+  yearsOfExperience: 1,
   completedProjects: 10,
   adminUsername: "amratefkandel",
   adminPassword: "KandelAmr###14",
@@ -89,8 +89,8 @@ export const initialExperiences: Experience[] = [
     roleAr: "مطور نظم خلفية",
     company: "Multi-Tenant SaaS ERP & Digital Menu Platform",
     companyAr: "منصة إدارة المطاعم والمنيو السحابي متعددة المستأجرين (SaaS)",
-    period: "2024 – Present",
-    periodAr: "2024 – حتى الآن",
+    period: "May 2026 – Present",
+    periodAr: "مايو 2026 – حتى الآن",
     location: "Remote • Egypt",
     locationAr: "عن بُعد • مصر",
     type: "Production SaaS • High Concurrency",
@@ -157,7 +157,7 @@ export const initialExperiences: Experience[] = [
       "إعداد وتكوين تدفقات النشر المؤتمت (CI/CD) باستخدام GitHub Actions والاستضافة عبر خوادم IIS."
     ],
     githubUrl: "https://github.com/amratef2005",
-    liveUrl: "https://mot7km.com"
+    liveUrl: "https://mot7km.store"
   }
 ];
 

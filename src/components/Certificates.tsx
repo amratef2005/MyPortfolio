@@ -58,7 +58,7 @@ export const Certificates: React.FC = () => {
                 distance={100}
                 className="h-full"
               >
-                <div className="p-4 sm:p-6 lg:p-8 rounded-3xl bg-[#0e0e12] border border-white/10 hover:border-theme-primary/40 flex flex-col justify-between group overflow-hidden transition-all duration-300 shadow-[0_10px_30px_rgba(0,0,0,0.6)] hover:shadow-[0_15px_35px_rgba(var(--theme-primary-rgb),0.15)] h-full relative">
+                <div className="premium-card p-4 sm:p-6 lg:p-8 rounded-3xl border border-white/10 hover:border-theme-primary/40 flex flex-col justify-between group overflow-hidden h-full relative">
                   
                   {/* Subtle Corner Ambient Light */}
                   <div className="absolute top-0 right-0 w-32 h-32 bg-theme-primary/5 rounded-full blur-2xl group-hover:bg-theme-primary/15 transition-all pointer-events-none" />

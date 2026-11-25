@@ -73,7 +73,7 @@ export const BentoOverview: React.FC<BentoOverviewProps> = ({
         <button
           type="button"
           onClick={onNewProject}
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold text-white border border-white/15 transition-all hover:brightness-110 active:scale-95"
+          className="btn-sheen inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold text-white border border-white/15 transition-all hover:brightness-110 active:scale-95 cursor-pointer"
           style={{
             background:
               'linear-gradient(135deg, var(--theme-primary), var(--theme-secondary))',
@@ -90,8 +90,9 @@ export const BentoOverview: React.FC<BentoOverviewProps> = ({
         {/* Card 1: Active Projects + Area Sparkline */}
         <div
           onClick={() => onNavigate('projects')}
-          className="quantix-card quantix-card-interactive group cursor-pointer p-5 flex flex-col justify-between min-h-[185px]"
+          className="quantix-card quantix-card-interactive relative overflow-hidden group cursor-pointer p-5 flex flex-col justify-between min-h-[185px]"
         >
+          <div className="pointer-events-none absolute -top-10 -end-10 w-28 h-28 rounded-full bg-theme-primary/10 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-xl bg-theme-primary/15 border border-theme-primary/30 flex items-center justify-center text-theme-primary">
@@ -132,8 +133,9 @@ export const BentoOverview: React.FC<BentoOverviewProps> = ({
         {/* Card 2: Skills & Certificates + Mini Bar Chart */}
         <div
           onClick={() => onNavigate('skills')}
-          className="quantix-card quantix-card-interactive group cursor-pointer p-5 flex flex-col justify-between min-h-[185px]"
+          className="quantix-card quantix-card-interactive relative overflow-hidden group cursor-pointer p-5 flex flex-col justify-between min-h-[185px]"
         >
+          <div className="pointer-events-none absolute -top-10 -end-10 w-28 h-28 rounded-full bg-theme-secondary/10 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-xl bg-theme-secondary/15 border border-theme-secondary/30 flex items-center justify-center text-theme-secondary">
@@ -180,8 +182,9 @@ export const BentoOverview: React.FC<BentoOverviewProps> = ({
         {/* Card 3: Portfolio Readiness + Circular Ring */}
         <div
           onClick={() => onNavigate('theme')}
-          className="quantix-card quantix-card-interactive group cursor-pointer p-5 flex flex-col justify-between min-h-[185px]"
+          className="quantix-card quantix-card-interactive relative overflow-hidden group cursor-pointer p-5 flex flex-col justify-between min-h-[185px]"
         >
+          <div className="pointer-events-none absolute -top-10 -end-10 w-28 h-28 rounded-full bg-theme-primary/10 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-xl bg-theme-primary/15 border border-theme-primary/30 flex items-center justify-center text-theme-primary">

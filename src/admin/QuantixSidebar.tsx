@@ -104,10 +104,18 @@ export const QuantixSidebar: React.FC<QuantixSidebarProps> = ({
 
   return (
     <aside
-      className={`shrink-0 bg-[#0A0B0F] border-b lg:border-b-0 lg:border-e border-white/[0.07] flex flex-col transition-all duration-300 select-none ${
+      className={`relative overflow-hidden shrink-0 bg-[#0A0B0F] border-b lg:border-b-0 lg:border-e border-white/[0.07] lg:sticky lg:top-0 lg:h-screen flex flex-col transition-all duration-300 select-none ${
         collapsed ? 'lg:w-[76px]' : 'w-full lg:w-[250px]'
       }`}
     >
+      {/* Subtle Top Theme Glow */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -top-16 inset-x-0 h-44 opacity-50"
+        style={{
+          background: 'radial-gradient(ellipse at 50% 0%, rgba(var(--theme-primary-rgb), 0.16) 0%, transparent 72%)',
+        }}
+      />
       {/* Top Brand Row */}
       <div className="px-4 pt-4 pb-3 flex items-center justify-between gap-2">
         <button

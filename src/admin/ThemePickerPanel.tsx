@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Palette, RotateCcw, Check, Sparkles, Type } from 'lucide-react';
 import { usePortfolio } from '../context/PortfolioContext';
 import {
@@ -13,7 +13,7 @@ import {
 } from '../utils/themeUtils';
 import { adminTranslations } from './adminTranslations';
 import { RgbColorSphere } from './RgbColorSphere';
-import { ConfirmActionModal } from './ConfirmActionModal';
+import { ConfirmActionModal, ConfirmActionState } from './ConfirmActionModal';
 
 const RECENT_COLORS_KEY = 'portfolio_recent_colors';
 
@@ -43,7 +43,22 @@ export const ThemePickerPanel: React.FC<{ onSaved?: () => void }> = ({ onSaved }
   const currentFont: FontPresetId = profile.fontPreset || DEFAULT_FONT_PRESET;
 
   const [recentColors, setRecentColors] = useState<ThemePreset[]>(loadRecentColors);
-  const [confirmResetOpen, setConfirmResetOpen] = useState(false);
+  const [draftColor, setDraftColor] = useState<string>(currentPrimary);
+  const [confirmState, setConfirmState] = useState<ConfirmActionState>({
+    isOpen: false,
+    variant: 'edit',
+    title: '',
+    description: '',
+    onConfirm: () => {},
+  });
+
+  useEffect(() => {
+    setDraftColor(currentPrimary);
+  }, [currentPrimary]);
+
+  const requestConfirm = (opts: Omit<ConfirmActionState, 'isOpen'>) => {
+    setConfirmState({ ...opts, isOpen: true });
+  };
 
   const recordRecentColor = (primary: string, secondary: string, accent: string) => {
     const upper = primary.toUpperCase();
@@ -70,52 +85,106 @@ export const ThemePickerPanel: React.FC<{ onSaved?: () => void }> = ({ onSaved }
   };
 
   const applyPreset = (primary: string, secondary: string, accent: string) => {
-    updateProfile({
-      extractedColors: buildThemeColors(primary, secondary, accent),
+    requestConfirm({
+      variant: 'edit',
+      title: lang === 'ar' ? 'تأكيد تغيير اللون' : 'Confirm Color Change',
+      description:
+        lang === 'ar'
+          ? `هل تريد تطبيق اللون ${primary} وتدرجاته على البورتفوليو ولوحة التحكم؟`
+          : `Apply color ${primary} and its gradient shades to Portfolio & Dashboard?`,
+      confirmLabel: lang === 'ar' ? 'تطبيق اللون' : 'Apply Color',
+      cancelLabel: lang === 'ar' ? 'إلغاء' : 'Cancel',
+      onConfirm: () => {
+        updateProfile({
+          extractedColors: buildThemeColors(primary, secondary, accent),
+        });
+        onSaved?.();
+      },
     });
-    onSaved?.();
   };
 
   const handleSphereChange = (hex: string) => {
-    updateProfile({
-      extractedColors: buildAutoThemeColors(hex),
-    });
-    onSaved?.();
+    setDraftColor(hex);
   };
 
   const handleSphereCommit = (hex: string) => {
     const built = buildAutoThemeColors(hex);
-    recordRecentColor(built.primary, built.secondary || built.primary, built.accent || built.primary);
+    requestConfirm({
+      variant: 'edit',
+      title: lang === 'ar' ? 'تأكيد تطبيق اللون المختار' : 'Confirm Selected RGB Color',
+      description:
+        lang === 'ar'
+          ? `هل تريد تطبيق اللون ${built.primary} (والثانوي ${built.secondary}) على البورتفوليو ولوحة التحكم؟`
+          : `Apply ${built.primary} (secondary ${built.secondary}) to Portfolio & Dashboard?`,
+      confirmLabel: lang === 'ar' ? 'تطبيق اللون' : 'Apply Color',
+      cancelLabel: lang === 'ar' ? 'إلغاء' : 'Cancel',
+      onConfirm: () => {
+        updateProfile({ extractedColors: built });
+        recordRecentColor(built.primary, built.secondary || built.primary, built.accent || built.primary);
+        onSaved?.();
+      },
+    });
   };
 
   const handleCustomChange = (field: 'primary' | 'secondary', hex: string) => {
-    if (field === 'primary') {
-      const built = buildAutoThemeColors(hex);
-      updateProfile({ extractedColors: built });
-      recordRecentColor(built.primary, built.secondary || built.primary, built.accent || built.primary);
-    } else {
-      const built = buildThemeColors(currentPrimary, hex, currentAccent);
-      updateProfile({ extractedColors: built });
-      recordRecentColor(built.primary, built.secondary || built.primary, built.accent || built.primary);
-    }
-    onSaved?.();
+    const built =
+      field === 'primary'
+        ? buildAutoThemeColors(hex)
+        : buildThemeColors(currentPrimary, hex, currentAccent);
+    requestConfirm({
+      variant: 'edit',
+      title: lang === 'ar' ? 'تأكيد تعديل اللون' : 'Confirm Color Update',
+      description:
+        lang === 'ar'
+          ? `هل تريد تطبيق اللون ${hex.toUpperCase()} على البورتفوليو ولوحة التحكم؟`
+          : `Apply ${hex.toUpperCase()} to Portfolio & Dashboard?`,
+      confirmLabel: lang === 'ar' ? 'تأكيد التعديل' : 'Apply Color',
+      cancelLabel: lang === 'ar' ? 'إلغاء' : 'Cancel',
+      onConfirm: () => {
+        updateProfile({ extractedColors: built });
+        recordRecentColor(built.primary, built.secondary || built.primary, built.accent || built.primary);
+        onSaved?.();
+      },
+    });
   };
 
   const handleFontSelect = (fontId: FontPresetId) => {
-    updateProfile({ fontPreset: fontId });
-    onSaved?.();
-  };
-
-  const executeReset = () => {
-    updateProfile({
-      extractedColors: DEFAULT_THEME_COLORS,
-      fontPreset: DEFAULT_FONT_PRESET,
+    const selected = FONT_PRESETS.find((f) => f.id === fontId);
+    const label = lang === 'ar' ? (selected?.nameAr || fontId) : (selected?.name || fontId);
+    requestConfirm({
+      variant: 'edit',
+      title: lang === 'ar' ? 'تأكيد تغيير الخط' : 'Confirm Font Change',
+      description:
+        lang === 'ar'
+          ? `هل تريد تطبيق خط "${label}" على البورتفوليو ولوحة التحكم بالكامل؟`
+          : `Apply "${label}" font across Portfolio & Dashboard?`,
+      confirmLabel: lang === 'ar' ? 'تطبيق الخط' : 'Apply Font',
+      cancelLabel: lang === 'ar' ? 'إلغاء' : 'Cancel',
+      onConfirm: () => {
+        updateProfile({ fontPreset: fontId });
+        onSaved?.();
+      },
     });
-    onSaved?.();
   };
 
   const handleReset = () => {
-    setConfirmResetOpen(true);
+    requestConfirm({
+      variant: 'danger',
+      title: lang === 'ar' ? 'تأكيد إعادة تعيين الألوان والخطوط' : 'Confirm Theme & Font Reset',
+      description:
+        lang === 'ar'
+          ? 'سيتم إرجاع الألوان والخطوط إلى الإعدادات الافتراضية للبورتفوليو ولوحة التحكم.'
+          : 'This will reset colors and typography back to the default settings.',
+      confirmLabel: lang === 'ar' ? 'تأكيد الإعادة' : 'Reset Default',
+      cancelLabel: lang === 'ar' ? 'إلغاء' : 'Cancel',
+      onConfirm: () => {
+        updateProfile({
+          extractedColors: DEFAULT_THEME_COLORS,
+          fontPreset: DEFAULT_FONT_PRESET,
+        });
+        onSaved?.();
+      },
+    });
   };
 
   return (
@@ -213,7 +282,7 @@ export const ThemePickerPanel: React.FC<{ onSaved?: () => void }> = ({ onSaved }
           </div>
 
           <RgbColorSphere
-            color={currentPrimary}
+            color={draftColor}
             onChange={handleSphereChange}
             onCommit={handleSphereCommit}
             brightnessLabel={t.brightness}
@@ -366,18 +435,11 @@ export const ThemePickerPanel: React.FC<{ onSaved?: () => void }> = ({ onSaved }
       </div>
 
       <ConfirmActionModal
-        isOpen={confirmResetOpen}
-        variant="danger"
-        title={lang === 'ar' ? 'تأكيد إعادة تعيين الألوان والخطوط' : 'Confirm Theme & Font Reset'}
-        description={
-          lang === 'ar'
-            ? 'سيتم إرجاع الألوان والخطوط إلى الإعدادات الافتراضية للبورتفوليو ولوحة التحكم.'
-            : 'This will reset colors and typography back to the default settings.'
-        }
-        confirmLabel={lang === 'ar' ? 'تأكيد الإعادة' : 'Reset Default'}
-        cancelLabel={lang === 'ar' ? 'إلغاء' : 'Cancel'}
-        onConfirm={executeReset}
-        onClose={() => setConfirmResetOpen(false)}
+        {...confirmState}
+        onClose={() => {
+          setDraftColor(currentPrimary);
+          setConfirmState((prev) => ({ ...prev, isOpen: false }));
+        }}
       />
     </div>
   );

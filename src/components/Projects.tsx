@@ -68,7 +68,7 @@ export const Projects: React.FC = () => {
                 <Layers className="w-3.5 h-3.5 text-theme-primary" />
                 <span>{lang === 'ar' ? 'المشاريع والمعمارية التقنية' : 'Architecture & Backend Projects'}</span>
               </div>
-              <h2 className="font-poster text-3xl sm:text-4xl lg:text-5xl font-black text-white uppercase tracking-wide leading-[1.08]">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-[1.2]">
                 {lang === 'ar' ? (
                   <>
                     مشاريع برمجية بمعمارية نظيفة <span className="text-theme-primary drop-shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.4)]">وفصل محكم للطبقات</span>
@@ -122,13 +122,10 @@ export const Projects: React.FC = () => {
                 distance={28}
                 className="h-full"
               >
-                <div className="rounded-3xl bg-[#0e0e12] border border-white/10 hover:border-theme-primary/40 p-4 sm:p-6 lg:p-7 flex flex-col justify-between group overflow-hidden transition-all duration-300 shadow-[0_12px_32px_rgba(0,0,0,0.7)] hover:shadow-[0_16px_40px_rgba(var(--theme-primary-rgb),0.18)] h-full relative">
+                <div className="premium-card rounded-3xl border border-white/10 hover:border-theme-primary/40 p-4 sm:p-6 lg:p-7 flex flex-col justify-between group overflow-hidden h-full relative">
 
                   {/* Top Glowing Gradient Bar */}
                   <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-theme-primary via-theme-secondary to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-
-                  {/* Top Crimson Accent Line */}
-                  <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-theme-primary via-theme-secondary to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
                   <div>
                     {/* Top Badges Header Bar */}

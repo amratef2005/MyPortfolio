@@ -530,7 +530,7 @@ export const AdminPage: React.FC = () => {
                 background: 'linear-gradient(135deg, var(--theme-primary), var(--theme-secondary))',
                 boxShadow: '0 8px 24px -6px rgba(var(--theme-primary-rgb), 0.45)',
               }}
-              className="w-full py-3.5 mt-2 rounded-xl hover:brightness-110 text-white font-bold text-sm transition-all flex items-center justify-center gap-2 group cursor-pointer"
+              className="btn-sheen w-full py-3.5 mt-2 rounded-xl hover:brightness-110 text-white font-bold text-sm transition-all flex items-center justify-center gap-2 group cursor-pointer"
             >
               <Unlock className="w-4 h-4 group-hover:scale-110 transition-transform" />
               <span>تأكيد تسجيل الدخول</span>
@@ -582,7 +582,11 @@ export const AdminPage: React.FC = () => {
       {/* Right Main Column: Quantix Top Bar + Content */}
       <div className="flex-1 flex flex-col min-w-0 bg-[#08090C]">
         {/* Top Header */}
-        <header className="px-4 sm:px-7 py-3 bg-[#0A0B0F]/90 border-b border-white/[0.07] sticky top-0 z-40 backdrop-blur-xl flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 pt-[max(0.75rem,env(safe-area-inset-top))]">
+        <header className="relative px-4 sm:px-7 py-3 bg-[#0A0B0F]/90 border-b border-white/[0.07] sticky top-0 z-40 backdrop-blur-xl flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 pt-[max(0.75rem,env(safe-area-inset-top))]">
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-theme-primary/35 to-transparent"
+          />
           {/* Left: Breadcrumb + Brand Identity Quick Trigger */}
           <div className="flex items-center gap-3 min-w-0">
             <div className="flex items-center gap-2 text-xs sm:text-sm text-slate-500">
@@ -608,7 +612,7 @@ export const AdminPage: React.FC = () => {
               href="/"
               target="_blank"
               rel="noreferrer"
-              className="flex items-center justify-center gap-1.5 h-9 px-3 rounded-xl bg-theme-primary/15 hover:bg-theme-primary/25 text-theme-primary border border-theme-primary/30 text-xs font-mono font-semibold transition-all shrink-0 touch-manipulation"
+              className="btn-sheen flex items-center justify-center gap-1.5 h-9 px-3 rounded-xl bg-theme-primary/15 hover:bg-theme-primary/25 text-theme-primary border border-theme-primary/30 text-xs font-mono font-semibold transition-all shrink-0 touch-manipulation"
             >
               <ExternalLink className="w-3.5 h-3.5 shrink-0" />
               <span className="hidden sm:inline">{lang === 'ar' ? 'معاينة البورتفوليو' : 'Preview'}</span>
@@ -626,6 +630,7 @@ export const AdminPage: React.FC = () => {
 
         {/* Content Body */}
         <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto max-w-6xl w-full min-w-0 pb-[max(2rem,env(safe-area-inset-bottom))]">
+          <div key={activeTab} className="animate-fadeIn">
           {/* TAB 1: BENTO OVERVIEW */}
           {activeTab === 'overview' && (
             <div className="space-y-6">
@@ -2030,6 +2035,7 @@ export const AdminPage: React.FC = () => {
               </div>
             </div>
           )}
+          </div>
         </main>
       </div>
 

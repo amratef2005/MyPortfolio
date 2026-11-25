@@ -117,7 +117,7 @@ export const Contact: React.FC = () => {
               <span>{lang === 'ar' ? 'تواصل معي' : 'Contact Me'}</span>
             </div>
 
-            <h2 className="font-poster text-3xl sm:text-4xl lg:text-5xl font-black text-white uppercase tracking-wide leading-[1.08]">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-[1.2]">
               {lang === 'ar' ? (
                 <>
                   لديك مشروع جديد؟ <span className="text-theme-primary drop-shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.4)]">دعنا نتحدث الآن</span>
@@ -131,8 +131,8 @@ export const Contact: React.FC = () => {
 
             <p className="text-slate-400 mt-4 text-sm sm:text-base leading-relaxed">
               {lang === 'ar'
-                ? 'سواء كنت ترغب في بدء مشروع جديد، إعادة تصميم منتجك، أو استشارة سريعة في الـ UI/UX، يسعدني دائماً تواصلك.'
-                : 'Whether you have a new venture, want to redesign an existing product, or need a UI/UX consultation, I would love to hear from you.'}
+                ? 'سواء كنت ترغب في بناء نظام خلفي جديد، تطوير واجهات APIs، أو استشارة معمارية في .NET وClean Architecture، يسعدني تواصلك.'
+                : 'Whether you have a new backend platform, scalable RESTful API, or .NET Clean Architecture consultation, I would love to hear from you.'}
             </p>
           </div>
         </AssembleItem>
@@ -141,8 +141,8 @@ export const Contact: React.FC = () => {
 
           {/* Left Column: Direct Contact Info Channels */}
           <AssembleItem direction="left" distance={100} className="lg:col-span-5 space-y-4">
-            <div className="p-6 sm:p-7 rounded-xl bg-[#0c0c0e] border border-white/10 space-y-4">
-              <h3 className="font-poster text-xl uppercase tracking-wider font-bold text-white mb-2">
+            <div className="premium-card p-6 sm:p-8 rounded-3xl border border-white/10 space-y-4">
+              <h3 className="text-xl font-bold text-white mb-2">
                 {lang === 'ar' ? 'قنوات التواصل المباشرة' : 'Direct Channels'}
               </h3>
 
@@ -241,7 +241,7 @@ export const Contact: React.FC = () => {
 
           {/* Right Column: Contact Message Form */}
           <AssembleItem direction="right" distance={100} className="lg:col-span-7">
-            <div className="p-6 sm:p-8 rounded-xl bg-[#0c0c0e] border border-white/10 shadow-[0_15px_35px_rgba(0,0,0,0.7)]">
+            <div className="premium-card p-6 sm:p-8 rounded-3xl border border-white/10">
               {submitted ? (
                 <div className="text-center py-12 space-y-4">
                   <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mx-auto">
@@ -308,7 +308,7 @@ export const Contact: React.FC = () => {
                       type="text"
                       value={formData.subject}
                       onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                      placeholder={lang === 'ar' ? 'تصميم تطبيق موبايل جديد / موقع إلكتروني' : 'New Mobile App Design / Web UI'}
+                      placeholder={lang === 'ar' ? 'نظام SaaS خلفي / واجهة ASP.NET Core API' : 'Multi-Tenant SaaS Backend / ASP.NET Core API'}
                       className="w-full px-4 py-3 rounded-xl bg-[#15151c] border border-white/10 focus:border-theme-primary focus:ring-1 focus:ring-theme-primary text-white text-sm outline-none transition-colors"
                     />
                   </div>
@@ -332,7 +332,7 @@ export const Contact: React.FC = () => {
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="w-full flex items-center justify-center gap-2 h-14 rounded-2xl bg-gradient-to-r from-theme-primary to-theme-secondary hover:brightness-110 text-white font-bold text-base shadow-[0_0_30px_rgba(var(--theme-primary-rgb),0.4)] hover:shadow-[0_0_40px_rgba(var(--theme-primary-rgb),0.6)] transition-all active:scale-98 disabled:opacity-50"
+                    className="btn-sheen w-full flex items-center justify-center gap-2 h-14 rounded-2xl bg-gradient-to-r from-theme-primary to-theme-secondary hover:brightness-110 text-white font-bold text-base shadow-[0_0_30px_rgba(var(--theme-primary-rgb),0.4)] hover:shadow-[0_0_40px_rgba(var(--theme-primary-rgb),0.6)] transition-all active:scale-98 disabled:opacity-50"
                   >
                     <Send className="w-4 h-4" />
                     <span>
