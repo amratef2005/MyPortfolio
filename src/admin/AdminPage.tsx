@@ -66,7 +66,8 @@ export const AdminPage: React.FC = () => {
     lang,
     setLang,
     isAuthenticated,
-    login,
+    verifyAdminCredentials,
+    completeLoginSession,
     logout,
     updateCredentials,
     updateProfile,
@@ -81,7 +82,8 @@ export const AdminPage: React.FC = () => {
     deleteMessage,
     exportData,
     importData,
-    resetToDefault
+    resetToDefault,
+    refreshPortfolio
   } = usePortfolio();
 
   // Login Form States
@@ -90,6 +92,8 @@ export const AdminPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberDevice, setRememberDevice] = useState(true);
   const [loginError, setLoginError] = useState('');
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const loginFormRef = React.useRef<HTMLFormElement | null>(null);
 
   // iPhone / iOS App Shell UI States
   const [isMobileMoreOpen, setIsMobileMoreOpen] = useState(false);
@@ -113,8 +117,28 @@ export const AdminPage: React.FC = () => {
     }
   };
 
-  // Dashboard Tabs
-  const [activeTab, setActiveTab] = useState<'overview' | 'status' | 'projects' | 'certificates' | 'skills' | 'profile' | 'security' | 'inbox' | 'backup' | 'theme'>('overview');
+  // Dashboard Tabs (persisted across full reloads via sessionStorage)
+  const ADMIN_TABS = ['overview', 'status', 'projects', 'certificates', 'skills', 'profile', 'security', 'inbox', 'backup', 'theme'] as const;
+  type AdminTab = (typeof ADMIN_TABS)[number];
+  const [activeTab, setActiveTab] = useState<AdminTab>(() => {
+    try {
+      const saved = sessionStorage.getItem('admin_active_tab');
+      if (saved && (ADMIN_TABS as readonly string[]).includes(saved)) {
+        return saved as AdminTab;
+      }
+    } catch {
+      // ignore
+    }
+    return 'overview';
+  });
+
+  React.useEffect(() => {
+    try {
+      sessionStorage.setItem('admin_active_tab', activeTab);
+    } catch {
+      // ignore
+    }
+  }, [activeTab]);
   const [statusSuccess, setStatusSuccess] = useState('');
 
   // Edit Project State
@@ -314,6 +338,83 @@ export const AdminPage: React.FC = () => {
     }
   }, [isAuthenticated, fetchSessions]);
 
+  // Dashboard Refresh & iPhone Pull-to-Refresh
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [refreshFeedback, setRefreshFeedback] = useState<'synced' | 'error' | null>(null);
+  const [pullDistance, setPullDistance] = useState(0);
+  const pullStartYRef = React.useRef<number | null>(null);
+  const mainContentRef = React.useRef<HTMLElement | null>(null);
+  const PULL_THRESHOLD = 64;
+
+  const handleHardReload = React.useCallback(async () => {
+    try {
+      if ('caches' in window) {
+        const keys = await caches.keys();
+        await Promise.all(
+          keys
+            .filter((k) => k.startsWith('amr-admin-shell'))
+            .map((k) => caches.delete(k))
+        );
+      }
+      if ('serviceWorker' in navigator) {
+        const regs = await navigator.serviceWorker.getRegistrations();
+        await Promise.all(regs.map((r) => r.update().catch(() => {})));
+      }
+    } catch {
+      // ignore cache errors and proceed with reload
+    }
+    window.location.reload();
+  }, []);
+
+  const handleRefresh = React.useCallback(async (e?: React.MouseEvent<HTMLButtonElement>) => {
+    if (e?.shiftKey) {
+      await handleHardReload();
+      return;
+    }
+    if (isRefreshing) return;
+    setIsRefreshing(true);
+    setRefreshFeedback(null);
+    const [ok] = await Promise.all([
+      refreshPortfolio(),
+      fetchSessions(),
+    ]);
+    setIsRefreshing(false);
+    setRefreshFeedback(ok ? 'synced' : 'error');
+    setTimeout(() => setRefreshFeedback(null), 2400);
+  }, [isRefreshing, refreshPortfolio, fetchSessions, handleHardReload]);
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLElement>) => {
+    if (isRefreshing || e.touches.length !== 1) return;
+    const atTop = (typeof window !== 'undefined' ? window.scrollY <= 2 : true)
+      && (mainContentRef.current ? mainContentRef.current.scrollTop <= 2 : true);
+    if (atTop) {
+      pullStartYRef.current = e.touches[0].clientY;
+    } else {
+      pullStartYRef.current = null;
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLElement>) => {
+    if (pullStartYRef.current === null || isRefreshing || e.touches.length !== 1) return;
+    const delta = e.touches[0].clientY - pullStartYRef.current;
+    if (delta <= 0) {
+      setPullDistance(0);
+      return;
+    }
+    const damped = Math.min(92, Math.round(delta * 0.45));
+    setPullDistance(damped);
+  };
+
+  const handleTouchEnd = () => {
+    if (pullStartYRef.current === null) return;
+    const shouldRefresh = pullDistance >= PULL_THRESHOLD;
+    pullStartYRef.current = null;
+    setPullDistance(0);
+    if (shouldRefresh) {
+      void handleRefresh();
+    }
+  };
+
   // Handle Terminate Newest Device (Primary Master / Co-Master Only)
   const handleTerminateNewest = async () => {
     if (!window.confirm('هل أنت متأكد من رغبتك في طرد أحدث جهاز مسجل دخولاً؟')) {
@@ -437,36 +538,54 @@ export const AdminPage: React.FC = () => {
   };
 
   // Handle Login
-  const handleLoginSubmit = async (e: React.FormEvent) => {
+  const handleLoginSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!usernameInput.trim() || !passwordInput.trim()) {
+    if (isLoggingIn) return;
+
+    const cleanUser = usernameInput.trim();
+    if (!cleanUser || !passwordInput.trim()) {
       setLoginError('يرجى إدخال اسم المستخدم وكلمة المرور');
       return;
     }
 
-    const success = login(usernameInput, passwordInput, rememberDevice);
-    if (success) {
-      // Prompt browser password managers cleanly via Credential Management API when supported
-      try {
-        const CredCtor = (window as any).PasswordCredential;
-        if (CredCtor && (navigator as any).credentials?.store) {
-          const cred = new CredCtor({
-            id: usernameInput.trim(),
-            password: passwordInput,
-            name: profile.name || 'Portfolio Admin',
-          });
-          await (navigator as any).credentials.store(cred);
-        }
-      } catch {
-        // Ignore gracefully on browsers like Safari iOS that rely purely on form semantics
-      }
-
-      setLoginError('');
-      setUsernameInput('');
-      setPasswordInput('');
-    } else {
+    if (!verifyAdminCredentials(cleanUser, passwordInput)) {
       setLoginError('اسم المستخدم أو كلمة المرور غير صحيحة');
+      return;
     }
+
+    setLoginError('');
+    setIsLoggingIn(true);
+
+    // Ensure password input uses type="password" when browsers inspect the submitted form
+    setShowPassword(false);
+    const formEl = loginFormRef.current;
+    const pwdInput = formEl?.querySelector('input[name="password"]') as HTMLInputElement | null;
+    if (pwdInput) {
+      pwdInput.type = 'password';
+    }
+
+    // Store credentials via Credential Management API while the form is still mounted and intact
+    try {
+      const CredCtor = (window as any).PasswordCredential;
+      if (CredCtor && (navigator as any).credentials?.store) {
+        const cred = formEl
+          ? new CredCtor(formEl)
+          : new CredCtor({
+              id: cleanUser,
+              password: passwordInput,
+              name: profile.name || 'Portfolio Admin',
+            });
+        await (navigator as any).credentials.store(cred);
+      }
+    } catch {
+      // Safari iOS does not support PasswordCredential and relies on navigation after form submit
+    }
+
+    // Persist session + register device without clearing form inputs beforehand
+    await completeLoginSession(rememberDevice, true);
+
+    // Trigger real same-origin navigation so Chrome & iOS Safari Keychain prompt "Save Password" immediately
+    window.location.assign(window.location.pathname + window.location.search);
   };
 
   // Handle Update Security / Password (Protected by Verification PIN)
@@ -583,7 +702,7 @@ export const AdminPage: React.FC = () => {
             </div>
           )}
 
-          <form method="post" action="/admin" autoComplete="on" onSubmit={handleLoginSubmit} className="space-y-4 text-right">
+          <form ref={loginFormRef} method="post" action="/admin" autoComplete="on" onSubmit={handleLoginSubmit} className="space-y-4 text-right">
             <div>
               <label htmlFor="admin-username" className="block text-xs font-mono text-slate-300 mb-1.5 font-semibold">
                 اسم المستخدم (Username)
@@ -665,14 +784,15 @@ export const AdminPage: React.FC = () => {
 
             <button
               type="submit"
+              disabled={isLoggingIn}
               style={{
                 background: 'linear-gradient(135deg, var(--theme-primary), var(--theme-secondary))',
                 boxShadow: '0 8px 24px -6px rgba(var(--theme-primary-rgb), 0.45)',
               }}
-              className="btn-sheen w-full py-3.5 mt-2 rounded-xl hover:brightness-110 text-white font-bold text-sm transition-all flex items-center justify-center gap-2 group cursor-pointer"
+              className="btn-sheen w-full py-3.5 mt-2 rounded-xl hover:brightness-110 text-white font-bold text-sm transition-all flex items-center justify-center gap-2 group cursor-pointer disabled:opacity-70"
             >
-              <Unlock className="w-4 h-4 group-hover:scale-110 transition-transform" />
-              <span>تأكيد تسجيل الدخول</span>
+              <Unlock className={`w-4 h-4 transition-transform ${isLoggingIn ? 'animate-pulse' : 'group-hover:scale-110'}`} />
+              <span>{isLoggingIn ? 'جاري تأكيد الدخول...' : 'تأكيد تسجيل الدخول'}</span>
             </button>
           </form>
 
@@ -765,6 +885,54 @@ export const AdminPage: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
+            {refreshFeedback && (
+              <span
+                className={`hidden md:inline-flex items-center gap-1 px-2.5 h-9 rounded-xl border text-[11px] font-mono animate-fadeIn ${
+                  refreshFeedback === 'synced'
+                    ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-400'
+                    : 'bg-rose-500/15 border-rose-500/30 text-rose-400'
+                }`}
+              >
+                {refreshFeedback === 'synced' ? (
+                  <>
+                    <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+                    <span>{lang === 'ar' ? 'تم التحديث' : 'Synced'}</span>
+                  </>
+                ) : (
+                  <>
+                    <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                    <span>{lang === 'ar' ? 'تعذر التحديث' : 'Sync failed'}</span>
+                  </>
+                )}
+              </span>
+            )}
+
+            <button
+              type="button"
+              onClick={handleRefresh}
+              disabled={isRefreshing}
+              aria-label={lang === 'ar' ? 'تحديث البيانات' : 'Refresh data'}
+              title={
+                lang === 'ar'
+                  ? 'تحديث ومزامنة البيانات (Shift + نقر لإعادة تحميل التطبيق وتحديث الكاش)'
+                  : 'Refresh & sync data (Shift + Click to hard reload app)'
+              }
+              className={`flex items-center justify-center gap-1.5 h-9 px-2.5 sm:px-3 rounded-xl border text-xs font-mono font-semibold transition-all shrink-0 touch-manipulation disabled:opacity-70 ${
+                refreshFeedback === 'synced'
+                  ? 'bg-emerald-500/15 border-emerald-500/35 text-emerald-300'
+                  : refreshFeedback === 'error'
+                  ? 'bg-rose-500/15 border-rose-500/35 text-rose-300'
+                  : 'bg-white/[0.04] hover:bg-white/[0.08] text-slate-200 border-white/[0.08]'
+              }`}
+            >
+              <RefreshCw className={`w-3.5 h-3.5 shrink-0 ${refreshFeedback === 'synced' ? 'text-emerald-400' : 'text-theme-primary'} ${isRefreshing ? 'animate-spin' : ''}`} />
+              <span className="hidden sm:inline">
+                {isRefreshing
+                  ? (lang === 'ar' ? 'جاري التحديث...' : 'Syncing...')
+                  : (lang === 'ar' ? 'تحديث' : 'Refresh')}
+              </span>
+            </button>
+
             <button
               type="button"
               onClick={() => setLang(lang === 'en' ? 'ar' : 'en')}
@@ -796,7 +964,35 @@ export const AdminPage: React.FC = () => {
         </header>
 
         {/* Content Body (Extra bottom padding on mobile for native iOS Bottom Tab Bar) */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto max-w-6xl w-full min-w-0 pb-[max(6.25rem,calc(env(safe-area-inset-bottom)+5.25rem))] lg:pb-8">
+        <main
+          ref={mainContentRef}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto max-w-6xl w-full min-w-0 pb-[max(6.25rem,calc(env(safe-area-inset-bottom)+5.25rem))] lg:pb-8"
+        >
+          {/* Mobile Pull-to-Refresh Indicator */}
+          {(pullDistance > 0 || isRefreshing) && (
+            <div
+              className="lg:hidden flex items-center justify-center gap-2 overflow-hidden transition-all duration-150 mb-3"
+              style={{ height: isRefreshing ? 40 : Math.min(48, Math.max(24, Math.round(pullDistance * 0.55))) }}
+            >
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.05] border border-white/[0.1] text-xs font-mono text-slate-200">
+                <RefreshCw
+                  className={`w-3.5 h-3.5 text-theme-primary ${isRefreshing ? 'animate-spin' : ''}`}
+                  style={!isRefreshing ? { transform: `rotate(${Math.min(270, pullDistance * 3)}deg)` } : undefined}
+                />
+                <span>
+                  {isRefreshing
+                    ? (lang === 'ar' ? 'جاري التحديث...' : 'Refreshing...')
+                    : pullDistance >= PULL_THRESHOLD
+                    ? (lang === 'ar' ? 'اترك للتحديث' : 'Release to refresh')
+                    : (lang === 'ar' ? 'اسحب للتحديث' : 'Pull to refresh')}
+                </span>
+              </div>
+            </div>
+          )}
+
           <div key={activeTab} className="animate-fadeIn">
           {/* TAB 1: BENTO OVERVIEW */}
           {activeTab === 'overview' && (
@@ -2746,13 +2942,27 @@ export const AdminPage: React.FC = () => {
               </div>
             )}
 
-            <button
-              type="button"
-              onClick={() => setIsMobileMoreOpen(false)}
-              className="w-full py-3 rounded-xl bg-white/[0.05] text-slate-300 text-xs font-bold"
-            >
-              {lang === 'ar' ? 'إغلاق القائمة' : 'Close Menu'}
-            </button>
+            <div className="grid grid-cols-2 gap-2.5">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsMobileMoreOpen(false);
+                  void handleHardReload();
+                }}
+                className="flex items-center justify-center gap-2 py-3 px-3 rounded-xl bg-theme-primary/15 border border-theme-primary/30 text-theme-primary text-xs font-bold touch-manipulation"
+              >
+                <RefreshCw className="w-3.5 h-3.5 shrink-0" />
+                <span>{lang === 'ar' ? 'إعادة تحميل التطبيق' : 'Hard Reload App'}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setIsMobileMoreOpen(false)}
+                className="py-3 px-3 rounded-xl bg-white/[0.05] text-slate-300 text-xs font-bold touch-manipulation"
+              >
+                {lang === 'ar' ? 'إغلاق القائمة' : 'Close Menu'}
+              </button>
+            </div>
           </div>
         </div>
       )}

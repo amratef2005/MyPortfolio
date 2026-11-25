@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { ProfileInfo, Project, Certificate, SkillCategory, ContactMessage, Experience } from '../types';
 import { initialProfile, initialProjects, initialCertificates, initialSkillCategories, initialExperiences } from '../data/initialData';
 import { applyThemeColors, applyFontPreset, applyIconPack, persistThemeCache } from '../utils/themeUtils';
@@ -58,6 +58,8 @@ interface PortfolioContextType {
   setIsCVModalOpen: (open: boolean) => void;
   isAuthenticated: boolean;
   login: (username: string, password?: string, rememberDevice?: boolean) => boolean;
+  verifyAdminCredentials: (username: string, password?: string) => boolean;
+  completeLoginSession: (rememberDevice?: boolean, deferStateSwitch?: boolean) => Promise<void>;
   logout: () => void;
   updateCredentials: (username: string, password: string) => void;
   updateProfile: (profile: Partial<ProfileInfo>) => void;
@@ -77,6 +79,7 @@ interface PortfolioContextType {
   exportData: () => void;
   importData: (jsonStr: string) => boolean;
   resetToDefault: () => void;
+  refreshPortfolio: () => Promise<boolean>;
 }
 
 const PortfolioContext = createContext<PortfolioContextType | undefined>(undefined);
@@ -272,62 +275,69 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     };
   }, []);
 
-  // Fetch live portfolio data from Supabase backend on startup
-  useEffect(() => {
-    fetch('/api/portfolio')
-      .then(res => res.ok ? res.json() : null)
-      .then(data => {
-        if (!data) return;
-        if (data.profile) {
-          const syncKey = 'portfolio_sync_2026_v1';
-          const needsYearsSync = !localStorage.getItem(syncKey);
-          setProfile(prev => {
-            const merged = { 
-              ...prev, 
-              ...data.profile,
-              extractedColors: data.profile.extractedColors ?? prev.extractedColors,
-              fontPreset: data.profile.fontPreset ?? prev.fontPreset,
-              iconPack: data.profile.iconPack ?? prev.iconPack,
-              yearsOfExperience: needsYearsSync ? 1 : (data.profile.yearsOfExperience ?? 1),
-              brandName: data.profile.brandName || initialProfile.brandName || 'Amr Atef',
-              brandNameAr: data.profile.brandNameAr || initialProfile.brandNameAr || 'عمرو عاطف',
-            };
-            localStorage.setItem('portfolio_profile', JSON.stringify(merged));
-            persistThemeCache(merged.extractedColors, merged.fontPreset, merged.iconPack);
-            if (needsYearsSync) {
-              localStorage.setItem(syncKey, 'true');
-              fetch('/api/profile', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ yearsOfExperience: 1 }),
-              }).catch(() => {});
-            }
-            return merged;
-          });
-        }
-        if (Array.isArray(data.projects) && data.projects.length > 0) {
-          const cleanProjects = data.projects.filter((p: Project) => p.id !== 'mot7km-saas');
-          setProjects(cleanProjects);
-          localStorage.setItem('portfolio_projects', JSON.stringify(cleanProjects));
-        }
-        if (Array.isArray(data.certificates) && data.certificates.length > 0) {
-          setCertificates(data.certificates);
-          localStorage.setItem('portfolio_certificates', JSON.stringify(data.certificates));
-        }
-        if (Array.isArray(data.skills) && data.skills.length > 0) {
-          const normalizedSkills = normalizeSkillCategories(data.skills);
-          setSkills(normalizedSkills);
-          localStorage.setItem('portfolio_skills', JSON.stringify(normalizedSkills));
-        }
-        if (Array.isArray(data.messages)) {
-          setMessages(data.messages);
-          localStorage.setItem('portfolio_messages', JSON.stringify(data.messages));
-        }
-      })
-      .catch(err => {
-        console.log('Local/fallback mode active:', err.message);
-      });
+  // Fetch live portfolio data from Supabase backend (on startup and manual refresh)
+  const refreshPortfolio = useCallback(async (): Promise<boolean> => {
+    try {
+      const res = await fetch('/api/portfolio', { cache: 'no-store' });
+      if (!res.ok) return false;
+      const data = await res.json();
+      if (!data) return false;
+
+      if (data.profile) {
+        const syncKey = 'portfolio_sync_2026_v1';
+        const needsYearsSync = !localStorage.getItem(syncKey);
+        setProfile(prev => {
+          const merged = {
+            ...prev,
+            ...data.profile,
+            extractedColors: data.profile.extractedColors ?? prev.extractedColors,
+            fontPreset: data.profile.fontPreset ?? prev.fontPreset,
+            iconPack: data.profile.iconPack ?? prev.iconPack,
+            yearsOfExperience: needsYearsSync ? 1 : (data.profile.yearsOfExperience ?? 1),
+            brandName: data.profile.brandName || initialProfile.brandName || 'Amr Atef',
+            brandNameAr: data.profile.brandNameAr || initialProfile.brandNameAr || 'عمرو عاطف',
+          };
+          localStorage.setItem('portfolio_profile', JSON.stringify(merged));
+          persistThemeCache(merged.extractedColors, merged.fontPreset, merged.iconPack);
+          if (needsYearsSync) {
+            localStorage.setItem(syncKey, 'true');
+            fetch('/api/profile', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ yearsOfExperience: 1 }),
+            }).catch(() => {});
+          }
+          return merged;
+        });
+      }
+      if (Array.isArray(data.projects) && data.projects.length > 0) {
+        const cleanProjects = data.projects.filter((p: Project) => p.id !== 'mot7km-saas');
+        setProjects(cleanProjects);
+        localStorage.setItem('portfolio_projects', JSON.stringify(cleanProjects));
+      }
+      if (Array.isArray(data.certificates) && data.certificates.length > 0) {
+        setCertificates(data.certificates);
+        localStorage.setItem('portfolio_certificates', JSON.stringify(data.certificates));
+      }
+      if (Array.isArray(data.skills) && data.skills.length > 0) {
+        const normalizedSkills = normalizeSkillCategories(data.skills);
+        setSkills(normalizedSkills);
+        localStorage.setItem('portfolio_skills', JSON.stringify(normalizedSkills));
+      }
+      if (Array.isArray(data.messages)) {
+        setMessages(data.messages);
+        localStorage.setItem('portfolio_messages', JSON.stringify(data.messages));
+      }
+      return true;
+    } catch (err: any) {
+      console.log('Local/fallback mode active:', err?.message || err);
+      return false;
+    }
   }, []);
+
+  useEffect(() => {
+    void refreshPortfolio();
+  }, [refreshPortfolio]);
 
   // Sync to localStorage & apply dynamic theme variables, fonts & icon pack globally
   useEffect(() => {
@@ -390,57 +400,52 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   }, [lang, profile]);
 
   // Auth methods
-  const login = (username: string, password?: string, rememberDevice = false) => {
+  const verifyAdminCredentials = useCallback((username: string, password?: string) => {
     const validUser = (profile.adminUsername || 'amratefkandel').trim().toLowerCase();
     const validPass = profile.adminPassword || 'KandelAmr###14';
-    
-    // Case 1: Both username and password provided
-    if (password !== undefined) {
-      if (username.trim().toLowerCase() === validUser && password === validPass) {
-        setIsAuthenticated(true);
-        sessionStorage.setItem('portfolio_admin_auth', 'true');
-        if (rememberDevice) {
-          localStorage.setItem('portfolio_admin_remember_auth', 'true');
-        } else {
-          localStorage.removeItem('portfolio_admin_remember_auth');
-        }
-        
-        // Register session in Supabase
-        const sid = `sess_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
-        localStorage.setItem('portfolio_admin_session_id', sid);
-        fetch('/api/admin-sessions', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ sessionId: sid })
-        }).catch(() => {});
 
-        return true;
-      }
+    if (password !== undefined) {
+      return username.trim().toLowerCase() === validUser && password === validPass;
+    }
+    return username.trim() === validPass;
+  }, [profile.adminUsername, profile.adminPassword]);
+
+  const completeLoginSession = useCallback(async (rememberDevice = false, deferStateSwitch = false) => {
+    sessionStorage.setItem('portfolio_admin_auth', 'true');
+    if (rememberDevice) {
+      localStorage.setItem('portfolio_admin_remember_auth', 'true');
+    } else {
+      localStorage.removeItem('portfolio_admin_remember_auth');
+    }
+
+    const sid = `sess_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+    localStorage.setItem('portfolio_admin_session_id', sid);
+
+    const registerReq = fetch('/api/admin-sessions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sessionId: sid }),
+      keepalive: true,
+    }).catch(() => {});
+
+    // Avoid stalling navigation if backend is slow/offline
+    await Promise.race([
+      registerReq,
+      new Promise<void>((resolveTimeout) => setTimeout(resolveTimeout, 1000)),
+    ]);
+
+    if (!deferStateSwitch) {
+      setIsAuthenticated(true);
+    }
+  }, []);
+
+  const login = (username: string, password?: string, rememberDevice = false) => {
+    if (!verifyAdminCredentials(username, password)) {
       return false;
     }
-
-    // Case 2: Single PIN or master password provided
-    if (username.trim() === validPass) {
-      setIsAuthenticated(true);
-      sessionStorage.setItem('portfolio_admin_auth', 'true');
-      if (rememberDevice) {
-        localStorage.setItem('portfolio_admin_remember_auth', 'true');
-      } else {
-        localStorage.removeItem('portfolio_admin_remember_auth');
-      }
-      
-      const sid = `sess_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
-      localStorage.setItem('portfolio_admin_session_id', sid);
-      fetch('/api/admin-sessions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sessionId: sid })
-      }).catch(() => {});
-
-      return true;
-    }
-
-    return false;
+    setIsAuthenticated(true);
+    void completeLoginSession(rememberDevice, true);
+    return true;
   };
 
   const logout = () => {
@@ -712,6 +717,8 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         setIsCVModalOpen,
         isAuthenticated,
         login,
+        verifyAdminCredentials,
+        completeLoginSession,
         logout,
         updateCredentials,
         updateProfile,
@@ -731,6 +738,7 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         exportData,
         importData,
         resetToDefault,
+        refreshPortfolio,
       }}
     >
       {children}

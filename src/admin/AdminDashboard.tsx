@@ -51,6 +51,8 @@ export const AdminDashboard: React.FC = () => {
     setIsAdminOpen,
     isAuthenticated,
     login,
+    verifyAdminCredentials,
+    completeLoginSession,
     logout,
     updateProfile,
     addProject,
@@ -64,15 +66,33 @@ export const AdminDashboard: React.FC = () => {
     deleteMessage,
     exportData,
     importData,
-    resetToDefault
+    resetToDefault,
+    refreshPortfolio
   } = usePortfolio();
 
   const [pinInput, setPinInput] = useState('');
   const [pinError, setPinError] = useState(false);
+  const modalLoginFormRef = React.useRef<HTMLFormElement | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [refreshFeedback, setRefreshFeedback] = useState<'synced' | 'error' | null>(null);
   const [activeTab, setActiveTab] = useState<
     'overview' | 'images' | 'names' | 'profile' | 'projects' | 'certificates' | 'skills' | 'inbox' | 'backup' | 'theme'
   >('overview');
+
+  const handleRefresh = async (e?: React.MouseEvent<HTMLButtonElement>) => {
+    if (e?.shiftKey) {
+      window.location.reload();
+      return;
+    }
+    if (isRefreshing) return;
+    setIsRefreshing(true);
+    setRefreshFeedback(null);
+    const ok = await refreshPortfolio();
+    setIsRefreshing(false);
+    setRefreshFeedback(ok ? 'synced' : 'error');
+    setTimeout(() => setRefreshFeedback(null), 2200);
+  };
 
   // Edit Project State
   const [editingProject, setEditingProject] = useState<Project | null>(null);
@@ -169,15 +189,32 @@ export const AdminDashboard: React.FC = () => {
 
   // Login Screen if not authenticated
   if (!isAuthenticated) {
-    const handleLoginSubmit = (e: React.FormEvent) => {
+    const handleLoginSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      const success = login(pinInput);
-      if (success) {
-        setPinError(false);
-        setPinInput('');
-      } else {
+      if (!verifyAdminCredentials(pinInput)) {
         setPinError(true);
+        return;
       }
+
+      setPinError(false);
+      const formEl = modalLoginFormRef.current;
+      try {
+        const CredCtor = (window as any).PasswordCredential;
+        if (CredCtor && (navigator as any).credentials?.store) {
+          const cred = formEl
+            ? new CredCtor(formEl)
+            : new CredCtor({
+                id: (profile.adminUsername || 'amratefkandel').trim(),
+                password: pinInput,
+                name: profile.name || 'Portfolio Admin',
+              });
+          await (navigator as any).credentials.store(cred);
+        }
+      } catch {
+        // Ignore gracefully on browsers without Credential Management API
+      }
+
+      await completeLoginSession(false, false);
     };
 
     return (
@@ -220,7 +257,17 @@ export const AdminDashboard: React.FC = () => {
           <h3 className="text-2xl font-bold text-white mb-2">{t.loginTitle}</h3>
           <p className="text-slate-400 text-xs font-mono mb-6">{t.loginSubtitle}</p>
 
-          <form method="post" autoComplete="on" onSubmit={handleLoginSubmit} className="space-y-4">
+          <form ref={modalLoginFormRef} method="post" autoComplete="on" onSubmit={handleLoginSubmit} className="space-y-4">
+            <input
+              type="text"
+              name="username"
+              autoComplete="username"
+              value={profile.adminUsername || 'amratefkandel'}
+              readOnly
+              tabIndex={-1}
+              aria-hidden="true"
+              className="sr-only"
+            />
             <input
               id="modal-admin-password"
               name="password"
@@ -323,6 +370,31 @@ export const AdminDashboard: React.FC = () => {
                   {t.saved}
                 </span>
               )}
+
+              {refreshFeedback && (
+                <span
+                  className={`hidden sm:inline-flex items-center gap-1 px-2.5 py-1 rounded-full border text-[11px] font-mono animate-fadeIn ${
+                    refreshFeedback === 'synced'
+                      ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-400'
+                      : 'bg-rose-500/15 border-rose-500/30 text-rose-400'
+                  }`}
+                >
+                  {refreshFeedback === 'synced'
+                    ? (lang === 'ar' ? 'تم التحديث' : 'Synced')
+                    : (lang === 'ar' ? 'تعذر التحديث' : 'Sync failed')}
+                </span>
+              )}
+
+              <button
+                type="button"
+                onClick={handleRefresh}
+                disabled={isRefreshing}
+                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-xs font-mono text-slate-200 transition-colors disabled:opacity-60"
+                title={lang === 'ar' ? 'تحديث البيانات (Shift+نقر لإعادة تحميل الصفحة)' : 'Refresh data (Shift+Click to reload page)'}
+              >
+                <RefreshCw className={`w-3.5 h-3.5 text-theme-primary ${isRefreshing ? 'animate-spin' : ''}`} />
+                <span className="hidden sm:inline">{lang === 'ar' ? 'تحديث' : 'Refresh'}</span>
+              </button>
 
               <button
                 type="button"
