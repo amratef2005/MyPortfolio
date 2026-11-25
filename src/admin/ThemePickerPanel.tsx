@@ -13,6 +13,7 @@ import {
 } from '../utils/themeUtils';
 import { adminTranslations } from './adminTranslations';
 import { RgbColorSphere } from './RgbColorSphere';
+import { ConfirmActionModal } from './ConfirmActionModal';
 
 const RECENT_COLORS_KEY = 'portfolio_recent_colors';
 
@@ -42,6 +43,7 @@ export const ThemePickerPanel: React.FC<{ onSaved?: () => void }> = ({ onSaved }
   const currentFont: FontPresetId = profile.fontPreset || DEFAULT_FONT_PRESET;
 
   const [recentColors, setRecentColors] = useState<ThemePreset[]>(loadRecentColors);
+  const [confirmResetOpen, setConfirmResetOpen] = useState(false);
 
   const recordRecentColor = (primary: string, secondary: string, accent: string) => {
     const upper = primary.toUpperCase();
@@ -104,12 +106,16 @@ export const ThemePickerPanel: React.FC<{ onSaved?: () => void }> = ({ onSaved }
     onSaved?.();
   };
 
-  const handleReset = () => {
+  const executeReset = () => {
     updateProfile({
       extractedColors: DEFAULT_THEME_COLORS,
       fontPreset: DEFAULT_FONT_PRESET,
     });
     onSaved?.();
+  };
+
+  const handleReset = () => {
+    setConfirmResetOpen(true);
   };
 
   return (
@@ -358,6 +364,21 @@ export const ThemePickerPanel: React.FC<{ onSaved?: () => void }> = ({ onSaved }
           })}
         </div>
       </div>
+
+      <ConfirmActionModal
+        isOpen={confirmResetOpen}
+        variant="danger"
+        title={lang === 'ar' ? 'تأكيد إعادة تعيين الألوان والخطوط' : 'Confirm Theme & Font Reset'}
+        description={
+          lang === 'ar'
+            ? 'سيتم إرجاع الألوان والخطوط إلى الإعدادات الافتراضية للبورتفوليو ولوحة التحكم.'
+            : 'This will reset colors and typography back to the default settings.'
+        }
+        confirmLabel={lang === 'ar' ? 'تأكيد الإعادة' : 'Reset Default'}
+        cancelLabel={lang === 'ar' ? 'إلغاء' : 'Cancel'}
+        onConfirm={executeReset}
+        onClose={() => setConfirmResetOpen(false)}
+      />
     </div>
   );
 };

@@ -36,6 +36,7 @@ import { BentoOverview } from './BentoOverview';
 import { QuantixSidebar } from './QuantixSidebar';
 import { ThemePickerPanel } from './ThemePickerPanel';
 import { adminTranslations } from './adminTranslations';
+import { ConfirmActionModal, ConfirmActionState } from './ConfirmActionModal';
 
 export const AdminDashboard: React.FC = () => {
   const {
@@ -118,9 +119,33 @@ export const AdminDashboard: React.FC = () => {
     setTimeout(() => setSavedSuccess(false), 3000);
   };
 
+  const [confirmState, setConfirmState] = useState<ConfirmActionState>({
+    isOpen: false,
+    variant: 'edit',
+    title: '',
+    description: '',
+    onConfirm: () => {},
+  });
+
+  const requestConfirm = (opts: Omit<ConfirmActionState, 'isOpen'>) => {
+    setConfirmState({ ...opts, isOpen: true });
+  };
+
   const handleSaveProfile = () => {
-    updateProfile(profileForm);
-    showSaveNotification();
+    requestConfirm({
+      variant: 'edit',
+      title: lang === 'ar' ? 'تأكيد حفظ التعديلات' : 'Confirm Profile Changes',
+      description:
+        lang === 'ar'
+          ? 'هل تريد حفظ وتطبيق التعديلات على الموقع الآن؟'
+          : 'Save and apply these changes to your portfolio?',
+      confirmLabel: lang === 'ar' ? 'تأكيد الحفظ' : 'Save Changes',
+      cancelLabel: lang === 'ar' ? 'إلغاء' : 'Cancel',
+      onConfirm: () => {
+        updateProfile(profileForm);
+        showSaveNotification();
+      },
+    });
   };
 
   const t = adminTranslations[lang];
@@ -896,7 +921,19 @@ export const AdminDashboard: React.FC = () => {
                             تعديل
                           </button>
                           <button
-                            onClick={() => { if (confirm('هل أنت متأكد من حذف هذا المشروع؟')) deleteProject(proj.id); }}
+                            onClick={() =>
+                              requestConfirm({
+                                variant: 'danger',
+                                title: lang === 'ar' ? 'تأكيد حذف المشروع' : 'Confirm Project Deletion',
+                                description:
+                                  lang === 'ar'
+                                    ? `سيتم حذف المشروع "${proj.titleAr || proj.title}" نهائياً.`
+                                    : `Delete "${proj.title}" permanently?`,
+                                confirmLabel: lang === 'ar' ? 'تأكيد الحذف' : 'Delete',
+                                cancelLabel: lang === 'ar' ? 'إلغاء' : 'Cancel',
+                                onConfirm: () => deleteProject(proj.id),
+                              })
+                            }
                             className="p-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400"
                           >
                             <Trash2 className="w-4 h-4" />
@@ -1025,7 +1062,19 @@ export const AdminDashboard: React.FC = () => {
                             تعديل
                           </button>
                           <button
-                            onClick={() => { if (confirm('هل أنت متأكد من حذف هذه الشهادة؟')) deleteCertificate(cert.id); }}
+                            onClick={() =>
+                              requestConfirm({
+                                variant: 'danger',
+                                title: lang === 'ar' ? 'تأكيد حذف الشهادة' : 'Confirm Certificate Deletion',
+                                description:
+                                  lang === 'ar'
+                                    ? `سيتم حذف الشهادة "${cert.titleAr || cert.title}" نهائياً.`
+                                    : `Delete "${cert.title}" permanently?`,
+                                confirmLabel: lang === 'ar' ? 'تأكيد الحذف' : 'Delete',
+                                cancelLabel: lang === 'ar' ? 'إلغاء' : 'Cancel',
+                                onConfirm: () => deleteCertificate(cert.id),
+                              })
+                            }
                             className="p-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400"
                           >
                             <Trash2 className="w-4 h-4" />
@@ -1278,7 +1327,19 @@ export const AdminDashboard: React.FC = () => {
                             </button>
                           )}
                           <button
-                            onClick={() => deleteMessage(msg.id)}
+                            onClick={() =>
+                              requestConfirm({
+                                variant: 'danger',
+                                title: lang === 'ar' ? 'تأكيد حذف الرسالة' : 'Confirm Message Deletion',
+                                description:
+                                  lang === 'ar'
+                                    ? `سيتم حذف رسالة "${msg.name}" نهائياً.`
+                                    : `Delete message from "${msg.name}"?`,
+                                confirmLabel: lang === 'ar' ? 'تأكيد الحذف' : 'Delete',
+                                cancelLabel: lang === 'ar' ? 'إلغاء' : 'Cancel',
+                                onConfirm: () => deleteMessage(msg.id),
+                              })
+                            }
                             className="text-xs text-red-400 hover:underline mr-auto"
                           >
                             حذف الرسالة
@@ -1341,12 +1402,19 @@ export const AdminDashboard: React.FC = () => {
                     إعادة جميع المشاريع والشهادات والبيانات إلى الحالة الأصلية الافتراضية.
                   </p>
                   <button
-                    onClick={() => {
-                      if (confirm('هل أنت متأكد من رغبتك في إعادة تعيين كافة البيانات إلى الإعدادات الأولية؟')) {
-                        resetToDefault();
-                        alert('تمت استعادة الإعدادات الأصلية بنجاح.');
-                      }
-                    }}
+                    onClick={() =>
+                      requestConfirm({
+                        variant: 'danger',
+                        title: lang === 'ar' ? 'تأكيد إعادة ضبط المصنع' : 'Confirm Factory Reset',
+                        description:
+                          lang === 'ar'
+                            ? 'سيتم مسح التعديلات واستعادة كافة البيانات إلى الإعدادات الأولية الافتراضية.'
+                            : 'This will reset all projects, certificates, and settings to defaults.',
+                        confirmLabel: lang === 'ar' ? 'إعادة ضبط المصنع' : 'Reset All',
+                        cancelLabel: lang === 'ar' ? 'إلغاء' : 'Cancel',
+                        onConfirm: () => resetToDefault(),
+                      })
+                    }
                     className="flex items-center gap-2 px-4 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-bold"
                   >
                     <RotateCcw className="w-4 h-4" />
@@ -1361,6 +1429,11 @@ export const AdminDashboard: React.FC = () => {
         </div>
 
       </div>
+
+      <ConfirmActionModal
+        {...confirmState}
+        onClose={() => setConfirmState(prev => ({ ...prev, isOpen: false }))}
+      />
     </div>
   );
 };

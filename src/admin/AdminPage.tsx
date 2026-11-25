@@ -49,6 +49,7 @@ import { BentoOverview } from './BentoOverview';
 import { QuantixSidebar } from './QuantixSidebar';
 import { ThemePickerPanel } from './ThemePickerPanel';
 import { adminTranslations } from './adminTranslations';
+import { ConfirmActionModal, ConfirmActionState } from './ConfirmActionModal';
 
 export const AdminPage: React.FC = () => {
   const {
@@ -139,28 +140,48 @@ export const AdminPage: React.FC = () => {
     }
   };
 
+  const [confirmState, setConfirmState] = useState<ConfirmActionState>({
+    isOpen: false,
+    variant: 'edit',
+    title: '',
+    description: '',
+    onConfirm: () => {},
+  });
+
+  const requestConfirm = (opts: Omit<ConfirmActionState, 'isOpen'>) => {
+    setConfirmState({ ...opts, isOpen: true });
+  };
+
   const handleSaveBrand = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    updateProfile({
-      topAvatarUrl: brandForm.topAvatarUrl,
-      name: brandForm.name,
-      nameAr: brandForm.nameAr,
-      title: brandForm.title,
-      titleAr: brandForm.titleAr,
+    requestConfirm({
+      variant: 'edit',
+      title: 'تأكيد تعديل الهوية والشعار',
+      description: 'هل تريد حفظ وتطبيق التعديلات الجديدة على الاسم والمسمى الوظيفي والصورة؟',
+      confirmLabel: 'تأكيد الحفظ',
+      onConfirm: () => {
+        updateProfile({
+          topAvatarUrl: brandForm.topAvatarUrl,
+          name: brandForm.name,
+          nameAr: brandForm.nameAr,
+          title: brandForm.title,
+          titleAr: brandForm.titleAr,
+        });
+        setProfileForm(prev => ({
+          ...prev,
+          topAvatarUrl: brandForm.topAvatarUrl,
+          name: brandForm.name,
+          nameAr: brandForm.nameAr,
+          title: brandForm.title,
+          titleAr: brandForm.titleAr,
+        }));
+        setBrandSuccess(true);
+        setTimeout(() => {
+          setBrandSuccess(false);
+          setIsBrandModalOpen(false);
+        }, 1200);
+      },
     });
-    setProfileForm(prev => ({
-      ...prev,
-      topAvatarUrl: brandForm.topAvatarUrl,
-      name: brandForm.name,
-      nameAr: brandForm.nameAr,
-      title: brandForm.title,
-      titleAr: brandForm.titleAr,
-    }));
-    setBrandSuccess(true);
-    setTimeout(() => {
-      setBrandSuccess(false);
-      setIsBrandModalOpen(false);
-    }, 1200);
   };
 
   const handleHeroFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -1128,7 +1149,15 @@ export const AdminPage: React.FC = () => {
                             تعديل
                           </button>
                           <button
-                            onClick={() => { if (confirm('هل أنت متأكد من حذف هذا المشروع؟')) deleteProject(p.id); }}
+                            onClick={() =>
+                              requestConfirm({
+                                variant: 'danger',
+                                title: 'تأكيد حذف المشروع',
+                                description: `سيتم حذف المشروع "${p.titleAr || p.title}" نهائياً من البورتفوليو.`,
+                                confirmLabel: 'تأكيد الحذف',
+                                onConfirm: () => deleteProject(p.id),
+                              })
+                            }
                             className="p-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 transition-colors"
                           >
                             <Trash2 className="w-4 h-4" />
@@ -1279,7 +1308,15 @@ export const AdminPage: React.FC = () => {
                           تعديل
                         </button>
                         <button
-                          onClick={() => { if (confirm('هل أنت متأكد من حذف هذه الشهادة؟')) deleteCertificate(cert.id); }}
+                          onClick={() =>
+                            requestConfirm({
+                              variant: 'danger',
+                              title: 'تأكيد حذف الشهادة',
+                              description: `سيتم حذف الشهادة "${cert.titleAr || cert.title}" نهائياً.`,
+                              confirmLabel: 'تأكيد الحذف',
+                              onConfirm: () => deleteCertificate(cert.id),
+                            })
+                          }
                           className="p-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -1723,10 +1760,17 @@ export const AdminPage: React.FC = () => {
               </div>
 
               <button
-                onClick={() => {
-                  updateProfile(profileForm);
-                  alert('تم حفظ البيانات الشخصية بنجاح!');
-                }}
+                onClick={() =>
+                  requestConfirm({
+                    variant: 'edit',
+                    title: 'تأكيد تعديل البيانات الشخصية',
+                    description: 'هل تريد حفظ وتطبيق التعديلات الجديدة على الملف الشخصي في البورتفوليو؟',
+                    confirmLabel: 'تأكيد الحفظ',
+                    onConfirm: () => {
+                      updateProfile(profileForm);
+                    },
+                  })
+                }
                 className="px-6 py-2.5 rounded-xl bg-theme-primary hover:bg-theme-primary text-white font-bold text-xs flex items-center gap-2 shadow-lg"
               >
                 <Save className="w-4 h-4" />
@@ -1897,7 +1941,15 @@ export const AdminPage: React.FC = () => {
                           </button>
                         )}
                         <button
-                          onClick={() => deleteMessage(msg.id)}
+                          onClick={() =>
+                            requestConfirm({
+                              variant: 'danger',
+                              title: 'تأكيد حذف الرسالة',
+                              description: `سيتم حذف رسالة "${msg.name}" نهائياً من صندوق الوارد.`,
+                              confirmLabel: 'تأكيد الحذف',
+                              onConfirm: () => deleteMessage(msg.id),
+                            })
+                          }
                           className="text-xs text-red-400 hover:underline mr-auto"
                         >
                           حذف الرسالة
@@ -1961,12 +2013,15 @@ export const AdminPage: React.FC = () => {
                   استعادة المشاريع والشهادات والإعدادات الأولية الافتراضية.
                 </p>
                 <button
-                  onClick={() => {
-                    if (confirm('هل أنت متأكد من رغبتك في إعادة تعيين كافة البيانات إلى الإعدادات الأولية؟')) {
-                      resetToDefault();
-                      alert('تمت استعادة الإعدادات الأصلية بنجاح.');
-                    }
-                  }}
+                  onClick={() =>
+                    requestConfirm({
+                      variant: 'danger',
+                      title: 'تأكيد إعادة ضبط المصنع',
+                      description: 'سيتم مسح التعديلات واستعادة كافة البيانات إلى الإعدادات الأولية الافتراضية.',
+                      confirmLabel: 'إعادة ضبط المصنع',
+                      onConfirm: () => resetToDefault(),
+                    })
+                  }
                   className="flex items-center gap-2 px-4 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-bold cursor-pointer"
                 >
                   <RotateCcw className="w-4 h-4" />
@@ -2159,6 +2214,11 @@ export const AdminPage: React.FC = () => {
           </div>
         </div>
       )}
+
+      <ConfirmActionModal
+        {...confirmState}
+        onClose={() => setConfirmState(prev => ({ ...prev, isOpen: false }))}
+      />
     </div>
   );
 };
