@@ -88,10 +88,41 @@ export const Footer: React.FC = () => {
 
             {/* Availability & Location Badges */}
             <div className="flex flex-wrap items-center gap-2.5 pt-1">
-              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#0e0e12] border border-theme-primary/25 text-theme-secondary text-xs font-mono">
-                <span className="w-2 h-2 rounded-full bg-theme-primary animate-pulse" />
-                <span>{lang === 'ar' ? 'متاح للمشاريع والعمل' : 'Available for Opportunities'}</span>
-              </span>
+              {profile.showAvailabilityBadge !== false && (() => {
+                const status = profile.availabilityStatus || 'available';
+                const statusText =
+                  lang === 'ar'
+                    ? (profile.availabilityNoteAr ||
+                        (status === 'available'
+                          ? 'متاح للمشاريع والعمل'
+                          : status === 'busy'
+                          ? 'مشغول حالياً بمشاريع قائمة'
+                          : 'غير متاح حالياً'))
+                    : (profile.availabilityNoteEn ||
+                        (status === 'available'
+                          ? 'Available for Opportunities'
+                          : status === 'busy'
+                          ? 'Busy with Active Projects'
+                          : 'Currently Unavailable'));
+                const badgeStyle =
+                  status === 'available'
+                    ? 'border-theme-primary/25 text-theme-secondary'
+                    : status === 'busy'
+                    ? 'border-amber-500/35 text-amber-300'
+                    : 'border-white/10 text-slate-400';
+                const dotStyle =
+                  status === 'available'
+                    ? 'bg-emerald-400 animate-pulse'
+                    : status === 'busy'
+                    ? 'bg-amber-400'
+                    : 'bg-slate-500';
+                return (
+                  <span className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#0e0e12] border text-xs font-mono ${badgeStyle}`}>
+                    <span className={`w-2 h-2 rounded-full shrink-0 ${dotStyle}`} />
+                    <span>{statusText}</span>
+                  </span>
+                );
+              })()}
 
               <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#0e0e12] border border-white/10 text-slate-300 text-xs font-mono">
                 <MapPin className="w-3.5 h-3.5 text-theme-secondary shrink-0" />

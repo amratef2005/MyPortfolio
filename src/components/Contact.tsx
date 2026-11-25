@@ -179,22 +179,57 @@ export const Contact: React.FC = () => {
                 onClick={() => window.open(getWhatsAppUrl(), '_blank')}
                 className="group flex items-center justify-between p-4 rounded-lg bg-[#121215] border border-white/10 hover:border-emerald-500/45 cursor-pointer transition-all"
               >
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 min-w-0">
                   <div className="w-10 h-10 rounded-full bg-emerald-500/10 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0">
                     <WhatsAppIcon className="w-4 h-4" />
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <span className="block text-[10px] font-mono text-slate-400 uppercase tracking-wider">
                       {lang === 'ar' ? 'محادثة واتساب سريعة' : 'WhatsApp Chat'}
                     </span>
-                    <span className="text-sm font-bold text-white group-hover:text-emerald-400 transition-colors">
+                    <span className="text-sm font-bold text-white group-hover:text-emerald-400 transition-colors block truncate">
                       {profile.phone || 'Online'}
                     </span>
+                    {profile.showWhatsAppStatus !== false && (() => {
+                      const waStatus = profile.whatsappStatus || 'online';
+                      const waText =
+                        lang === 'ar'
+                          ? (profile.whatsappNoteAr ||
+                              (waStatus === 'online'
+                                ? 'متاح الآن للرد الفوري'
+                                : waStatus === 'delayed'
+                                ? 'مشغول • الرد خلال ساعات'
+                                : 'غير متصل حالياً • اترك رسالة'))
+                          : (profile.whatsappNoteEn ||
+                              (waStatus === 'online'
+                                ? 'Online • Fast Reply'
+                                : waStatus === 'delayed'
+                                ? 'Busy • Replies within hours'
+                                : 'Offline • Leave a message'));
+                      const waColor =
+                        waStatus === 'online'
+                          ? 'text-emerald-400'
+                          : waStatus === 'delayed'
+                          ? 'text-amber-400'
+                          : 'text-slate-400';
+                      const waDot =
+                        waStatus === 'online'
+                          ? 'bg-emerald-400 animate-pulse'
+                          : waStatus === 'delayed'
+                          ? 'bg-amber-400'
+                          : 'bg-slate-500';
+                      return (
+                        <span className={`mt-1 inline-flex items-center gap-1.5 text-[11px] font-mono font-medium ${waColor}`}>
+                          <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${waDot}`} />
+                          <span className="truncate">{waText}</span>
+                        </span>
+                      );
+                    })()}
                   </div>
                 </div>
                 <button
                   onClick={copyWhatsApp}
-                  className="p-2 rounded-lg bg-white/5 hover:bg-emerald-500/20 text-slate-400 hover:text-emerald-400 transition-colors"
+                  className="p-2 rounded-lg bg-white/5 hover:bg-emerald-500/20 text-slate-400 hover:text-emerald-400 transition-colors shrink-0"
                   title="Copy WhatsApp"
                 >
                   {copiedWhatsApp ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}

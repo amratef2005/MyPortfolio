@@ -109,6 +109,8 @@ export const adminTranslations = {
       fontsSubtitle: 'Choose a font pairing — applies immediately to both Portfolio & Dashboard',
       fontPreviewEn: 'Scalable .NET Architecture & Clean UI',
       fontPreviewAr: 'تصميم أنظمة خلفية متطورة وواجهات عصرية',
+      iconsTitle: 'Global Icon Pack (Portfolio & Admin)',
+      iconsSubtitle: 'Choose 1 of 3 icon styles — applies immediately across the entire site & Admin',
     },
   },
   ar: {
@@ -219,6 +221,8 @@ export const adminTranslations = {
       fontsSubtitle: 'اختر ثنائي الخطوط المناسب — يتطبق فوراً على البورتفوليو والداشبورد',
       fontPreviewEn: 'Scalable .NET Architecture & Clean UI',
       fontPreviewAr: 'تصميم أنظمة خلفية متطورة وواجهات عصرية',
+      iconsTitle: 'حزمة الأيقونات الشاملة (تُطبَّق على الكل)',
+      iconsSubtitle: 'اختر واحدة من 3 حزم أيقونات — تتطبق فوراً على كامل البورتفوليو ولوحة التحكم',
     },
   },
 };

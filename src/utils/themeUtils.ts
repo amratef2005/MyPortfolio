@@ -224,6 +224,52 @@ export function applyThemeColors(colors?: ProfileInfo['extractedColors']) {
 }
 
 export type FontPresetId = 'plex-jakarta' | 'cairo-outfit' | 'alexandria-dm' | 'ruqaa-dancing';
+export type IconPackId = 'minimal-crisp' | 'duotone-glow' | 'apple-bold';
+
+export interface IconPackPreset {
+  id: IconPackId;
+  name: string;
+  nameAr: string;
+  description: string;
+  descriptionAr: string;
+  strokeWidth: number;
+}
+
+export const DEFAULT_ICON_PACK: IconPackId = 'minimal-crisp';
+
+export const ICON_PACKS: IconPackPreset[] = [
+  {
+    id: 'minimal-crisp',
+    name: 'Minimal Crisp',
+    nameAr: 'الخطوط الهندسية النظيفة (Crisp)',
+    description: 'Clean razor-sharp wireframe strokes inspired by Linear & Vercel UI.',
+    descriptionAr: 'خطوط دقيقة ونقية مسطحة بطابع تقني هادئ ومناسب لقراءة الأكواد.',
+    strokeWidth: 1.75,
+  },
+  {
+    id: 'duotone-glow',
+    name: 'Duotone Theme Glow',
+    nameAr: 'ثنائي اللون المتوهج (Duotone)',
+    description: 'Soft translucent fills tinted with active color and subtle neon luminance.',
+    descriptionAr: 'تعبئة شفافة متناغمة مع لون الثيم وإضاءة ناعمة تبرز الأيقونات والشارات.',
+    strokeWidth: 1.95,
+  },
+  {
+    id: 'apple-bold',
+    name: 'Apple Tactile Bold',
+    nameAr: 'عريض ناعم بأسلوب iOS (SF Style)',
+    description: 'Bolder rounded strokes with warm tactile fill ideal for mobile & touch UI.',
+    descriptionAr: 'خطوط أكثر سماكة وحواف ناعمة واضحة مستوحاة من أيقونات آيفون (SF Symbols).',
+    strokeWidth: 2.35,
+  },
+];
+
+/** Applies the active global icon pack to <html data-icon-pack="..."> for Portfolio & Admin. */
+export function applyIconPack(packId?: IconPackId) {
+  if (typeof document === 'undefined') return;
+  const resolved = ICON_PACKS.some((p) => p.id === packId) ? packId! : DEFAULT_ICON_PACK;
+  document.documentElement.dataset.iconPack = resolved;
+}
 
 export interface FontPreset {
   id: FontPresetId;
@@ -300,14 +346,15 @@ export function applyFontPreset(presetId?: FontPresetId) {
 
 export const THEME_CACHE_KEY = 'portfolio_theme_cache';
 
-/** Stores a compact theme cache so pre-paint scripts can hydrate colors/fonts immediately on reload. */
+/** Stores a compact theme cache so pre-paint scripts can hydrate colors, fonts & icons immediately on reload. */
 export function persistThemeCache(
   extractedColors?: ProfileInfo['extractedColors'],
-  fontPreset?: FontPresetId
+  fontPreset?: FontPresetId,
+  iconPack?: IconPackId
 ) {
   if (typeof window === 'undefined' || !window.localStorage) return;
   try {
-    if (!extractedColors?.primary && !fontPreset) {
+    if (!extractedColors?.primary && !fontPreset && !iconPack) {
       localStorage.removeItem(THEME_CACHE_KEY);
       return;
     }
@@ -316,6 +363,7 @@ export function persistThemeCache(
       JSON.stringify({
         extractedColors: extractedColors?.primary ? extractedColors : null,
         fontPreset: fontPreset || null,
+        iconPack: iconPack || null,
       })
     );
   } catch {

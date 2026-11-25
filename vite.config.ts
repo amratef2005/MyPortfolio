@@ -78,9 +78,18 @@ function supabaseBackendPlugin(): Plugin {
               adminUsername: pRow.admin_username || 'admin',
               adminPassword: pRow.admin_password || 'admin123',
               adminPin: pRow.admin_pin || '1234',
+              availabilityStatus: pRow.availability_status || 'available',
+              availabilityNoteAr: pRow.availability_note_ar,
+              availabilityNoteEn: pRow.availability_note_en,
+              showAvailabilityBadge: pRow.show_availability_badge !== false,
+              whatsappStatus: pRow.whatsapp_status || 'online',
+              whatsappNoteAr: pRow.whatsapp_note_ar,
+              whatsappNoteEn: pRow.whatsapp_note_en,
+              showWhatsAppStatus: pRow.show_whatsapp_status !== false,
               heroAvatarUrl: pRow.hero_avatar_url || '/drama_hero.png',
               extractedColors: pRow.extracted_colors || null,
-              fontPreset: pRow.font_preset || null
+              fontPreset: pRow.font_preset || null,
+              iconPack: pRow.icon_pack || null
             } : null;
 
             const projects = projectsRes.rows.map(r => ({
@@ -154,8 +163,17 @@ function supabaseBackendPlugin(): Plugin {
             const data = await readBody();
             await pool.query(`
               ALTER TABLE public.portfolio_profile
+              ADD COLUMN IF NOT EXISTS availability_status VARCHAR(50) DEFAULT 'available',
+              ADD COLUMN IF NOT EXISTS availability_note_ar VARCHAR(255),
+              ADD COLUMN IF NOT EXISTS availability_note_en VARCHAR(255),
+              ADD COLUMN IF NOT EXISTS show_availability_badge BOOLEAN DEFAULT TRUE,
+              ADD COLUMN IF NOT EXISTS whatsapp_status VARCHAR(50) DEFAULT 'online',
+              ADD COLUMN IF NOT EXISTS whatsapp_note_ar VARCHAR(255),
+              ADD COLUMN IF NOT EXISTS whatsapp_note_en VARCHAR(255),
+              ADD COLUMN IF NOT EXISTS show_whatsapp_status BOOLEAN DEFAULT TRUE,
               ADD COLUMN IF NOT EXISTS extracted_colors JSONB,
-              ADD COLUMN IF NOT EXISTS font_preset VARCHAR(64);
+              ADD COLUMN IF NOT EXISTS font_preset VARCHAR(64),
+              ADD COLUMN IF NOT EXISTS icon_pack VARCHAR(40);
             `).catch(() => {});
             await pool.query(`
               UPDATE public.portfolio_profile SET
@@ -183,6 +201,15 @@ function supabaseBackendPlugin(): Plugin {
                 admin_pin = COALESCE($22, admin_pin),
                 extracted_colors = COALESCE($23, extracted_colors),
                 font_preset = COALESCE($24, font_preset),
+                availability_status = COALESCE($25, availability_status),
+                availability_note_ar = COALESCE($26, availability_note_ar),
+                availability_note_en = COALESCE($27, availability_note_en),
+                show_availability_badge = COALESCE($28, show_availability_badge),
+                whatsapp_status = COALESCE($29, whatsapp_status),
+                whatsapp_note_ar = COALESCE($30, whatsapp_note_ar),
+                whatsapp_note_en = COALESCE($31, whatsapp_note_en),
+                show_whatsapp_status = COALESCE($32, show_whatsapp_status),
+                icon_pack = COALESCE($33, icon_pack),
                 updated_at = NOW()
               WHERE id = 'main_profile'
             `, [
@@ -194,7 +221,12 @@ function supabaseBackendPlugin(): Plugin {
               data.completedProjects, data.adminUsername, data.adminPassword,
               data.adminPin,
               data.extractedColors ? JSON.stringify(data.extractedColors) : null,
-              data.fontPreset || null
+              data.fontPreset || null,
+              data.availabilityStatus, data.availabilityNoteAr, data.availabilityNoteEn,
+              data.showAvailabilityBadge,
+              data.whatsappStatus, data.whatsappNoteAr, data.whatsappNoteEn,
+              data.showWhatsAppStatus,
+              data.iconPack || null
             ]);
             return jsonResponse(200, { success: true });
           } catch (err: any) {

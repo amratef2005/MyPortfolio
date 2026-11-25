@@ -649,6 +649,73 @@
 }
 
 /* =========================================================================
+   Global Selectable Icon Packs (Minimal Crisp, Duotone Glow, Apple Bold)
+   ========================================================================= */
+html[data-icon-pack="minimal-crisp"] svg.lucide {
+  stroke-width: 1.75;
+}
+
+html[data-icon-pack="duotone-glow"] svg.lucide {
+  stroke-width: 1.95;
+  filter: drop-shadow(0 0 5px rgba(var(--theme-primary-rgb, 255, 87, 34), 0.28));
+}
+
+html[data-icon-pack="duotone-glow"] svg.lucide path,
+html[data-icon-pack="duotone-glow"] svg.lucide circle,
+html[data-icon-pack="duotone-glow"] svg.lucide rect,
+html[data-icon-pack="duotone-glow"] svg.lucide polygon {
+  fill: currentColor;
+  fill-opacity: 0.14;
+}
+
+html[data-icon-pack="apple-bold"] svg.lucide {
+  stroke-width: 2.35;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+html[data-icon-pack="apple-bold"] svg.lucide path,
+html[data-icon-pack="apple-bold"] svg.lucide circle,
+html[data-icon-pack="apple-bold"] svg.lucide rect,
+html[data-icon-pack="apple-bold"] svg.lucide polygon {
+  fill: currentColor;
+  fill-opacity: 0.12;
+}
+
+/* Allow preview cards in Admin ThemePickerPanel to render each pack style independently */
+.icon-preview-crisp svg.lucide {
+  stroke-width: 1.75 !important;
+  filter: none !important;
+}
+.icon-preview-crisp svg.lucide * {
+  fill: none !important;
+}
+
+.icon-preview-duotone svg.lucide {
+  stroke-width: 1.95 !important;
+  filter: drop-shadow(0 0 6px rgba(var(--theme-primary-rgb, 255, 87, 34), 0.35)) !important;
+}
+.icon-preview-duotone svg.lucide path,
+.icon-preview-duotone svg.lucide circle,
+.icon-preview-duotone svg.lucide rect,
+.icon-preview-duotone svg.lucide polygon {
+  fill: currentColor !important;
+  fill-opacity: 0.18 !important;
+}
+
+.icon-preview-apple svg.lucide {
+  stroke-width: 2.4 !important;
+  filter: none !important;
+}
+.icon-preview-apple svg.lucide path,
+.icon-preview-apple svg.lucide circle,
+.icon-preview-apple svg.lucide rect,
+.icon-preview-apple svg.lucide polygon {
+  fill: currentColor !important;
+  fill-opacity: 0.15 !important;
+}
+
+/* =========================================================================
    Premium Card Surface, Specular Button Sheen & Dark Themed Scrollbar
    ========================================================================= */
 .premium-card {

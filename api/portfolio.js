@@ -60,7 +60,8 @@ export default async function handler(req, res) {
       heroAvatarUrl: pRow.hero_avatar_url || '/drama_hero.png',
       autoExtractColors: pRow.auto_extract_colors !== false,
       extractedColors: pRow.extracted_colors || null,
-      fontPreset: pRow.font_preset || null
+      fontPreset: pRow.font_preset || null,
+      iconPack: pRow.icon_pack || null
     } : null;
 
     const projects = projectsRes.rows

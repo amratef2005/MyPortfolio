@@ -35,16 +35,46 @@ export const Hero: React.FC = () => {
           stagger={0.11}
           className="lg:col-span-7 flex flex-col gap-6 text-start z-10 order-2 lg:order-1"
         >
-          {/* 1. Status / Availability Pill */}
-          <StaggerItem direction="bottom" distance={18} duration={0.72}>
-            <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-[#121215]/90 backdrop-blur-md border border-theme-primary/25 text-theme-secondary text-xs sm:text-sm font-mono font-medium self-start shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.15)]">
-              <span className="w-2 h-2 rounded-full bg-theme-primary animate-pulse shadow-[0_0_8px_rgba(var(--theme-primary-rgb),0.7)]" />
-              <Activity className="w-3.5 h-3.5 text-theme-secondary shrink-0" />
-              <span>
-                {lang === 'ar' ? 'متاحة للمشاريع الحرة وعقود العمل' : 'Available for Freelance & Full-time Roles'}
-              </span>
-            </div>
-          </StaggerItem>
+          {/* 1. Dynamic Status / Availability Pill */}
+          {profile.showAvailabilityBadge !== false && (() => {
+            const status = profile.availabilityStatus || 'available';
+            const statusLabel =
+              lang === 'ar'
+                ? (profile.availabilityNoteAr ||
+                    (status === 'available'
+                      ? 'متاح للمشاريع الحرة وعقود العمل'
+                      : status === 'busy'
+                      ? 'مشغول حالياً بمشاريع قائمة'
+                      : 'غير متاح حالياً للمشاريع الجديدة'))
+                : (profile.availabilityNoteEn ||
+                    (status === 'available'
+                      ? 'Available for Freelance & Full-time Roles'
+                      : status === 'busy'
+                      ? 'Busy with Active Projects'
+                      : 'Currently Unavailable'));
+            const pillClasses =
+              status === 'available'
+                ? 'border-theme-primary/30 text-theme-secondary shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.15)]'
+                : status === 'busy'
+                ? 'border-amber-500/35 text-amber-300 shadow-[0_0_20px_rgba(245,158,11,0.12)]'
+                : 'border-white/15 text-slate-300';
+            const dotClasses =
+              status === 'available'
+                ? 'bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.85)]'
+                : status === 'busy'
+                ? 'bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.75)]'
+                : 'bg-slate-400';
+
+            return (
+              <StaggerItem direction="bottom" distance={18} duration={0.72}>
+                <div className={`inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-[#121215]/90 backdrop-blur-md border text-xs sm:text-sm font-mono font-medium self-start ${pillClasses}`}>
+                  <span className={`w-2 h-2 rounded-full shrink-0 ${dotClasses}`} />
+                  <Activity className="w-3.5 h-3.5 shrink-0 opacity-90" />
+                  <span>{statusLabel}</span>
+                </div>
+              </StaggerItem>
+            );
+          })()}
 
           {/* 2 & 3. Greeting + Large Name + Theme Primary Title + Stack + Location */}
           <div>

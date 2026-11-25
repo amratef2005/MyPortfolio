@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Palette, RotateCcw, Check, Sparkles, Type } from 'lucide-react';
+import { Palette, RotateCcw, Check, Sparkles, Type, Activity, FolderGit2, Mail, ShieldCheck, Layers } from 'lucide-react';
 import { usePortfolio } from '../context/PortfolioContext';
 import {
   THEME_PRESETS,
@@ -9,6 +9,9 @@ import {
   FONT_PRESETS,
   DEFAULT_FONT_PRESET,
   FontPresetId,
+  ICON_PACKS,
+  DEFAULT_ICON_PACK,
+  IconPackId,
   ThemePreset,
 } from '../utils/themeUtils';
 import { adminTranslations } from './adminTranslations';
@@ -41,6 +44,7 @@ export const ThemePickerPanel: React.FC<{ onSaved?: () => void }> = ({ onSaved }
   const currentSecondary = profile.extractedColors?.secondary || DEFAULT_THEME_COLORS.secondary;
   const currentAccent = profile.extractedColors?.accent || DEFAULT_THEME_COLORS.accent;
   const currentFont: FontPresetId = profile.fontPreset || DEFAULT_FONT_PRESET;
+  const currentIconPack: IconPackId = profile.iconPack || DEFAULT_ICON_PACK;
 
   const [recentColors, setRecentColors] = useState<ThemePreset[]>(loadRecentColors);
   const [draftColor, setDraftColor] = useState<string>(currentPrimary);
@@ -167,20 +171,40 @@ export const ThemePickerPanel: React.FC<{ onSaved?: () => void }> = ({ onSaved }
     });
   };
 
+  const handleIconPackSelect = (packId: IconPackId) => {
+    const selected = ICON_PACKS.find((p) => p.id === packId);
+    const label = lang === 'ar' ? (selected?.nameAr || packId) : (selected?.name || packId);
+    requestConfirm({
+      variant: 'edit',
+      title: lang === 'ar' ? 'تأكيد تغيير حزمة الأيقونات' : 'Confirm Icon Pack Change',
+      description:
+        lang === 'ar'
+          ? `هل تريد تطبيق حزمة "${label}" على كل أيقونات البورتفوليو ولوحة التحكم؟`
+          : `Apply "${label}" across all Portfolio & Admin icons?`,
+      confirmLabel: lang === 'ar' ? 'تطبيق الحزمة' : 'Apply Icons',
+      cancelLabel: lang === 'ar' ? 'إلغاء' : 'Cancel',
+      onConfirm: () => {
+        updateProfile({ iconPack: packId });
+        onSaved?.();
+      },
+    });
+  };
+
   const handleReset = () => {
     requestConfirm({
       variant: 'danger',
-      title: lang === 'ar' ? 'تأكيد إعادة تعيين الألوان والخطوط' : 'Confirm Theme & Font Reset',
+      title: lang === 'ar' ? 'تأكيد إعادة تعيين المظهر بالكامل' : 'Confirm Full Appearance Reset',
       description:
         lang === 'ar'
-          ? 'سيتم إرجاع الألوان والخطوط إلى الإعدادات الافتراضية للبورتفوليو ولوحة التحكم.'
-          : 'This will reset colors and typography back to the default settings.',
+          ? 'سيتم إرجاع الألوان والخطوط وحزمة الأيقونات إلى الإعدادات الافتراضية.'
+          : 'This will reset colors, typography, and icon pack back to default settings.',
       confirmLabel: lang === 'ar' ? 'تأكيد الإعادة' : 'Reset Default',
       cancelLabel: lang === 'ar' ? 'إلغاء' : 'Cancel',
       onConfirm: () => {
         updateProfile({
           extractedColors: DEFAULT_THEME_COLORS,
           fontPreset: DEFAULT_FONT_PRESET,
+          iconPack: DEFAULT_ICON_PACK,
         });
         onSaved?.();
       },
@@ -427,6 +451,72 @@ export const ThemePickerPanel: React.FC<{ onSaved?: () => void }> = ({ onSaved }
                   >
                     {t.fontPreviewAr}
                   </div>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Global Icon Pack Selector (3 Packs Applied Everywhere) */}
+      <div className="pt-4 border-t border-white/[0.07] space-y-4">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center border border-white/10 bg-theme-primary/15 text-theme-primary">
+            <Layers className="w-5 h-5" />
+          </div>
+          <div>
+            <h3 className="text-base font-bold text-white">{t.iconsTitle}</h3>
+            <p className="text-xs text-slate-400">{t.iconsSubtitle}</p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+          {ICON_PACKS.map((pack) => {
+            const isSelected = currentIconPack === pack.id;
+            const previewClass =
+              pack.id === 'duotone-glow'
+                ? 'icon-preview-duotone'
+                : pack.id === 'apple-bold'
+                ? 'icon-preview-apple'
+                : 'icon-preview-crisp';
+
+            return (
+              <button
+                key={pack.id}
+                type="button"
+                onClick={() => handleIconPackSelect(pack.id)}
+                className={`quantix-card quantix-card-interactive p-4 text-start flex flex-col justify-between gap-3.5 ${
+                  isSelected ? 'border-theme-primary/60 shadow-lg ring-1 ring-theme-primary/35' : ''
+                }`}
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <div className="text-sm font-bold text-white truncate">
+                      {lang === 'ar' ? pack.nameAr : pack.name}
+                    </div>
+                    <p className="text-[11px] text-slate-400 mt-1 leading-relaxed">
+                      {lang === 'ar' ? pack.descriptionAr : pack.description}
+                    </p>
+                  </div>
+                  {isSelected && (
+                    <span className="w-6 h-6 rounded-full bg-theme-primary text-white flex items-center justify-center shrink-0">
+                      <Check className="w-3.5 h-3.5" />
+                    </span>
+                  )}
+                </div>
+
+                {/* Live Sample Icons Bar using that Pack's isolated preview CSS */}
+                <div
+                  className={`p-3 rounded-xl bg-black/40 border border-white/[0.06] flex items-center justify-between gap-2 ${previewClass}`}
+                >
+                  {[Activity, FolderGit2, Mail, ShieldCheck, Sparkles].map((SampleIcon, i) => (
+                    <span
+                      key={i}
+                      className="w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.07] flex items-center justify-center text-theme-primary"
+                    >
+                      <SampleIcon className="w-4 h-4" />
+                    </span>
+                  ))}
                 </div>
               </button>
             );

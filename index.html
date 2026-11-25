@@ -88,6 +88,12 @@
             root.setProperty('--font-sans-ar', preset[2]);
             root.setProperty('--font-display-ar', preset[3]);
           }
+          var ip = (cache && cache.iconPack) || (prof && prof.iconPack);
+          if (ip === 'minimal-crisp' || ip === 'duotone-glow' || ip === 'apple-bold') {
+            document.documentElement.dataset.iconPack = ip;
+          } else {
+            document.documentElement.dataset.iconPack = 'minimal-crisp';
+          }
           var savedLang = localStorage.getItem('portfolio_lang');
           if (savedLang === 'ar' || savedLang === 'en') {
             document.documentElement.lang = savedLang;

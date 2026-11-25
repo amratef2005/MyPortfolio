@@ -101,6 +101,7 @@ export interface ProfileInfo {
   aboutShowRings?: boolean; // default true
   autoExtractColors?: boolean; // Automatically extract theme colors from avatar
   fontPreset?: 'plex-jakarta' | 'cairo-outfit' | 'alexandria-dm' | 'ruqaa-dancing';
+  iconPack?: 'minimal-crisp' | 'duotone-glow' | 'apple-bold';
   extractedColors?: {
     primary: string;
     primaryRgb?: string;

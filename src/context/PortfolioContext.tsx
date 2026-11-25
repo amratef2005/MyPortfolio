@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { ProfileInfo, Project, Certificate, SkillCategory, ContactMessage, Experience } from '../types';
 import { initialProfile, initialProjects, initialCertificates, initialSkillCategories, initialExperiences } from '../data/initialData';
-import { applyThemeColors, applyFontPreset, persistThemeCache } from '../utils/themeUtils';
+import { applyThemeColors, applyFontPreset, applyIconPack, persistThemeCache } from '../utils/themeUtils';
 
 const DATA_SEED_KEY = 'portfolio_seed_v13';
 
@@ -100,7 +100,8 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     const hydrateAndReturn = (resolved: ProfileInfo): ProfileInfo => {
       applyThemeColors(resolved.extractedColors);
       applyFontPreset(resolved.fontPreset);
-      persistThemeCache(resolved.extractedColors, resolved.fontPreset);
+      applyIconPack(resolved.iconPack);
+      persistThemeCache(resolved.extractedColors, resolved.fontPreset, resolved.iconPack);
       return resolved;
     };
 
@@ -286,12 +287,13 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
               ...data.profile,
               extractedColors: data.profile.extractedColors ?? prev.extractedColors,
               fontPreset: data.profile.fontPreset ?? prev.fontPreset,
+              iconPack: data.profile.iconPack ?? prev.iconPack,
               yearsOfExperience: needsYearsSync ? 1 : (data.profile.yearsOfExperience ?? 1),
               brandName: data.profile.brandName || initialProfile.brandName || 'Amr Atef',
               brandNameAr: data.profile.brandNameAr || initialProfile.brandNameAr || 'عمرو عاطف',
             };
             localStorage.setItem('portfolio_profile', JSON.stringify(merged));
-            persistThemeCache(merged.extractedColors, merged.fontPreset);
+            persistThemeCache(merged.extractedColors, merged.fontPreset, merged.iconPack);
             if (needsYearsSync) {
               localStorage.setItem(syncKey, 'true');
               fetch('/api/profile', {
@@ -327,12 +329,13 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       });
   }, []);
 
-  // Sync to localStorage & apply dynamic theme variables + fonts globally
+  // Sync to localStorage & apply dynamic theme variables, fonts & icon pack globally
   useEffect(() => {
     localStorage.setItem('portfolio_profile', JSON.stringify(profile));
     applyThemeColors(profile.extractedColors);
     applyFontPreset(profile.fontPreset);
-    persistThemeCache(profile.extractedColors, profile.fontPreset);
+    applyIconPack(profile.iconPack);
+    persistThemeCache(profile.extractedColors, profile.fontPreset, profile.iconPack);
   }, [profile]);
 
   // Live-sync profile & theme changes across tabs (e.g. /admin.html -> /)
@@ -345,6 +348,7 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
             setProfile(parsed);
             applyThemeColors(parsed.extractedColors);
             applyFontPreset(parsed.fontPreset);
+            applyIconPack(parsed.iconPack);
           }
         } catch {
           // ignore malformed storage payload
@@ -474,7 +478,8 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       }
       applyThemeColors(nextProfile.extractedColors);
       applyFontPreset(nextProfile.fontPreset);
-      persistThemeCache(nextProfile.extractedColors, nextProfile.fontPreset);
+      applyIconPack(nextProfile.iconPack);
+      persistThemeCache(nextProfile.extractedColors, nextProfile.fontPreset, nextProfile.iconPack);
       broadcastChange('UPDATE_PROFILE', nextProfile);
       const sid = typeof window !== 'undefined' ? localStorage.getItem('portfolio_admin_session_id') || '' : '';
       fetch('/api/profile', {
@@ -681,7 +686,8 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     localStorage.clear();
     applyThemeColors(undefined);
     applyFontPreset(undefined);
-    persistThemeCache(undefined, undefined);
+    applyIconPack(undefined);
+    persistThemeCache(undefined, undefined, undefined);
     broadcastChange('UPDATE_PROFILE', initialProfile);
     broadcastChange('UPDATE_EXPERIENCES', initialExperiences);
     broadcastChange('UPDATE_PROJECTS', initialProjects);
