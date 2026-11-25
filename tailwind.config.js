@@ -28,6 +28,11 @@ export default {
           amber: '#FF7A00',
           crimson: '#E64A19',
           gold: '#FFA726',
+        },
+        theme: {
+          primary: 'rgb(var(--theme-primary-space, 255 87 34) / <alpha-value>)',
+          secondary: 'rgb(var(--theme-secondary-space, 255 122 0) / <alpha-value>)',
+          accent: 'rgb(var(--theme-accent-space, 230 74 25) / <alpha-value>)',
         }
       },
       fontFamily: {

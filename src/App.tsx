@@ -109,7 +109,7 @@ export const App: React.FC = () => {
   return (
     <MotionConfig reducedMotion="user">
       <PortfolioProvider>
-        <div className="relative min-h-screen text-slate-100 selection:bg-cyan-500/30 selection:text-cyan-200">
+        <div className="relative min-h-screen text-slate-100 selection:bg-theme-primary/30 selection:text-theme-secondary">
           {/* Living Animated Ambient Background (Direct GPU Driven) */}
           <AnimatedBackground />
 

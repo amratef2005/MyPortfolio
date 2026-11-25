@@ -1,9 +1,9 @@
 import React from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
-import { Github, Linkedin, Shield, Heart, Mail } from 'lucide-react';
+import { Github, Linkedin, Mail } from 'lucide-react';
 
 export const Footer: React.FC = () => {
-  const { profile, lang, setIsAdminOpen } = usePortfolio();
+  const { profile, lang } = usePortfolio();
 
   return (
     <footer className="py-12 border-t border-white/10 bg-[#050505] text-slate-400 text-sm">
@@ -12,13 +12,13 @@ export const Footer: React.FC = () => {
         <div className="flex flex-col items-center md:items-start gap-1">
           <p className="font-bold text-white text-base">
             {lang === 'ar' ? (profile.nameAr || profile.shortNameAr || 'عمرو عاطف') : (profile.name || profile.shortName || 'Amr Atef')}
-            <span className="text-[#FF5722] font-black">.</span>
+            <span className="text-theme-primary font-black">.</span>
             <span className="text-slate-400 text-xs font-mono font-normal ms-2">
               {lang === 'ar' ? profile.titleAr : profile.title}
             </span>
           </p>
           <p className="text-xs text-slate-500">
-            {lang === 'ar' 
+            {lang === 'ar'
               ? `© ${new Date().getFullYear()} عمرو عاطف. مبني بمعمارية Clean Architecture وهندسة برمجية حديثة.`
               : `© ${new Date().getFullYear()} Amr Atef. Engineered with Clean Architecture & Modern Software Standards.`}
           </p>
@@ -31,7 +31,7 @@ export const Footer: React.FC = () => {
               href={profile.github}
               target="_blank"
               rel="noreferrer"
-              className="p-2.5 rounded-xl bg-[#121215] hover:bg-orange-500/10 border border-white/5 hover:border-orange-500/30 text-slate-400 hover:text-[#FF7A00] transition-all"
+              className="p-2.5 rounded-xl bg-[#121215] hover:bg-theme-primary/10 border border-white/5 hover:border-theme-primary/30 text-slate-400 hover:text-theme-secondary transition-all"
               title="GitHub"
             >
               <Github className="w-4 h-4" />
@@ -43,7 +43,7 @@ export const Footer: React.FC = () => {
               href={profile.linkedin}
               target="_blank"
               rel="noreferrer"
-              className="p-2.5 rounded-xl bg-[#121215] hover:bg-orange-500/10 border border-white/5 hover:border-orange-500/30 text-slate-400 hover:text-[#FF7A00] transition-all"
+              className="p-2.5 rounded-xl bg-[#121215] hover:bg-theme-primary/10 border border-white/5 hover:border-theme-primary/30 text-slate-400 hover:text-theme-secondary transition-all"
               title="LinkedIn"
             >
               <Linkedin className="w-4 h-4" />
@@ -68,19 +68,11 @@ export const Footer: React.FC = () => {
 
           <a
             href={`mailto:${profile.email}`}
-            className="p-2.5 rounded-xl bg-[#121215] hover:bg-orange-500/10 border border-white/5 hover:border-orange-500/30 text-slate-400 hover:text-[#FF7A00] transition-all"
+            className="p-2.5 rounded-xl bg-[#121215] hover:bg-theme-primary/10 border border-white/5 hover:border-theme-primary/30 text-slate-400 hover:text-theme-secondary transition-all"
             title={profile.email}
           >
             <Mail className="w-4 h-4" />
           </a>
-
-          <button
-            onClick={() => setIsAdminOpen(true)}
-            className="p-2.5 rounded-xl bg-[#121215] hover:bg-orange-500/20 border border-white/10 hover:border-orange-500/40 text-slate-400 hover:text-[#FF5722] transition-all ml-2"
-            title={lang === 'ar' ? 'لوحة تحكم البرتفوليو' : 'Portfolio Admin Panel'}
-          >
-            <Shield className="w-4 h-4" />
-          </button>
         </div>
       </div>
     </footer>

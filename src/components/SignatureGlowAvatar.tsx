@@ -110,7 +110,7 @@ export const SignatureGlowAvatar: React.FC<SignatureGlowAvatarProps> = ({
           className="w-full h-full rounded-full animate-breathe"
           style={{
             background:
-              'radial-gradient(circle at 50% 42%, rgba(255, 132, 24, 0.85) 0%, rgba(255, 87, 34, 0.52) 34%, rgba(210, 50, 10, 0.18) 58%, transparent 74%)',
+              'radial-gradient(circle at 50% 42%, rgba(var(--theme-secondary-rgb), 0.85) 0%, rgba(var(--theme-primary-rgb), 0.52) 34%, rgba(var(--theme-accent-rgb), 0.18) 58%, transparent 74%)',
             filter: `blur(${Math.min(34, Math.round(26 * glowIntensity))}px)`,
           }}
         />
@@ -119,7 +119,7 @@ export const SignatureGlowAvatar: React.FC<SignatureGlowAvatarProps> = ({
           className="absolute -top-12 inset-x-0 h-36 opacity-55 pointer-events-none"
           style={{
             background:
-              'radial-gradient(ellipse at 50% 0%, rgba(255, 165, 70, 0.55) 0%, rgba(255, 87, 34, 0.18) 50%, transparent 75%)',
+              'radial-gradient(ellipse at 50% 0%, rgba(var(--theme-secondary-rgb), 0.55) 0%, rgba(var(--theme-primary-rgb), 0.18) 50%, transparent 75%)',
           }}
         />
       </motion.div>
@@ -127,15 +127,15 @@ export const SignatureGlowAvatar: React.FC<SignatureGlowAvatarProps> = ({
       {/* 2. Concentric Orbit Accent Rings with Specular Light */}
       {showRings && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-[1]">
-          {/* Main Frame Circle with Glowing Amber Border */}
+          {/* Main Frame Circle with Glowing Theme Border */}
           <div 
-            className={`rounded-full border border-orange-500/35 ${
+            className={`rounded-full border border-theme-primary/35 ${
               isHero ? 'w-[270px] h-[270px] xs:w-[320px] xs:h-[320px] sm:w-[390px] sm:h-[390px]' : 'w-[250px] h-[250px] sm:w-[330px] sm:h-[330px]'
-            } shadow-[0_0_45px_rgba(255,87,34,0.45),inset_0_0_35px_rgba(255,122,0,0.2)]`}
+            } shadow-[0_0_45px_rgba(var(--theme-primary-rgb),0.45),inset_0_0_35px_rgba(var(--theme-secondary-rgb),0.2)]`}
           />
           {/* Outer Dashed Orbit with Cinematic Shimmer */}
           <div 
-            className={`absolute rounded-full border border-dashed border-orange-400/25 animate-spin-slow ${
+            className={`absolute rounded-full border border-dashed border-theme-secondary/25 animate-spin-slow ${
               isHero ? 'w-[310px] h-[310px] xs:w-[360px] xs:h-[360px] sm:w-[440px] sm:h-[440px]' : 'w-[290px] h-[290px] sm:w-[370px] sm:h-[370px]'
             }`}
           />
@@ -196,23 +196,23 @@ export const SignatureGlowAvatar: React.FC<SignatureGlowAvatarProps> = ({
               WebkitMaskRepeat: 'no-repeat',
             }}
           >
-            {/* Focused Warm Key Light on face & cheekbone (mouse-reactive on desktop) */}
+            {/* Focused Theme Key Light on face & cheekbone (mouse-reactive on desktop) */}
             <motion.div
               style={{
                 x: isFinePointer ? lightX : 0,
                 y: isFinePointer ? lightY : 0,
                 background:
-                  'radial-gradient(ellipse 46% 40% at 58% 30%, rgba(255, 168, 88, 0.36) 0%, rgba(255, 108, 42, 0.16) 48%, transparent 78%)',
+                  'radial-gradient(ellipse 46% 40% at 58% 30%, rgba(var(--theme-secondary-rgb), 0.36) 0%, rgba(var(--theme-primary-rgb), 0.16) 48%, transparent 78%)',
                 mixBlendMode: 'soft-light',
               }}
               className="absolute inset-[-8%]"
             />
 
-            {/* Subtle Warm Rim Light along right shoulder & cheek without washing out hair */}
+            {/* Subtle Theme Rim Light along right shoulder & cheek without washing out hair */}
             <div
               style={{
                 background:
-                  'radial-gradient(ellipse 35% 58% at 78% 48%, rgba(255, 150, 70, 0.24) 0%, transparent 70%)',
+                  'radial-gradient(ellipse 35% 58% at 78% 48%, rgba(var(--theme-secondary-rgb), 0.24) 0%, transparent 70%)',
                 mixBlendMode: 'soft-light',
               }}
               className="absolute inset-0"
@@ -241,7 +241,7 @@ export const SignatureGlowAvatar: React.FC<SignatureGlowAvatarProps> = ({
             e.stopPropagation();
             onEditClick();
           }}
-          className="absolute top-3 end-3 z-30 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#050505]/85 hover:bg-gradient-to-r hover:from-[#FF5722] hover:to-[#FF7A00] border border-orange-500/40 text-[#FF7A00] hover:text-white text-xs font-mono font-bold shadow-[0_0_20px_rgba(255,87,34,0.45)] backdrop-blur-md transition-all duration-300 hover:scale-105 cursor-pointer"
+          className="absolute top-3 end-3 z-30 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#050505]/85 hover:bg-gradient-to-r hover:from-theme-primary hover:to-theme-secondary border border-theme-primary/40 text-theme-secondary hover:text-white text-xs font-mono font-bold shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.45)] backdrop-blur-md transition-all duration-300 hover:scale-105 cursor-pointer"
           title="تعديل وضبط الصورة"
         >
           <Camera className="w-3.5 h-3.5" />

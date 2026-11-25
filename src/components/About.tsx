@@ -44,10 +44,10 @@ export const About: React.FC = () => {
 
   return (
     <section id="about" className="py-8 sm:py-16 lg:py-20 relative overflow-hidden">
-      {/* Background Subtle Orange Ambient Bloom */}
+      {/* Background Subtle Theme Ambient Bloom */}
       <div
         className="absolute top-1/2 -left-20 w-[450px] h-[450px] rounded-full blur-[140px] pointer-events-none"
-        style={{ background: 'radial-gradient(circle, rgba(255, 87, 34, 0.12) 0%, transparent 70%)' }}
+        style={{ background: 'radial-gradient(circle, rgba(var(--theme-primary-rgb), 0.12) 0%, transparent 70%)' }}
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -76,13 +76,13 @@ export const About: React.FC = () => {
             <AssembleItem direction="right" distance={80}>
 
               {/* Badge */}
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#121215] border border-orange-500/20 text-[#FF7A00] text-xs font-mono mb-2">
-                <Cpu className="w-3.5 h-3.5 text-[#FF5722]" />
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#121215] border border-theme-primary/20 text-theme-secondary text-xs font-mono mb-2">
+                <Cpu className="w-3.5 h-3.5 text-theme-primary" />
                 <span>{lang === 'ar' ? 'نبذة عني والتخصص' : 'About Me & Specialization'}</span>
               </div>
 
               {/* Subtitle: "Backend Architecture & Engineering" */}
-              <p className="text-sm sm:text-base font-mono uppercase tracking-widest text-[#FF7A00] font-bold">
+              <p className="text-sm sm:text-base font-mono uppercase tracking-widest text-theme-secondary font-bold">
                 {lang === 'ar' ? (profile.aboutSubtitleAr || 'هندسة ومعمارية النظم الخلفية') : (profile.aboutSubtitle || 'Backend Architecture & Engineering')}
               </p>
 
@@ -90,11 +90,11 @@ export const About: React.FC = () => {
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-[1.2]">
                 {lang === 'ar' ? (
                   <>
-                    بناء أنظمة خلفية فائقة الأداء <span className="text-[#FF5722] drop-shadow-[0_0_20px_rgba(255,87,34,0.4)]">وقابلة للتوسع بأعلى أمان</span>
+                    بناء أنظمة خلفية فائقة الأداء <span className="text-theme-primary drop-shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.4)]">وقابلة للتوسع بأعلى أمان</span>
                   </>
                 ) : (
                   <>
-                    Building Resilient, Scalable & <span className="text-[#FF5722] drop-shadow-[0_0_20px_rgba(255,87,34,0.4)]">High-Throughput Systems</span>
+                    Building Resilient, Scalable & <span className="text-theme-primary drop-shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.4)]">High-Throughput Systems</span>
                   </>
                 )}
               </h2>
@@ -124,9 +124,9 @@ export const About: React.FC = () => {
 
               {/* Core Strengths / Highlights Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 my-3">
-                <div className="p-4 rounded-2xl bg-[#0e0e12] border border-white/5 hover:border-orange-500/30 transition-all">
+                <div className="p-4 rounded-2xl bg-[#0e0e12] border border-white/5 hover:border-theme-primary/30 transition-all">
                   <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-[#FF5722] shrink-0 mt-0.5">
+                    <div className="w-10 h-10 rounded-xl bg-theme-primary/10 border border-theme-primary/20 flex items-center justify-center text-theme-primary shrink-0 mt-0.5">
                       <Layers className="w-5 h-5" />
                     </div>
                     <div>
@@ -140,9 +140,9 @@ export const About: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-[#0e0e12] border border-white/5 hover:border-orange-500/30 transition-all">
+                <div className="p-4 rounded-2xl bg-[#0e0e12] border border-white/5 hover:border-theme-primary/30 transition-all">
                   <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-[#FF7A00] shrink-0 mt-0.5">
+                    <div className="w-10 h-10 rounded-xl bg-theme-primary/10 border border-theme-primary/20 flex items-center justify-center text-theme-secondary shrink-0 mt-0.5">
                       <Users className="w-5 h-5" />
                     </div>
                     <div>
@@ -157,13 +157,13 @@ export const About: React.FC = () => {
                 </div>
               </div>
 
-              {/* Dynamic CV Generation & Download Button (Luxury Monochrome Design) */}
+              {/* Dynamic CV Generation & Download Button */}
               <div className="pt-2 flex flex-wrap items-center gap-4">
                 <button
                   type="button"
                   disabled={downloading}
                   onClick={handleDownloadCV}
-                  className="flex items-center justify-center gap-2.5 h-12 sm:h-14 px-8 rounded-2xl bg-gradient-to-r from-[#FF5722] to-[#FF7A00] hover:from-[#FF6B00] hover:to-[#FF8A00] text-white font-bold text-base shadow-[0_0_25px_rgba(255,87,34,0.4)] hover:shadow-[0_0_35px_rgba(255,87,34,0.6)] transition-all duration-300 active:scale-95 cursor-pointer disabled:opacity-75"
+                  className="flex items-center justify-center gap-2.5 h-12 sm:h-14 px-8 rounded-2xl bg-gradient-to-r from-theme-primary to-theme-secondary hover:brightness-110 text-white font-bold text-base shadow-[0_0_25px_rgba(var(--theme-primary-rgb),0.4)] hover:shadow-[0_0_35px_rgba(var(--theme-primary-rgb),0.6)] transition-all duration-300 active:scale-95 cursor-pointer disabled:opacity-75"
                 >
                   {downloading ? (
                     <Loader2 className="w-5 h-5 animate-spin" />

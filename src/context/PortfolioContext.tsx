@@ -1,8 +1,47 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { ProfileInfo, Project, Certificate, SkillCategory, ContactMessage, Experience } from '../types';
 import { initialProfile, initialProjects, initialCertificates, initialSkillCategories, initialExperiences } from '../data/initialData';
+import { applyThemeColors, applyFontPreset } from '../utils/themeUtils';
 
 const DATA_SEED_KEY = 'portfolio_seed_v13';
+
+/** Normalizes skill categories so string arrays from DB/API become { name, level } objects. */
+function normalizeSkillCategories(rawCategories: any[]): SkillCategory[] {
+  const defaultLevelMap = new Map<string, number>();
+  initialSkillCategories.forEach(cat => {
+    cat.skills.forEach(s => {
+      defaultLevelMap.set(s.name.toLowerCase(), s.level);
+    });
+  });
+
+  return rawCategories.map((cat) => {
+    const rawSkills = Array.isArray(cat?.skills) ? cat.skills : [];
+    const normalizedSkills = rawSkills.map((item: any) => {
+      if (typeof item === 'string') {
+        return {
+          name: item,
+          level: defaultLevelMap.get(item.toLowerCase()) ?? 90,
+        };
+      }
+      if (item && typeof item === 'object') {
+        const name = item.name || item.nameAr || '';
+        return {
+          ...item,
+          name,
+          level: typeof item.level === 'number' && !Number.isNaN(item.level)
+            ? item.level
+            : (defaultLevelMap.get(name.toLowerCase()) ?? 90),
+        };
+      }
+      return { name: String(item ?? ''), level: 90 };
+    });
+
+    return {
+      ...cat,
+      skills: normalizedSkills,
+    };
+  });
+}
 
 interface PortfolioContextType {
   profile: ProfileInfo;
@@ -139,7 +178,7 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     try {
       const parsed = JSON.parse(saved);
       if (Array.isArray(parsed) && parsed.length > 0) {
-        return parsed;
+        return normalizeSkillCategories(parsed);
       }
       return initialSkillCategories;
     } catch {
@@ -229,8 +268,9 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           localStorage.setItem('portfolio_certificates', JSON.stringify(data.certificates));
         }
         if (Array.isArray(data.skills) && data.skills.length > 0) {
-          setSkills(data.skills);
-          localStorage.setItem('portfolio_skills', JSON.stringify(data.skills));
+          const normalizedSkills = normalizeSkillCategories(data.skills);
+          setSkills(normalizedSkills);
+          localStorage.setItem('portfolio_skills', JSON.stringify(normalizedSkills));
         }
         if (Array.isArray(data.messages)) {
           setMessages(data.messages);
@@ -242,10 +282,32 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       });
   }, []);
 
-  // Sync to localStorage
+  // Sync to localStorage & apply dynamic theme variables + fonts globally
   useEffect(() => {
     localStorage.setItem('portfolio_profile', JSON.stringify(profile));
+    applyThemeColors(profile.extractedColors);
+    applyFontPreset(profile.fontPreset);
   }, [profile]);
+
+  // Live-sync profile & theme changes across tabs (e.g. /admin.html -> /)
+  useEffect(() => {
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === 'portfolio_profile' && e.newValue) {
+        try {
+          const parsed = JSON.parse(e.newValue);
+          if (parsed && typeof parsed === 'object') {
+            setProfile(parsed);
+            applyThemeColors(parsed.extractedColors);
+            applyFontPreset(parsed.fontPreset);
+          }
+        } catch {
+          // ignore malformed storage payload
+        }
+      }
+    };
+    window.addEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleStorage);
+  }, []);
 
   useEffect(() => {
     localStorage.setItem('portfolio_experiences', JSON.stringify(experiences));

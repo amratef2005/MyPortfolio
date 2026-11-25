@@ -1,14 +1,14 @@
 import React from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
-import { 
-  Cpu, 
-  Server, 
-  Database, 
-  ShieldCheck, 
-  Zap, 
-  Code2, 
-  Layers, 
-  FileCheck, 
+import {
+  Cpu,
+  Server,
+  Database,
+  ShieldCheck,
+  Zap,
+  Code2,
+  Layers,
+  FileCheck,
   Cloud,
   Terminal,
   Lock,
@@ -34,7 +34,7 @@ export const Skills: React.FC = () => {
   // The 8 Core Backend Architectural Domains from the user's CV
   const backendDomains = [
     {
-      icon: <Code2 className="w-6 h-6 text-[#FF5722]" />,
+      icon: <Code2 className="w-6 h-6 text-theme-primary" />,
       titleAr: "لغات البرمجة",
       titleEn: "Programming Languages",
       skillsAr: "C#, SQL",
@@ -43,7 +43,7 @@ export const Skills: React.FC = () => {
       descEn: "Clean, robust C# engineering and optimized relational SQL queries."
     },
     {
-      icon: <Server className="w-6 h-6 text-[#FF7A00]" />,
+      icon: <Server className="w-6 h-6 text-theme-secondary" />,
       titleAr: "تطوير النظم الخلفية",
       titleEn: "Backend Development",
       skillsAr: ".NET 10, ASP.NET Core, EF Core, RESTful APIs, DI, Middleware, Background Services",
@@ -52,7 +52,7 @@ export const Skills: React.FC = () => {
       descEn: "Scalable RESTful API architecture, pipeline middleware, and asynchronous background workers."
     },
     {
-      icon: <Layers className="w-6 h-6 text-[#FF5722]" />,
+      icon: <Layers className="w-6 h-6 text-theme-primary" />,
       titleAr: "المعمارية وتصميم الأنظمة",
       titleEn: "Architecture & Design",
       skillsAr: "Clean Architecture, Modular Monolith, CQRS, DTOs, Manual Mapping",
@@ -61,7 +61,7 @@ export const Skills: React.FC = () => {
       descEn: "Strict Domain separation, CQRS command/query segregation, and high-performance mapping."
     },
     {
-      icon: <Database className="w-6 h-6 text-[#FF7A00]" />,
+      icon: <Database className="w-6 h-6 text-theme-secondary" />,
       titleAr: "قواعد البيانات وإدارة البيانات",
       titleEn: "Databases & ORM",
       skillsAr: "PostgreSQL, SQL Server, Supabase, EF Core, Database Migrations",
@@ -70,7 +70,7 @@ export const Skills: React.FC = () => {
       descEn: "Relational schema design, schema migrations, and optimized EF Core query execution."
     },
     {
-      icon: <Lock className="w-6 h-6 text-[#FF5722]" />,
+      icon: <Lock className="w-6 h-6 text-theme-primary" />,
       titleAr: "المصادقة وأمان الأنظمة",
       titleEn: "Authentication & Security",
       skillsAr: "JWT, OAuth 2.0, Phone OTP, Refresh Token Rotation (SHA-256), Tenant Isolation, IDOR Prevention",
@@ -79,7 +79,7 @@ export const Skills: React.FC = () => {
       descEn: "Secure session lifecycle, SHA-256 refresh token rotation, and multi-tenant IDOR protection."
     },
     {
-      icon: <Zap className="w-6 h-6 text-[#FF7A00]" />,
+      icon: <Zap className="w-6 h-6 text-theme-secondary" />,
       titleAr: "الاتصال اللحظي ومعالجة الدفعات",
       titleEn: "Real-Time & Performance",
       skillsAr: "SignalR (WebSockets), Background Processing, Batch Processing, Async Programming",
@@ -88,7 +88,7 @@ export const Skills: React.FC = () => {
       descEn: "Real-time bi-directional SignalR communication, batch processing, and high-concurrency async code."
     },
     {
-      icon: <FileCheck className="w-6 h-6 text-[#FF5722]" />,
+      icon: <FileCheck className="w-6 h-6 text-theme-primary" />,
       titleAr: "التحقق والتوثيق البرمجي",
       titleEn: "Validation & Documentation",
       skillsAr: "FluentValidation, Swagger / OpenAPI, Postman",
@@ -97,7 +97,7 @@ export const Skills: React.FC = () => {
       descEn: "Declarative request validation with FluentValidation and interactive Swagger / OpenAPI contracts."
     },
     {
-      icon: <GitBranch className="w-6 h-6 text-[#FF7A00]" />,
+      icon: <GitBranch className="w-6 h-6 text-theme-secondary" />,
       titleAr: "أدوات التطوير والأتمتة",
       titleEn: "DevOps & Tools",
       skillsAr: "Git, GitHub, GitHub Actions (CI/CD), IIS Deployment",
@@ -110,28 +110,28 @@ export const Skills: React.FC = () => {
   return (
     <section id="skills" className="py-8 sm:py-16 lg:py-20 relative overflow-hidden">
       {/* Ambient Radial Lighting */}
-      <div 
+      <div
         className="absolute top-1/4 -left-20 w-[450px] h-[450px] rounded-full blur-[140px] pointer-events-none"
-        style={{ background: 'radial-gradient(circle, rgba(255, 87, 34, 0.12) 0%, transparent 70%)' }}
+        style={{ background: 'radial-gradient(circle, rgba(var(--theme-primary-rgb), 0.12) 0%, transparent 70%)' }}
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         {/* Section Header */}
         <AssembleItem direction="top">
           <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12 lg:mb-16">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#121215] border border-orange-500/20 text-[#FF7A00] text-xs font-mono mb-3">
-              <Cpu className="w-3.5 h-3.5 text-[#FF5722]" />
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#121215] border border-theme-primary/20 text-theme-secondary text-xs font-mono mb-3">
+              <Cpu className="w-3.5 h-3.5 text-theme-primary" />
               <span>{lang === 'ar' ? 'القدرات والمهارات التقنية' : 'Technical Skills & Capabilities'}</span>
             </div>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-[1.2]">
               {lang === 'ar' ? (
                 <>
-                  كفاءات معمارية وهندسية <span className="text-[#FF5722] drop-shadow-[0_0_20px_rgba(255,87,34,0.4)]">بأعلى معايير الأداء</span>
+                  كفاءات معمارية وهندسية <span className="text-theme-primary drop-shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.4)]">بأعلى معايير الأداء</span>
                 </>
               ) : (
                 <>
-                  Backend Engineering & Architecture <span className="text-[#FF5722] drop-shadow-[0_0_20px_rgba(255,87,34,0.4)]">Core Competencies</span>
+                  Backend Engineering & Architecture <span className="text-theme-primary drop-shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.4)]">Core Competencies</span>
                 </>
               )}
             </h2>
@@ -143,9 +143,9 @@ export const Skills: React.FC = () => {
           </div>
         </AssembleItem>
 
-        {/* Highlight Card: Bio Intro + Years of Experience in Big Orange */}
+        {/* Highlight Card: Bio Intro + Test Pass Rate */}
         <AssembleItem direction="top" distance={50}>
-          <div className="mb-10 sm:mb-14 p-4 sm:p-6 lg:p-8 rounded-3xl bg-[#0e0e12] border border-orange-500/25 flex flex-col md:flex-row items-center justify-between gap-6 shadow-[0_10px_30px_rgba(0,0,0,0.6)]">
+          <div className="mb-10 sm:mb-14 p-4 sm:p-6 lg:p-8 rounded-3xl bg-[#0e0e12] border border-theme-primary/25 flex flex-col md:flex-row items-center justify-between gap-6 shadow-[0_10px_30px_rgba(0,0,0,0.6)]">
             <div className="text-start max-w-2xl">
               <h3 className="text-xl font-bold text-white mb-2">
                 {lang === 'ar' ? 'خبرة عملية مبنية على بناء مشاريع واقعية' : 'Hands-on Production Architecture'}
@@ -157,16 +157,16 @@ export const Skills: React.FC = () => {
               </p>
             </div>
 
-            {/* Big Orange Number */}
-            <div className="flex items-center gap-4 px-6 py-4 rounded-2xl bg-orange-500/10 border border-orange-500/30 shrink-0">
-              <span className="text-5xl sm:text-6xl font-black text-[#FF5722] font-mono drop-shadow-[0_0_20px_rgba(255,87,34,0.5)]">
+            {/* Big Theme Number */}
+            <div className="flex items-center gap-4 px-6 py-4 rounded-2xl bg-theme-primary/10 border border-theme-primary/30 shrink-0">
+              <span className="text-5xl sm:text-6xl font-black text-theme-primary font-mono drop-shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.5)]">
                 100%
               </span>
               <div className="flex flex-col text-start">
                 <span className="text-white font-bold text-sm">
                   {lang === 'ar' ? 'نسبة اجتياز الاختبارات' : 'Test Pass Rate'}
                 </span>
-                <span className="text-xs text-[#FF7A00] font-mono">
+                <span className="text-xs text-theme-secondary font-mono">
                   {lang === 'ar' ? '49 اختباراً مؤتمتاً ناجحاً' : '49 Passing Tests'}
                 </span>
               </div>
@@ -178,13 +178,13 @@ export const Skills: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
           {displaySkills.map((skill, idx) => (
             <AssembleItem key={idx} direction="top" distance={40 + idx * 10}>
-              <div className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-[#0e0e12] border border-white/10 hover:border-orange-500/40 transition-all duration-300 group relative overflow-hidden shadow-[0_8px_24px_rgba(0,0,0,0.6)]">
-                {/* Big Orange Percentage Number */}
+              <div className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-[#0e0e12] border border-white/10 hover:border-theme-primary/40 transition-all duration-300 group relative overflow-hidden shadow-[0_8px_24px_rgba(0,0,0,0.6)]">
+                {/* Big Theme Percentage Number */}
                 <div className="flex items-baseline justify-between mb-3">
-                  <span className="text-3xl sm:text-4xl font-black text-[#FF5722] font-mono group-hover:text-[#FF7A00] transition-colors drop-shadow-[0_0_15px_rgba(255,87,34,0.3)]">
+                  <span className="text-3xl sm:text-4xl font-black text-theme-primary font-mono group-hover:text-theme-secondary transition-colors drop-shadow-[0_0_15px_rgba(var(--theme-primary-rgb),0.3)]">
                     {skill.level}%
                   </span>
-                  <div className="w-2.5 h-2.5 rounded-full bg-[#FF5722] group-hover:scale-125 transition-transform" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-theme-primary group-hover:scale-125 transition-transform" />
                 </div>
 
                 {/* Skill Name */}
@@ -194,8 +194,8 @@ export const Skills: React.FC = () => {
 
                 {/* Progress Track */}
                 <div className="w-full h-1.5 rounded-full bg-[#18181f] overflow-hidden">
-                  <div 
-                    className="h-full rounded-full bg-gradient-to-r from-[#FF5722] to-[#FF7A00] transition-all duration-1000 shadow-[0_0_10px_rgba(255,87,34,0.5)]"
+                  <div
+                    className="h-full rounded-full bg-gradient-to-r from-theme-primary to-theme-secondary transition-all duration-1000 shadow-[0_0_10px_rgba(var(--theme-primary-rgb),0.5)]"
                     style={{ width: `${skill.level}%` }}
                   />
                 </div>
@@ -208,8 +208,8 @@ export const Skills: React.FC = () => {
         <div className="pt-8 border-t border-white/10">
           <AssembleItem direction="top">
             <div className="text-start mb-10">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-[#FF7A00] text-xs font-mono mb-2">
-                <Terminal className="w-3.5 h-3.5 text-[#FF5722]" />
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-theme-primary/10 border border-theme-primary/20 text-theme-secondary text-xs font-mono mb-2">
+                <Terminal className="w-3.5 h-3.5 text-theme-primary" />
                 <span>{lang === 'ar' ? 'المجالات الهندسية المتخصصة' : 'Specialized Engineering Areas'}</span>
               </div>
               <h3 className="text-2xl sm:text-3xl font-black text-white">
@@ -221,24 +221,24 @@ export const Skills: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
             {backendDomains.map((domain, sIdx) => (
               <AssembleItem key={sIdx} direction="top" distance={50 + sIdx * 10}>
-                <div className="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-[#0e0e12] border border-white/5 hover:border-orange-500/30 transition-all duration-300 group h-full flex flex-col justify-between">
+                <div className="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-[#0e0e12] border border-white/5 hover:border-theme-primary/30 transition-all duration-300 group h-full flex flex-col justify-between">
                   <div>
-                    <div className="w-11 h-11 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <div className="w-11 h-11 rounded-2xl bg-theme-primary/10 border border-theme-primary/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                       {domain.icon}
                     </div>
-                    <h4 className="text-base font-bold text-white mb-1.5 group-hover:text-[#FF7A00] transition-colors">
+                    <h4 className="text-base font-bold text-white mb-1.5 group-hover:text-theme-secondary transition-colors">
                       {lang === 'ar' ? domain.titleAr : domain.titleEn}
                     </h4>
-                    <p className="text-[#FF7A00] font-mono text-[11px] font-semibold mb-2">
+                    <p className="text-theme-secondary font-mono text-[11px] font-semibold mb-2">
                       {lang === 'ar' ? domain.skillsAr : domain.skillsEn}
                     </p>
                     <p className="text-slate-400 text-xs leading-relaxed">
                       {lang === 'ar' ? domain.descAr : domain.descEn}
                     </p>
                   </div>
-                  <div className="mt-4 pt-3 border-t border-white/5 flex items-center gap-1.5 text-[11px] font-mono text-[#FF5722]">
+                  <div className="mt-4 pt-3 border-t border-white/5 flex items-center gap-1.5 text-[11px] font-mono text-theme-primary">
                     <span>{lang === 'ar' ? 'معتمد ومطبق' : 'Production-Ready'}</span>
-                    <span className="text-[#FF7A00]">&rarr;</span>
+                    <span className="text-theme-secondary">&rarr;</span>
                   </div>
                 </div>
               </AssembleItem>

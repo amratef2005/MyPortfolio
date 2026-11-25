@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
 import { Project, Certificate } from '../types';
-import { 
-  Lock, 
-  Unlock, 
-  LayoutDashboard, 
-  FolderGit2, 
-  Award, 
-  Cpu, 
-  User, 
-  Mail, 
-  Save, 
-  Trash2, 
-  Plus, 
-  Download, 
+import {
+  Lock,
+  Unlock,
+  LayoutDashboard,
+  FolderGit2,
+  Award,
+  Cpu,
+  User,
+  Mail,
+  Save,
+  Trash2,
+  Plus,
+  Download,
   RotateCcw,
   ShieldCheck,
   LogOut,
@@ -38,9 +38,17 @@ import {
   ShieldAlert,
   Crown,
   Shield,
-  UserCheck
+  UserCheck,
+  Bell,
+  Box,
+  Globe,
+  Home
 } from 'lucide-react';
 import { compressImageFile } from '../utils/imageCompressor';
+import { BentoOverview } from './BentoOverview';
+import { QuantixSidebar } from './QuantixSidebar';
+import { ThemePickerPanel } from './ThemePickerPanel';
+import { adminTranslations } from './adminTranslations';
 
 export const AdminPage: React.FC = () => {
   const {
@@ -49,6 +57,8 @@ export const AdminPage: React.FC = () => {
     certificates,
     skills,
     messages,
+    lang,
+    setLang,
     isAuthenticated,
     login,
     logout,
@@ -75,7 +85,7 @@ export const AdminPage: React.FC = () => {
   const [loginError, setLoginError] = useState('');
 
   // Dashboard Tabs
-  const [activeTab, setActiveTab] = useState<'overview' | 'status' | 'projects' | 'certificates' | 'skills' | 'profile' | 'security' | 'inbox' | 'backup'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'status' | 'projects' | 'certificates' | 'skills' | 'profile' | 'security' | 'inbox' | 'backup' | 'theme'>('overview');
   const [statusSuccess, setStatusSuccess] = useState('');
 
   // Edit Project State
@@ -407,7 +417,7 @@ export const AdminPage: React.FC = () => {
     const passwordToSet = newPassword.trim() ? newPassword : (profile.adminPassword || 'KandelAmr###14');
     updateCredentials(newUsername, passwordToSet);
     updateProfile({ adminUsername: newUsername, adminPassword: passwordToSet });
-    
+
     setSecuritySuccess('تم تحديث بيانات الدخول وكلمة المرور بنجاح!');
     setNewPassword('');
     setConfirmPassword('');
@@ -418,15 +428,15 @@ export const AdminPage: React.FC = () => {
   // ==========================================
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-[#07090e] flex flex-col justify-center items-center p-4 relative overflow-hidden font-cairo selection:bg-cyan-500/30 selection:text-cyan-200">
+      <div className="min-h-screen bg-[#07090e] flex flex-col justify-center items-center p-4 relative overflow-hidden font-cairo selection:bg-theme-primary/30 selection:text-theme-primary">
         {/* Ambient Glows */}
-        <div className="absolute top-1/4 -right-20 w-96 h-96 bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute top-1/4 -right-20 w-96 h-96 bg-theme-primary/10 rounded-full blur-[120px] pointer-events-none" />
         <div className="absolute bottom-1/4 -left-20 w-96 h-96 bg-indigo-500/10 rounded-full blur-[120px] pointer-events-none" />
 
-        <div className="w-full max-w-md bg-slate-900/90 border border-slate-800 backdrop-blur-xl rounded-3xl p-8 shadow-[0_20px_50px_rgba(0,0,0,0.8)] relative z-10 text-center">
+        <div className="w-full max-w-md quantix-card backdrop-blur-xl p-8 shadow-[0_20px_50px_rgba(0,0,0,0.8)] relative z-10 text-center">
           {/* Logo Badge */}
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-cyan-500 to-indigo-600 p-0.5 mx-auto mb-5 shadow-[0_0_25px_rgba(56,189,248,0.35)]">
-            <div className="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center text-cyan-400">
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-theme-primary to-indigo-600 p-0.5 mx-auto mb-5 shadow-[0_0_25px_rgba(var(--theme-primary-rgb),0.35)]">
+            <div className="w-full h-full bg-[#08090C] rounded-[14px] flex items-center justify-center text-theme-primary">
               <ShieldCheck className="w-8 h-8" />
             </div>
           </div>
@@ -459,7 +469,7 @@ export const AdminPage: React.FC = () => {
                     setLoginError('');
                   }}
                   placeholder="اسم المستخدم (Username)"
-                  className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 focus:border-cyan-500 text-white text-sm outline-none font-mono transition-all text-left placeholder:text-slate-600"
+                  className="w-full px-4 py-3 rounded-xl bg-[#08090C] border border-white/[0.08] focus:border-theme-primary text-white text-sm outline-none font-mono transition-all text-left placeholder:text-slate-600"
                   required
                 />
                 <User className="w-4 h-4 text-slate-500 absolute top-3.5 right-3.5 pointer-events-none" />
@@ -479,7 +489,7 @@ export const AdminPage: React.FC = () => {
                     setLoginError('');
                   }}
                   placeholder="••••••••"
-                  className="w-full px-4 py-3 pr-10 rounded-xl bg-slate-950 border border-slate-800 focus:border-cyan-500 text-white text-sm outline-none font-mono transition-all text-left placeholder:text-slate-600"
+                  className="w-full px-4 py-3 pr-10 rounded-xl bg-[#08090C] border border-white/[0.08] focus:border-theme-primary text-white text-sm outline-none font-mono transition-all text-left placeholder:text-slate-600"
                   required
                 />
                 <button
@@ -495,7 +505,11 @@ export const AdminPage: React.FC = () => {
 
             <button
               type="submit"
-              className="w-full py-3.5 mt-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold text-sm shadow-[0_0_20px_rgba(56,189,248,0.3)] transition-all flex items-center justify-center gap-2 group cursor-pointer"
+              style={{
+                background: 'linear-gradient(135deg, var(--theme-primary), var(--theme-secondary))',
+                boxShadow: '0 8px 24px -6px rgba(var(--theme-primary-rgb), 0.45)',
+              }}
+              className="w-full py-3.5 mt-2 rounded-xl hover:brightness-110 text-white font-bold text-sm transition-all flex items-center justify-center gap-2 group cursor-pointer"
             >
               <Unlock className="w-4 h-4 group-hover:scale-110 transition-transform" />
               <span>تأكيد تسجيل الدخول</span>
@@ -503,13 +517,13 @@ export const AdminPage: React.FC = () => {
           </form>
 
           {/* Security Notice */}
-          <div className="mt-6 pt-5 border-t border-slate-800/80 text-center">
+          <div className="mt-6 pt-5 border-t border-white/[0.08]/80 text-center">
             <p className="text-[11px] font-mono text-slate-500">
               منطقة إدارية مخصصة ومحمية &bull; يُسمح بالدخول للحساب المصرح له فقط
             </p>
             <a
               href="/"
-              className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-cyan-400 font-mono mt-3 transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-theme-primary font-mono mt-3 transition-colors"
             >
               <span>العودة إلى البورتفوليو</span>
               <ExternalLink className="w-3.5 h-3.5" />
@@ -521,224 +535,109 @@ export const AdminPage: React.FC = () => {
   }
 
   // ==========================================
-  // 2. AUTHENTICATED: FULL-PAGE DASHBOARD
+  // 2. AUTHENTICATED: QUANTIX FULL-PAGE DASHBOARD
   // ==========================================
+  const t = adminTranslations[lang];
+  const unreadCount = messages.filter((m) => !m.read).length;
+  const activeTabLabel = t.tabs[activeTab as keyof typeof t.tabs] || activeTab;
+
   return (
-    <div className="min-h-screen bg-[#06080d] text-slate-100 flex flex-col font-cairo selection:bg-cyan-500/30 selection:text-cyan-200">
-      {/* Top Header */}
-      <header className="px-3 xs:px-4 sm:px-6 py-2.5 sm:py-3.5 bg-slate-950/90 border-b border-slate-800/80 sticky top-0 z-40 backdrop-blur-md flex flex-wrap sm:flex-nowrap items-center justify-between gap-2.5 sm:gap-4 pt-[max(0.625rem,env(safe-area-inset-top))]">
-        {/* Navbar Live Brand Card & Quick Customizer Trigger (Matches Image 2) */}
-        <button
-          type="button"
-          onClick={() => setIsBrandModalOpen(true)}
-          title="انقر لتعديل هوية النافبار (الصورة، والاسم، والمسمى الوظيفي)"
-          className="flex items-center gap-2 xs:gap-2.5 sm:gap-3 group p-1.5 sm:px-3 sm:py-2 rounded-2xl bg-slate-900/60 hover:bg-slate-800/80 border border-slate-800 hover:border-cyan-500/40 transition-all text-start shadow-sm hover:shadow-[0_0_20px_rgba(56,189,248,0.2)] cursor-pointer min-w-0 flex-1 sm:flex-initial max-w-[calc(100%-165px)] sm:max-w-none"
-        >
-          {/* Avatar with Camera/Pencil overlay */}
-          <div className="relative w-9 h-9 sm:w-11 sm:h-11 rounded-xl overflow-hidden bg-gradient-to-tr from-cyan-500 to-indigo-600 p-0.5 shadow-[0_0_15px_rgba(56,189,248,0.35)] shrink-0">
-            <img 
-              src={profile.topAvatarUrl || profile.heroAvatarUrl || "/my.jpg"} 
-              alt={profile.name} 
-              onError={(e) => {
-                (e.target as HTMLImageElement).src = "/drama_hero.png";
-              }}
-              className="w-full h-full object-cover object-top rounded-[10px]" 
-            />
-            <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity rounded-[10px]">
-              <Pencil className="w-3.5 h-3.5 text-cyan-300" />
+    <div className="quantix-dashboard min-h-screen bg-[#07080B] text-slate-100 flex flex-col lg:flex-row selection:bg-theme-primary/30 selection:text-white">
+      {/* Quantix Left Navigation Sidebar */}
+      <QuantixSidebar
+        activeTab={activeTab}
+        onSelectTab={(tab) => {
+          setActiveTab(tab as typeof activeTab);
+          if (tab === 'projects') setEditingProject(null);
+          if (tab === 'certificates') setEditingCert(null);
+        }}
+        unreadCount={unreadCount}
+        projectsCount={projects.length}
+        includeExtendedTabs
+        onLogout={logout}
+        onEditBrand={() => setIsBrandModalOpen(true)}
+      />
+
+      {/* Right Main Column: Quantix Top Bar + Content */}
+      <div className="flex-1 flex flex-col min-w-0 bg-[#08090C]">
+        {/* Top Header */}
+        <header className="px-4 sm:px-7 py-3 bg-[#0A0B0F]/90 border-b border-white/[0.07] sticky top-0 z-40 backdrop-blur-xl flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 pt-[max(0.75rem,env(safe-area-inset-top))]">
+          {/* Left: Breadcrumb + Brand Identity Quick Trigger */}
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="flex items-center gap-2 text-xs sm:text-sm text-slate-500">
+              <Home className="w-4 h-4 shrink-0" />
+              <span>{t.groups.overview}</span>
+              <span className="text-slate-600">/</span>
+              <span className="font-semibold text-white">{activeTabLabel}</span>
             </div>
           </div>
 
-          {/* Name & Subtitle matching the Navbar Brand (Image 2) */}
-          <div className="flex flex-col min-w-0">
-            <div className="flex items-center gap-1.5 xs:gap-2">
-              <span className="font-bold text-white text-xs xs:text-sm sm:text-base tracking-wide group-hover:text-cyan-300 transition-colors truncate block">
-                <span className="sm:hidden">{profile.shortName || 'Amr Atef'}</span>
-                <span className="hidden sm:inline">{profile.name || 'Amr Atef Imam Kandel'}</span>
-              </span>
-              <span className="hidden md:inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-cyan-500/15 border border-cyan-500/30 text-cyan-400 text-[10px] font-mono group-hover:bg-cyan-500/25 transition-all shrink-0">
-                <Pencil className="w-2.5 h-2.5" />
-                تعديل الهوية
-              </span>
-            </div>
-            <span className="text-[10px] xs:text-[11px] sm:text-xs font-mono text-cyan-400/90 tracking-wider truncate block">
-              {profile.title ? profile.title.toUpperCase() : '.NET BACKEND DEVELOPER'}
-            </span>
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={() => setLang(lang === 'en' ? 'ar' : 'en')}
+              className="flex items-center justify-center gap-1.5 h-9 px-3 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-slate-200 border border-white/[0.08] text-xs font-mono font-semibold transition-all shrink-0"
+              title="Switch Language"
+            >
+              <Globe className="w-3.5 h-3.5 text-theme-primary" />
+              <span>{lang === 'en' ? 'AR' : 'EN'}</span>
+            </button>
+
+            <a
+              href="/"
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center justify-center gap-1.5 h-9 px-3 rounded-xl bg-theme-primary/15 hover:bg-theme-primary/25 text-theme-primary border border-theme-primary/30 text-xs font-mono font-semibold transition-all shrink-0 touch-manipulation"
+            >
+              <ExternalLink className="w-3.5 h-3.5 shrink-0" />
+              <span className="hidden sm:inline">{lang === 'ar' ? 'معاينة البورتفوليو' : 'Preview'}</span>
+            </a>
+
+            <button
+              onClick={logout}
+              className="flex items-center justify-center gap-1.5 h-9 px-3 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/25 text-xs font-mono font-semibold transition-all shrink-0 touch-manipulation"
+            >
+              <LogOut className="w-3.5 h-3.5 shrink-0 rtl-flip" />
+              <span className="hidden sm:inline">{lang === 'ar' ? 'خروج' : 'Logout'}</span>
+            </button>
           </div>
-        </button>
-
-        <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
-          <a
-            href="/"
-            target="_blank"
-            rel="noreferrer"
-            className="flex items-center justify-center gap-1.5 h-11 min-h-[44px] px-2.5 sm:px-3.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 text-xs font-mono font-semibold transition-all shadow-[0_0_12px_rgba(56,189,248,0.2)] shrink-0 touch-manipulation"
-          >
-            <ExternalLink className="w-3.5 h-3.5 shrink-0" />
-            <span className="hidden sm:inline">معاينة البورتفوليو الحقيقي</span>
-            <span className="sm:hidden">البورتفوليو</span>
-          </a>
-
-          <button
-            onClick={logout}
-            className="flex items-center justify-center gap-1.5 h-11 min-h-[44px] px-2.5 sm:px-3.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 text-xs font-mono font-semibold transition-all shrink-0 touch-manipulation"
-          >
-            <LogOut className="w-3.5 h-3.5 shrink-0 rtl-flip" />
-            <span>خروج</span>
-          </button>
-        </div>
-      </header>
-
-      {/* Main Container */}
-      <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
-        {/* Sidebar */}
-        <aside className="w-full md:w-64 bg-slate-950/70 border-b md:border-b-0 md:border-l border-slate-800 p-4 flex md:flex-col gap-2 overflow-x-auto md:overflow-x-visible shrink-0">
-          <button
-            onClick={() => setActiveTab('overview')}
-            className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold w-full text-right transition-all shrink-0 md:shrink ${
-              activeTab === 'overview' ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30' : 'text-slate-400 hover:text-white hover:bg-slate-900'
-            }`}
-          >
-            <LayoutDashboard className="w-4 h-4 shrink-0" />
-            <span>نظرة عامة وإحصائيات</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('status')}
-            className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold w-full text-right transition-all shrink-0 md:shrink ${
-              activeTab === 'status' ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30' : 'text-slate-400 hover:text-white hover:bg-slate-900'
-            }`}
-          >
-            <Radio className="w-4 h-4 shrink-0 text-emerald-400" />
-            <div className="flex-1 flex items-center justify-between">
-              <span>حالة التوفر والواتساب</span>
-              <span className={`w-2 h-2 rounded-full ${
-                (profileForm.availabilityStatus || 'available') === 'available'
-                  ? 'bg-emerald-400 animate-pulse'
-                  : ((profileForm.availabilityStatus === 'busy') ? 'bg-amber-400' : 'bg-slate-500')
-              }`} />
-            </div>
-          </button>
-
-          <button
-            onClick={() => { setActiveTab('projects'); setEditingProject(null); }}
-            className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold w-full text-right transition-all shrink-0 md:shrink ${
-              activeTab === 'projects' ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30' : 'text-slate-400 hover:text-white hover:bg-slate-900'
-            }`}
-          >
-            <FolderGit2 className="w-4 h-4 shrink-0" />
-            <span>إدارة المشاريع ({projects.length})</span>
-          </button>
-
-          <button
-            onClick={() => { setActiveTab('certificates'); setEditingCert(null); }}
-            className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold w-full text-right transition-all shrink-0 md:shrink ${
-              activeTab === 'certificates' ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30' : 'text-slate-400 hover:text-white hover:bg-slate-900'
-            }`}
-          >
-            <Award className="w-4 h-4 shrink-0" />
-            <span>إدارة الشهادات ({certificates.length})</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('skills')}
-            className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold w-full text-right transition-all shrink-0 md:shrink ${
-              activeTab === 'skills' ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30' : 'text-slate-400 hover:text-white hover:bg-slate-900'
-            }`}
-          >
-            <Cpu className="w-4 h-4 shrink-0" />
-            <span>المهارات والتقنيات</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('profile')}
-            className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold w-full text-right transition-all shrink-0 md:shrink ${
-              activeTab === 'profile' ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30' : 'text-slate-400 hover:text-white hover:bg-slate-900'
-            }`}
-          >
-            <User className="w-4 h-4 shrink-0" />
-            <span>البيانات الشخصية والصور</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('security')}
-            className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold w-full text-right transition-all shrink-0 md:shrink ${
-              activeTab === 'security' ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30' : 'text-slate-400 hover:text-white hover:bg-slate-900'
-            }`}
-          >
-            <div className="flex items-center gap-2.5">
-              <KeyRound className="w-4 h-4 shrink-0" />
-              <span>الأمان وإدارة الأجهزة</span>
-            </div>
-            {activeSessionsCount > 0 && (
-              <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[10px] font-mono">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse inline-block" />
-                {activeSessionsCount}
-              </span>
-            )}
-          </button>
-
-          <button
-            onClick={() => setActiveTab('inbox')}
-            className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold w-full text-right transition-all shrink-0 md:shrink ${
-              activeTab === 'inbox' ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30' : 'text-slate-400 hover:text-white hover:bg-slate-900'
-            }`}
-          >
-            <div className="flex items-center gap-2.5">
-              <Mail className="w-4 h-4 shrink-0" />
-              <span>صندوق الوارد</span>
-            </div>
-            {messages.filter(m => !m.read).length > 0 && (
-              <span className="px-2 py-0.5 rounded-full bg-cyan-500 text-black font-bold text-[10px]">
-                {messages.filter(m => !m.read).length}
-              </span>
-            )}
-          </button>
-
-          <button
-            onClick={() => setActiveTab('backup')}
-            className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold w-full text-right transition-all shrink-0 md:shrink ${
-              activeTab === 'backup' ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30' : 'text-slate-400 hover:text-white hover:bg-slate-900'
-            }`}
-          >
-            <Download className="w-4 h-4 shrink-0" />
-            <span>النسخ الاحتياطي والاستعادة</span>
-          </button>
-        </aside>
+        </header>
 
         {/* Content Body */}
-        <main className="flex-1 p-3.5 sm:p-6 md:p-8 overflow-y-auto max-w-6xl w-full min-w-0 pb-[max(2rem,env(safe-area-inset-bottom))]">
-          {/* TAB 1: OVERVIEW */}
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto max-w-6xl w-full min-w-0 pb-[max(2rem,env(safe-area-inset-bottom))]">
+          {/* TAB 1: BENTO OVERVIEW */}
           {activeTab === 'overview' && (
             <div className="space-y-6">
-              <div>
-                <h2 className="text-2xl font-bold text-white">نظرة عامة على حالة البورتفوليو</h2>
-                <p className="text-xs text-slate-400 font-mono mt-1">إحصائيات فورية وموجز المحتوى الحالي</p>
-              </div>
-
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <div className="p-5 rounded-2xl bg-slate-950 border border-slate-800 text-center">
-                  <span className="block text-3xl font-black text-cyan-400 font-mono">{projects.length}</span>
-                  <span className="text-xs text-slate-400 mt-1 block">مشاريع رئيسية</span>
-                </div>
-                <div className="p-5 rounded-2xl bg-slate-950 border border-slate-800 text-center">
-                  <span className="block text-3xl font-black text-indigo-400 font-mono">{certificates.length}</span>
-                  <span className="text-xs text-slate-400 mt-1 block">شهادات واعتمادات</span>
-                </div>
-                <div className="p-5 rounded-2xl bg-slate-950 border border-slate-800 text-center">
-                  <span className="block text-3xl font-black text-emerald-400 font-mono">
-                    {skills.reduce((acc, cat) => acc + cat.skills.length, 0)}
-                  </span>
-                  <span className="text-xs text-slate-400 mt-1 block">مهارة برمجية</span>
-                </div>
-                <div className="p-5 rounded-2xl bg-slate-950 border border-slate-800 text-center">
-                  <span className="block text-3xl font-black text-amber-400 font-mono">{messages.length}</span>
-                  <span className="text-xs text-slate-400 mt-1 block">رسائل تواصل</span>
-                </div>
-              </div>
+              <BentoOverview
+                projects={projects}
+                certificates={certificates}
+                skills={skills}
+                messages={messages}
+                onNewProject={() => {
+                  setActiveTab('projects');
+                  setEditingProject({
+                    id: `proj-${Date.now()}`,
+                    title: '',
+                    titleAr: '',
+                    tagline: '',
+                    taglineAr: '',
+                    description: '',
+                    descriptionAr: '',
+                    category: '.NET & Backend',
+                    featured: true,
+                    badge: 'Backend',
+                    architecture: [],
+                    technologies: ['C#', 'ASP.NET Core'],
+                    metrics: [],
+                    features: [],
+                  });
+                  setIsNewProject(true);
+                }}
+                onNavigate={(tab) => setActiveTab(tab as typeof activeTab)}
+              />
 
               {/* Quick Status Bar */}
-              <div className="p-4 sm:p-5 rounded-2xl bg-slate-950/80 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 min-w-0">
+              <div className="p-4 sm:p-5 quantix-card flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 min-w-0">
                 <div className="flex items-start sm:items-center gap-3 min-w-0 flex-1">
                   <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0 mt-0.5 sm:mt-0">
                     <Radio className="w-5 h-5 animate-pulse" />
@@ -746,13 +645,12 @@ export const AdminPage: React.FC = () => {
                   <div className="min-w-0 flex-1">
                     <h3 className="text-xs sm:text-sm font-bold text-white flex items-center gap-2 flex-wrap">
                       <span>الحالة الحية الحالية:</span>
-                      <span className={`px-2.5 py-0.5 rounded-full text-xs font-mono font-semibold ${
-                        (profileForm.availabilityStatus || 'available') === 'available'
-                          ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                          : ((profileForm.availabilityStatus === 'busy')
-                            ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-                            : 'bg-slate-800 text-slate-400 border border-slate-700')
-                      }`}>
+                      <span className={`px-2.5 py-0.5 rounded-full text-xs font-mono font-semibold ${(profileForm.availabilityStatus || 'available') === 'available'
+                        ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                        : ((profileForm.availabilityStatus === 'busy')
+                          ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                          : 'bg-[#14151B] text-slate-400 border border-white/[0.08]')
+                        }`}>
                         {(profileForm.availabilityStatus || 'available') === 'available' ? 'متاح للعمل (Available) 🟢' : ((profileForm.availabilityStatus === 'busy') ? 'مشغول بمشاريع (Busy) 🟡' : 'غير متاح (Offline) ⚪')}
                       </span>
                     </h3>
@@ -764,67 +662,17 @@ export const AdminPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setActiveTab('status')}
-                  className="min-h-[44px] px-4 py-2.5 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 border border-cyan-500/30 text-cyan-400 text-xs font-mono font-semibold transition-all self-start sm:self-center shrink-0 flex items-center justify-center"
+                  className="min-h-[44px] px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/15 text-white text-xs font-mono font-semibold transition-all self-start sm:self-center shrink-0 flex items-center justify-center"
                 >
                   تعديل الحالة الآن &larr;
                 </button>
               </div>
-
-              {/* Active Sessions & Devices Quick Card */}
-              <div className="p-4 sm:p-5 rounded-2xl bg-slate-950/80 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 min-w-0">
-                <div className="flex items-start sm:items-center gap-3 min-w-0 flex-1">
-                  <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shrink-0 mt-0.5 sm:mt-0">
-                    <Laptop className="w-5 h-5" />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <h3 className="text-xs sm:text-sm font-bold text-white flex items-center gap-2 flex-wrap">
-                      <span>الأجهزة المتصلة حالياً:</span>
-                      <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-mono font-bold flex items-center gap-1.5">
-                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                        {activeSessionsCount} {activeSessionsCount === 1 ? 'جهاز نشط' : 'أجهزة نشطة'}
-                      </span>
-                    </h3>
-                    <p className="text-xs sm:text-sm text-slate-400 mt-1 leading-[1.75] break-words">
-                      {isCallerMaster
-                        ? 'بصفتك الجهاز الرئيسي (أقدم جهاز)، يمكنك طرد أي جهاز أحدث أو مساواته معك في الصلاحيات'
-                        : 'يمكنك مراجعة قائمة الأجهزة النشطة المسجلة حالياً في النظام'}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2 flex-wrap shrink-0">
-                  {isCallerMaster && activeSessionsCount > 1 && (
-                    <button
-                      type="button"
-                      onClick={handleTerminateNewest}
-                      disabled={terminatingNewest}
-                      className="min-h-[44px] px-3.5 py-2.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 text-amber-400 text-xs font-mono font-semibold transition-all disabled:opacity-50 cursor-pointer flex items-center justify-center"
-                    >
-                      {terminatingNewest ? 'جاري الطرد...' : 'طرد أحدث جهاز مسجل'}
-                    </button>
-                  )}
-                  <button
-                    type="button"
-                    onClick={() => setActiveTab('security')}
-                    className="min-h-[44px] px-4 py-2.5 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 border border-cyan-500/30 text-cyan-400 text-xs font-mono font-semibold transition-all cursor-pointer flex items-center justify-center"
-                  >
-                    إدارة الأجهزة &larr;
-                  </button>
-                </div>
-              </div>
-
-              <div className="p-6 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-4">
-                <h3 className="font-bold text-white text-sm flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-cyan-400" />
-                  <span>دليل التحكم السريع:</span>
-                </h3>
-                <ul className="text-xs text-slate-300 leading-relaxed space-y-2 list-disc list-inside">
-                  <li>البورتفوليو الرئيسي أصبح للعرض فقط ولا يحتوي على أي أزرار أو نوافذ إدارية.</li>
-                  <li>هذه الصفحة منفصلة تماماً ومحمية باسم مستخدم وكلمة مرور.</li>
-                  <li>جميع التعديلات التي تجريها هنا تنعكس فورياً ومحلياً على البورتفوليو.</li>
-                  <li>يمكنك مراجعة الأجهزة النشطة والتحكم بها من تبويب <b>"الأمان وإدارة الأجهزة"</b>.</li>
-                </ul>
-              </div>
             </div>
+          )}
+
+          {/* TAB: THEME & COLORS */}
+          {activeTab === 'theme' && (
+            <ThemePickerPanel />
           )}
 
           {/* TAB: AVAILABILITY & WHATSAPP STATUS */}
@@ -848,10 +696,10 @@ export const AdminPage: React.FC = () => {
               )}
 
               {/* CARD 1: GENERAL WORK AVAILABILITY & PRESENCE */}
-              <div className="p-6 rounded-3xl bg-slate-950/80 border border-slate-800 space-y-5 shadow-xl">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-800">
+              <div className="p-6 quantix-card space-y-5 shadow-xl">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-white/[0.08]">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shrink-0">
+                    <div className="w-10 h-10 rounded-xl bg-theme-primary/10 border border-theme-primary/30 flex items-center justify-center text-theme-primary shrink-0">
                       <Radio className="w-5 h-5" />
                     </div>
                     <div>
@@ -871,11 +719,10 @@ export const AdminPage: React.FC = () => {
                       ...profileForm,
                       showAvailabilityBadge: profileForm.showAvailabilityBadge === false
                     })}
-                    className={`px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold transition-all border cursor-pointer ${
-                      profileForm.showAvailabilityBadge !== false
-                        ? 'bg-cyan-500/15 text-cyan-400 border-cyan-500/40'
-                        : 'bg-slate-800 text-slate-400 border-slate-700'
-                    }`}
+                    className={`px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold transition-all border cursor-pointer ${profileForm.showAvailabilityBadge !== false
+                      ? 'bg-theme-primary/15 text-theme-primary border-theme-primary/40'
+                      : 'bg-[#14151B] text-slate-400 border-white/[0.08]'
+                      }`}
                   >
                     {profileForm.showAvailabilityBadge !== false ? 'الشارة: مفعّلة (ON)' : 'الشارة: مخفية (OFF)'}
                   </button>
@@ -896,11 +743,10 @@ export const AdminPage: React.FC = () => {
                         availabilityNoteAr: 'جاهز للمشاريع والتحديات الهندسية',
                         availabilityNoteEn: 'Available for High-Impact Roles'
                       })}
-                      className={`p-3.5 rounded-2xl border text-right transition-all flex flex-col gap-1.5 cursor-pointer ${
-                        (profileForm.availabilityStatus || 'available') === 'available'
-                          ? 'bg-emerald-950/30 border-emerald-500/50 shadow-[0_0_20px_rgba(16,185,129,0.15)] ring-1 ring-emerald-500/50'
-                          : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700'
-                      }`}
+                      className={`p-3.5 rounded-2xl border text-right transition-all flex flex-col gap-1.5 cursor-pointer ${(profileForm.availabilityStatus || 'available') === 'available'
+                        ? 'bg-emerald-950/30 border-emerald-500/50 shadow-[0_0_20px_rgba(16,185,129,0.15)] ring-1 ring-emerald-500/50'
+                        : 'bg-[#0B0C10] border-white/[0.08] text-slate-400 hover:border-white/[0.08]'
+                        }`}
                     >
                       <div className="flex items-center justify-between">
                         <span className="font-bold text-xs text-emerald-400 flex items-center gap-1.5">
@@ -923,11 +769,10 @@ export const AdminPage: React.FC = () => {
                         availabilityNoteAr: 'مشغول حالياً بمشاريع قائمة',
                         availabilityNoteEn: 'Busy with Ongoing Projects'
                       })}
-                      className={`p-3.5 rounded-2xl border text-right transition-all flex flex-col gap-1.5 cursor-pointer ${
-                        profileForm.availabilityStatus === 'busy'
-                          ? 'bg-amber-950/30 border-amber-500/50 shadow-[0_0_20px_rgba(245,158,11,0.15)] ring-1 ring-amber-500/50'
-                          : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700'
-                      }`}
+                      className={`p-3.5 rounded-2xl border text-right transition-all flex flex-col gap-1.5 cursor-pointer ${profileForm.availabilityStatus === 'busy'
+                        ? 'bg-amber-950/30 border-amber-500/50 shadow-[0_0_20px_rgba(245,158,11,0.15)] ring-1 ring-amber-500/50'
+                        : 'bg-[#0B0C10] border-white/[0.08] text-slate-400 hover:border-white/[0.08]'
+                        }`}
                     >
                       <div className="flex items-center justify-between">
                         <span className="font-bold text-xs text-amber-400 flex items-center gap-1.5">
@@ -950,11 +795,10 @@ export const AdminPage: React.FC = () => {
                         availabilityNoteAr: 'غير متاح حالياً لاستقبال مشاريع',
                         availabilityNoteEn: 'Currently Unavailable'
                       })}
-                      className={`p-3.5 rounded-2xl border text-right transition-all flex flex-col gap-1.5 cursor-pointer ${
-                        profileForm.availabilityStatus === 'offline'
-                          ? 'bg-slate-800 border-slate-600 shadow-md ring-1 ring-slate-500'
-                          : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700'
-                      }`}
+                      className={`p-3.5 rounded-2xl border text-right transition-all flex flex-col gap-1.5 cursor-pointer ${profileForm.availabilityStatus === 'offline'
+                        ? 'bg-[#14151B] border-white/20 shadow-md ring-1 ring-slate-500'
+                        : 'bg-[#0B0C10] border-white/[0.08] text-slate-400 hover:border-white/[0.08]'
+                        }`}
                     >
                       <div className="flex items-center justify-between">
                         <span className="font-bold text-xs text-slate-300 flex items-center gap-1.5">
@@ -981,7 +825,7 @@ export const AdminPage: React.FC = () => {
                       value={profileForm.availabilityNoteAr || ''}
                       onChange={(e) => setProfileForm({ ...profileForm, availabilityNoteAr: e.target.value })}
                       placeholder="مثال: جاهز للمشاريع والتحديات الهندسية"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm outline-none focus:border-cyan-500"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm outline-none focus:border-theme-primary"
                     />
                   </div>
                   <div>
@@ -993,35 +837,33 @@ export const AdminPage: React.FC = () => {
                       value={profileForm.availabilityNoteEn || ''}
                       onChange={(e) => setProfileForm({ ...profileForm, availabilityNoteEn: e.target.value })}
                       placeholder="e.g. Available for High-Impact Roles"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm font-mono outline-none focus:border-cyan-500"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm font-mono outline-none focus:border-theme-primary"
                     />
                   </div>
                 </div>
 
                 {/* Live Preview Avatar Badge */}
-                <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="p-4 quantix-card flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <span className="text-xs font-mono text-slate-400">معاينة شكل الشارة في الهيرو والأفاتار:</span>
-                  <div className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-950 border text-xs font-mono font-semibold self-start sm:self-auto ${
-                    (profileForm.availabilityStatus || 'available') === 'available'
-                      ? 'border-emerald-500/40 text-emerald-300 shadow-[0_0_15px_rgba(16,185,129,0.2)]'
-                      : (profileForm.availabilityStatus === 'busy'
-                        ? 'border-amber-500/40 text-amber-300 shadow-[0_0_15px_rgba(245,158,11,0.2)]'
-                        : 'border-slate-700 text-slate-400')
-                  }`}>
+                  <div className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#08090C] border text-xs font-mono font-semibold self-start sm:self-auto ${(profileForm.availabilityStatus || 'available') === 'available'
+                    ? 'border-emerald-500/40 text-emerald-300 shadow-[0_0_15px_rgba(16,185,129,0.2)]'
+                    : (profileForm.availabilityStatus === 'busy'
+                      ? 'border-amber-500/40 text-amber-300 shadow-[0_0_15px_rgba(245,158,11,0.2)]'
+                      : 'border-white/[0.08] text-slate-400')
+                    }`}>
                     <span className="relative flex h-2 w-2 shrink-0">
                       {(profileForm.availabilityStatus || 'available') === 'available' && (
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                       )}
-                      <span className={`relative inline-flex rounded-full h-2 w-2 ${
-                        (profileForm.availabilityStatus || 'available') === 'available'
-                          ? 'bg-emerald-400'
-                          : (profileForm.availabilityStatus === 'busy' ? 'bg-amber-400' : 'bg-slate-500')
-                      }`} />
+                      <span className={`relative inline-flex rounded-full h-2 w-2 ${(profileForm.availabilityStatus || 'available') === 'available'
+                        ? 'bg-emerald-400'
+                        : (profileForm.availabilityStatus === 'busy' ? 'bg-amber-400' : 'bg-slate-500')
+                        }`} />
                     </span>
                     <span>
-                      {profileForm.availabilityNoteAr || 
-                        ((profileForm.availabilityStatus || 'available') === 'available' 
-                          ? 'جاهز للمشاريع والتحديات الهندسية' 
+                      {profileForm.availabilityNoteAr ||
+                        ((profileForm.availabilityStatus || 'available') === 'available'
+                          ? 'جاهز للمشاريع والتحديات الهندسية'
                           : (profileForm.availabilityStatus === 'busy' ? 'مشغول حالياً بمشاريع قائمة' : 'غير متاح حالياً'))}
                     </span>
                   </div>
@@ -1029,8 +871,8 @@ export const AdminPage: React.FC = () => {
               </div>
 
               {/* CARD 2: WHATSAPP LIVE RESPONSE STATUS */}
-              <div className="p-6 rounded-3xl bg-slate-950/80 border border-slate-800 space-y-5 shadow-xl">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-800">
+              <div className="p-6 quantix-card space-y-5 shadow-xl">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-white/[0.08]">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
                       <MessageSquare className="w-5 h-5" />
@@ -1052,11 +894,10 @@ export const AdminPage: React.FC = () => {
                       ...profileForm,
                       showWhatsAppStatus: profileForm.showWhatsAppStatus === false
                     })}
-                    className={`px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold transition-all border cursor-pointer ${
-                      profileForm.showWhatsAppStatus !== false
-                        ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/40'
-                        : 'bg-slate-800 text-slate-400 border-slate-700'
-                    }`}
+                    className={`px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold transition-all border cursor-pointer ${profileForm.showWhatsAppStatus !== false
+                      ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/40'
+                      : 'bg-[#14151B] text-slate-400 border-white/[0.08]'
+                      }`}
                   >
                     {profileForm.showWhatsAppStatus !== false ? 'شارة الواتساب: مفعّلة (ON)' : 'شارة الواتساب: مخفية (OFF)'}
                   </button>
@@ -1077,11 +918,10 @@ export const AdminPage: React.FC = () => {
                         whatsappNoteAr: 'متاح الآن للرد الفوري',
                         whatsappNoteEn: 'Available for immediate reply'
                       })}
-                      className={`p-3.5 rounded-2xl border text-right transition-all flex flex-col gap-1.5 cursor-pointer ${
-                        (profileForm.whatsappStatus || 'online') === 'online'
-                          ? 'bg-emerald-950/30 border-emerald-500/50 shadow-[0_0_20px_rgba(16,185,129,0.15)] ring-1 ring-emerald-500/50'
-                          : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700'
-                      }`}
+                      className={`p-3.5 rounded-2xl border text-right transition-all flex flex-col gap-1.5 cursor-pointer ${(profileForm.whatsappStatus || 'online') === 'online'
+                        ? 'bg-emerald-950/30 border-emerald-500/50 shadow-[0_0_20px_rgba(16,185,129,0.15)] ring-1 ring-emerald-500/50'
+                        : 'bg-[#0B0C10] border-white/[0.08] text-slate-400 hover:border-white/[0.08]'
+                        }`}
                     >
                       <div className="flex items-center justify-between">
                         <span className="font-bold text-xs text-emerald-400 flex items-center gap-1.5">
@@ -1104,11 +944,10 @@ export const AdminPage: React.FC = () => {
                         whatsappNoteAr: 'مشغول • الرد خلال ساعات',
                         whatsappNoteEn: 'Replies within a few hours'
                       })}
-                      className={`p-3.5 rounded-2xl border text-right transition-all flex flex-col gap-1.5 cursor-pointer ${
-                        profileForm.whatsappStatus === 'delayed'
-                          ? 'bg-amber-950/30 border-amber-500/50 shadow-[0_0_20px_rgba(245,158,11,0.15)] ring-1 ring-amber-500/50'
-                          : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700'
-                      }`}
+                      className={`p-3.5 rounded-2xl border text-right transition-all flex flex-col gap-1.5 cursor-pointer ${profileForm.whatsappStatus === 'delayed'
+                        ? 'bg-amber-950/30 border-amber-500/50 shadow-[0_0_20px_rgba(245,158,11,0.15)] ring-1 ring-amber-500/50'
+                        : 'bg-[#0B0C10] border-white/[0.08] text-slate-400 hover:border-white/[0.08]'
+                        }`}
                     >
                       <div className="flex items-center justify-between">
                         <span className="font-bold text-xs text-amber-400 flex items-center gap-1.5">
@@ -1131,11 +970,10 @@ export const AdminPage: React.FC = () => {
                         whatsappNoteAr: 'غير متصل حالياً • اترك رسالة',
                         whatsappNoteEn: 'Offline • Leave a message'
                       })}
-                      className={`p-3.5 rounded-2xl border text-right transition-all flex flex-col gap-1.5 cursor-pointer ${
-                        profileForm.whatsappStatus === 'offline'
-                          ? 'bg-slate-800 border-slate-600 shadow-md ring-1 ring-slate-500'
-                          : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700'
-                      }`}
+                      className={`p-3.5 rounded-2xl border text-right transition-all flex flex-col gap-1.5 cursor-pointer ${profileForm.whatsappStatus === 'offline'
+                        ? 'bg-[#14151B] border-white/20 shadow-md ring-1 ring-slate-500'
+                        : 'bg-[#0B0C10] border-white/[0.08] text-slate-400 hover:border-white/[0.08]'
+                        }`}
                     >
                       <div className="flex items-center justify-between">
                         <span className="font-bold text-xs text-slate-300 flex items-center gap-1.5">
@@ -1162,7 +1000,7 @@ export const AdminPage: React.FC = () => {
                       value={profileForm.whatsappNoteAr || ''}
                       onChange={(e) => setProfileForm({ ...profileForm, whatsappNoteAr: e.target.value })}
                       placeholder="مثال: متاح الآن للرد الفوري"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm outline-none focus:border-cyan-500"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm outline-none focus:border-theme-primary"
                     />
                   </div>
                   <div>
@@ -1174,7 +1012,7 @@ export const AdminPage: React.FC = () => {
                       value={profileForm.whatsappNoteEn || ''}
                       onChange={(e) => setProfileForm({ ...profileForm, whatsappNoteEn: e.target.value })}
                       placeholder="e.g. Available for immediate reply"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm font-mono outline-none focus:border-cyan-500"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm font-mono outline-none focus:border-theme-primary"
                     />
                   </div>
                 </div>
@@ -1189,7 +1027,7 @@ export const AdminPage: React.FC = () => {
                     value={profileForm.whatsapp || ''}
                     onChange={(e) => setProfileForm({ ...profileForm, whatsapp: e.target.value })}
                     placeholder="https://wa.me/201000000000 أو wa.me"
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-emerald-400 text-sm font-mono outline-none focus:border-emerald-500"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-emerald-400 text-sm font-mono outline-none focus:border-emerald-500"
                   />
                   <p className="text-[11px] text-slate-400 font-mono mt-1">
                     يتم تحويل الزائر مباشرة لمحادثتك عند النقر على أيقونة الواتساب في قسم التواصل.
@@ -1197,24 +1035,22 @@ export const AdminPage: React.FC = () => {
                 </div>
 
                 {/* Live Preview WhatsApp Badge */}
-                <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="p-4 quantix-card flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <span className="text-xs font-mono text-slate-400">معاينة شارة الواتساب في بطاقة التواصل:</span>
-                  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-medium self-start sm:self-auto ${
-                    (profileForm.whatsappStatus || 'online') === 'online'
-                      ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'
-                      : (profileForm.whatsappStatus === 'delayed'
-                        ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30'
-                        : 'bg-slate-800 text-slate-400 border border-slate-700')
-                  }`}>
-                    <span className={`w-2 h-2 rounded-full ${
-                      (profileForm.whatsappStatus || 'online') === 'online'
-                        ? 'bg-emerald-400 animate-pulse'
-                        : (profileForm.whatsappStatus === 'delayed' ? 'bg-amber-400' : 'bg-slate-500')
-                    }`} />
+                  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-medium self-start sm:self-auto ${(profileForm.whatsappStatus || 'online') === 'online'
+                    ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'
+                    : (profileForm.whatsappStatus === 'delayed'
+                      ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30'
+                      : 'bg-[#14151B] text-slate-400 border border-white/[0.08]')
+                    }`}>
+                    <span className={`w-2 h-2 rounded-full ${(profileForm.whatsappStatus || 'online') === 'online'
+                      ? 'bg-emerald-400 animate-pulse'
+                      : (profileForm.whatsappStatus === 'delayed' ? 'bg-amber-400' : 'bg-slate-500')
+                      }`} />
                     <span>
-                      {profileForm.whatsappNoteAr || 
-                        ((profileForm.whatsappStatus || 'online') === 'online' 
-                          ? 'متاح الآن للرد الفوري' 
+                      {profileForm.whatsappNoteAr ||
+                        ((profileForm.whatsappStatus || 'online') === 'online'
+                          ? 'متاح الآن للرد الفوري'
                           : (profileForm.whatsappStatus === 'delayed' ? 'مشغول • الرد خلال ساعات' : 'غير متصل حالياً • اترك رسالة'))}
                     </span>
                   </span>
@@ -1230,7 +1066,7 @@ export const AdminPage: React.FC = () => {
                     setStatusSuccess('تم حفظ وتحديث حالات التوفر والواتساب بنجاح في البورتفوليو!');
                     setTimeout(() => setStatusSuccess(''), 4000);
                   }}
-                  className="px-7 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-bold text-sm shadow-[0_0_20px_rgba(16,185,129,0.35)] transition-all flex items-center gap-2 cursor-pointer"
+                  className="px-7 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-theme-primary hover:from-emerald-400 hover:to-theme-primary text-slate-950 font-bold text-sm shadow-[0_0_20px_rgba(16,185,129,0.35)] transition-all flex items-center gap-2 cursor-pointer"
                 >
                   <Save className="w-4 h-4" />
                   <span>حفظ وتطبيق الحالات في البورتفوليو</span>
@@ -1269,7 +1105,7 @@ export const AdminPage: React.FC = () => {
                           features: ['ميزة هندسية جديدة']
                         });
                       }}
-                      className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-white text-xs font-bold shadow-[0_0_15px_rgba(56,189,248,0.3)] transition-all cursor-pointer"
+                      className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-theme-primary hover:bg-theme-primary text-white text-xs font-bold shadow-[0_0_15px_rgba(var(--theme-primary-rgb),0.3)] transition-all cursor-pointer"
                     >
                       <Plus className="w-4 h-4" />
                       <span>إضافة مشروع جديد</span>
@@ -1278,16 +1114,16 @@ export const AdminPage: React.FC = () => {
 
                   <div className="space-y-3">
                     {projects.map((p) => (
-                      <div key={p.id} className="p-4 rounded-2xl bg-slate-950 border border-slate-800 flex items-center justify-between gap-4">
+                      <div key={p.id} className="p-4 quantix-card flex items-center justify-between gap-4">
                         <div>
-                          <span className="text-xs font-mono text-cyan-400 font-semibold">{p.badge}</span>
+                          <span className="text-xs font-mono text-theme-primary font-semibold">{p.badge}</span>
                           <h4 className="font-bold text-white text-base">{p.titleAr || p.title}</h4>
                           <p className="text-xs text-slate-400 font-mono mt-0.5">{p.taglineAr || p.tagline}</p>
                         </div>
                         <div className="flex items-center gap-2">
                           <button
                             onClick={() => { setEditingProject(p); setIsNewProject(false); }}
-                            className="px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-200 transition-colors"
+                            className="px-3.5 py-1.5 rounded-lg bg-[#14151B] hover:bg-slate-700 text-xs text-slate-200 transition-colors"
                           >
                             تعديل
                           </button>
@@ -1304,8 +1140,8 @@ export const AdminPage: React.FC = () => {
                 </>
               ) : (
                 /* Edit / Add Project Form */
-                <div className="space-y-5 bg-slate-950/80 p-6 rounded-3xl border border-slate-800">
-                  <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+                <div className="space-y-5 quantix-card p-6">
+                  <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
                     <h3 className="text-lg font-bold text-white">
                       {isNewProject ? 'إضافة مشروع جديد' : `تعديل: ${editingProject.titleAr || editingProject.title}`}
                     </h3>
@@ -1324,7 +1160,7 @@ export const AdminPage: React.FC = () => {
                         type="text"
                         value={editingProject.titleAr}
                         onChange={(e) => setEditingProject({ ...editingProject, titleAr: e.target.value })}
-                        className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm"
+                        className="w-full px-3 py-2 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm"
                       />
                     </div>
                     <div>
@@ -1333,7 +1169,7 @@ export const AdminPage: React.FC = () => {
                         type="text"
                         value={editingProject.title}
                         onChange={(e) => setEditingProject({ ...editingProject, title: e.target.value })}
-                        className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm font-mono"
+                        className="w-full px-3 py-2 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm font-mono"
                       />
                     </div>
                   </div>
@@ -1344,7 +1180,7 @@ export const AdminPage: React.FC = () => {
                       type="text"
                       value={editingProject.taglineAr}
                       onChange={(e) => setEditingProject({ ...editingProject, taglineAr: e.target.value })}
-                      className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm"
+                      className="w-full px-3 py-2 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm"
                     />
                   </div>
 
@@ -1354,7 +1190,7 @@ export const AdminPage: React.FC = () => {
                       rows={3}
                       value={editingProject.descriptionAr}
                       onChange={(e) => setEditingProject({ ...editingProject, descriptionAr: e.target.value })}
-                      className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm"
+                      className="w-full px-3 py-2 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm"
                     />
                   </div>
 
@@ -1364,7 +1200,7 @@ export const AdminPage: React.FC = () => {
                       type="text"
                       value={editingProject.badge}
                       onChange={(e) => setEditingProject({ ...editingProject, badge: e.target.value })}
-                      className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm font-mono"
+                      className="w-full px-3 py-2 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm font-mono"
                     />
                   </div>
 
@@ -1378,14 +1214,14 @@ export const AdminPage: React.FC = () => {
                         }
                         setEditingProject(null);
                       }}
-                      className="px-6 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-white font-bold text-xs shadow-lg flex items-center gap-2"
+                      className="px-6 py-2.5 rounded-xl bg-theme-primary hover:bg-theme-primary text-white font-bold text-xs shadow-lg flex items-center gap-2"
                     >
                       <Save className="w-4 h-4" />
                       <span>حفظ المشروع</span>
                     </button>
                     <button
                       onClick={() => setEditingProject(null)}
-                      className="px-4 py-2.5 rounded-xl border border-slate-700 text-slate-400 text-xs"
+                      className="px-4 py-2.5 rounded-xl border border-white/[0.08] text-slate-400 text-xs"
                     >
                       إلغاء
                     </button>
@@ -1419,7 +1255,7 @@ export const AdminPage: React.FC = () => {
                       descriptionAr: ''
                     });
                   }}
-                  className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-white text-xs font-bold"
+                  className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-theme-primary hover:bg-theme-primary text-white text-xs font-bold"
                 >
                   <Plus className="w-4 h-4" />
                   <span>إضافة شهادة جديدة</span>
@@ -1429,7 +1265,7 @@ export const AdminPage: React.FC = () => {
               {!editingCert ? (
                 <div className="space-y-3">
                   {certificates.map((cert) => (
-                    <div key={cert.id} className="p-4 rounded-2xl bg-slate-950 border border-slate-800 flex items-center justify-between gap-4">
+                    <div key={cert.id} className="p-4 quantix-card flex items-center justify-between gap-4">
                       <div>
                         <span className="text-xs font-mono text-emerald-400 font-semibold">{cert.badge}</span>
                         <h4 className="font-bold text-white text-base">{cert.titleAr || cert.title}</h4>
@@ -1438,7 +1274,7 @@ export const AdminPage: React.FC = () => {
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => { setEditingCert(cert); setIsNewCert(false); }}
-                          className="px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-200"
+                          className="px-3.5 py-1.5 rounded-lg bg-[#14151B] hover:bg-slate-700 text-xs text-slate-200"
                         >
                           تعديل
                         </button>
@@ -1454,7 +1290,7 @@ export const AdminPage: React.FC = () => {
                 </div>
               ) : (
                 /* Edit Certificate Form */
-                <div className="space-y-4 bg-slate-950/80 p-6 rounded-3xl border border-slate-800">
+                <div className="space-y-4 quantix-card p-6">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-xs font-mono text-slate-300 mb-1">اسم الشهادة (عربي)</label>
@@ -1462,7 +1298,7 @@ export const AdminPage: React.FC = () => {
                         type="text"
                         value={editingCert.titleAr}
                         onChange={(e) => setEditingCert({ ...editingCert, titleAr: e.target.value })}
-                        className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm"
+                        className="w-full px-3 py-2 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm"
                       />
                     </div>
                     <div>
@@ -1471,7 +1307,7 @@ export const AdminPage: React.FC = () => {
                         type="text"
                         value={editingCert.issuerAr}
                         onChange={(e) => setEditingCert({ ...editingCert, issuerAr: e.target.value })}
-                        className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm"
+                        className="w-full px-3 py-2 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm"
                       />
                     </div>
                   </div>
@@ -1482,7 +1318,7 @@ export const AdminPage: React.FC = () => {
                       type="text"
                       value={editingCert.fileUrl}
                       onChange={(e) => setEditingCert({ ...editingCert, fileUrl: e.target.value })}
-                      className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm font-mono"
+                      className="w-full px-3 py-2 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm font-mono"
                     />
                   </div>
 
@@ -1496,13 +1332,13 @@ export const AdminPage: React.FC = () => {
                         }
                         setEditingCert(null);
                       }}
-                      className="px-6 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-white font-bold text-xs"
+                      className="px-6 py-2.5 rounded-xl bg-theme-primary hover:bg-theme-primary text-white font-bold text-xs"
                     >
                       حفظ الشهادة
                     </button>
                     <button
                       onClick={() => setEditingCert(null)}
-                      className="px-4 py-2.5 rounded-xl border border-slate-700 text-slate-400 text-xs"
+                      className="px-4 py-2.5 rounded-xl border border-white/[0.08] text-slate-400 text-xs"
                     >
                       إلغاء
                     </button>
@@ -1522,29 +1358,46 @@ export const AdminPage: React.FC = () => {
 
               <div className="space-y-6">
                 {skills.map((category, catIdx) => (
-                  <div key={catIdx} className="p-5 rounded-2xl bg-slate-950 border border-slate-800 space-y-3">
-                    <h3 className="font-bold text-cyan-400 text-sm">{category.nameAr}</h3>
+                  <div key={catIdx} className="p-5 quantix-card space-y-3">
+                    <h3 className="font-bold text-theme-primary text-sm">{category.nameAr}</h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      {category.skills.map((skill, sIdx) => (
-                        <div key={sIdx} className="flex items-center justify-between p-3 rounded-xl bg-slate-900 border border-slate-800">
-                          <span className="text-xs text-white font-medium">{skill.name}</span>
-                          <div className="flex items-center gap-2">
-                            <input
-                              type="number"
-                              min={50}
-                              max={100}
-                              value={skill.level}
-                              onChange={(e) => {
-                                const newSkills = [...skills];
-                                newSkills[catIdx].skills[sIdx].level = Number(e.target.value);
-                                updateSkills(newSkills);
-                              }}
-                              className="w-16 px-2 py-1 rounded bg-slate-950 text-cyan-400 text-xs font-mono text-center border border-slate-800"
-                            />
-                            <span className="text-xs text-slate-500 font-mono">%</span>
+                      {category.skills.map((skill, sIdx) => {
+                        const skillName = typeof skill === 'string' ? skill : (skill.name || skill.nameAr || '');
+                        const skillLevel = typeof skill === 'object' && skill !== null && typeof skill.level === 'number' ? skill.level : 90;
+                        return (
+                          <div key={sIdx} className="flex items-center justify-between p-3 rounded-xl bg-[#0B0C10] border border-white/[0.08]">
+                            <span className="text-xs text-white font-medium">{skillName}</span>
+                            <div className="flex items-center gap-2">
+                              <input
+                                type="number"
+                                min={0}
+                                max={100}
+                                value={skillLevel}
+                                onChange={(e) => {
+                                  const nextLevel = Math.min(100, Math.max(0, Number(e.target.value) || 0));
+                                  const newSkills = skills.map((c, ci) =>
+                                    ci !== catIdx
+                                      ? c
+                                      : {
+                                        ...c,
+                                        skills: c.skills.map((sk, si) =>
+                                          si !== sIdx
+                                            ? sk
+                                            : typeof sk === 'string'
+                                              ? { name: sk, level: nextLevel }
+                                              : { ...sk, level: nextLevel }
+                                        ),
+                                      }
+                                  );
+                                  updateSkills(newSkills);
+                                }}
+                                className="w-16 px-2 py-1 rounded bg-[#08090C] text-theme-primary text-xs font-mono text-center border border-white/[0.08]"
+                              />
+                              <span className="text-xs text-slate-500 font-mono">%</span>
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
                 ))}
@@ -1554,7 +1407,7 @@ export const AdminPage: React.FC = () => {
 
           {/* TAB 5: PROFILE & IMAGES */}
           {activeTab === 'profile' && (
-            <div className="space-y-5 bg-slate-950/80 p-6 rounded-3xl border border-slate-800">
+            <div className="space-y-5 quantix-card p-6">
               <div>
                 <h2 className="text-xl font-bold text-white">البيانات الشخصية والصور</h2>
                 <p className="text-xs text-slate-400 font-mono mt-0.5">تعديل الاسم والنبذة ومسار الصورة العلوية</p>
@@ -1567,7 +1420,7 @@ export const AdminPage: React.FC = () => {
                     type="text"
                     value={profileForm.nameAr}
                     onChange={(e) => setProfileForm({ ...profileForm, nameAr: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm"
+                    className="w-full px-3 py-2 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm"
                   />
                 </div>
                 <div>
@@ -1576,7 +1429,7 @@ export const AdminPage: React.FC = () => {
                     type="text"
                     value={profileForm.shortNameAr || 'عمرو عاطف'}
                     onChange={(e) => setProfileForm({ ...profileForm, shortNameAr: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm"
+                    className="w-full px-3 py-2 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm"
                   />
                 </div>
                 <div>
@@ -1585,7 +1438,7 @@ export const AdminPage: React.FC = () => {
                     type="text"
                     value={profileForm.name}
                     onChange={(e) => setProfileForm({ ...profileForm, name: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm font-mono"
+                    className="w-full px-3 py-2 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm font-mono"
                   />
                 </div>
                 <div>
@@ -1594,7 +1447,27 @@ export const AdminPage: React.FC = () => {
                     type="text"
                     value={profileForm.shortName || 'Amr Atef'}
                     onChange={(e) => setProfileForm({ ...profileForm, shortName: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm font-mono"
+                    className="w-full px-3 py-2 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm font-mono"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-mono text-slate-300 mb-1">اسم الشعار في الناف بار (عربي - Navbar Logo)</label>
+                  <input
+                    type="text"
+                    value={profileForm.brandNameAr || ''}
+                    onChange={(e) => setProfileForm({ ...profileForm, brandNameAr: e.target.value })}
+                    placeholder="عمرو عاطف"
+                    className="w-full px-3 py-2 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-mono text-slate-300 mb-1">اسم الشعار في الناف بار (English - Navbar Logo)</label>
+                  <input
+                    type="text"
+                    value={profileForm.brandName || ''}
+                    onChange={(e) => setProfileForm({ ...profileForm, brandName: e.target.value })}
+                    placeholder="Amr Atef"
+                    className="w-full px-3 py-2 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm font-mono"
                   />
                 </div>
                 <div>
@@ -1603,7 +1476,7 @@ export const AdminPage: React.FC = () => {
                     type="text"
                     value={profileForm.title}
                     onChange={(e) => setProfileForm({ ...profileForm, title: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm font-mono"
+                    className="w-full px-3 py-2 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm font-mono"
                   />
                 </div>
                 <div>
@@ -1612,7 +1485,7 @@ export const AdminPage: React.FC = () => {
                     type="text"
                     value={profileForm.titleAr}
                     onChange={(e) => setProfileForm({ ...profileForm, titleAr: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm"
+                    className="w-full px-3 py-2 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm"
                   />
                 </div>
                 <div>
@@ -1621,7 +1494,7 @@ export const AdminPage: React.FC = () => {
                     type="text"
                     value={profileForm.github}
                     onChange={(e) => setProfileForm({ ...profileForm, github: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm font-mono"
+                    className="w-full px-3 py-2 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm font-mono"
                   />
                 </div>
                 <div>
@@ -1630,7 +1503,7 @@ export const AdminPage: React.FC = () => {
                     type="text"
                     value={profileForm.linkedin}
                     onChange={(e) => setProfileForm({ ...profileForm, linkedin: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm font-mono"
+                    className="w-full px-3 py-2 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm font-mono"
                   />
                 </div>
                 <div>
@@ -1639,7 +1512,7 @@ export const AdminPage: React.FC = () => {
                     type="email"
                     value={profileForm.email}
                     onChange={(e) => setProfileForm({ ...profileForm, email: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm font-mono"
+                    className="w-full px-3 py-2 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm font-mono"
                   />
                 </div>
                 <div>
@@ -1648,7 +1521,7 @@ export const AdminPage: React.FC = () => {
                     type="text"
                     value={profileForm.phone}
                     onChange={(e) => setProfileForm({ ...profileForm, phone: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm font-mono"
+                    className="w-full px-3 py-2 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm font-mono"
                   />
                 </div>
                 <div>
@@ -1657,7 +1530,7 @@ export const AdminPage: React.FC = () => {
                     type="text"
                     value={profileForm.location}
                     onChange={(e) => setProfileForm({ ...profileForm, location: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm font-mono"
+                    className="w-full px-3 py-2 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm font-mono"
                   />
                 </div>
                 <div>
@@ -1666,7 +1539,7 @@ export const AdminPage: React.FC = () => {
                     type="text"
                     value={profileForm.locationAr}
                     onChange={(e) => setProfileForm({ ...profileForm, locationAr: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm"
+                    className="w-full px-3 py-2 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm"
                   />
                 </div>
               </div>
@@ -1674,19 +1547,19 @@ export const AdminPage: React.FC = () => {
               {/* =========================================================================
                   HERO AVATAR & NAVBAR IMAGE & DYNAMIC COLOR THEME CONTROLS
                   ========================================================================= */}
-              <div className="p-6 rounded-3xl bg-slate-900/80 border border-cyan-500/30 space-y-6 shadow-xl">
-                <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-                  <div className="flex items-center gap-2 text-cyan-400 font-bold text-base">
-                    <ImageIcon className="w-5 h-5 text-cyan-400" />
+              <div className="p-6 rounded-2xl bg-[#0B0C10]/80 border border-theme-primary/30 space-y-6 shadow-xl">
+                <div className="flex items-center justify-between border-b border-white/[0.08] pb-3">
+                  <div className="flex items-center gap-2 text-theme-primary font-bold text-base">
+                    <ImageIcon className="w-5 h-5 text-theme-primary" />
                     <span>إدارة الصور والهوية البصرية للموقع</span>
                   </div>
-                  <span className="text-[11px] font-mono text-cyan-400/80 bg-cyan-950/60 px-3 py-1 rounded-full border border-cyan-800/40">
+                  <span className="text-[11px] font-mono text-theme-primary/80 bg-theme-primary/10 px-3 py-1 rounded-full border border-theme-primary/25">
                     تحديث مباشر ومزامنة لحظية
                   </span>
                 </div>
 
                 {/* 1. Hero Avatar Controls */}
-                <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800 space-y-4">
+                <div className="p-4 quantix-card space-y-4">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
                       <label className="block text-sm font-bold text-white mb-0.5">
@@ -1699,7 +1572,7 @@ export const AdminPage: React.FC = () => {
 
                     {/* Current Preview */}
                     <div className="flex items-center gap-3 shrink-0">
-                      <div className="w-16 h-16 rounded-2xl overflow-hidden bg-slate-900 border-2 border-cyan-500/50 p-1 flex items-center justify-center shadow-[0_0_15px_rgba(56,189,248,0.25)]">
+                      <div className="w-16 h-16 rounded-2xl overflow-hidden bg-[#0B0C10] border-2 border-theme-primary/50 p-1 flex items-center justify-center shadow-[0_0_15px_rgba(var(--theme-primary-rgb),0.25)]">
                         <img
                           src={profileForm.heroAvatarUrl || '/drama_hero.png'}
                           alt="Hero Preview"
@@ -1729,15 +1602,14 @@ export const AdminPage: React.FC = () => {
                           onClick={() => {
                             setProfileForm(prev => ({ ...prev, heroAvatarUrl: item.url }));
                           }}
-                          className={`p-2.5 rounded-xl text-start border transition-all flex flex-col justify-between text-xs ${
-                            (profileForm.heroAvatarUrl || '/drama_hero.png') === item.url
-                              ? 'bg-cyan-500/15 border-cyan-400 text-cyan-200 shadow-[0_0_12px_rgba(56,189,248,0.25)]'
-                              : 'bg-slate-900/60 border-slate-800 text-slate-300 hover:border-slate-700'
-                          }`}
+                          className={`p-2.5 rounded-xl text-start border transition-all flex flex-col justify-between text-xs ${(profileForm.heroAvatarUrl || '/drama_hero.png') === item.url
+                            ? 'bg-theme-primary/15 border-theme-primary text-theme-primary shadow-[0_0_12px_rgba(var(--theme-primary-rgb),0.25)]'
+                            : 'bg-[#0B0C10] border-white/[0.08] text-slate-300 hover:border-white/[0.08]'
+                            }`}
                         >
                           <span className="font-bold truncate">{item.label}</span>
                           <div className="flex items-center justify-between mt-1 text-[10px] font-mono text-slate-400">
-                            <span className="text-cyan-400">{item.tag}</span>
+                            <span className="text-theme-primary">{item.tag}</span>
                             <span className="truncate max-w-[100px]">{item.url}</span>
                           </div>
                         </button>
@@ -1757,12 +1629,12 @@ export const AdminPage: React.FC = () => {
                           setProfileForm({ ...profileForm, heroAvatarUrl: val });
                         }}
                         placeholder="/drama_hero.png أو رابط خارجي https://..."
-                        className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-cyan-400 text-xs font-mono"
+                        className="w-full px-3 py-2 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-theme-primary text-xs font-mono"
                       />
                     </div>
                     <div className="md:col-span-4">
                       <label className="block text-xs font-mono text-slate-400 mb-1">رفع صورة جديدة من جهازك:</label>
-                      <label className="flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 text-xs font-bold cursor-pointer transition-all shadow-sm">
+                      <label className="flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-theme-primary/10 hover:bg-theme-primary/20 border border-theme-primary/40 text-theme-primary text-xs font-bold cursor-pointer transition-all shadow-sm">
                         <Upload className="w-4 h-4 shrink-0" />
                         <span>رفع صورة من الجهاز</span>
                         <input
@@ -1777,7 +1649,7 @@ export const AdminPage: React.FC = () => {
                 </div>
 
                 {/* 2. Navbar Image Controls */}
-                <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800 space-y-3">
+                <div className="p-4 quantix-card space-y-3">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
                       <label className="block text-sm font-bold text-white mb-0.5">
@@ -1789,7 +1661,7 @@ export const AdminPage: React.FC = () => {
                     </div>
 
                     <div className="flex items-center gap-3 shrink-0">
-                      <div className="w-10 h-10 rounded-xl overflow-hidden bg-slate-900 border border-cyan-500/40 p-0.5">
+                      <div className="w-10 h-10 rounded-xl overflow-hidden bg-[#0B0C10] border border-theme-primary/40 p-0.5">
                         <img
                           src={profileForm.topAvatarUrl || '/my.jpg'}
                           alt="Navbar Preview"
@@ -1810,12 +1682,12 @@ export const AdminPage: React.FC = () => {
                         value={profileForm.topAvatarUrl || '/my.jpg'}
                         onChange={(e) => setProfileForm({ ...profileForm, topAvatarUrl: e.target.value })}
                         placeholder="/my.jpg أو رابط صورة"
-                        className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-cyan-400 text-xs font-mono"
+                        className="w-full px-3 py-2 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-theme-primary text-xs font-mono"
                       />
                     </div>
                     <div className="md:col-span-4">
-                      <label className="flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 text-xs font-bold cursor-pointer transition-all">
-                        <Upload className="w-4 h-4 shrink-0 text-cyan-400" />
+                      <label className="flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-[#0B0C10] hover:bg-[#14151B] border border-white/[0.08] text-slate-200 text-xs font-bold cursor-pointer transition-all">
+                        <Upload className="w-4 h-4 shrink-0 text-theme-primary" />
                         <span>رفع صورة للنافبار</span>
                         <input
                           type="file"
@@ -1836,7 +1708,7 @@ export const AdminPage: React.FC = () => {
                     rows={4}
                     value={profileForm.bioAr}
                     onChange={(e) => setProfileForm({ ...profileForm, bioAr: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm"
+                    className="w-full px-3 py-2 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm"
                   />
                 </div>
                 <div>
@@ -1845,7 +1717,7 @@ export const AdminPage: React.FC = () => {
                     rows={4}
                     value={profileForm.bio}
                     onChange={(e) => setProfileForm({ ...profileForm, bio: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm font-mono"
+                    className="w-full px-3 py-2 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm font-mono"
                   />
                 </div>
               </div>
@@ -1855,7 +1727,7 @@ export const AdminPage: React.FC = () => {
                   updateProfile(profileForm);
                   alert('تم حفظ البيانات الشخصية بنجاح!');
                 }}
-                className="px-6 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-white font-bold text-xs flex items-center gap-2 shadow-lg"
+                className="px-6 py-2.5 rounded-xl bg-theme-primary hover:bg-theme-primary text-white font-bold text-xs flex items-center gap-2 shadow-lg"
               >
                 <Save className="w-4 h-4" />
                 <span>تحديث البيانات الشخصية</span>
@@ -1867,11 +1739,11 @@ export const AdminPage: React.FC = () => {
           {activeTab === 'security' && (
             <div className="space-y-8 max-w-4xl">
               {/* SECTION 1: ACTIVE SESSIONS & DEVICES */}
-              <div className="p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl bg-slate-950/80 border border-slate-800 space-y-5 sm:space-y-6 shadow-xl min-w-0">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 pb-4 sm:pb-5 border-b border-slate-800 min-w-0">
+              <div className="p-4 sm:p-6 md:p-8 rounded-2xl sm:quantix-card space-y-5 sm:space-y-6 shadow-xl min-w-0">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 pb-4 sm:pb-5 border-b border-white/[0.08] min-w-0">
                   <div className="min-w-0">
                     <h2 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2.5">
-                      <Laptop className="w-5 sm:w-6 h-5 sm:h-6 text-cyan-400 shrink-0" />
+                      <Laptop className="w-5 sm:w-6 h-5 sm:h-6 text-theme-primary shrink-0" />
                       <span className="truncate">إدارة الأجهزة والجلسات النشطة</span>
                     </h2>
                     <p className="text-xs sm:text-sm text-slate-400 mt-1 leading-[1.75] break-words">
@@ -1890,20 +1762,19 @@ export const AdminPage: React.FC = () => {
                       onClick={fetchSessions}
                       disabled={loadingSessions}
                       title="تحديث قائمة الأجهزة"
-                      className="h-11 w-11 min-h-[44px] min-w-[44px] rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700 transition-all disabled:opacity-50 cursor-pointer flex items-center justify-center shrink-0"
+                      className="h-11 w-11 min-h-[44px] min-w-[44px] rounded-xl bg-[#0B0C10] border border-white/[0.08] text-slate-400 hover:text-white hover:border-white/[0.08] transition-all disabled:opacity-50 cursor-pointer flex items-center justify-center shrink-0"
                     >
-                      <RefreshCw className={`w-4 h-4 ${loadingSessions ? 'animate-spin text-cyan-400' : ''}`} />
+                      <RefreshCw className={`w-4 h-4 ${loadingSessions ? 'animate-spin text-theme-primary' : ''}`} />
                     </button>
                   </div>
                 </div>
 
                 {/* Session Action Alert */}
                 {sessionActionMessage && (
-                  <div className={`p-4 rounded-2xl border text-xs sm:text-sm font-medium flex items-center gap-2.5 ${
-                    sessionActionMessage.type === 'success'
-                      ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-400'
-                      : 'bg-red-500/15 border-red-500/30 text-red-400'
-                  }`}>
+                  <div className={`p-4 rounded-2xl border text-xs sm:text-sm font-medium flex items-center gap-2.5 ${sessionActionMessage.type === 'success'
+                    ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-400'
+                    : 'bg-red-500/15 border-red-500/30 text-red-400'
+                    }`}>
                     {sessionActionMessage.type === 'success' ? (
                       <CheckCircle2 className="w-5 h-5 shrink-0" />
                     ) : (
@@ -1937,18 +1808,17 @@ export const AdminPage: React.FC = () => {
                       type="button"
                       onClick={handleTerminateNewest}
                       disabled={terminatingNewest || activeSessionsCount <= 1}
-                      className={`min-h-[44px] px-4 py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all whitespace-nowrap cursor-pointer shrink-0 ${
-                        activeSessionsCount > 1
-                          ? 'bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-[0_0_15px_rgba(245,158,11,0.3)]'
-                          : 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700'
-                      }`}
+                      className={`min-h-[44px] px-4 py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all whitespace-nowrap cursor-pointer shrink-0 ${activeSessionsCount > 1
+                        ? 'bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-[0_0_15px_rgba(245,158,11,0.3)]'
+                        : 'bg-[#14151B] text-slate-500 cursor-not-allowed border border-white/[0.08]'
+                        }`}
                     >
                       <LogOut className="w-4 h-4 rtl-flip" />
                       <span>{terminatingNewest ? 'جاري الطرد...' : 'طرد أحدث جهاز مسجل'}</span>
                     </button>
                   </div>
                 ) : (
-                  <div className="p-3.5 sm:p-4 rounded-2xl bg-slate-900 border border-slate-800 flex items-start gap-3 min-w-0">
+                  <div className="p-3.5 sm:p-4 rounded-2xl bg-[#0B0C10] border border-white/[0.08] flex items-start gap-3 min-w-0">
                     <ShieldAlert className="w-5 h-5 text-slate-400 shrink-0 mt-0.5" />
                     <div className="min-w-0 flex-1">
                       <h4 className="text-xs sm:text-sm font-bold text-slate-300 leading-snug">جلسة عادية تابعة (Standard Device) 💻</h4>
@@ -1966,7 +1836,7 @@ export const AdminPage: React.FC = () => {
                   </h4>
 
                   {sessions.length === 0 ? (
-                    <div className="p-6 text-center rounded-2xl bg-slate-900/50 border border-slate-800 text-slate-500 text-xs font-mono">
+                    <div className="p-6 text-center rounded-2xl bg-[#0B0C10] border border-white/[0.08] text-slate-500 text-xs font-mono">
                       لا توجد أجهزة مسجلة حالياً أو جاري التحميل...
                     </div>
                   ) : (
@@ -1983,24 +1853,22 @@ export const AdminPage: React.FC = () => {
                       return (
                         <div
                           key={sess.id}
-                          className={`p-3.5 sm:p-4 rounded-2xl border transition-all flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4 min-w-0 ${
-                            sess.isCurrent
-                              ? 'bg-cyan-950/20 border-cyan-500/40 shadow-[0_0_15px_rgba(56,189,248,0.1)]'
-                              : sess.isPrimaryMaster
-                                ? 'bg-amber-950/20 border-amber-500/40'
-                                : sess.isMaster
-                                  ? 'bg-indigo-950/20 border-indigo-500/30'
-                                  : 'bg-slate-900/40 border-slate-800/80'
-                          }`}
+                          className={`p-3.5 sm:p-4 rounded-2xl border transition-all flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4 min-w-0 ${sess.isCurrent
+                            ? 'bg-theme-primary/10 border-theme-primary/40 shadow-[0_0_15px_rgba(var(--theme-primary-rgb),0.1)]'
+                            : sess.isPrimaryMaster
+                              ? 'bg-amber-950/20 border-amber-500/40'
+                              : sess.isMaster
+                                ? 'bg-indigo-950/20 border-indigo-500/30'
+                                : 'bg-[#0B0C10] border-white/[0.08]/80'
+                            }`}
                         >
                           <div className="flex items-start sm:items-center gap-3 sm:gap-3.5 min-w-0 flex-1">
-                            <div className={`w-10 sm:w-11 h-10 sm:h-11 rounded-xl flex items-center justify-center shrink-0 mt-0.5 sm:mt-0 ${
-                              sess.isPrimaryMaster
-                                ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
-                                : sess.isMaster
-                                  ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30'
-                                  : 'bg-slate-800 text-slate-400'
-                            }`}>
+                            <div className={`w-10 sm:w-11 h-10 sm:h-11 rounded-xl flex items-center justify-center shrink-0 mt-0.5 sm:mt-0 ${sess.isPrimaryMaster
+                              ? 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
+                              : sess.isMaster
+                                ? 'bg-theme-primary/15 text-theme-primary border border-theme-primary/30'
+                                : 'bg-[#14151B] text-slate-400'
+                              }`}>
                               {sess.isPrimaryMaster ? (
                                 <Crown className="w-5 h-5 text-amber-400" />
                               ) : isMobile ? (
@@ -2028,7 +1896,7 @@ export const AdminPage: React.FC = () => {
                                     جهاز مفوض (صلاحيات كاملة)
                                   </span>
                                 ) : (
-                                  <span className="px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700 text-xs font-mono">
+                                  <span className="px-2 py-0.5 rounded-full bg-[#14151B] text-slate-400 border border-white/[0.08] text-xs font-mono">
                                     جهاز تابع
                                   </span>
                                 )}
@@ -2060,11 +1928,10 @@ export const AdminPage: React.FC = () => {
                                   type="button"
                                   onClick={() => handleToggleMaster(sess.id, !sess.isMaster, sess.deviceInfo)}
                                   disabled={actionTargetId === sess.id}
-                                  className={`min-h-[40px] px-3.5 py-2 rounded-xl text-xs font-mono font-semibold transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50 ${
-                                    sess.isMaster
-                                      ? 'bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700'
-                                      : 'bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 border border-cyan-500/30'
-                                  }`}
+                                  className={`min-h-[40px] px-3.5 py-2 rounded-xl text-xs font-mono font-semibold transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50 ${sess.isMaster
+                                    ? 'bg-[#14151B] hover:bg-slate-700 text-slate-300 border border-white/[0.08]'
+                                    : 'bg-theme-primary/15 hover:bg-theme-primary/25 text-theme-primary border border-theme-primary/30'
+                                    }`}
                                   title={sess.isMaster ? 'إلغاء الصلاحيات الكاملة' : 'مساواة هذا الجهاز في الصلاحيات مع الجهاز الرئيسي'}
                                 >
                                   <Crown className="w-3.5 h-3.5 text-amber-400" />
@@ -2096,15 +1963,15 @@ export const AdminPage: React.FC = () => {
 
               {/* SECTION 2: USERNAME & PASSWORD SECURITY (LOCKED & HIDDEN FOR NON-MASTER) */}
               {!isCallerMaster ? (
-                <div className="p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl bg-slate-950/80 border border-slate-800 space-y-3 shadow-xl min-w-0">
+                <div className="p-4 sm:p-6 md:p-8 rounded-2xl sm:quantix-card space-y-3 shadow-xl min-w-0">
                   <div className="flex items-start gap-3.5 sm:gap-4 min-w-0">
-                    <div className="w-11 sm:w-12 h-11 sm:h-12 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-500 shrink-0 mt-0.5">
+                    <div className="w-11 sm:w-12 h-11 sm:h-12 rounded-2xl bg-[#0B0C10] border border-white/[0.08] flex items-center justify-center text-slate-500 shrink-0 mt-0.5">
                       <Lock className="w-5 sm:w-6 h-5 sm:h-6 text-slate-500" />
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2 flex-wrap">
                         <h3 className="text-sm sm:text-base font-bold text-white">تأكيد وتغيير بيانات الدخول (محجوب ومحمي)</h3>
-                        <span className="px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700 text-xs font-mono">
+                        <span className="px-2 py-0.5 rounded-full bg-[#14151B] text-slate-400 border border-white/[0.08] text-xs font-mono">
                           صلاحية مقيدة 🔒
                         </span>
                       </div>
@@ -2115,11 +1982,11 @@ export const AdminPage: React.FC = () => {
                   </div>
                 </div>
               ) : (
-                <div className="p-4 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl bg-slate-950/80 border border-slate-800 space-y-5 sm:space-y-6 shadow-xl min-w-0">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-800/80">
+                <div className="p-4 sm:p-6 md:p-8 rounded-2xl sm:quantix-card space-y-5 sm:space-y-6 shadow-xl min-w-0">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-white/[0.08]/80">
                     <div>
                       <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                        <KeyRound className="w-5 h-5 text-cyan-400" />
+                        <KeyRound className="w-5 h-5 text-theme-primary" />
                         <span>تأكيد اليوزر والباسورد (بيانات الدخول)</span>
                       </h2>
                       <p className="text-xs text-slate-400 font-mono mt-1">
@@ -2155,7 +2022,7 @@ export const AdminPage: React.FC = () => {
                         type="text"
                         value={newUsername}
                         onChange={(e) => setNewUsername(e.target.value)}
-                        className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm font-mono outline-none focus:border-cyan-500"
+                        className="w-full px-4 py-2.5 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm font-mono outline-none focus:border-theme-primary"
                         required
                       />
                     </div>
@@ -2169,7 +2036,7 @@ export const AdminPage: React.FC = () => {
                         value={newPassword}
                         onChange={(e) => setNewPassword(e.target.value)}
                         placeholder="اتركها فارغة للاحتفاظ بكلمة المرور الحالية"
-                        className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm font-mono outline-none focus:border-cyan-500"
+                        className="w-full px-4 py-2.5 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm font-mono outline-none focus:border-theme-primary"
                       />
                     </div>
 
@@ -2182,13 +2049,13 @@ export const AdminPage: React.FC = () => {
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         placeholder="أعد إدخال كلمة المرور للتأكيد"
-                        className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm font-mono outline-none focus:border-cyan-500"
+                        className="w-full px-4 py-2.5 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm font-mono outline-none focus:border-theme-primary"
                       />
                     </div>
 
                     <button
                       type="submit"
-                      className="px-6 py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-white font-bold text-xs flex items-center gap-2 shadow-[0_0_15px_rgba(56,189,248,0.3)] transition-all cursor-pointer"
+                      className="px-6 py-3 rounded-xl bg-theme-primary hover:bg-theme-primary text-white font-bold text-xs flex items-center gap-2 shadow-[0_0_15px_rgba(var(--theme-primary-rgb),0.3)] transition-all cursor-pointer"
                     >
                       <Save className="w-4 h-4" />
                       <span>حفظ وتأكيد بيانات الدخول</span>
@@ -2208,7 +2075,7 @@ export const AdminPage: React.FC = () => {
               </div>
 
               {messages.length === 0 ? (
-                <div className="p-12 text-center bg-slate-950 rounded-2xl border border-slate-800 text-slate-500 text-xs font-mono">
+                <div className="p-12 text-center bg-[#08090C] rounded-2xl border border-white/[0.08] text-slate-500 text-xs font-mono">
                   لا توجد رسائل واردة حتى الآن.
                 </div>
               ) : (
@@ -2216,9 +2083,8 @@ export const AdminPage: React.FC = () => {
                   {messages.map((msg) => (
                     <div
                       key={msg.id}
-                      className={`p-5 rounded-2xl border transition-all ${
-                        msg.read ? 'bg-slate-950/60 border-slate-800/80' : 'bg-cyan-950/20 border-cyan-500/40 shadow-[0_0_15px_rgba(56,189,248,0.1)]'
-                      }`}
+                      className={`p-5 rounded-2xl border transition-all ${msg.read ? 'bg-[#08090C] border-white/[0.08]/80' : 'bg-theme-primary/10 border-theme-primary/40 shadow-[0_0_15px_rgba(var(--theme-primary-rgb),0.1)]'
+                        }`}
                     >
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2">
@@ -2231,17 +2097,17 @@ export const AdminPage: React.FC = () => {
                       </div>
 
                       {msg.subject && (
-                        <p className="text-xs font-mono text-cyan-400 font-semibold mb-2">الموضوع: {msg.subject}</p>
+                        <p className="text-xs font-mono text-theme-primary font-semibold mb-2">الموضوع: {msg.subject}</p>
                       )}
-                      
-                      <p className="text-slate-300 text-xs leading-relaxed bg-slate-900/60 p-3.5 rounded-xl border border-slate-800/80">
+
+                      <p className="text-slate-300 text-xs leading-relaxed bg-[#0B0C10] p-3.5 rounded-xl border border-white/[0.08]/80">
                         {msg.message}
                       </p>
 
-                      <div className="flex items-center gap-4 mt-3 pt-2 border-t border-slate-800/60">
+                      <div className="flex items-center gap-4 mt-3 pt-2 border-t border-white/[0.08]/60">
                         <a
                           href={`mailto:${msg.email}?subject=رد: ${encodeURIComponent(msg.subject || 'تواصل')}`}
-                          className="text-xs text-cyan-400 hover:underline font-mono"
+                          className="text-xs text-theme-primary hover:underline font-mono"
                         >
                           الرد عبر البريد الإلكتروني
                         </a>
@@ -2275,21 +2141,21 @@ export const AdminPage: React.FC = () => {
                 <p className="text-xs text-slate-400 font-mono mt-0.5">تصدير واستيراد بيانات البرتفوليو بملفات JSON</p>
               </div>
 
-              <div className="p-6 rounded-2xl bg-slate-950 border border-slate-800 space-y-4">
+              <div className="p-6 quantix-card space-y-4">
                 <h3 className="font-bold text-white text-sm">تصدير كامل بيانات البرتفوليو (JSON):</h3>
                 <p className="text-xs text-slate-400">
                   تنزيل نسخة احتياطية من جميع المشاريع، الشهادات، المهارات، والبيانات الشخصية.
                 </p>
                 <button
                   onClick={exportData}
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs cursor-pointer shadow-md"
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-theme-primary hover:bg-theme-primary text-white font-bold text-xs cursor-pointer shadow-md"
                 >
                   <Download className="w-4 h-4" />
                   <span>تصدير البيانات (Export JSON)</span>
                 </button>
               </div>
 
-              <div className="p-6 rounded-2xl bg-slate-950 border border-slate-800 space-y-4">
+              <div className="p-6 quantix-card space-y-4">
                 <h3 className="font-bold text-white text-sm">استيراد بيانات من ملف JSON:</h3>
                 <input
                   type="file"
@@ -2308,7 +2174,7 @@ export const AdminPage: React.FC = () => {
                     };
                     reader.readAsText(file);
                   }}
-                  className="text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-slate-800 file:text-slate-200 hover:file:bg-slate-700"
+                  className="text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-[#14151B] file:text-slate-200 hover:file:bg-slate-700"
                 />
               </div>
 
@@ -2340,20 +2206,20 @@ export const AdminPage: React.FC = () => {
           ========================================================================= */}
       {isBrandModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
-          <div className="relative w-full max-w-lg bg-slate-950 border border-slate-800 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-2xl text-start space-y-5 sm:space-y-6 max-h-[90vh] overflow-y-auto">
+          <div className="relative w-full max-w-lg bg-[#08090C] border border-white/[0.08] rounded-2xl sm:rounded-2xl p-4 sm:p-6 md:p-8 shadow-2xl text-start space-y-5 sm:space-y-6 max-h-[90vh] overflow-y-auto">
             {/* Close Button */}
             <button
               type="button"
               onClick={() => setIsBrandModalOpen(false)}
-              className="absolute top-3 sm:top-4 left-3 sm:left-4 p-2 text-slate-400 hover:text-white rounded-xl hover:bg-slate-900 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
+              className="absolute top-3 sm:top-4 left-3 sm:left-4 p-2 text-slate-400 hover:text-white rounded-xl hover:bg-[#0B0C10] transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
             >
               <X className="w-5 h-5" />
             </button>
 
             {/* Header */}
             <div>
-              <div className="flex items-center gap-2 text-cyan-400 mb-1">
-                <Pencil className="w-5 h-5 text-cyan-400" />
+              <div className="flex items-center gap-2 text-theme-primary mb-1">
+                <Pencil className="w-5 h-5 text-theme-primary" />
                 <h3 className="text-xl font-bold text-white">تعديل هوية شريط التنقل (Navbar Brand)</h3>
               </div>
               <p className="text-xs text-slate-400 font-mono">
@@ -2362,10 +2228,10 @@ export const AdminPage: React.FC = () => {
             </div>
 
             {/* Live Interactive Preview Box (Matching Image 2) */}
-            <div className="p-4 rounded-2xl bg-[#06080d] border border-cyan-500/30 space-y-2">
-              <span className="text-[11px] font-mono text-cyan-400 font-semibold block">معاينة حية لشكل النافبار (Live Preview):</span>
+            <div className="p-4 rounded-2xl bg-[#06080d] border border-theme-primary/30 space-y-2">
+              <span className="text-[11px] font-mono text-theme-primary font-semibold block">معاينة حية لشكل النافبار (Live Preview):</span>
               <div className="p-3 rounded-xl bg-[#06080d]/90 border border-white/10 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl overflow-hidden bg-gradient-to-tr from-cyan-500 to-indigo-600 p-0.5 shadow-[0_0_15px_rgba(56,189,248,0.35)] shrink-0">
+                <div className="w-10 h-10 rounded-xl overflow-hidden bg-gradient-to-tr from-theme-primary to-indigo-600 p-0.5 shadow-[0_0_15px_rgba(var(--theme-primary-rgb),0.35)] shrink-0">
                   <img
                     src={brandForm.topAvatarUrl || '/my.jpg'}
                     alt="Preview"
@@ -2379,7 +2245,7 @@ export const AdminPage: React.FC = () => {
                   <span className="font-bold text-white text-sm tracking-wide">
                     {brandForm.name || 'Amr Atef Imam Kandel'}
                   </span>
-                  <span className="text-[10px] font-mono text-cyan-400/90 tracking-wider">
+                  <span className="text-[10px] font-mono text-theme-primary/90 tracking-wider">
                     {brandForm.title ? brandForm.title.toUpperCase() : '.NET BACKEND DEVELOPER'}
                   </span>
                 </div>
@@ -2392,7 +2258,7 @@ export const AdminPage: React.FC = () => {
                 <label className="block text-xs font-mono text-slate-300 font-bold">
                   صورة النافبار (Navbar Avatar Image):
                 </label>
-                
+
                 {/* Upload Button + Input */}
                 <div className="flex gap-2">
                   <input
@@ -2400,9 +2266,9 @@ export const AdminPage: React.FC = () => {
                     value={brandForm.topAvatarUrl}
                     onChange={(e) => setBrandForm({ ...brandForm, topAvatarUrl: e.target.value })}
                     placeholder="/my.jpg أو رابط خارجي"
-                    className="flex-1 px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-cyan-400 text-xs font-mono focus:border-cyan-500 outline-none"
+                    className="flex-1 px-3 py-2 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-theme-primary text-xs font-mono focus:border-theme-primary outline-none"
                   />
-                  <label className={`flex items-center gap-1.5 px-3 py-2 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-cyan-300 text-xs font-bold cursor-pointer transition-all shrink-0 ${uploadingBrandAvatar ? 'opacity-60 pointer-events-none' : ''}`}>
+                  <label className={`flex items-center gap-1.5 px-3 py-2 rounded-xl bg-theme-primary/10 hover:bg-theme-primary/20 border border-theme-primary/30 text-theme-primary text-xs font-bold cursor-pointer transition-all shrink-0 ${uploadingBrandAvatar ? 'opacity-60 pointer-events-none' : ''}`}>
                     <Upload className={`w-3.5 h-3.5 ${uploadingBrandAvatar ? 'animate-spin' : ''}`} />
                     <span>{uploadingBrandAvatar ? 'جاري المعالجة...' : 'رفع صورة'}</span>
                     <input
@@ -2426,11 +2292,10 @@ export const AdminPage: React.FC = () => {
                       key={preset.url}
                       type="button"
                       onClick={() => setBrandForm({ ...brandForm, topAvatarUrl: preset.url })}
-                      className={`px-2.5 py-1 rounded-lg text-[11px] font-mono border transition-all ${
-                        brandForm.topAvatarUrl === preset.url
-                          ? 'bg-cyan-500/20 border-cyan-400 text-cyan-300'
-                          : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:text-white'
-                      }`}
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-mono border transition-all ${brandForm.topAvatarUrl === preset.url
+                        ? 'bg-theme-primary/20 border-theme-primary text-theme-primary'
+                        : 'bg-[#0B0C10] border-white/[0.08] text-slate-400 hover:text-white'
+                        }`}
                     >
                       {preset.label}
                     </button>
@@ -2447,7 +2312,7 @@ export const AdminPage: React.FC = () => {
                     value={brandForm.name}
                     onChange={(e) => setBrandForm({ ...brandForm, name: e.target.value })}
                     placeholder="Amr Atef Imam Kandel"
-                    className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white text-xs font-mono focus:border-cyan-500 outline-none"
+                    className="w-full px-3 py-2 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-xs font-mono focus:border-theme-primary outline-none"
                   />
                 </div>
                 <div>
@@ -2457,7 +2322,7 @@ export const AdminPage: React.FC = () => {
                     value={brandForm.nameAr}
                     onChange={(e) => setBrandForm({ ...brandForm, nameAr: e.target.value })}
                     placeholder="عمرو عاطف إمام قنديل"
-                    className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white text-xs focus:border-cyan-500 outline-none"
+                    className="w-full px-3 py-2 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-xs focus:border-theme-primary outline-none"
                   />
                 </div>
               </div>
@@ -2471,7 +2336,7 @@ export const AdminPage: React.FC = () => {
                     value={brandForm.title}
                     onChange={(e) => setBrandForm({ ...brandForm, title: e.target.value })}
                     placeholder=".NET Backend Developer"
-                    className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white text-xs font-mono focus:border-cyan-500 outline-none"
+                    className="w-full px-3 py-2 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-xs font-mono focus:border-theme-primary outline-none"
                   />
                 </div>
                 <div>
@@ -2481,7 +2346,7 @@ export const AdminPage: React.FC = () => {
                     value={brandForm.titleAr}
                     onChange={(e) => setBrandForm({ ...brandForm, titleAr: e.target.value })}
                     placeholder="مطور نظم خلفية .NET"
-                    className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white text-xs focus:border-cyan-500 outline-none"
+                    className="w-full px-3 py-2 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-xs focus:border-theme-primary outline-none"
                   />
                 </div>
               </div>
@@ -2491,14 +2356,14 @@ export const AdminPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setIsBrandModalOpen(false)}
-                  className="min-h-[44px] px-4 py-2.5 rounded-xl border border-slate-800 text-slate-400 hover:text-white text-xs font-mono transition-colors flex items-center justify-center"
+                  className="min-h-[44px] px-4 py-2.5 rounded-xl border border-white/[0.08] text-slate-400 hover:text-white text-xs font-mono transition-colors flex items-center justify-center"
                 >
                   إلغاء
                 </button>
 
                 <button
                   type="submit"
-                  className="min-h-[44px] px-5 sm:px-6 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(56,189,248,0.3)] transition-all"
+                  className="min-h-[44px] px-5 sm:px-6 py-2.5 rounded-xl bg-theme-primary hover:bg-theme-primary text-white font-bold text-xs flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(var(--theme-primary-rgb),0.3)] transition-all"
                 >
                   {brandSuccess ? (
                     <>

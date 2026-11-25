@@ -100,6 +100,7 @@ export interface ProfileInfo {
   aboutGlowIntensity?: number; // 0.4 to 1.8 (default 1)
   aboutShowRings?: boolean; // default true
   autoExtractColors?: boolean; // Automatically extract theme colors from avatar
+  fontPreset?: 'plex-jakarta' | 'cairo-outfit' | 'alexandria-dm' | 'ruqaa-dancing';
   extractedColors?: {
     primary: string;
     primaryRgb?: string;

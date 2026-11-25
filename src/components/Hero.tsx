@@ -24,16 +24,16 @@ export const Hero: React.FC = () => {
         {/* Soft Background Radial Light */}
         <div 
           className="absolute top-1/4 -right-16 w-[400px] sm:w-[600px] h-[400px] sm:h-[600px] rounded-full blur-[64px] pointer-events-none"
-          style={{ background: 'radial-gradient(circle, rgba(255, 87, 34, 0.18) 0%, transparent 70%)' }}
+          style={{ background: 'radial-gradient(circle, rgba(var(--theme-primary-rgb), 0.18) 0%, transparent 70%)' }}
         />
         <div 
           className="absolute bottom-10 -left-16 w-[350px] sm:w-[500px] h-[350px] sm:h-[500px] rounded-full blur-[60px] pointer-events-none"
-          style={{ background: 'radial-gradient(circle, rgba(230, 74, 25, 0.12) 0%, transparent 70%)' }}
+          style={{ background: 'radial-gradient(circle, rgba(var(--theme-accent-rgb), 0.12) 0%, transparent 70%)' }}
         />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-14 items-center">
           
-          {/* Left Column: Greeting, Name, Orange Job Title, Location, Buttons */}
+          {/* Left Column: Greeting, Name, Theme Job Title, Location, Buttons */}
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -41,15 +41,15 @@ export const Hero: React.FC = () => {
             className="lg:col-span-7 flex flex-col gap-6 text-start z-10 order-2 lg:order-1"
           >
             {/* Status / Availability Pill */}
-            <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-[#121215] border border-orange-500/25 text-[#FF7A00] text-xs sm:text-sm font-mono font-medium self-start shadow-[0_0_20px_rgba(255,87,34,0.15)]">
-              <span className="w-2 h-2 rounded-full bg-[#FF5722] animate-ping" />
-              <Activity className="w-3.5 h-3.5 text-[#FF7A00] shrink-0" />
+            <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-[#121215] border border-theme-primary/25 text-theme-secondary text-xs sm:text-sm font-mono font-medium self-start shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.15)]">
+              <span className="w-2 h-2 rounded-full bg-theme-primary animate-ping" />
+              <Activity className="w-3.5 h-3.5 text-theme-secondary shrink-0" />
               <span>
                 {lang === 'ar' ? 'متاحة للمشاريع الحرة وعقود العمل' : 'Available for Freelance & Full-time Roles'}
               </span>
             </div>
 
-            {/* Greeting + Large Name + Burnt Orange Title */}
+            {/* Greeting + Large Name + Theme Primary Title */}
             <div>
               <p className="text-xl sm:text-2xl font-light text-slate-300 tracking-wide font-sans">
                 {lang === 'ar' ? (profile.heroGreetingAr || 'مرحباً، أنا') : (profile.heroGreeting || 'Hello, I am')}
@@ -59,9 +59,9 @@ export const Hero: React.FC = () => {
                 {lang === 'ar' ? (profile.nameAr || profile.shortNameAr || 'عمرو عاطف إمام محمود') : (profile.name || profile.shortName || 'Amr Atef Imam Mahmoud')}
               </h1>
 
-              {/* Burnt Orange Title */}
+              {/* Theme Primary Title */}
               <div className="inline-block mt-2">
-                <p className="text-[clamp(1.4rem,3.8vw,2.3rem)] font-extrabold text-[#FF5722] tracking-normal drop-shadow-[0_0_25px_rgba(255,87,34,0.45)]">
+                <p className="text-[clamp(1.4rem,3.8vw,2.3rem)] font-extrabold text-theme-primary tracking-normal drop-shadow-[0_0_25px_rgba(var(--theme-primary-rgb),0.45)]">
                   {lang === 'ar' 
                     ? (profile.titleAr || 'مطور نظم خلفية .NET') 
                     : (profile.title || '.NET Backend Developer')}
@@ -70,14 +70,14 @@ export const Hero: React.FC = () => {
 
               {/* Core Technologies Banner */}
               <div className="mt-1">
-                <span className="text-xs sm:text-sm font-mono text-orange-400/95 font-semibold tracking-wider">
+                <span className="text-xs sm:text-sm font-mono text-theme-secondary/95 font-semibold tracking-wider">
                   C# • ASP.NET Core • SQL Server • PostgreSQL
                 </span>
               </div>
 
               {/* Location */}
               <div className="flex items-center gap-2 text-slate-400 text-sm sm:text-base mt-2">
-                <MapPin className="w-4 h-4 text-[#FF7A00] shrink-0" />
+                <MapPin className="w-4 h-4 text-theme-secondary shrink-0" />
                 <span>{lang === 'ar' ? (profile.locationAr || 'الإسماعيلية، مصر') : (profile.location || 'Ismailia, Egypt')}</span>
               </div>
             </div>
@@ -91,10 +91,10 @@ export const Hero: React.FC = () => {
 
             {/* Action Buttons: Hire Me + View Projects */}
             <div className="flex flex-wrap items-center gap-4 pt-2">
-              {/* "Hire Me" Button with Burnt Orange Glow */}
+              {/* "Hire Me" Button with Theme Gradient & Glow */}
               <a
                 href="#contact"
-                className="flex items-center justify-center gap-2.5 h-12 sm:h-14 px-7 sm:px-9 rounded-2xl bg-gradient-to-r from-[#FF5722] via-[#FF6B00] to-[#FF7A00] hover:from-[#FF6B00] hover:to-[#FF8A00] text-white font-bold text-base shadow-[0_0_30px_rgba(255,87,34,0.45)] hover:shadow-[0_0_45px_rgba(255,87,34,0.7)] transition-all duration-300 active:scale-95"
+                className="flex items-center justify-center gap-2.5 h-12 sm:h-14 px-7 sm:px-9 rounded-2xl bg-gradient-to-r from-theme-primary to-theme-secondary hover:brightness-110 text-white font-bold text-base shadow-[0_0_30px_rgba(var(--theme-primary-rgb),0.45)] hover:shadow-[0_0_45px_rgba(var(--theme-primary-rgb),0.7)] transition-all duration-300 active:scale-95"
               >
                 <Send className="w-4 h-4" />
                 <span>{lang === 'ar' ? 'وظفني الآن' : 'Hire Me'}</span>
@@ -103,17 +103,17 @@ export const Hero: React.FC = () => {
               {/* Secondary Button: Explore Projects */}
               <a
                 href="#projects"
-                className="flex items-center justify-center gap-2.5 h-12 sm:h-14 px-6 sm:px-8 rounded-2xl bg-[#121215] hover:bg-[#18181f] border border-orange-500/30 hover:border-orange-500/60 text-slate-200 hover:text-white font-semibold text-base transition-all duration-300"
+                className="flex items-center justify-center gap-2.5 h-12 sm:h-14 px-6 sm:px-8 rounded-2xl bg-[#121215] hover:bg-[#18181f] border border-theme-primary/30 hover:border-theme-primary/60 text-slate-200 hover:text-white font-semibold text-base transition-all duration-300"
               >
                 <span>{lang === 'ar' ? 'تصفح المشاريع' : 'Explore Projects'}</span>
-                <ArrowUpRight className="w-4 h-4 text-[#FF7A00]" />
+                <ArrowUpRight className="w-4 h-4 text-theme-secondary" />
               </a>
             </div>
 
             {/* Quick Metrics Bar */}
             <div className="grid grid-cols-3 gap-3 sm:gap-4 pt-4 border-t border-white/10 max-w-lg">
               <div>
-                <span className="block text-2xl sm:text-3xl font-black text-[#FF5722]">
+                <span className="block text-2xl sm:text-3xl font-black text-theme-primary">
                   +{profile.yearsOfExperience || 3}
                 </span>
                 <span className="text-xs text-slate-400 font-medium">
@@ -121,7 +121,7 @@ export const Hero: React.FC = () => {
                 </span>
               </div>
               <div>
-                <span className="block text-2xl sm:text-3xl font-black text-[#FF7A00]">
+                <span className="block text-2xl sm:text-3xl font-black text-theme-secondary">
                   +{profile.completedProjects || 24}
                 </span>
                 <span className="text-xs text-slate-400 font-medium">

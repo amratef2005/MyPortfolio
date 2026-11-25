@@ -39,8 +39,8 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) 
 
         {/* Badge & Title */}
         <div className="mt-2 mb-4">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/30 text-[#FF7A00] text-xs font-mono font-semibold mb-3">
-            <CheckCircle2 className="w-3.5 h-3.5 text-[#FF5722]" />
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-theme-primary/10 border border-theme-primary/30 text-theme-secondary text-xs font-mono font-semibold mb-3">
+            <CheckCircle2 className="w-3.5 h-3.5 text-theme-primary" />
             <span>{lang === 'ar' ? (project.badgeAr || project.badge) : project.badge}</span>
           </div>
           <h2 className="text-2xl sm:text-3xl font-black text-white">
@@ -52,10 +52,10 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) 
         </div>
 
         {/* Performance Metrics Bar */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 my-6 p-4 rounded-2xl bg-[#09090b] border border-orange-500/20">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 my-6 p-4 rounded-2xl bg-[#09090b] border border-theme-primary/20">
           {project.metrics.map((metric, idx) => (
             <div key={idx} className="text-center p-2">
-              <span className="block text-[#FF5722] font-mono font-bold text-base sm:text-lg">
+              <span className="block text-theme-primary font-mono font-bold text-base sm:text-lg">
                 {lang === 'ar' ? (metric.valueAr || metric.value) : metric.value}
               </span>
               <span className="text-slate-400 text-xs font-medium">
@@ -68,7 +68,7 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) 
         {/* Project Description */}
         <div className="mb-6">
           <h4 className="text-white font-bold text-base mb-2 flex items-center gap-2">
-            <Server className="w-4 h-4 text-[#FF7A00]" />
+            <Server className="w-4 h-4 text-theme-secondary" />
             <span>{lang === 'ar' ? 'نظرة عامة على دراسة الحالة' : 'Case Study Overview'}</span>
           </h4>
           <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
@@ -79,14 +79,14 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) 
         {/* Architecture Breakdown */}
         <div className="mb-6">
           <h4 className="text-white font-bold text-base mb-3 flex items-center gap-2">
-            <Layers className="w-4 h-4 text-[#FF5722]" />
+            <Layers className="w-4 h-4 text-theme-primary" />
             <span>{lang === 'ar' ? 'المنهجية وتجربة المستخدم' : 'UX Methodology & Architecture'}</span>
           </h4>
           <div className="flex flex-wrap gap-2">
             {(lang === 'ar' && project.architectureAr ? project.architectureAr : project.architecture).map((arch, idx) => (
               <span 
                 key={idx}
-                className="px-3 py-1.5 rounded-lg bg-orange-500/10 border border-orange-500/30 text-orange-300 text-xs font-mono font-medium"
+                className="px-3 py-1.5 rounded-lg bg-theme-primary/10 border border-theme-primary/30 text-theme-secondary text-xs font-mono font-medium"
               >
                 {arch}
               </span>
@@ -113,7 +113,7 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) 
         {/* Technologies Stack */}
         <div className="mb-8">
           <h4 className="text-white font-bold text-base mb-3 flex items-center gap-2">
-            <Cpu className="w-4 h-4 text-[#FF7A00]" />
+            <Cpu className="w-4 h-4 text-theme-secondary" />
             <span>{lang === 'ar' ? 'التقنيات والمكتبات المستخدمة' : 'Technologies & Libraries'}</span>
           </h4>
           <div className="flex flex-wrap gap-2">
@@ -146,7 +146,7 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) 
               href={project.liveUrl}
               target="_blank"
               rel="noreferrer"
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#FF5722] to-[#FF7A00] hover:from-[#FF6B00] hover:to-[#FF8A00] text-white text-sm font-semibold transition-colors shadow-[0_0_20px_rgba(255,87,34,0.4)]"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-theme-primary to-theme-secondary hover:brightness-110 text-white text-sm font-semibold transition-colors shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.4)]"
             >
               <ExternalLink className="w-4 h-4" />
               <span>{lang === 'ar' ? 'معاينة النموذج الحي' : 'Live Interactive Demo'}</span>

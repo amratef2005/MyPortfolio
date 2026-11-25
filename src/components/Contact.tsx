@@ -1,25 +1,25 @@
 import React, { useState } from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
-import { 
-  Mail, 
-  MapPin, 
-  Send, 
-  ArrowUpRight, 
-  Copy, 
-  Check, 
-  Linkedin, 
-  CheckCircle2, 
+import {
+  Mail,
+  MapPin,
+  Send,
+  ArrowUpRight,
+  Copy,
+  Check,
+  Linkedin,
+  CheckCircle2,
   MessageSquare
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { AssembleItem } from './motion/KineticAssemble';
 
 const WhatsAppIcon: React.FC<{ className?: string }> = ({ className = "w-5 h-5" }) => (
-  <svg 
-    viewBox="0 0 24 24" 
-    width="24" 
-    height="24" 
-    fill="currentColor" 
+  <svg
+    viewBox="0 0 24 24"
+    width="24"
+    height="24"
+    fill="currentColor"
     className={className}
   >
     <path d="M17.472 14.382c-.301-.15-1.78-.878-2.056-.978-.276-.1-.477-.15-.678.15-.201.3-.778.978-.954 1.179-.176.2-.352.225-.653.075-1.543-.769-2.55-1.378-3.565-3.119-.269-.462-.027-.712.124-.862.135-.135.301-.351.452-.527.15-.175.201-.3.301-.5.101-.2.05-.376-.025-.526-.075-.15-.678-1.634-.929-2.238-.244-.588-.493-.508-.678-.518-.175-.01-.376-.01-.577-.01-.201 0-.527.075-.803.376s-1.054 1.029-1.054 2.509c0 1.48 1.079 2.91 1.23 3.111.15.201 2.121 3.239 5.139 4.542.718.311 1.279.497 1.716.636.722.23 1.379.197 1.898.12.578-.087 1.78-.727 2.031-1.43.251-.703.251-1.305.176-1.43-.075-.125-.276-.2-.577-.35z" />
@@ -84,11 +84,15 @@ export const Contact: React.FC = () => {
       setSubmitted(true);
 
       // 3. Trigger Celebration Confetti
+      const styles = getComputedStyle(document.documentElement);
+      const pColor = styles.getPropertyValue('--theme-primary').trim() || '#FF5722';
+      const sColor = styles.getPropertyValue('--theme-secondary').trim() || '#FF7A00';
+      const aColor = styles.getPropertyValue('--theme-accent').trim() || '#E64A19';
       confetti({
         particleCount: 80,
         spread: 70,
         origin: { y: 0.6 },
-        colors: ['#FF5722', '#FF7A00', '#FF8A00', '#FFFFFF']
+        colors: [pColor, sColor, aColor, '#FFFFFF']
       });
     } finally {
       setSubmitting(false);
@@ -97,34 +101,34 @@ export const Contact: React.FC = () => {
 
   return (
     <section id="contact" className="py-8 sm:py-16 lg:py-20 relative overflow-hidden">
-      {/* Background Subtle Orange Glow */}
-      <div 
+      {/* Background Subtle Theme Glow */}
+      <div
         className="absolute bottom-0 right-1/4 w-[500px] h-[500px] rounded-full blur-[160px] pointer-events-none"
-        style={{ background: 'radial-gradient(circle, rgba(255, 87, 34, 0.14) 0%, transparent 70%)' }}
+        style={{ background: 'radial-gradient(circle, rgba(var(--theme-primary-rgb), 0.14) 0%, transparent 70%)' }}
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         {/* Section Header: "Contact Me" & "Have Any Project? Let's Chat" */}
         <AssembleItem direction="top">
           <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12 lg:mb-16">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#121215] border border-orange-500/20 text-[#FF7A00] text-xs font-mono mb-3">
-              <MessageSquare className="w-3.5 h-3.5 text-[#FF5722]" />
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#121215] border border-theme-primary/20 text-theme-secondary text-xs font-mono mb-3">
+              <MessageSquare className="w-3.5 h-3.5 text-theme-primary" />
               <span>{lang === 'ar' ? 'تواصل معي' : 'Contact Me'}</span>
             </div>
-            
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-[1.2]">
+
+            <h2 className="font-poster text-3xl sm:text-4xl lg:text-5xl font-black text-white uppercase tracking-wide leading-[1.08]">
               {lang === 'ar' ? (
                 <>
-                  لديك مشروع جديد؟ <span className="text-[#FF5722] drop-shadow-[0_0_20px_rgba(255,87,34,0.4)]">دعنا نتحدث الآن</span>
+                  لديك مشروع جديد؟ <span className="text-theme-primary drop-shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.4)]">دعنا نتحدث الآن</span>
                 </>
               ) : (
                 <>
-                  Have Any Project? <span className="text-[#FF5722] drop-shadow-[0_0_20px_rgba(255,87,34,0.4)]">Let's Chat</span>
+                  Have Any Project? <span className="text-theme-primary drop-shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.4)]">Let's Chat</span>
                 </>
               )}
             </h2>
-            
+
             <p className="text-slate-400 mt-4 text-sm sm:text-base leading-relaxed">
               {lang === 'ar'
                 ? 'سواء كنت ترغب في بدء مشروع جديد، إعادة تصميم منتجك، أو استشارة سريعة في الـ UI/UX، يسعدني دائماً تواصلك.'
@@ -134,35 +138,35 @@ export const Contact: React.FC = () => {
         </AssembleItem>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 text-start items-start">
-          
+
           {/* Left Column: Direct Contact Info Channels */}
           <AssembleItem direction="left" distance={100} className="lg:col-span-5 space-y-4">
-            <div className="p-6 sm:p-8 rounded-3xl bg-[#0e0e12] border border-white/10 space-y-5">
-              <h3 className="text-xl font-bold text-white mb-2">
+            <div className="p-6 sm:p-7 rounded-xl bg-[#0c0c0e] border border-white/10 space-y-4">
+              <h3 className="font-poster text-xl uppercase tracking-wider font-bold text-white mb-2">
                 {lang === 'ar' ? 'قنوات التواصل المباشرة' : 'Direct Channels'}
               </h3>
 
               {/* Email */}
-              <div 
+              <div
                 onClick={() => window.location.href = `mailto:${profile.email}`}
-                className="group flex items-center justify-between p-4 rounded-2xl bg-[#15151c] border border-white/5 hover:border-orange-500/40 cursor-pointer transition-all"
+                className="group flex items-center justify-between p-4 rounded-2xl bg-[#15151c] border border-white/5 hover:border-theme-primary/40 cursor-pointer transition-all"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-[#FF5722] shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-theme-primary/10 border border-theme-primary/20 flex items-center justify-center text-theme-primary shrink-0">
                     <Mail className="w-5 h-5" />
                   </div>
                   <div>
-                    <span className="block text-[10px] font-mono text-slate-400 uppercase">
+                    <span className="block text-[10px] font-mono text-slate-400 uppercase tracking-wider">
                       {lang === 'ar' ? 'البريد الإلكتروني' : 'Email Address'}
                     </span>
-                    <span className="text-sm font-bold text-white group-hover:text-[#FF7A00] transition-colors truncate max-w-[180px] sm:max-w-none block">
+                    <span className="text-sm font-bold text-white group-hover:text-theme-secondary transition-colors truncate max-w-[180px] sm:max-w-none block">
                       {profile.email}
                     </span>
                   </div>
                 </div>
                 <button
                   onClick={copyEmail}
-                  className="p-2 rounded-lg bg-white/5 hover:bg-orange-500/20 text-slate-400 hover:text-[#FF7A00] transition-colors"
+                  className="p-2 rounded-lg bg-white/5 hover:bg-theme-primary/20 text-slate-400 hover:text-theme-secondary transition-colors"
                   title="Copy email"
                 >
                   {copiedEmail ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
@@ -170,16 +174,16 @@ export const Contact: React.FC = () => {
               </div>
 
               {/* WhatsApp */}
-              <div 
+              <div
                 onClick={() => window.open(getWhatsAppUrl(), '_blank')}
-                className="group flex items-center justify-between p-4 rounded-2xl bg-[#15151c] border border-white/5 hover:border-emerald-500/40 cursor-pointer transition-all"
+                className="group flex items-center justify-between p-4 rounded-lg bg-[#121215] border border-white/10 hover:border-emerald-500/45 cursor-pointer transition-all"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0">
-                    <WhatsAppIcon className="w-5 h-5" />
+                  <div className="w-10 h-10 rounded-full bg-emerald-500/10 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0">
+                    <WhatsAppIcon className="w-4 h-4" />
                   </div>
                   <div>
-                    <span className="block text-[10px] font-mono text-slate-400 uppercase">
+                    <span className="block text-[10px] font-mono text-slate-400 uppercase tracking-wider">
                       {lang === 'ar' ? 'محادثة واتساب سريعة' : 'WhatsApp Chat'}
                     </span>
                     <span className="text-sm font-bold text-white group-hover:text-emerald-400 transition-colors">
@@ -198,11 +202,11 @@ export const Contact: React.FC = () => {
 
               {/* Location */}
               <div className="flex items-center gap-3 p-4 rounded-2xl bg-[#15151c] border border-white/5">
-                <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-[#FF5722] shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-theme-primary/10 border border-theme-primary/20 flex items-center justify-center text-theme-primary shrink-0">
                   <MapPin className="w-5 h-5" />
                 </div>
                 <div>
-                  <span className="block text-[10px] font-mono text-slate-400 uppercase">
+                  <span className="block text-[10px] font-mono text-slate-400 uppercase tracking-wider">
                     {lang === 'ar' ? 'الموقع' : 'Location'}
                   </span>
                   <span className="text-sm font-bold text-white">
@@ -217,18 +221,18 @@ export const Contact: React.FC = () => {
                   href={profile.linkedin}
                   target="_blank"
                   rel="noreferrer"
-                  className="flex items-center justify-between p-4 rounded-2xl bg-[#15151c] border border-white/5 hover:border-blue-500/40 text-slate-300 hover:text-white transition-colors"
+                  className="flex items-center justify-between p-4 rounded-lg bg-[#121215] border border-white/10 hover:border-theme-primary/50 text-slate-300 hover:text-white transition-colors"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 shrink-0">
-                      <Linkedin className="w-5 h-5" />
+                    <div className="w-10 h-10 rounded-full bg-theme-primary/10 border border-theme-primary/45 flex items-center justify-center text-theme-primary shrink-0">
+                      <Linkedin className="w-4 h-4" />
                     </div>
                     <div>
-                      <span className="block text-[10px] font-mono text-slate-400 uppercase">LinkedIn</span>
+                      <span className="block text-[10px] font-mono text-slate-400 uppercase tracking-wider">LinkedIn</span>
                       <span className="text-sm font-bold text-white">Connect on LinkedIn</span>
                     </div>
                   </div>
-                  <ArrowUpRight className="w-4 h-4 text-slate-400" />
+                  <ArrowUpRight className="w-4 h-4 text-theme-primary" />
                 </a>
               )}
 
@@ -237,7 +241,7 @@ export const Contact: React.FC = () => {
 
           {/* Right Column: Contact Message Form */}
           <AssembleItem direction="right" distance={100} className="lg:col-span-7">
-            <div className="p-6 sm:p-8 rounded-3xl bg-[#0e0e12] border border-white/10 shadow-[0_15px_35px_rgba(0,0,0,0.7)]">
+            <div className="p-6 sm:p-8 rounded-xl bg-[#0c0c0e] border border-white/10 shadow-[0_15px_35px_rgba(0,0,0,0.7)]">
               {submitted ? (
                 <div className="text-center py-12 space-y-4">
                   <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mx-auto">
@@ -275,7 +279,7 @@ export const Contact: React.FC = () => {
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                         placeholder={lang === 'ar' ? 'سارة محمد' : 'Jane Doe'}
-                        className="w-full px-4 py-3 rounded-xl bg-[#15151c] border border-white/10 focus:border-[#FF5722] focus:ring-1 focus:ring-[#FF5722] text-white text-sm outline-none transition-colors"
+                        className="w-full px-4 py-3 rounded-xl bg-[#15151c] border border-white/10 focus:border-theme-primary focus:ring-1 focus:ring-theme-primary text-white text-sm outline-none transition-colors"
                       />
                     </div>
 
@@ -290,7 +294,7 @@ export const Contact: React.FC = () => {
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         placeholder="jane@example.com"
-                        className="w-full px-4 py-3 rounded-xl bg-[#15151c] border border-white/10 focus:border-[#FF5722] focus:ring-1 focus:ring-[#FF5722] text-white text-sm outline-none transition-colors"
+                        className="w-full px-4 py-3 rounded-xl bg-[#15151c] border border-white/10 focus:border-theme-primary focus:ring-1 focus:ring-theme-primary text-white text-sm outline-none transition-colors"
                       />
                     </div>
                   </div>
@@ -305,7 +309,7 @@ export const Contact: React.FC = () => {
                       value={formData.subject}
                       onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                       placeholder={lang === 'ar' ? 'تصميم تطبيق موبايل جديد / موقع إلكتروني' : 'New Mobile App Design / Web UI'}
-                      className="w-full px-4 py-3 rounded-xl bg-[#15151c] border border-white/10 focus:border-[#FF5722] focus:ring-1 focus:ring-[#FF5722] text-white text-sm outline-none transition-colors"
+                      className="w-full px-4 py-3 rounded-xl bg-[#15151c] border border-white/10 focus:border-theme-primary focus:ring-1 focus:ring-theme-primary text-white text-sm outline-none transition-colors"
                     />
                   </div>
 
@@ -320,7 +324,7 @@ export const Contact: React.FC = () => {
                       value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                       placeholder={lang === 'ar' ? 'أخبرني عن أهداف مشروعك، الفئة المستهدفة، والجدول الزمني المتوقع...' : 'Tell me about your product goals, timeline, and vision...'}
-                      className="w-full px-4 py-3 rounded-xl bg-[#15151c] border border-white/10 focus:border-[#FF5722] focus:ring-1 focus:ring-[#FF5722] text-white text-sm outline-none transition-colors resize-none"
+                      className="w-full px-4 py-3 rounded-xl bg-[#15151c] border border-white/10 focus:border-theme-primary focus:ring-1 focus:ring-theme-primary text-white text-sm outline-none transition-colors resize-none"
                     />
                   </div>
 
@@ -328,7 +332,7 @@ export const Contact: React.FC = () => {
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="w-full flex items-center justify-center gap-2 h-14 rounded-2xl bg-gradient-to-r from-[#FF5722] via-[#FF6B00] to-[#FF7A00] hover:from-[#FF6B00] hover:to-[#FF8A00] text-white font-bold text-base shadow-[0_0_30px_rgba(255,87,34,0.4)] hover:shadow-[0_0_40px_rgba(255,87,34,0.6)] transition-all active:scale-98 disabled:opacity-50"
+                    className="w-full flex items-center justify-center gap-2 h-14 rounded-2xl bg-gradient-to-r from-theme-primary to-theme-secondary hover:brightness-110 text-white font-bold text-base shadow-[0_0_30px_rgba(var(--theme-primary-rgb),0.4)] hover:shadow-[0_0_40px_rgba(var(--theme-primary-rgb),0.6)] transition-all active:scale-98 disabled:opacity-50"
                   >
                     <Send className="w-4 h-4" />
                     <span>

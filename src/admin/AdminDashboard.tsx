@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
 import { Project, Certificate, SkillCategory, ProfileInfo } from '../types';
-import { 
-  X, 
-  Lock, 
-  Unlock, 
-  LayoutDashboard, 
-  FolderGit2, 
-  Award, 
-  Cpu, 
-  User, 
-  Mail, 
-  Save, 
-  Trash2, 
-  Plus, 
-  Download, 
-  Upload, 
+import {
+  X,
+  Lock,
+  Unlock,
+  LayoutDashboard,
+  FolderGit2,
+  Award,
+  Cpu,
+  User,
+  Mail,
+  Save,
+  Trash2,
+  Plus,
+  Download,
+  Upload,
   RotateCcw,
   Check,
   Eye,
@@ -24,8 +24,18 @@ import {
   Image as ImageIcon,
   Type,
   Layers,
-  RefreshCw
+  RefreshCw,
+  Palette,
+  Bell,
+  Box,
+  Globe,
+  Home,
+  Search
 } from 'lucide-react';
+import { BentoOverview } from './BentoOverview';
+import { QuantixSidebar } from './QuantixSidebar';
+import { ThemePickerPanel } from './ThemePickerPanel';
+import { adminTranslations } from './adminTranslations';
 
 export const AdminDashboard: React.FC = () => {
   const {
@@ -35,6 +45,7 @@ export const AdminDashboard: React.FC = () => {
     skills,
     messages,
     lang,
+    setLang,
     isAdminOpen,
     setIsAdminOpen,
     isAuthenticated,
@@ -57,9 +68,10 @@ export const AdminDashboard: React.FC = () => {
 
   const [pinInput, setPinInput] = useState('');
   const [pinError, setPinError] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState<
-    'overview' | 'images' | 'names' | 'profile' | 'projects' | 'certificates' | 'skills' | 'inbox' | 'backup'
-  >('images');
+    'overview' | 'images' | 'names' | 'profile' | 'projects' | 'certificates' | 'skills' | 'inbox' | 'backup' | 'theme'
+  >('overview');
 
   // Edit Project State
   const [editingProject, setEditingProject] = useState<Project | null>(null);
@@ -111,6 +123,8 @@ export const AdminDashboard: React.FC = () => {
     showSaveNotification();
   };
 
+  const t = adminTranslations[lang];
+
   // Login Screen if not authenticated
   if (!isAuthenticated) {
     const handleLoginSubmit = (e: React.FormEvent) => {
@@ -126,22 +140,36 @@ export const AdminDashboard: React.FC = () => {
 
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
-        <div className="relative w-full max-w-md bg-[#0e0e12] border border-orange-500/30 rounded-3xl p-8 shadow-2xl text-center">
+        <div className="relative w-full max-w-md bg-[#0e131f] border border-white/15 rounded-3xl p-8 shadow-2xl text-center">
           <button
             onClick={() => setIsAdminOpen(false)}
-            className="absolute top-5 left-5 p-2 text-slate-400 hover:text-white"
+            className="absolute top-5 end-5 p-2 text-slate-400 hover:text-white"
           >
             <X className="w-5 h-5" />
           </button>
 
-          <div className="w-16 h-16 rounded-2xl bg-orange-500/10 border border-orange-500/30 flex items-center justify-center mx-auto mb-4 text-[#FF5722] shadow-[0_0_20px_rgba(255,87,34,0.3)]">
+          <button
+            type="button"
+            onClick={() => setLang(lang === 'en' ? 'ar' : 'en')}
+            className="absolute top-5 start-5 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-mono text-slate-300"
+          >
+            <Globe className="w-3.5 h-3.5" />
+            <span>{lang === 'en' ? 'AR' : 'EN'}</span>
+          </button>
+
+          <div
+            className="w-16 h-16 rounded-2xl border border-white/15 flex items-center justify-center mx-auto mb-4"
+            style={{
+              backgroundColor: 'rgba(var(--theme-primary-rgb), 0.14)',
+              color: 'var(--theme-primary)',
+              boxShadow: '0 0 24px rgba(var(--theme-primary-rgb), 0.25)',
+            }}
+          >
             <Lock className="w-8 h-8" />
           </div>
 
-          <h3 className="text-2xl font-bold text-white mb-2">لوحة التحكم في البرتفوليو</h3>
-          <p className="text-slate-400 text-xs font-mono mb-6">
-            أدخل كلمة المرور أو رمز الـ PIN للمتابعة
-          </p>
+          <h3 className="text-2xl font-bold text-white mb-2">{t.loginTitle}</h3>
+          <p className="text-slate-400 text-xs font-mono mb-6">{t.loginSubtitle}</p>
 
           <form onSubmit={handleLoginSubmit} className="space-y-4">
             <input
@@ -151,20 +179,24 @@ export const AdminDashboard: React.FC = () => {
                 setPinInput(e.target.value);
                 setPinError(false);
               }}
-              placeholder="••••••••"
-              className="w-full text-center text-xl tracking-[0.2em] py-3 rounded-xl bg-[#15151c] border border-white/10 focus:border-[#FF5722] text-white outline-none font-mono"
+              placeholder={t.loginPlaceholder}
+              className="w-full text-center text-base tracking-[0.15em] py-3 rounded-xl bg-[#08090C] border border-white/10 focus:border-white/30 text-white outline-none font-mono"
             />
 
             {pinError && (
-              <p className="text-red-400 text-xs font-mono">كلمة المرور غير صحيحة، يرجى المحاولة مجدداً.</p>
+              <p className="text-rose-400 text-xs font-mono">{t.loginError}</p>
             )}
 
             <button
               type="submit"
-              className="w-full py-3 rounded-xl bg-gradient-to-r from-[#FF5722] to-[#FF7A00] text-white font-bold text-sm shadow-[0_0_20px_rgba(255,87,34,0.4)] transition-all flex items-center justify-center gap-2"
+              style={{
+                background: 'linear-gradient(135deg, var(--theme-primary), var(--theme-secondary))',
+                boxShadow: '0 8px 24px -6px rgba(var(--theme-primary-rgb), 0.5)',
+              }}
+              className="w-full py-3 rounded-xl text-white font-bold text-sm transition-all flex items-center justify-center gap-2 hover:brightness-110"
             >
               <Unlock className="w-4 h-4" />
-              <span>دخول لوحة التحكم</span>
+              <span>{t.loginButton}</span>
             </button>
           </form>
         </div>
@@ -172,156 +204,120 @@ export const AdminDashboard: React.FC = () => {
     );
   }
 
-  // Authenticated Dashboard
+  // Authenticated Quantix Dashboard
+  const unreadCount = messages.filter((m) => !m.read).length;
+  const activeTabLabel = t.tabs[activeTab] || activeTab;
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-6 bg-black/90 backdrop-blur-lg overflow-hidden">
-      <div className="relative w-full max-w-6xl h-[92vh] bg-[#0c0d10] border border-orange-500/25 rounded-3xl flex flex-col shadow-2xl overflow-hidden">
-        
-        {/* Top Header */}
-        <div className="px-6 py-4 bg-[#08080a] border-b border-white/10 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#FF5722] to-[#FF7A00] flex items-center justify-center text-white shadow-[0_0_15px_rgba(255,87,34,0.4)]">
-              <ShieldCheck className="w-5 h-5" />
+    <div className="quantix-dashboard fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-[#050608]/95 backdrop-blur-xl overflow-hidden">
+      {/* Subtle Ambient Theme Glow behind Quantix Window */}
+      <div
+        className="pointer-events-none absolute w-[520px] h-[520px] rounded-full blur-[110px] opacity-20"
+        style={{
+          background: 'radial-gradient(circle, var(--theme-primary), transparent 70%)',
+        }}
+      />
+
+      <div className="relative w-full max-w-[1360px] h-[94vh] bg-[#0B0C10] border border-white/[0.08] rounded-3xl flex flex-col lg:flex-row shadow-[0_30px_90px_rgba(0,0,0,0.9)] overflow-hidden">
+        {/* Quantix Left Navigation Sidebar */}
+        <QuantixSidebar
+          activeTab={activeTab}
+          onSelectTab={(tab) => {
+            setActiveTab(tab as typeof activeTab);
+            if (tab === 'projects') setEditingProject(null);
+            if (tab === 'certificates') setEditingCert(null);
+          }}
+          unreadCount={unreadCount}
+          projectsCount={projects.length}
+          onPreview={() => setIsAdminOpen(false)}
+          onLogout={logout}
+        />
+
+        {/* Right Main Column: Top Breadcrumb Bar + Content */}
+        <div className="flex-1 flex flex-col min-w-0 overflow-hidden bg-[#08090C]">
+          {/* Quantix Top Header */}
+          <header className="px-4 sm:px-7 py-3.5 bg-[#0A0B0F]/90 border-b border-white/[0.07] flex items-center justify-between gap-4 shrink-0">
+            {/* Breadcrumb */}
+            <div className="flex items-center gap-2 text-xs sm:text-sm min-w-0">
+              <Home className="w-4 h-4 text-slate-500 shrink-0" />
+              <span className="text-slate-500 truncate">{t.groups.overview}</span>
+              <span className="text-slate-600">/</span>
+              <span className="font-semibold text-white truncate">{activeTabLabel}</span>
             </div>
-            <div>
-              <h3 className="font-bold text-white text-base">لوحة التحكم المركزية (Admin Portfolio CMS)</h3>
-              <p className="text-xs text-slate-400 font-mono">التحكم في الصور الشخصية والأسماء والعناوين والمشاريع</p>
+
+            {/* Right Controls: Search + Saved + Lang + Bell + Theme Dot + Close */}
+            <div className="flex items-center gap-2 shrink-0">
+              <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/[0.04] border border-white/[0.08] text-xs text-slate-400 w-44 focus-within:border-theme-primary/40 transition-colors">
+                <Search className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder={t.searchPlaceholder}
+                  className="bg-transparent outline-none text-white placeholder:text-slate-500 w-full text-xs"
+                />
+              </div>
+
+              {savedSuccess && (
+                <span className="hidden sm:inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-[11px] font-mono">
+                  <Check className="w-3 h-3" />
+                  {t.saved}
+                </span>
+              )}
+
+              <button
+                type="button"
+                onClick={() => setLang(lang === 'en' ? 'ar' : 'en')}
+                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-xs font-mono text-slate-200 transition-colors"
+                title="Switch Language"
+              >
+                <Globe className="w-3.5 h-3.5 text-theme-primary" />
+                <span>{lang === 'en' ? 'AR' : 'EN'}</span>
+              </button>
+
+              <button
+                onClick={() => setActiveTab('inbox')}
+                className="relative p-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-slate-300 transition-colors"
+                title="Messages"
+              >
+                <Bell className="w-4 h-4" />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose-500 text-[10px] font-bold text-white flex items-center justify-center">
+                    {unreadCount}
+                  </span>
+                )}
+              </button>
+
+              <button
+                onClick={() => setActiveTab('theme')}
+                className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-xs font-mono text-white transition-colors"
+                title="Theme Colors & Fonts"
+              >
+                <span className="w-3 h-3 rounded-full bg-theme-primary" />
+                <span>AA</span>
+              </button>
+
+              <button
+                onClick={() => setIsAdminOpen(false)}
+                className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/[0.06] transition-colors"
+                title="Close"
+              >
+                <X className="w-4 h-4" />
+              </button>
             </div>
-          </div>
-
-          <div className="flex items-center gap-3">
-            {savedSuccess && (
-              <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono font-bold animate-fadeIn">
-                <Check className="w-3.5 h-3.5" />
-                تم الحفظ والتحديث بنجاح!
-              </span>
-            )}
-            <button
-              onClick={logout}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 text-xs font-mono"
-            >
-              <LogOut className="w-3.5 h-3.5" />
-              <span>تسجيل الخروج</span>
-            </button>
-            <button
-              onClick={() => setIsAdminOpen(false)}
-              className="p-2 text-slate-400 hover:text-white"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-        </div>
-
-        {/* Main Body with Sidebar */}
-        <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
-          
-          {/* Sidebar Tabs */}
-          <div className="w-full md:w-64 bg-[#08080a] border-b md:border-b-0 md:border-l border-white/10 p-3 flex md:flex-col gap-1.5 overflow-x-auto md:overflow-x-visible">
-            
-            {/* Tab: Images Manager (صورة 1 وصورة 2) */}
-            <button
-              onClick={() => setActiveTab('images')}
-              className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold w-full text-right transition-all shrink-0 md:shrink ${
-                activeTab === 'images' ? 'bg-orange-500/15 text-[#FF7A00] border border-orange-500/30 shadow-[0_0_15px_rgba(255,87,34,0.15)]' : 'text-slate-400 hover:text-white hover:bg-white/5'
-              }`}
-            >
-              <ImageIcon className="w-4 h-4 text-[#FF5722]" />
-              <span>التحكم في الصور (صورة 1 و 2)</span>
-            </button>
-
-            {/* Tab: Names & Headings (تعديل الأسماء والعناوين) */}
-            <button
-              onClick={() => setActiveTab('names')}
-              className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold w-full text-right transition-all shrink-0 md:shrink ${
-                activeTab === 'names' ? 'bg-orange-500/15 text-[#FF7A00] border border-orange-500/30 shadow-[0_0_15px_rgba(255,87,34,0.15)]' : 'text-slate-400 hover:text-white hover:bg-white/5'
-              }`}
-            >
-              <Type className="w-4 h-4 text-[#FF7A00]" />
-              <span>تعديل الأسماء والعناوين</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('overview')}
-              className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold w-full text-right transition-all shrink-0 md:shrink ${
-                activeTab === 'overview' ? 'bg-orange-500/15 text-[#FF7A00] border border-orange-500/30' : 'text-slate-400 hover:text-white hover:bg-white/5'
-              }`}
-            >
-              <LayoutDashboard className="w-4 h-4" />
-              <span>نظرة عامة وإحصائيات</span>
-            </button>
-
-            <button
-              onClick={() => { setActiveTab('projects'); setEditingProject(null); }}
-              className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold w-full text-right transition-all shrink-0 md:shrink ${
-                activeTab === 'projects' ? 'bg-orange-500/15 text-[#FF7A00] border border-orange-500/30' : 'text-slate-400 hover:text-white hover:bg-white/5'
-              }`}
-            >
-              <FolderGit2 className="w-4 h-4" />
-              <span>إدارة المشاريع ({projects.length})</span>
-            </button>
-
-            <button
-              onClick={() => { setActiveTab('certificates'); setEditingCert(null); }}
-              className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold w-full text-right transition-all shrink-0 md:shrink ${
-                activeTab === 'certificates' ? 'bg-orange-500/15 text-[#FF7A00] border border-orange-500/30' : 'text-slate-400 hover:text-white hover:bg-white/5'
-              }`}
-            >
-              <Award className="w-4 h-4" />
-              <span>إدارة الشهادات ({certificates.length})</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('skills')}
-              className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold w-full text-right transition-all shrink-0 md:shrink ${
-                activeTab === 'skills' ? 'bg-orange-500/15 text-[#FF7A00] border border-orange-500/30' : 'text-slate-400 hover:text-white hover:bg-white/5'
-              }`}
-            >
-              <Cpu className="w-4 h-4" />
-              <span>إدارة المهارات والنسب</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('profile')}
-              className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold w-full text-right transition-all shrink-0 md:shrink ${
-                activeTab === 'profile' ? 'bg-orange-500/15 text-[#FF7A00] border border-orange-500/30' : 'text-slate-400 hover:text-white hover:bg-white/5'
-              }`}
-            >
-              <User className="w-4 h-4" />
-              <span>البيانات الشخصية والنبذة</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('inbox')}
-              className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold w-full text-right transition-all shrink-0 md:shrink ${
-                activeTab === 'inbox' ? 'bg-orange-500/15 text-[#FF7A00] border border-orange-500/30' : 'text-slate-400 hover:text-white hover:bg-white/5'
-              }`}
-            >
-              <Mail className="w-4 h-4" />
-              <span>رسائل الزوار ({messages.length})</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('backup')}
-              className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold w-full text-right transition-all shrink-0 md:shrink ${
-                activeTab === 'backup' ? 'bg-orange-500/15 text-[#FF7A00] border border-orange-500/30' : 'text-slate-400 hover:text-white hover:bg-white/5'
-              }`}
-            >
-              <Download className="w-4 h-4" />
-              <span>النسخ الاحتياطي وإعادة الضبط</span>
-            </button>
-          </div>
+          </header>
 
           {/* Tab Content Panel */}
           <div className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto text-start">
-            
+
             {/* ========================================================= */}
             {/* TAB: DUAL IMAGE MANAGER (صورة 1 في الرئيسية وصورة 2 في About) */}
             {/* ========================================================= */}
             {activeTab === 'images' && (
               <div className="space-y-8">
                 <div>
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/25 text-[#FF7A00] text-xs font-mono mb-2">
-                    <ImageIcon className="w-3.5 h-3.5 text-[#FF5722]" />
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-theme-primary/10 border border-theme-primary/25 text-theme-secondary text-xs font-mono mb-2">
+                    <ImageIcon className="w-3.5 h-3.5 text-theme-primary" />
                     <span>التحكم في صور الموقع بالتوهج الدائري</span>
                   </div>
                   <h4 className="text-2xl font-black text-white">التحكم المستقل في صورة 1 (الرئيسية) وصورة 2 (نبذة عني)</h4>
@@ -331,27 +327,27 @@ export const AdminDashboard: React.FC = () => {
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                  
+
                   {/* CARD 1: Hero Image (صورة الصفحة الأساسية) */}
-                  <div className="p-6 rounded-3xl bg-[#121215] border border-orange-500/30 flex flex-col justify-between space-y-5 shadow-[0_10px_30px_rgba(0,0,0,0.6)]">
+                  <div className="p-6 quantix-card quantix-card-interactive flex flex-col justify-between space-y-5 shadow-[0_10px_30px_rgba(0,0,0,0.6)]">
                     <div>
                       <div className="flex items-center justify-between mb-4">
-                        <span className="px-3 py-1 rounded-full bg-orange-500/10 text-[#FF5722] text-xs font-mono font-bold">
+                        <span className="px-3 py-1 rounded-full bg-theme-primary/10 text-theme-primary text-xs font-mono font-bold">
                           صورة 1: الصفحة الأساسية (Hero)
                         </span>
                         <span className="text-xs text-slate-400 font-mono">قسم الترحيب</span>
                       </div>
 
                       {/* Image Preview with Circular Orange Glow */}
-                      <div className="relative w-full h-56 rounded-2xl bg-[#08080a] border border-white/5 flex items-center justify-center overflow-hidden mb-5">
+                      <div className="relative w-full h-56 rounded-2xl bg-[#08090C] border border-white/[0.08] flex items-center justify-center overflow-hidden mb-5">
                         {/* Orange Aura */}
-                        <div 
+                        <div
                           className="absolute w-36 h-36 rounded-full blur-2xl"
-                          style={{ background: 'radial-gradient(circle, rgba(255,87,34,0.7) 0%, transparent 70%)' }}
+                          style={{ background: 'radial-gradient(circle, rgba(var(--theme-primary-rgb),0.7) 0%, transparent 70%)' }}
                         />
-                        <img 
-                          src={profileForm.heroAvatarUrl || "/drama_hero.png"} 
-                          alt="Hero Avatar Preview" 
+                        <img
+                          src={profileForm.heroAvatarUrl || "/drama_hero.png"}
+                          alt="Hero Avatar Preview"
                           className="relative z-10 h-full w-auto object-contain object-bottom drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)]"
                           onError={(e) => {
                             const target = e.target as HTMLImageElement;
@@ -370,7 +366,7 @@ export const AdminDashboard: React.FC = () => {
                           type="file"
                           accept="image/*"
                           onChange={(e) => handleImageUpload(e, 'heroAvatarUrl')}
-                          className="w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-gradient-to-r file:from-[#FF5722] file:to-[#FF7A00] file:text-white hover:file:opacity-90 cursor-pointer"
+                          className="w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-gradient-to-r file:from-theme-primary file:to-theme-secondary file:text-white hover:file:opacity-90 cursor-pointer"
                         />
 
                         {/* Direct URL input */}
@@ -383,7 +379,7 @@ export const AdminDashboard: React.FC = () => {
                             value={profileForm.heroAvatarUrl || ''}
                             onChange={(e) => setProfileForm({ ...profileForm, heroAvatarUrl: e.target.value })}
                             placeholder="/drama_hero.png"
-                            className="w-full px-3.5 py-2.5 rounded-xl bg-[#18181f] border border-white/10 text-white text-xs font-mono outline-none focus:border-[#FF5722]"
+                            className="w-full px-3.5 py-2.5 rounded-xl bg-[#08090C] border border-white/10 text-white text-xs font-mono outline-none focus:border-theme-primary"
                           />
                         </div>
 
@@ -393,31 +389,31 @@ export const AdminDashboard: React.FC = () => {
                           <button
                             type="button"
                             onClick={() => setProfileForm({ ...profileForm, heroAvatarUrl: '/drama_hero.png' })}
-                            className="px-2.5 py-1 rounded-lg bg-[#18181f] hover:bg-orange-500/20 text-[11px] text-slate-300 border border-white/5"
+                            className="px-2.5 py-1 rounded-lg bg-[#08090C] hover:bg-theme-primary/20 text-[11px] text-slate-300 border border-white/[0.08]"
                           >
                             drama_hero.png
                           </button>
                           <button
                             type="button"
                             onClick={() => setProfileForm({ ...profileForm, heroAvatarUrl: '/my_transparent.png' })}
-                            className="px-2.5 py-1 rounded-lg bg-[#18181f] hover:bg-orange-500/20 text-[11px] text-slate-300 border border-white/5"
+                            className="px-2.5 py-1 rounded-lg bg-[#08090C] hover:bg-theme-primary/20 text-[11px] text-slate-300 border border-white/[0.08]"
                           >
                             my_transparent.png
                           </button>
                           <button
                             type="button"
                             onClick={() => setProfileForm({ ...profileForm, heroAvatarUrl: '/my.jpg' })}
-                            className="px-2.5 py-1 rounded-lg bg-[#18181f] hover:bg-orange-500/20 text-[11px] text-slate-300 border border-white/5"
+                            className="px-2.5 py-1 rounded-lg bg-[#08090C] hover:bg-theme-primary/20 text-[11px] text-slate-300 border border-white/[0.08]"
                           >
                             my.jpg
                           </button>
                         </div>
 
                         {/* Sliders for Hero Image */}
-                        <div className="space-y-2 pt-3 border-t border-white/5">
+                        <div className="space-y-2 pt-3 border-t border-white/[0.08]">
                           <div className="flex justify-between text-[11px] font-mono">
                             <span className="text-slate-400">التكبير (Scale/Zoom):</span>
-                            <span className="text-[#FF7A00] font-bold">{Math.round((profileForm.heroImageScale ?? 1) * 100)}%</span>
+                            <span className="text-theme-secondary font-bold">{Math.round((profileForm.heroImageScale ?? 1) * 100)}%</span>
                           </div>
                           <input
                             type="range"
@@ -426,12 +422,12 @@ export const AdminDashboard: React.FC = () => {
                             step="0.02"
                             value={profileForm.heroImageScale ?? 1}
                             onChange={(e) => setProfileForm({ ...profileForm, heroImageScale: parseFloat(e.target.value) })}
-                            className="w-full accent-[#FF5722] cursor-pointer"
+                            className="w-full accent-[var(--theme-primary)] cursor-pointer"
                           />
 
                           <div className="flex justify-between text-[11px] font-mono">
                             <span className="text-slate-400">الموضع الرأسي (Offset Y):</span>
-                            <span className="text-[#FF7A00] font-bold">{profileForm.heroImageOffsetY ?? 0}px</span>
+                            <span className="text-theme-secondary font-bold">{profileForm.heroImageOffsetY ?? 0}px</span>
                           </div>
                           <input
                             type="range"
@@ -440,12 +436,12 @@ export const AdminDashboard: React.FC = () => {
                             step="1"
                             value={profileForm.heroImageOffsetY ?? 0}
                             onChange={(e) => setProfileForm({ ...profileForm, heroImageOffsetY: parseInt(e.target.value, 10) })}
-                            className="w-full accent-[#FF5722] cursor-pointer"
+                            className="w-full accent-[var(--theme-primary)] cursor-pointer"
                           />
 
                           <div className="flex justify-between text-[11px] font-mono">
                             <span className="text-slate-400">شدة الهالة (Glow):</span>
-                            <span className="text-[#FF7A00] font-bold">{Math.round((profileForm.heroGlowIntensity ?? 1) * 100)}%</span>
+                            <span className="text-theme-secondary font-bold">{Math.round((profileForm.heroGlowIntensity ?? 1) * 100)}%</span>
                           </div>
                           <input
                             type="range"
@@ -454,7 +450,7 @@ export const AdminDashboard: React.FC = () => {
                             step="0.05"
                             value={profileForm.heroGlowIntensity ?? 1}
                             onChange={(e) => setProfileForm({ ...profileForm, heroGlowIntensity: parseFloat(e.target.value) })}
-                            className="w-full accent-[#FF5722] cursor-pointer"
+                            className="w-full accent-[var(--theme-primary)] cursor-pointer"
                           />
                         </div>
                       </div>
@@ -462,25 +458,25 @@ export const AdminDashboard: React.FC = () => {
                   </div>
 
                   {/* CARD 2: About Image (صورة الصفحة الثانية) */}
-                  <div className="p-6 rounded-3xl bg-[#121215] border border-orange-500/30 flex flex-col justify-between space-y-5 shadow-[0_10px_30px_rgba(0,0,0,0.6)]">
+                  <div className="p-6 quantix-card quantix-card-interactive flex flex-col justify-between space-y-5 shadow-[0_10px_30px_rgba(0,0,0,0.6)]">
                     <div>
                       <div className="flex items-center justify-between mb-4">
-                        <span className="px-3 py-1 rounded-full bg-orange-500/10 text-[#FF7A00] text-xs font-mono font-bold">
+                        <span className="px-3 py-1 rounded-full bg-theme-primary/10 text-theme-secondary text-xs font-mono font-bold">
                           صورة 2: الصفحة الثانية (About)
                         </span>
                         <span className="text-xs text-slate-400 font-mono">قسم نبذة عني</span>
                       </div>
 
                       {/* Image Preview with Circular Orange Glow */}
-                      <div className="relative w-full h-56 rounded-2xl bg-[#08080a] border border-white/5 flex items-center justify-center overflow-hidden mb-5">
+                      <div className="relative w-full h-56 rounded-2xl bg-[#08090C] border border-white/[0.08] flex items-center justify-center overflow-hidden mb-5">
                         {/* Orange Aura */}
-                        <div 
+                        <div
                           className="absolute w-36 h-36 rounded-full blur-2xl"
-                          style={{ background: 'radial-gradient(circle, rgba(255,122,0,0.7) 0%, transparent 70%)' }}
+                          style={{ background: 'radial-gradient(circle, rgba(var(--theme-secondary-rgb),0.7) 0%, transparent 70%)' }}
                         />
-                        <img 
-                          src={profileForm.aboutAvatarUrl || profileForm.heroAvatarUrl || "/my_transparent.png"} 
-                          alt="About Avatar Preview" 
+                        <img
+                          src={profileForm.aboutAvatarUrl || profileForm.heroAvatarUrl || "/my_transparent.png"}
+                          alt="About Avatar Preview"
                           className="relative z-10 h-full w-auto object-contain object-bottom drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)]"
                           onError={(e) => {
                             const target = e.target as HTMLImageElement;
@@ -499,7 +495,7 @@ export const AdminDashboard: React.FC = () => {
                           type="file"
                           accept="image/*"
                           onChange={(e) => handleImageUpload(e, 'aboutAvatarUrl')}
-                          className="w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-gradient-to-r file:from-[#FF7A00] file:to-[#FFA726] file:text-white hover:file:opacity-90 cursor-pointer"
+                          className="w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-gradient-to-r file:from-[var(--theme-secondary)] file:to-[#FFA726] file:text-white hover:file:opacity-90 cursor-pointer"
                         />
 
                         {/* Direct URL input */}
@@ -512,7 +508,7 @@ export const AdminDashboard: React.FC = () => {
                             value={profileForm.aboutAvatarUrl || ''}
                             onChange={(e) => setProfileForm({ ...profileForm, aboutAvatarUrl: e.target.value })}
                             placeholder="/my_transparent.png"
-                            className="w-full px-3.5 py-2.5 rounded-xl bg-[#18181f] border border-white/10 text-white text-xs font-mono outline-none focus:border-[#FF5722]"
+                            className="w-full px-3.5 py-2.5 rounded-xl bg-[#08090C] border border-white/10 text-white text-xs font-mono outline-none focus:border-theme-primary"
                           />
                         </div>
 
@@ -522,38 +518,38 @@ export const AdminDashboard: React.FC = () => {
                           <button
                             type="button"
                             onClick={() => setProfileForm({ ...profileForm, aboutAvatarUrl: '/about_avatar.png' })}
-                            className="px-2.5 py-1 rounded-lg bg-orange-500/20 hover:bg-orange-500/30 text-[11px] text-[#FF7A00] font-bold border border-orange-500/30"
+                            className="px-2.5 py-1 rounded-lg bg-theme-primary/20 hover:bg-theme-primary/30 text-[11px] text-theme-secondary font-bold border border-theme-primary/30"
                           >
                             about_avatar.png (الجانبية المفرغة)
                           </button>
                           <button
                             type="button"
                             onClick={() => setProfileForm({ ...profileForm, aboutAvatarUrl: '/my_transparent.png' })}
-                            className="px-2.5 py-1 rounded-lg bg-[#18181f] hover:bg-orange-500/20 text-[11px] text-slate-300 border border-white/5"
+                            className="px-2.5 py-1 rounded-lg bg-[#08090C] hover:bg-theme-primary/20 text-[11px] text-slate-300 border border-white/[0.08]"
                           >
                             my_transparent.png
                           </button>
                           <button
                             type="button"
                             onClick={() => setProfileForm({ ...profileForm, aboutAvatarUrl: '/drama_hero.png' })}
-                            className="px-2.5 py-1 rounded-lg bg-[#18181f] hover:bg-orange-500/20 text-[11px] text-slate-300 border border-white/5"
+                            className="px-2.5 py-1 rounded-lg bg-[#08090C] hover:bg-theme-primary/20 text-[11px] text-slate-300 border border-white/[0.08]"
                           >
                             drama_hero.png
                           </button>
                           <button
                             type="button"
                             onClick={() => setProfileForm({ ...profileForm, aboutAvatarUrl: '/my.jpg' })}
-                            className="px-2.5 py-1 rounded-lg bg-[#18181f] hover:bg-orange-500/20 text-[11px] text-slate-300 border border-white/5"
+                            className="px-2.5 py-1 rounded-lg bg-[#08090C] hover:bg-theme-primary/20 text-[11px] text-slate-300 border border-white/[0.08]"
                           >
                             my.jpg
                           </button>
                         </div>
 
                         {/* Sliders for About Image */}
-                        <div className="space-y-2 pt-3 border-t border-white/5">
+                        <div className="space-y-2 pt-3 border-t border-white/[0.08]">
                           <div className="flex justify-between text-[11px] font-mono">
                             <span className="text-slate-400">التكبير (Scale/Zoom):</span>
-                            <span className="text-[#FF7A00] font-bold">{Math.round((profileForm.aboutImageScale ?? 1) * 100)}%</span>
+                            <span className="text-theme-secondary font-bold">{Math.round((profileForm.aboutImageScale ?? 1) * 100)}%</span>
                           </div>
                           <input
                             type="range"
@@ -562,12 +558,12 @@ export const AdminDashboard: React.FC = () => {
                             step="0.02"
                             value={profileForm.aboutImageScale ?? 1}
                             onChange={(e) => setProfileForm({ ...profileForm, aboutImageScale: parseFloat(e.target.value) })}
-                            className="w-full accent-[#FF5722] cursor-pointer"
+                            className="w-full accent-[var(--theme-primary)] cursor-pointer"
                           />
 
                           <div className="flex justify-between text-[11px] font-mono">
                             <span className="text-slate-400">الموضع الرأسي (Offset Y):</span>
-                            <span className="text-[#FF7A00] font-bold">{profileForm.aboutImageOffsetY ?? 0}px</span>
+                            <span className="text-theme-secondary font-bold">{profileForm.aboutImageOffsetY ?? 0}px</span>
                           </div>
                           <input
                             type="range"
@@ -576,12 +572,12 @@ export const AdminDashboard: React.FC = () => {
                             step="1"
                             value={profileForm.aboutImageOffsetY ?? 0}
                             onChange={(e) => setProfileForm({ ...profileForm, aboutImageOffsetY: parseInt(e.target.value, 10) })}
-                            className="w-full accent-[#FF5722] cursor-pointer"
+                            className="w-full accent-[var(--theme-primary)] cursor-pointer"
                           />
 
                           <div className="flex justify-between text-[11px] font-mono">
                             <span className="text-slate-400">شدة الهالة (Glow):</span>
-                            <span className="text-[#FF7A00] font-bold">{Math.round((profileForm.aboutGlowIntensity ?? 1) * 100)}%</span>
+                            <span className="text-theme-secondary font-bold">{Math.round((profileForm.aboutGlowIntensity ?? 1) * 100)}%</span>
                           </div>
                           <input
                             type="range"
@@ -590,7 +586,7 @@ export const AdminDashboard: React.FC = () => {
                             step="0.05"
                             value={profileForm.aboutGlowIntensity ?? 1}
                             onChange={(e) => setProfileForm({ ...profileForm, aboutGlowIntensity: parseFloat(e.target.value) })}
-                            className="w-full accent-[#FF5722] cursor-pointer"
+                            className="w-full accent-[var(--theme-primary)] cursor-pointer"
                           />
                         </div>
                       </div>
@@ -603,7 +599,7 @@ export const AdminDashboard: React.FC = () => {
                 <div className="flex justify-end pt-4 border-t border-white/10">
                   <button
                     onClick={handleSaveProfile}
-                    className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-gradient-to-r from-[#FF5722] to-[#FF7A00] text-white font-bold text-sm shadow-[0_0_25px_rgba(255,87,34,0.4)] hover:shadow-[0_0_35px_rgba(255,87,34,0.6)] active:scale-95 transition-all"
+                    className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-gradient-to-r from-theme-primary to-theme-secondary text-white font-bold text-sm shadow-[0_0_25px_rgba(var(--theme-primary-rgb),0.4)] hover:shadow-[0_0_35px_rgba(var(--theme-primary-rgb),0.6)] active:scale-95 transition-all"
                   >
                     <Save className="w-4 h-4" />
                     <span>حفظ إعدادات الصورتين</span>
@@ -618,8 +614,8 @@ export const AdminDashboard: React.FC = () => {
             {activeTab === 'names' && (
               <div className="space-y-8">
                 <div>
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/25 text-[#FF7A00] text-xs font-mono mb-2">
-                    <Type className="w-3.5 h-3.5 text-[#FF5722]" />
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-theme-primary/10 border border-theme-primary/25 text-theme-secondary text-xs font-mono mb-2">
+                    <Type className="w-3.5 h-3.5 text-theme-primary" />
                     <span>تخصيص كامل للنصوص والأسماء</span>
                   </div>
                   <h4 className="text-2xl font-black text-white">تعديل كل اسم وعنوان في البرتفوليو</h4>
@@ -629,9 +625,9 @@ export const AdminDashboard: React.FC = () => {
                 </div>
 
                 {/* Section 1: Logo & Brand Name */}
-                <div className="p-6 rounded-3xl bg-[#121215] border border-white/10 space-y-4">
+                <div className="p-6 quantix-card space-y-4">
                   <h5 className="font-bold text-white text-base flex items-center gap-2">
-                    <Layers className="w-4 h-4 text-[#FF5722]" />
+                    <Layers className="w-4 h-4 text-theme-primary" />
                     <span>1. اسم الشعار في الشريط العلوي (Navbar Brand Name)</span>
                   </h5>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -644,7 +640,7 @@ export const AdminDashboard: React.FC = () => {
                         value={profileForm.brandName || ''}
                         onChange={(e) => setProfileForm({ ...profileForm, brandName: e.target.value })}
                         placeholder="Amr Kandel"
-                        className="w-full px-4 py-2.5 rounded-xl bg-[#18181f] border border-white/10 text-white text-sm outline-none focus:border-[#FF5722]"
+                        className="w-full px-4 py-2.5 rounded-xl bg-[#08090C] border border-white/10 text-white text-sm outline-none focus:border-theme-primary"
                       />
                     </div>
                     <div>
@@ -656,16 +652,16 @@ export const AdminDashboard: React.FC = () => {
                         value={profileForm.brandNameAr || ''}
                         onChange={(e) => setProfileForm({ ...profileForm, brandNameAr: e.target.value })}
                         placeholder="عمرو قنديل"
-                        className="w-full px-4 py-2.5 rounded-xl bg-[#18181f] border border-white/10 text-white text-sm outline-none focus:border-[#FF5722]"
+                        className="w-full px-4 py-2.5 rounded-xl bg-[#08090C] border border-white/10 text-white text-sm outline-none focus:border-theme-primary"
                       />
                     </div>
                   </div>
                 </div>
 
                 {/* Section 2: Home / Hero Section Names & Titles */}
-                <div className="p-6 rounded-3xl bg-[#121215] border border-white/10 space-y-4">
+                <div className="p-6 quantix-card space-y-4">
                   <h5 className="font-bold text-white text-base flex items-center gap-2">
-                    <User className="w-4 h-4 text-[#FF7A00]" />
+                    <User className="w-4 h-4 text-theme-secondary" />
                     <span>2. أسماء وعناوين الصفحة الرئيسية (Home / Hero)</span>
                   </h5>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -676,7 +672,7 @@ export const AdminDashboard: React.FC = () => {
                         value={profileForm.heroGreeting || ''}
                         onChange={(e) => setProfileForm({ ...profileForm, heroGreeting: e.target.value })}
                         placeholder="Hello,"
-                        className="w-full px-4 py-2.5 rounded-xl bg-[#18181f] border border-white/10 text-white text-sm outline-none focus:border-[#FF5722]"
+                        className="w-full px-4 py-2.5 rounded-xl bg-[#08090C] border border-white/10 text-white text-sm outline-none focus:border-theme-primary"
                       />
                     </div>
                     <div>
@@ -686,7 +682,7 @@ export const AdminDashboard: React.FC = () => {
                         value={profileForm.heroGreetingAr || ''}
                         onChange={(e) => setProfileForm({ ...profileForm, heroGreetingAr: e.target.value })}
                         placeholder="مرحباً، أنا"
-                        className="w-full px-4 py-2.5 rounded-xl bg-[#18181f] border border-white/10 text-white text-sm outline-none focus:border-[#FF5722]"
+                        className="w-full px-4 py-2.5 rounded-xl bg-[#08090C] border border-white/10 text-white text-sm outline-none focus:border-theme-primary"
                       />
                     </div>
                     <div>
@@ -696,7 +692,7 @@ export const AdminDashboard: React.FC = () => {
                         value={profileForm.name || ''}
                         onChange={(e) => setProfileForm({ ...profileForm, name: e.target.value })}
                         placeholder="Amr Kandel"
-                        className="w-full px-4 py-2.5 rounded-xl bg-[#18181f] border border-white/10 text-white text-sm outline-none focus:border-[#FF5722]"
+                        className="w-full px-4 py-2.5 rounded-xl bg-[#08090C] border border-white/10 text-white text-sm outline-none focus:border-theme-primary"
                       />
                     </div>
                     <div>
@@ -706,7 +702,7 @@ export const AdminDashboard: React.FC = () => {
                         value={profileForm.nameAr || ''}
                         onChange={(e) => setProfileForm({ ...profileForm, nameAr: e.target.value })}
                         placeholder="عمرو قنديل"
-                        className="w-full px-4 py-2.5 rounded-xl bg-[#18181f] border border-white/10 text-white text-sm outline-none focus:border-[#FF5722]"
+                        className="w-full px-4 py-2.5 rounded-xl bg-[#08090C] border border-white/10 text-white text-sm outline-none focus:border-theme-primary"
                       />
                     </div>
                     <div>
@@ -716,7 +712,7 @@ export const AdminDashboard: React.FC = () => {
                         value={profileForm.title || ''}
                         onChange={(e) => setProfileForm({ ...profileForm, title: e.target.value })}
                         placeholder="UI/UX Designer & .NET Developer"
-                        className="w-full px-4 py-2.5 rounded-xl bg-[#18181f] border border-white/10 text-white text-sm outline-none focus:border-[#FF5722]"
+                        className="w-full px-4 py-2.5 rounded-xl bg-[#08090C] border border-white/10 text-white text-sm outline-none focus:border-theme-primary"
                       />
                     </div>
                     <div>
@@ -726,16 +722,16 @@ export const AdminDashboard: React.FC = () => {
                         value={profileForm.titleAr || ''}
                         onChange={(e) => setProfileForm({ ...profileForm, titleAr: e.target.value })}
                         placeholder="مطور نظم خلفية ومصمم واجهات"
-                        className="w-full px-4 py-2.5 rounded-xl bg-[#18181f] border border-white/10 text-white text-sm outline-none focus:border-[#FF5722]"
+                        className="w-full px-4 py-2.5 rounded-xl bg-[#08090C] border border-white/10 text-white text-sm outline-none focus:border-theme-primary"
                       />
                     </div>
                   </div>
                 </div>
 
                 {/* Section 3: About Section Headings */}
-                <div className="p-6 rounded-3xl bg-[#121215] border border-white/10 space-y-4">
+                <div className="p-6 quantix-card space-y-4">
                   <h5 className="font-bold text-white text-base flex items-center gap-2">
-                    <Layers className="w-4 h-4 text-[#FF5722]" />
+                    <Layers className="w-4 h-4 text-theme-primary" />
                     <span>3. عناوين قسم نبذة عني (About Section)</span>
                   </h5>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -746,7 +742,7 @@ export const AdminDashboard: React.FC = () => {
                         value={profileForm.aboutSubtitle || ''}
                         onChange={(e) => setProfileForm({ ...profileForm, aboutSubtitle: e.target.value })}
                         placeholder="Designing Is My Passion"
-                        className="w-full px-4 py-2.5 rounded-xl bg-[#18181f] border border-white/10 text-white text-sm outline-none focus:border-[#FF5722]"
+                        className="w-full px-4 py-2.5 rounded-xl bg-[#08090C] border border-white/10 text-white text-sm outline-none focus:border-theme-primary"
                       />
                     </div>
                     <div>
@@ -756,16 +752,16 @@ export const AdminDashboard: React.FC = () => {
                         value={profileForm.aboutSubtitleAr || ''}
                         onChange={(e) => setProfileForm({ ...profileForm, aboutSubtitleAr: e.target.value })}
                         placeholder="التصميم هو شغفي وهويتي"
-                        className="w-full px-4 py-2.5 rounded-xl bg-[#18181f] border border-white/10 text-white text-sm outline-none focus:border-[#FF5722]"
+                        className="w-full px-4 py-2.5 rounded-xl bg-[#08090C] border border-white/10 text-white text-sm outline-none focus:border-theme-primary"
                       />
                     </div>
                   </div>
                 </div>
 
                 {/* Section 4: Metrics & Stats */}
-                <div className="p-6 rounded-3xl bg-[#121215] border border-white/10 space-y-4">
+                <div className="p-6 quantix-card space-y-4">
                   <h5 className="font-bold text-white text-base flex items-center gap-2">
-                    <Award className="w-4 h-4 text-[#FF7A00]" />
+                    <Award className="w-4 h-4 text-theme-secondary" />
                     <span>4. الأرقام البارزة وسنوات الخبرة</span>
                   </h5>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -777,7 +773,7 @@ export const AdminDashboard: React.FC = () => {
                         max={30}
                         value={profileForm.yearsOfExperience || 3}
                         onChange={(e) => setProfileForm({ ...profileForm, yearsOfExperience: Number(e.target.value) })}
-                        className="w-full px-4 py-2.5 rounded-xl bg-[#18181f] border border-white/10 text-[#FF5722] font-mono font-bold text-base outline-none focus:border-[#FF5722]"
+                        className="w-full px-4 py-2.5 rounded-xl bg-[#08090C] border border-white/10 text-theme-primary font-mono font-bold text-base outline-none focus:border-theme-primary"
                       />
                     </div>
                     <div>
@@ -788,7 +784,7 @@ export const AdminDashboard: React.FC = () => {
                         max={100}
                         value={profileForm.completedProjects || 15}
                         onChange={(e) => setProfileForm({ ...profileForm, completedProjects: Number(e.target.value) })}
-                        className="w-full px-4 py-2.5 rounded-xl bg-[#18181f] border border-white/10 text-[#FF7A00] font-mono font-bold text-base outline-none focus:border-[#FF5722]"
+                        className="w-full px-4 py-2.5 rounded-xl bg-[#08090C] border border-white/10 text-theme-secondary font-mono font-bold text-base outline-none focus:border-theme-primary"
                       />
                     </div>
                   </div>
@@ -798,7 +794,7 @@ export const AdminDashboard: React.FC = () => {
                 <div className="flex justify-end pt-4 border-t border-white/10">
                   <button
                     onClick={handleSaveProfile}
-                    className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-gradient-to-r from-[#FF5722] to-[#FF7A00] text-white font-bold text-sm shadow-[0_0_25px_rgba(255,87,34,0.4)] hover:shadow-[0_0_35px_rgba(255,87,34,0.6)] active:scale-95 transition-all"
+                    className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-gradient-to-r from-theme-primary to-theme-secondary text-white font-bold text-sm shadow-[0_0_25px_rgba(var(--theme-primary-rgb),0.4)] hover:shadow-[0_0_35px_rgba(var(--theme-primary-rgb),0.6)] active:scale-95 transition-all"
                   >
                     <Save className="w-4 h-4" />
                     <span>حفظ جميع الأسماء والعناوين</span>
@@ -808,45 +804,43 @@ export const AdminDashboard: React.FC = () => {
             )}
 
             {/* ========================================================= */}
-            {/* TAB: OVERVIEW */}
+            {/* TAB: BENTO OVERVIEW */}
             {/* ========================================================= */}
             {activeTab === 'overview' && (
-              <div className="space-y-6">
-                <h4 className="text-xl font-bold text-white mb-2">إحصائيات البرتفوليو العامة</h4>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <div className="p-5 rounded-2xl bg-[#121215] border border-white/5">
-                    <span className="text-xs font-mono text-slate-400 block mb-1">إجمالي المشاريع</span>
-                    <span className="text-3xl font-black text-[#FF5722]">{projects.length}</span>
-                  </div>
-                  <div className="p-5 rounded-2xl bg-[#121215] border border-white/5">
-                    <span className="text-xs font-mono text-slate-400 block mb-1">الشهادات المعتمدة</span>
-                    <span className="text-3xl font-black text-[#FF7A00]">{certificates.length}</span>
-                  </div>
-                  <div className="p-5 rounded-2xl bg-[#121215] border border-white/5">
-                    <span className="text-xs font-mono text-slate-400 block mb-1">سنوات الخبرة</span>
-                    <span className="text-3xl font-black text-white">+{profile.yearsOfExperience}</span>
-                  </div>
-                  <div className="p-5 rounded-2xl bg-[#121215] border border-white/5">
-                    <span className="text-xs font-mono text-slate-400 block mb-1">رسائل التواصل</span>
-                    <span className="text-3xl font-black text-emerald-400">{messages.length}</span>
-                  </div>
-                </div>
+              <BentoOverview
+                projects={projects}
+                certificates={certificates}
+                skills={skills}
+                messages={messages}
+                onNewProject={() => {
+                  setActiveTab('projects');
+                  setEditingProject({
+                    id: `proj-${Date.now()}`,
+                    title: '',
+                    titleAr: '',
+                    tagline: '',
+                    taglineAr: '',
+                    description: '',
+                    descriptionAr: '',
+                    category: '.NET & Backend',
+                    featured: true,
+                    badge: 'Backend',
+                    architecture: [],
+                    technologies: ['C#', 'ASP.NET Core'],
+                    metrics: [],
+                    features: [],
+                  });
+                  setIsNewProject(true);
+                }}
+                onNavigate={(tab) => setActiveTab(tab as typeof activeTab)}
+              />
+            )}
 
-                <div className="p-6 rounded-2xl bg-[#121215] border border-white/5 flex items-center justify-between">
-                  <div>
-                    <h5 className="font-bold text-white text-base">معاينة الموقع المباشر</h5>
-                    <p className="text-xs text-slate-400 mt-1">يمكنك إغلاق لوحة التحكم لمشاهدة التعديلات فورياً على الواجهة.</p>
-                  </div>
-                  <button
-                    onClick={() => setIsAdminOpen(false)}
-                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-orange-500/10 hover:bg-orange-500/20 border border-orange-500/30 text-[#FF7A00] text-xs font-bold"
-                  >
-                    <Eye className="w-4 h-4" />
-                    <span>إغلاق ومعاينة الموقع</span>
-                  </button>
-                </div>
-              </div>
+            {/* ========================================================= */}
+            {/* TAB: THEME & COLORS (ألوان البورتفوليو والداشبورد) */}
+            {/* ========================================================= */}
+            {activeTab === 'theme' && (
+              <ThemePickerPanel onSaved={showSaveNotification} />
             )}
 
             {/* ========================================================= */}
@@ -878,7 +872,7 @@ export const AdminDashboard: React.FC = () => {
                         features: ['Comprehensive user journey mapping']
                       });
                     }}
-                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-[#FF5722] to-[#FF7A00] text-white text-xs font-bold shadow-[0_0_15px_rgba(255,87,34,0.3)]"
+                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-theme-primary to-theme-secondary text-white text-xs font-bold shadow-[0_0_15px_rgba(var(--theme-primary-rgb),0.3)]"
                   >
                     <Plus className="w-4 h-4" />
                     <span>إضافة مشروع جديد</span>
@@ -888,16 +882,16 @@ export const AdminDashboard: React.FC = () => {
                 {!editingProject ? (
                   <div className="space-y-3">
                     {projects.map((proj) => (
-                      <div key={proj.id} className="p-4 rounded-2xl bg-[#121215] border border-white/5 flex items-center justify-between">
+                      <div key={proj.id} className="p-4 quantix-card flex items-center justify-between">
                         <div>
-                          <span className="text-xs font-mono text-[#FF7A00] font-semibold">{proj.category}</span>
+                          <span className="text-xs font-mono text-theme-secondary font-semibold">{proj.category}</span>
                           <h5 className="font-bold text-white text-base">{proj.titleAr || proj.title}</h5>
                           <p className="text-xs text-slate-400 font-mono mt-0.5">{proj.taglineAr || proj.tagline}</p>
                         </div>
                         <div className="flex items-center gap-2">
                           <button
                             onClick={() => { setEditingProject(proj); setIsNewProject(false); }}
-                            className="px-3 py-1.5 rounded-lg bg-[#18181f] hover:bg-[#22222b] text-xs text-slate-200"
+                            className="px-3 py-1.5 rounded-lg bg-[#08090C] hover:bg-[#22222b] text-xs text-slate-200"
                           >
                             تعديل
                           </button>
@@ -921,7 +915,7 @@ export const AdminDashboard: React.FC = () => {
                           type="text"
                           value={editingProject.titleAr}
                           onChange={(e) => setEditingProject({ ...editingProject, titleAr: e.target.value })}
-                          className="w-full px-3 py-2 rounded-xl bg-[#18181f] border border-white/10 text-white text-sm outline-none focus:border-[#FF5722]"
+                          className="w-full px-3 py-2 rounded-xl bg-[#08090C] border border-white/10 text-white text-sm outline-none focus:border-theme-primary"
                         />
                       </div>
                       <div>
@@ -930,7 +924,7 @@ export const AdminDashboard: React.FC = () => {
                           type="text"
                           value={editingProject.title}
                           onChange={(e) => setEditingProject({ ...editingProject, title: e.target.value })}
-                          className="w-full px-3 py-2 rounded-xl bg-[#18181f] border border-white/10 text-white text-sm outline-none focus:border-[#FF5722]"
+                          className="w-full px-3 py-2 rounded-xl bg-[#08090C] border border-white/10 text-white text-sm outline-none focus:border-theme-primary"
                         />
                       </div>
                     </div>
@@ -942,7 +936,7 @@ export const AdminDashboard: React.FC = () => {
                         value={editingProject.category}
                         onChange={(e) => setEditingProject({ ...editingProject, category: e.target.value })}
                         placeholder="UI/UX Design / Mobile Apps / Web & SaaS"
-                        className="w-full px-3 py-2 rounded-xl bg-[#18181f] border border-white/10 text-white text-sm outline-none focus:border-[#FF5722]"
+                        className="w-full px-3 py-2 rounded-xl bg-[#08090C] border border-white/10 text-white text-sm outline-none focus:border-theme-primary"
                       />
                     </div>
 
@@ -952,7 +946,7 @@ export const AdminDashboard: React.FC = () => {
                         rows={3}
                         value={editingProject.descriptionAr}
                         onChange={(e) => setEditingProject({ ...editingProject, descriptionAr: e.target.value })}
-                        className="w-full px-3 py-2 rounded-xl bg-[#18181f] border border-white/10 text-white text-sm outline-none focus:border-[#FF5722]"
+                        className="w-full px-3 py-2 rounded-xl bg-[#08090C] border border-white/10 text-white text-sm outline-none focus:border-theme-primary"
                       />
                     </div>
 
@@ -967,7 +961,7 @@ export const AdminDashboard: React.FC = () => {
                           setEditingProject(null);
                           showSaveNotification();
                         }}
-                        className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#FF5722] to-[#FF7A00] text-white font-bold text-xs shadow-lg flex items-center gap-2"
+                        className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-theme-primary to-theme-secondary text-white font-bold text-xs shadow-lg flex items-center gap-2"
                       >
                         <Save className="w-4 h-4" />
                         <span>حفظ التعديلات</span>
@@ -1007,7 +1001,7 @@ export const AdminDashboard: React.FC = () => {
                         descriptionAr: ''
                       });
                     }}
-                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-[#FF5722] to-[#FF7A00] text-white text-xs font-bold shadow-[0_0_15px_rgba(255,87,34,0.3)]"
+                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-theme-primary to-theme-secondary text-white text-xs font-bold shadow-[0_0_15px_rgba(var(--theme-primary-rgb),0.3)]"
                   >
                     <Plus className="w-4 h-4" />
                     <span>إضافة شهادة جديدة</span>
@@ -1017,16 +1011,16 @@ export const AdminDashboard: React.FC = () => {
                 {!editingCert ? (
                   <div className="space-y-3">
                     {certificates.map((cert) => (
-                      <div key={cert.id} className="p-4 rounded-2xl bg-[#121215] border border-white/5 flex items-center justify-between">
+                      <div key={cert.id} className="p-4 quantix-card flex items-center justify-between">
                         <div>
-                          <span className="text-xs font-mono text-[#FF7A00] font-semibold">{cert.badge}</span>
+                          <span className="text-xs font-mono text-theme-secondary font-semibold">{cert.badge}</span>
                           <h5 className="font-bold text-white text-base">{cert.titleAr || cert.title}</h5>
                           <p className="text-xs text-slate-400 font-mono mt-0.5">{cert.issuerAr} &bull; {cert.fileUrl}</p>
                         </div>
                         <div className="flex items-center gap-2">
                           <button
                             onClick={() => { setEditingCert(cert); setIsNewCert(false); }}
-                            className="px-3 py-1.5 rounded-lg bg-[#18181f] hover:bg-[#22222b] text-xs text-slate-200"
+                            className="px-3 py-1.5 rounded-lg bg-[#08090C] hover:bg-[#22222b] text-xs text-slate-200"
                           >
                             تعديل
                           </button>
@@ -1050,7 +1044,7 @@ export const AdminDashboard: React.FC = () => {
                           type="text"
                           value={editingCert.titleAr}
                           onChange={(e) => setEditingCert({ ...editingCert, titleAr: e.target.value })}
-                          className="w-full px-3 py-2 rounded-xl bg-[#18181f] border border-white/10 text-white text-sm outline-none focus:border-[#FF5722]"
+                          className="w-full px-3 py-2 rounded-xl bg-[#08090C] border border-white/10 text-white text-sm outline-none focus:border-theme-primary"
                         />
                       </div>
                       <div>
@@ -1059,7 +1053,7 @@ export const AdminDashboard: React.FC = () => {
                           type="text"
                           value={editingCert.issuerAr}
                           onChange={(e) => setEditingCert({ ...editingCert, issuerAr: e.target.value })}
-                          className="w-full px-3 py-2 rounded-xl bg-[#18181f] border border-white/10 text-white text-sm outline-none focus:border-[#FF5722]"
+                          className="w-full px-3 py-2 rounded-xl bg-[#08090C] border border-white/10 text-white text-sm outline-none focus:border-theme-primary"
                         />
                       </div>
                     </div>
@@ -1070,7 +1064,7 @@ export const AdminDashboard: React.FC = () => {
                         type="text"
                         value={editingCert.fileUrl}
                         onChange={(e) => setEditingCert({ ...editingCert, fileUrl: e.target.value })}
-                        className="w-full px-3 py-2 rounded-xl bg-[#18181f] border border-white/10 text-white text-sm font-mono outline-none focus:border-[#FF5722]"
+                        className="w-full px-3 py-2 rounded-xl bg-[#08090C] border border-white/10 text-white text-sm font-mono outline-none focus:border-theme-primary"
                       />
                     </div>
 
@@ -1085,7 +1079,7 @@ export const AdminDashboard: React.FC = () => {
                           setEditingCert(null);
                           showSaveNotification();
                         }}
-                        className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#FF5722] to-[#FF7A00] text-white font-bold text-xs"
+                        className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-theme-primary to-theme-secondary text-white font-bold text-xs"
                       >
                         حفظ الشهادة
                       </button>
@@ -1109,29 +1103,46 @@ export const AdminDashboard: React.FC = () => {
                 <h4 className="text-xl font-bold text-white">إدارة المهارات والنسب المئوية</h4>
                 <div className="space-y-6">
                   {skills.map((category, catIdx) => (
-                    <div key={catIdx} className="p-4 rounded-2xl bg-[#121215] border border-white/5 space-y-3">
-                      <h5 className="font-bold text-[#FF7A00] text-sm">{category.nameAr}</h5>
+                    <div key={catIdx} className="p-4 quantix-card space-y-3">
+                      <h5 className="font-bold text-theme-secondary text-sm">{category.nameAr}</h5>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        {category.skills.map((skill, sIdx) => (
-                          <div key={sIdx} className="flex items-center justify-between p-2.5 rounded-xl bg-[#18181f] border border-white/5">
-                            <span className="text-xs text-white font-medium">{skill.name}</span>
-                            <div className="flex items-center gap-2">
-                              <input
-                                type="number"
-                                min={50}
-                                max={100}
-                                value={skill.level}
-                                onChange={(e) => {
-                                  const newSkills = [...skills];
-                                  newSkills[catIdx].skills[sIdx].level = Number(e.target.value);
-                                  updateSkills(newSkills);
-                                }}
-                                className="w-14 px-2 py-1 rounded bg-[#08080a] text-[#FF5722] text-xs font-mono text-center border border-white/10 font-bold"
-                              />
-                              <span className="text-xs text-slate-500">%</span>
+                        {category.skills.map((skill, sIdx) => {
+                          const skillName = typeof skill === 'string' ? skill : (skill.name || skill.nameAr || '');
+                          const skillLevel = typeof skill === 'object' && skill !== null && typeof skill.level === 'number' ? skill.level : 90;
+                          return (
+                            <div key={sIdx} className="flex items-center justify-between p-2.5 rounded-xl bg-[#08090C] border border-white/[0.08]">
+                              <span className="text-xs text-white font-medium">{skillName}</span>
+                              <div className="flex items-center gap-2">
+                                <input
+                                  type="number"
+                                  min={0}
+                                  max={100}
+                                  value={skillLevel}
+                                  onChange={(e) => {
+                                    const nextLevel = Math.min(100, Math.max(0, Number(e.target.value) || 0));
+                                    const newSkills = skills.map((c, ci) =>
+                                      ci !== catIdx
+                                        ? c
+                                        : {
+                                            ...c,
+                                            skills: c.skills.map((sk, si) =>
+                                              si !== sIdx
+                                                ? sk
+                                                : typeof sk === 'string'
+                                                  ? { name: sk, level: nextLevel }
+                                                  : { ...sk, level: nextLevel }
+                                            ),
+                                          }
+                                    );
+                                    updateSkills(newSkills);
+                                  }}
+                                  className="w-14 px-2 py-1 rounded bg-[#08090C] text-theme-primary text-xs font-mono text-center border border-white/10 font-bold"
+                                />
+                                <span className="text-xs text-slate-500">%</span>
+                              </div>
                             </div>
-                          </div>
-                        ))}
+                          );
+                        })}
                       </div>
                     </div>
                   ))}
@@ -1152,7 +1163,7 @@ export const AdminDashboard: React.FC = () => {
                       type="email"
                       value={profileForm.email}
                       onChange={(e) => setProfileForm({ ...profileForm, email: e.target.value })}
-                      className="w-full px-3 py-2 rounded-xl bg-[#18181f] border border-white/10 text-white text-sm font-mono outline-none focus:border-[#FF5722]"
+                      className="w-full px-3 py-2 rounded-xl bg-[#08090C] border border-white/10 text-white text-sm font-mono outline-none focus:border-theme-primary"
                     />
                   </div>
                   <div>
@@ -1162,7 +1173,7 @@ export const AdminDashboard: React.FC = () => {
                       value={profileForm.phone}
                       onChange={(e) => setProfileForm({ ...profileForm, phone: e.target.value })}
                       placeholder="amratefkandel"
-                      className="w-full px-3 py-2 rounded-xl bg-[#18181f] border border-white/10 text-white text-sm font-mono outline-none focus:border-[#FF5722]"
+                      className="w-full px-3 py-2 rounded-xl bg-[#08090C] border border-white/10 text-white text-sm font-mono outline-none focus:border-theme-primary"
                     />
                   </div>
                   <div>
@@ -1171,7 +1182,7 @@ export const AdminDashboard: React.FC = () => {
                       type="text"
                       value={profileForm.linkedin || ''}
                       onChange={(e) => setProfileForm({ ...profileForm, linkedin: e.target.value })}
-                      className="w-full px-3 py-2 rounded-xl bg-[#18181f] border border-white/10 text-white text-sm font-mono outline-none focus:border-[#FF5722]"
+                      className="w-full px-3 py-2 rounded-xl bg-[#08090C] border border-white/10 text-white text-sm font-mono outline-none focus:border-theme-primary"
                     />
                   </div>
                   <div>
@@ -1180,7 +1191,7 @@ export const AdminDashboard: React.FC = () => {
                       type="text"
                       value={profileForm.github || ''}
                       onChange={(e) => setProfileForm({ ...profileForm, github: e.target.value })}
-                      className="w-full px-3 py-2 rounded-xl bg-[#18181f] border border-white/10 text-white text-sm font-mono outline-none focus:border-[#FF5722]"
+                      className="w-full px-3 py-2 rounded-xl bg-[#08090C] border border-white/10 text-white text-sm font-mono outline-none focus:border-theme-primary"
                     />
                   </div>
                 </div>
@@ -1191,12 +1202,12 @@ export const AdminDashboard: React.FC = () => {
                     rows={4}
                     value={profileForm.bioAr}
                     onChange={(e) => setProfileForm({ ...profileForm, bioAr: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl bg-[#18181f] border border-white/10 text-white text-sm outline-none focus:border-[#FF5722]"
+                    className="w-full px-3 py-2 rounded-xl bg-[#08090C] border border-white/10 text-white text-sm outline-none focus:border-theme-primary"
                   />
                 </div>
 
-                <div className="p-4 rounded-2xl bg-orange-950/20 border border-orange-800/40">
-                  <label className="block text-xs font-mono text-[#FF7A00] font-bold mb-1">
+                <div className="p-4 rounded-2xl bg-theme-primary/20 border border-orange-800/40">
+                  <label className="block text-xs font-mono text-theme-secondary font-bold mb-1">
                     رمز الـ PIN للدخول إلى لوحة التحكم
                   </label>
                   <input
@@ -1204,13 +1215,13 @@ export const AdminDashboard: React.FC = () => {
                     maxLength={8}
                     value={profileForm.adminPin}
                     onChange={(e) => setProfileForm({ ...profileForm, adminPin: e.target.value })}
-                    className="w-48 px-3 py-2 rounded-xl bg-[#08080a] border border-white/10 text-[#FF5722] text-sm font-mono font-bold"
+                    className="w-48 px-3 py-2 rounded-xl bg-[#08090C] border border-white/10 text-theme-primary text-sm font-mono font-bold"
                   />
                 </div>
 
                 <button
                   onClick={handleSaveProfile}
-                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#FF5722] to-[#FF7A00] text-white font-bold text-xs flex items-center gap-2 shadow-lg"
+                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-theme-primary to-theme-secondary text-white font-bold text-xs flex items-center gap-2 shadow-lg"
                 >
                   <Save className="w-4 h-4" />
                   <span>تحديث البيانات الشخصية</span>
@@ -1231,9 +1242,8 @@ export const AdminDashboard: React.FC = () => {
                     {messages.map((msg) => (
                       <div
                         key={msg.id}
-                        className={`p-4 rounded-2xl border transition-all ${
-                          msg.read ? 'bg-[#121215] border-white/5' : 'bg-orange-950/20 border-orange-500/40'
-                        }`}
+                        className={`p-4 quantix-card transition-all ${msg.read ? '' : 'border-theme-primary/40'
+                          }`}
                       >
                         <div className="flex items-center justify-between mb-2">
                           <div className="flex items-center gap-2">
@@ -1246,16 +1256,16 @@ export const AdminDashboard: React.FC = () => {
                         </div>
 
                         {msg.subject && (
-                          <p className="text-xs font-mono text-[#FF7A00] font-semibold mb-1">الموضوع: {msg.subject}</p>
+                          <p className="text-xs font-mono text-theme-secondary font-semibold mb-1">الموضوع: {msg.subject}</p>
                         )}
-                        <p className="text-slate-300 text-xs leading-relaxed bg-[#18181f] p-3 rounded-xl border border-white/5">
+                        <p className="text-slate-300 text-xs leading-relaxed bg-[#08090C] p-3 rounded-xl border border-white/[0.08]">
                           {msg.message}
                         </p>
 
-                        <div className="flex items-center gap-3 mt-3 pt-2 border-t border-white/5">
+                        <div className="flex items-center gap-3 mt-3 pt-2 border-t border-white/[0.08]">
                           <a
                             href={`mailto:${msg.email}?subject=رد: ${encodeURIComponent(msg.subject || 'تواصل')}`}
-                            className="text-xs text-[#FF5722] hover:underline font-mono"
+                            className="text-xs text-theme-primary hover:underline font-mono"
                           >
                             الرد عبر البريد الإلكتروني
                           </a>
@@ -1287,22 +1297,22 @@ export const AdminDashboard: React.FC = () => {
             {activeTab === 'backup' && (
               <div className="space-y-6">
                 <h4 className="text-xl font-bold text-white mb-2">النسخ الاحتياطي وإعادة الضبط</h4>
-                
-                <div className="p-6 rounded-2xl bg-[#121215] border border-white/5 space-y-4">
+
+                <div className="p-6 quantix-card space-y-4">
                   <h5 className="font-bold text-white text-sm">تصدير كامل بيانات البرتفوليو (JSON):</h5>
                   <p className="text-xs text-slate-400">
                     يمكنك تنزيل ملف JSON يحتوي على كامل مشاريعك، شهاداتك، مهاراتك، وبياناتك الشخصية للاحتفاظ بها.
                   </p>
                   <button
                     onClick={exportData}
-                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs"
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-theme-primary hover:bg-theme-primary text-white font-bold text-xs"
                   >
                     <Download className="w-4 h-4" />
                     <span>تصدير البيانات (Export JSON)</span>
                   </button>
                 </div>
 
-                <div className="p-6 rounded-2xl bg-[#121215] border border-white/5 space-y-4">
+                <div className="p-6 quantix-card space-y-4">
                   <h5 className="font-bold text-white text-sm">استيراد بيانات من ملف JSON:</h5>
                   <input
                     type="file"
@@ -1321,7 +1331,7 @@ export const AdminDashboard: React.FC = () => {
                       };
                       reader.readAsText(file);
                     }}
-                    className="text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-[#18181f] file:text-slate-200 hover:file:bg-[#22222b]"
+                    className="text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-[#08090C] file:text-slate-200 hover:file:bg-[#22222b]"
                   />
                 </div>
 

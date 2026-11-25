@@ -96,7 +96,7 @@ export const ImageCustomizerModal: React.FC<ImageCustomizerModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/85 backdrop-blur-md overflow-y-auto animate-fadeIn">
       <div 
-        className="relative w-full max-w-4xl bg-[#0c0d10] border border-orange-500/30 rounded-3xl p-6 sm:p-8 shadow-2xl overflow-hidden my-6 text-start"
+        className="relative w-full max-w-4xl bg-[#0c0d10] border border-theme-primary/30 rounded-3xl p-6 sm:p-8 shadow-2xl overflow-hidden my-6 text-start"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close button */}
@@ -109,8 +109,8 @@ export const ImageCustomizerModal: React.FC<ImageCustomizerModalProps> = ({
 
         {/* Modal Header */}
         <div className="mb-6">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-orange-500/10 border border-orange-500/25 text-[#FF7A00] text-xs font-mono mb-2">
-            <Sliders className="w-3.5 h-3.5 text-[#FF5722]" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-theme-primary/10 border border-theme-primary/25 text-theme-secondary text-xs font-mono mb-2">
+            <Sliders className="w-3.5 h-3.5 text-theme-primary" />
             <span>{lang === 'ar' ? 'أداة ضبط ومعالجة الصور المباشرة' : 'Live Image Controller'}</span>
           </div>
           <h3 className="text-2xl sm:text-3xl font-black text-white">
@@ -119,7 +119,7 @@ export const ImageCustomizerModal: React.FC<ImageCustomizerModalProps> = ({
           <p className="text-xs sm:text-sm text-slate-400 mt-1">
             {lang === 'ar'
               ? 'قم برفع صورتك، أو تكبيرها وتصغيرها ومحاذاتها بدقة داخل الهالة الدائرية البرتقالية.'
-              : 'Upload custom portraits, adjust scale, position, and tune the circular orange halo in real time.'}
+              : 'Upload custom portraits, adjust scale, position, and tune the circular halo in real time.'}
           </p>
         </div>
 
@@ -129,7 +129,7 @@ export const ImageCustomizerModal: React.FC<ImageCustomizerModalProps> = ({
             onClick={() => setActiveTab('home')}
             className={`flex-1 py-2.5 rounded-xl text-xs font-mono font-bold transition-all ${
               activeTab === 'home'
-                ? 'bg-gradient-to-r from-[#FF5722] to-[#FF7A00] text-white shadow-lg'
+                ? 'bg-gradient-to-r from-theme-primary to-theme-secondary text-white shadow-lg'
                 : 'text-slate-400 hover:text-white'
             }`}
           >
@@ -139,7 +139,7 @@ export const ImageCustomizerModal: React.FC<ImageCustomizerModalProps> = ({
             onClick={() => setActiveTab('about')}
             className={`flex-1 py-2.5 rounded-xl text-xs font-mono font-bold transition-all ${
               activeTab === 'about'
-                ? 'bg-gradient-to-r from-[#FF5722] to-[#FF7A00] text-white shadow-lg'
+                ? 'bg-gradient-to-r from-theme-primary to-theme-secondary text-white shadow-lg'
                 : 'text-slate-400 hover:text-white'
             }`}
           >
@@ -169,7 +169,7 @@ export const ImageCustomizerModal: React.FC<ImageCustomizerModalProps> = ({
               />
             </div>
 
-            <span className="text-[10px] font-mono text-[#FF7A00] mt-2">
+            <span className="text-[10px] font-mono text-theme-secondary mt-2">
               {lang === 'ar' ? 'التغييرات تنعكس فوراً مع تحريك الأشرطة' : 'Changes reflect immediately'}
             </span>
           </div>
@@ -186,7 +186,7 @@ export const ImageCustomizerModal: React.FC<ImageCustomizerModalProps> = ({
                 type="file"
                 accept="image/*"
                 onChange={(e) => handleFileUpload(e, activeTab)}
-                className="w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-gradient-to-r file:from-[#FF5722] file:to-[#FF7A00] file:text-white hover:file:opacity-90 cursor-pointer"
+                className="w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-gradient-to-r file:from-theme-primary file:to-theme-secondary file:text-white hover:file:opacity-90 cursor-pointer"
               />
 
               {/* Presets */}
@@ -196,19 +196,19 @@ export const ImageCustomizerModal: React.FC<ImageCustomizerModalProps> = ({
                 </span>
                 <button
                   onClick={() => isHome ? setHeroImage('/drama_hero.png') : setAboutImage('/drama_hero.png')}
-                  className="px-2.5 py-1 rounded-lg bg-[#1e1f26] hover:bg-orange-500/20 text-xs text-slate-300 border border-white/5"
+                  className="px-2.5 py-1 rounded-lg bg-[#1e1f26] hover:bg-theme-primary/20 text-xs text-slate-300 border border-white/5"
                 >
                   drama_hero.png
                 </button>
                 <button
                   onClick={() => isHome ? setHeroImage('/my_transparent.png') : setAboutImage('/my_transparent.png')}
-                  className="px-2.5 py-1 rounded-lg bg-[#1e1f26] hover:bg-orange-500/20 text-xs text-slate-300 border border-white/5"
+                  className="px-2.5 py-1 rounded-lg bg-[#1e1f26] hover:bg-theme-primary/20 text-xs text-slate-300 border border-white/5"
                 >
                   my_transparent.png
                 </button>
                 <button
                   onClick={() => isHome ? setHeroImage('/my.jpg') : setAboutImage('/my.jpg')}
-                  className="px-2.5 py-1 rounded-lg bg-[#1e1f26] hover:bg-orange-500/20 text-xs text-slate-300 border border-white/5"
+                  className="px-2.5 py-1 rounded-lg bg-[#1e1f26] hover:bg-theme-primary/20 text-xs text-slate-300 border border-white/5"
                 >
                   my.jpg
                 </button>
@@ -221,7 +221,7 @@ export const ImageCustomizerModal: React.FC<ImageCustomizerModalProps> = ({
                 <span className="text-slate-300">
                   {lang === 'ar' ? 'التكبير والتصغير (Scale/Zoom)' : 'Zoom & Scale'}
                 </span>
-                <span className="text-[#FF7A00] font-bold">{Math.round(currentScale * 100)}%</span>
+                <span className="text-theme-secondary font-bold">{Math.round(currentScale * 100)}%</span>
               </div>
               <input
                 type="range"
@@ -234,7 +234,7 @@ export const ImageCustomizerModal: React.FC<ImageCustomizerModalProps> = ({
                   if (isHome) setHeroScale(val);
                   else setAboutScale(val);
                 }}
-                className="w-full accent-[#FF5722] cursor-pointer"
+                className="w-full accent-[var(--theme-primary)] cursor-pointer"
               />
             </div>
 
@@ -244,7 +244,7 @@ export const ImageCustomizerModal: React.FC<ImageCustomizerModalProps> = ({
                 <span className="text-slate-300">
                   {lang === 'ar' ? 'الموضع الرأسي (رفع وخفض الصورة داخل الهالة)' : 'Vertical Position (Offset Y)'}
                 </span>
-                <span className="text-[#FF7A00] font-bold">{currentOffsetY}px</span>
+                <span className="text-theme-secondary font-bold">{currentOffsetY}px</span>
               </div>
               <input
                 type="range"
@@ -257,7 +257,7 @@ export const ImageCustomizerModal: React.FC<ImageCustomizerModalProps> = ({
                   if (isHome) setHeroOffsetY(val);
                   else setAboutOffsetY(val);
                 }}
-                className="w-full accent-[#FF5722] cursor-pointer"
+                className="w-full accent-[var(--theme-primary)] cursor-pointer"
               />
             </div>
 
@@ -265,9 +265,9 @@ export const ImageCustomizerModal: React.FC<ImageCustomizerModalProps> = ({
             <div className="space-y-1.5">
               <div className="flex justify-between text-xs font-mono">
                 <span className="text-slate-300">
-                  {lang === 'ar' ? 'شدة وسطوع الهالة البرتقالية (Glow Intensity)' : 'Orange Glow Intensity'}
+                  {lang === 'ar' ? 'شدة وسطوع الهالة (Glow Intensity)' : 'Glow Intensity'}
                 </span>
-                <span className="text-[#FF7A00] font-bold">{Math.round(currentGlow * 100)}%</span>
+                <span className="text-theme-secondary font-bold">{Math.round(currentGlow * 100)}%</span>
               </div>
               <input
                 type="range"
@@ -280,7 +280,7 @@ export const ImageCustomizerModal: React.FC<ImageCustomizerModalProps> = ({
                   if (isHome) setHeroGlow(val);
                   else setAboutGlow(val);
                 }}
-                className="w-full accent-[#FF5722] cursor-pointer"
+                className="w-full accent-[var(--theme-primary)] cursor-pointer"
               />
             </div>
 
@@ -295,7 +295,7 @@ export const ImageCustomizerModal: React.FC<ImageCustomizerModalProps> = ({
                   if (isHome) setHeroRings(checked);
                   else setAboutRings(checked);
                 }}
-                className="w-4 h-4 accent-[#FF5722] rounded cursor-pointer"
+                className="w-4 h-4 accent-[var(--theme-primary)] rounded cursor-pointer"
               />
               <label htmlFor="orbit-rings-toggle" className="text-xs font-mono text-slate-300 cursor-pointer">
                 {lang === 'ar' ? 'إظهار الحلقات المدارية الدائرية (Orbit Accent Rings)' : 'Show Orbit Accent Rings'}
@@ -316,7 +316,7 @@ export const ImageCustomizerModal: React.FC<ImageCustomizerModalProps> = ({
               <button
                 type="button"
                 onClick={handleSave}
-                className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-gradient-to-r from-[#FF5722] to-[#FF7A00] hover:from-[#FF6B00] hover:to-[#FF8A00] text-white font-bold text-sm shadow-[0_0_25px_rgba(255,87,34,0.4)] active:scale-95 transition-all"
+                className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-gradient-to-r from-theme-primary to-theme-secondary hover:brightness-110 text-white font-bold text-sm shadow-[0_0_25px_rgba(var(--theme-primary-rgb),0.4)] active:scale-95 transition-all"
               >
                 {saved ? <Check className="w-4 h-4 text-emerald-300" /> : <Sliders className="w-4 h-4" />}
                 <span>

@@ -112,7 +112,7 @@ export const CVModal: React.FC = () => {
           <button
             onClick={handleDownloadPdf}
             disabled={isDownloading}
-            className="h-11 min-h-[44px] px-3.5 sm:px-5 py-2 rounded-xl bg-gradient-to-r from-[#FF5722] via-[#FF6B00] to-[#FF7A00] hover:from-[#FF6B00] hover:to-[#FF8A00] text-white font-bold text-xs sm:text-sm shadow-[0_0_22px_rgba(255,87,34,0.45)] hover:shadow-[0_0_30px_rgba(255,87,34,0.7)] flex items-center justify-center gap-2 transition-all shrink-0 touch-manipulation cursor-pointer disabled:opacity-75"
+            className="h-11 min-h-[44px] px-3.5 sm:px-5 py-2 rounded-xl bg-gradient-to-r from-theme-primary to-theme-secondary hover:brightness-110 text-white font-bold text-xs sm:text-sm shadow-[0_0_22px_rgba(var(--theme-primary-rgb),0.45)] hover:shadow-[0_0_30px_rgba(var(--theme-primary-rgb),0.7)] flex items-center justify-center gap-2 transition-all shrink-0 touch-manipulation cursor-pointer disabled:opacity-75"
             title={lang === 'ar' ? 'تنزيل ملف PDF متوافق مع ATS' : 'Download ATS-Compliant PDF'}
           >
             {isDownloading ? (
