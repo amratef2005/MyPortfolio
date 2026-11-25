@@ -52,6 +52,7 @@ export default async function handler(req, res) {
       availabilityStatus: pRow.availability_status || 'available',
       availabilityNoteAr: pRow.availability_note_ar,
       availabilityNoteEn: pRow.availability_note_en,
+      availabilityIcon: pRow.availability_icon || 'auto',
       showAvailabilityBadge: pRow.show_availability_badge !== false,
       whatsappStatus: pRow.whatsapp_status || 'online',
       whatsappNoteAr: pRow.whatsapp_note_ar,

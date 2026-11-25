@@ -51,6 +51,7 @@ export const initialProfile: ProfileInfo = {
   availabilityStatus: "available",
   availabilityNoteAr: "متاح للمشاريع والفرص الهندسية",
   availabilityNoteEn: "Available for Backend Roles & Contracts",
+  availabilityIcon: "auto",
   showAvailabilityBadge: true,
 
   // 2. WhatsApp Live Response Status

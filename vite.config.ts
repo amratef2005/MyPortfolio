@@ -89,7 +89,8 @@ function supabaseBackendPlugin(): Plugin {
               heroAvatarUrl: pRow.hero_avatar_url || '/drama_hero.png',
               extractedColors: pRow.extracted_colors || null,
               fontPreset: pRow.font_preset || null,
-              iconPack: pRow.icon_pack || null
+              iconPack: pRow.icon_pack || null,
+              availabilityIcon: pRow.availability_icon || 'auto'
             } : null;
 
             const projects = projectsRes.rows.map(r => ({
@@ -173,7 +174,8 @@ function supabaseBackendPlugin(): Plugin {
               ADD COLUMN IF NOT EXISTS show_whatsapp_status BOOLEAN DEFAULT TRUE,
               ADD COLUMN IF NOT EXISTS extracted_colors JSONB,
               ADD COLUMN IF NOT EXISTS font_preset VARCHAR(64),
-              ADD COLUMN IF NOT EXISTS icon_pack VARCHAR(40);
+              ADD COLUMN IF NOT EXISTS icon_pack VARCHAR(40),
+              ADD COLUMN IF NOT EXISTS availability_icon VARCHAR(40);
             `).catch(() => {});
             await pool.query(`
               UPDATE public.portfolio_profile SET
@@ -210,6 +212,7 @@ function supabaseBackendPlugin(): Plugin {
                 whatsapp_note_en = COALESCE($31, whatsapp_note_en),
                 show_whatsapp_status = COALESCE($32, show_whatsapp_status),
                 icon_pack = COALESCE($33, icon_pack),
+                availability_icon = COALESCE($34, availability_icon),
                 updated_at = NOW()
               WHERE id = 'main_profile'
             `, [
@@ -226,7 +229,8 @@ function supabaseBackendPlugin(): Plugin {
               data.showAvailabilityBadge,
               data.whatsappStatus, data.whatsappNoteAr, data.whatsappNoteEn,
               data.showWhatsAppStatus,
-              data.iconPack || null
+              data.iconPack || null,
+              data.availabilityIcon || null
             ]);
             return jsonResponse(200, { success: true });
           } catch (err: any) {

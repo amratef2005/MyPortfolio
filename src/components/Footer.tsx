@@ -1,6 +1,7 @@
 import React, { useMemo, useCallback } from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
 import { ArrowUp, ArrowUpRight, Github, Linkedin, Mail, MapPin, Terminal } from 'lucide-react';
+import { AvailabilityBadgeIcon } from '../utils/availabilityIcon';
 
 export const Footer: React.FC = () => {
   const { profile, certificates, lang } = usePortfolio();
@@ -119,6 +120,7 @@ export const Footer: React.FC = () => {
                 return (
                   <span className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#0e0e12] border text-xs font-mono ${badgeStyle}`}>
                     <span className={`w-2 h-2 rounded-full shrink-0 ${dotStyle}`} />
+                    <AvailabilityBadgeIcon icon={profile.availabilityIcon} status={status} />
                     <span>{statusText}</span>
                   </span>
                 );

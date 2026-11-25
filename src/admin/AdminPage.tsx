@@ -55,6 +55,11 @@ import { QuantixSidebar } from './QuantixSidebar';
 import { ThemePickerPanel } from './ThemePickerPanel';
 import { adminTranslations } from './adminTranslations';
 import { ConfirmActionModal, ConfirmActionState } from './ConfirmActionModal';
+import {
+  AVAILABILITY_ICON_OPTIONS,
+  AvailabilityBadgeIcon,
+  AvailabilityPreviewGlyph,
+} from '../utils/availabilityIcon';
 
 export const AdminPage: React.FC = () => {
   const {
@@ -1231,6 +1236,57 @@ export const AdminPage: React.FC = () => {
                   </div>
                 </div>
 
+                {/* Availability Badge Icon Selector */}
+                <div className="space-y-2.5">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                    <label className="block text-xs font-mono text-slate-300 font-semibold">
+                      أيقونة شارة الحالة (Status Badge Icon):
+                    </label>
+                    <span className="text-[11px] font-mono text-slate-500">
+                      تظهر بجانب نقطة الحالة في الهيرو والتذييل (بدلاً من أيقونة النبض)
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
+                    {AVAILABILITY_ICON_OPTIONS.map((opt) => {
+                      const activeIcon = (profileForm.availabilityIcon || 'auto') === opt.id;
+                      const currentStatus = profileForm.availabilityStatus || 'available';
+                      return (
+                        <button
+                          key={opt.id}
+                          type="button"
+                          onClick={() => setProfileForm({ ...profileForm, availabilityIcon: opt.id })}
+                          className={`p-2.5 rounded-xl border text-right transition-all flex items-center gap-2.5 cursor-pointer ${
+                            activeIcon
+                              ? 'bg-theme-primary/15 border-theme-primary/55 text-white ring-1 ring-theme-primary/40 shadow-[0_0_15px_rgba(var(--theme-primary-rgb),0.15)]'
+                              : 'bg-[#0B0C10] border-white/[0.08] text-slate-300 hover:border-white/20'
+                          }`}
+                          title={lang === 'ar' ? opt.descAr : opt.descEn}
+                        >
+                          <div
+                            className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 border ${
+                              activeIcon
+                                ? 'bg-theme-primary/20 border-theme-primary/40 text-theme-primary'
+                                : 'bg-white/[0.03] border-white/[0.08] text-slate-400'
+                            }`}
+                          >
+                            <AvailabilityPreviewGlyph icon={opt.id} status={currentStatus} className="w-4 h-4" />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <div className="text-xs font-bold truncate">
+                              {lang === 'ar' ? opt.labelAr : opt.labelEn}
+                            </div>
+                            <div className="text-[10px] font-mono text-slate-400 truncate">
+                              {opt.isAuto
+                                ? (lang === 'ar' ? 'تتغير بالحالة' : 'Auto by status')
+                                : opt.id}
+                            </div>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
                 {/* Live Preview Avatar Badge */}
                 <div className="p-4 quantix-card flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <span className="text-xs font-mono text-slate-400">معاينة شكل الشارة في الهيرو والأفاتار:</span>
@@ -1249,6 +1305,10 @@ export const AdminPage: React.FC = () => {
                         : (profileForm.availabilityStatus === 'busy' ? 'bg-amber-400' : 'bg-slate-500')
                         }`} />
                     </span>
+                    <AvailabilityBadgeIcon
+                      icon={profileForm.availabilityIcon}
+                      status={profileForm.availabilityStatus || 'available'}
+                    />
                     <span>
                       {profileForm.availabilityNoteAr ||
                         ((profileForm.availabilityStatus || 'available') === 'available'

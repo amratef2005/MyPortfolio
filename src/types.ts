@@ -1,3 +1,20 @@
+export type AvailabilityIconId =
+  | 'auto'
+  | 'auto-tech'
+  | 'badge-check'
+  | 'terminal'
+  | 'code'
+  | 'rocket'
+  | 'zap'
+  | 'flame'
+  | 'target'
+  | 'shield'
+  | 'briefcase'
+  | 'cpu'
+  | 'globe'
+  | 'coffee'
+  | 'none';
+
 export interface Experience {
   id: string;
   role: string;
@@ -142,6 +159,7 @@ export interface ProfileInfo {
   availabilityStatus?: 'available' | 'busy' | 'offline';
   availabilityNoteAr?: string;
   availabilityNoteEn?: string;
+  availabilityIcon?: AvailabilityIconId;
   showAvailabilityBadge?: boolean;
 
   // 2. WhatsApp Live Response Status

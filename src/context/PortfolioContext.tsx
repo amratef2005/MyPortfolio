@@ -293,6 +293,7 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
             extractedColors: data.profile.extractedColors ?? prev.extractedColors,
             fontPreset: data.profile.fontPreset ?? prev.fontPreset,
             iconPack: data.profile.iconPack ?? prev.iconPack,
+            availabilityIcon: data.profile.availabilityIcon ?? prev.availabilityIcon ?? 'auto',
             yearsOfExperience: needsYearsSync ? 1 : (data.profile.yearsOfExperience ?? 1),
             brandName: data.profile.brandName || initialProfile.brandName || 'Amr Atef',
             brandNameAr: data.profile.brandNameAr || initialProfile.brandNameAr || 'عمرو عاطف',

@@ -2,11 +2,11 @@ import React from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
 import { SignatureGlowAvatar } from './SignatureGlowAvatar';
 import { MOTION_EASE, StaggerGroup, StaggerItem } from './motion/KineticAssemble';
+import { AvailabilityBadgeIcon } from '../utils/availabilityIcon';
 import { motion } from 'framer-motion';
 import { 
   Send, 
   MapPin, 
-  Activity, 
   ArrowUpRight,
 } from 'lucide-react';
 
@@ -69,7 +69,7 @@ export const Hero: React.FC = () => {
               <StaggerItem direction="bottom" distance={18} duration={0.72}>
                 <div className={`inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-[#121215]/90 backdrop-blur-md border text-xs sm:text-sm font-mono font-medium self-start ${pillClasses}`}>
                   <span className={`w-2 h-2 rounded-full shrink-0 ${dotClasses}`} />
-                  <Activity className="w-3.5 h-3.5 shrink-0 opacity-90" />
+                  <AvailabilityBadgeIcon icon={profile.availabilityIcon} status={status} />
                   <span>{statusLabel}</span>
                 </div>
               </StaggerItem>

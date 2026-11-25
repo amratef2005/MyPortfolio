@@ -38,7 +38,8 @@ export default async function handler(req, res) {
       ADD COLUMN IF NOT EXISTS auto_extract_colors BOOLEAN DEFAULT TRUE,
       ADD COLUMN IF NOT EXISTS extracted_colors JSONB,
       ADD COLUMN IF NOT EXISTS font_preset VARCHAR(64),
-      ADD COLUMN IF NOT EXISTS icon_pack VARCHAR(40);
+      ADD COLUMN IF NOT EXISTS icon_pack VARCHAR(40),
+      ADD COLUMN IF NOT EXISTS availability_icon VARCHAR(40);
     `).catch(() => {});
 
     await pool.query(`
@@ -78,6 +79,7 @@ export default async function handler(req, res) {
         extracted_colors = COALESCE($33, extracted_colors),
         font_preset = COALESCE($34, font_preset),
         icon_pack = COALESCE($35, icon_pack),
+        availability_icon = COALESCE($36, availability_icon),
         updated_at = NOW()
       WHERE id = 'main_profile'
     `, [
@@ -96,7 +98,8 @@ export default async function handler(req, res) {
       data.autoExtractColors,
       data.extractedColors ? JSON.stringify(data.extractedColors) : null,
       data.fontPreset || null,
-      data.iconPack || null
+      data.iconPack || null,
+      data.availabilityIcon || null
     ]);
 
     return res.status(200).json({ success: true });
