@@ -248,8 +248,17 @@ export const AdminPage: React.FC = () => {
   const [newUsername, setNewUsername] = useState(profile.adminUsername || 'amratefkandel');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [verificationPin, setVerificationPin] = useState('');
+  const [showVerificationPin, setShowVerificationPin] = useState(false);
   const [securitySuccess, setSecuritySuccess] = useState('');
   const [securityError, setSecurityError] = useState('');
+
+  // Security PIN Management State
+  const [currentPinInput, setCurrentPinInput] = useState('');
+  const [newPinInput, setNewPinInput] = useState('');
+  const [confirmPinInput, setConfirmPinInput] = useState('');
+  const [pinSuccess, setPinSuccess] = useState('');
+  const [pinError, setPinError] = useState('');
 
   // Active Sessions / Devices Management
   interface AdminSession {
@@ -267,7 +276,6 @@ export const AdminPage: React.FC = () => {
   }
   const [sessions, setSessions] = useState<AdminSession[]>([]);
   const [activeSessionsCount, setActiveSessionsCount] = useState<number>(0);
-  const [isCallerMaster, setIsCallerMaster] = useState<boolean>(true);
   const [loadingSessions, setLoadingSessions] = useState<boolean>(false);
   const [terminatingNewest, setTerminatingNewest] = useState<boolean>(false);
   const [actionTargetId, setActionTargetId] = useState<string | null>(null);
@@ -286,7 +294,6 @@ export const AdminPage: React.FC = () => {
         const data = await res.json();
         setActiveSessionsCount(data.count ?? data.activeSessionsCount ?? (data.sessions ? data.sessions.length : 0));
         setSessions(data.sessions || []);
-        setIsCallerMaster(Boolean(data.isCallerMaster));
         if (sid && (data.isCurrentActive === false || data.isCurrentSessionActive === false)) {
           alert('تم إنهاء جلستك على هذا الجهاز (تم تسجيل الخروج بواسطة الإدارة).');
           logout();
@@ -462,14 +469,20 @@ export const AdminPage: React.FC = () => {
     }
   };
 
-  // Handle Update Security / Password
+  // Handle Update Security / Password (Protected by Verification PIN)
   const handleSecurityUpdate = (e: React.FormEvent) => {
     e.preventDefault();
     setSecuritySuccess('');
     setSecurityError('');
 
-    if (!isCallerMaster) {
-      setSecurityError('غير مصرح: صلاحية تعديل بيانات الدخول محصورة في الجهاز الأساسي الأول أو الأجهزة المفوضة.');
+    const expectedPin = (profile.adminPin || '1414').trim();
+    if (!verificationPin.trim()) {
+      setSecurityError('يرجى إدخال الرمز التأكيدي (Security PIN) أولاً للمتابعة.');
+      return;
+    }
+
+    if (verificationPin.trim() !== expectedPin) {
+      setSecurityError('الرمز التأكيدي غير صحيح! يرجى التحقق والمحاولة مرة أخرى.');
       return;
     }
 
@@ -487,14 +500,53 @@ export const AdminPage: React.FC = () => {
     requestConfirm({
       variant: 'edit',
       title: 'تأكيد تعديل بيانات الدخول',
-      description: `هل تريد حفظ وتحديث اسم المستخدم (${newUsername}) وكلمة المرور الخاصة بلوحة التحكم؟`,
+      description: `تم التحقق من الرمز التأكيدي بنجاح. هل تريد حفظ اسم المستخدم (${newUsername}) وكلمة المرور الجديدة؟`,
       confirmLabel: 'تأكيد التحديث',
       onConfirm: () => {
         updateCredentials(newUsername, passwordToSet);
         updateProfile({ adminUsername: newUsername, adminPassword: passwordToSet });
-        setSecuritySuccess('تم تحديث بيانات الدخول وكلمة المرور بنجاح!');
+        setSecuritySuccess('تم التحقق وتحديث بيانات الدخول وكلمة المرور بنجاح!');
         setNewPassword('');
         setConfirmPassword('');
+        setVerificationPin('');
+      },
+    });
+  };
+
+  // Handle Update Security Verification PIN
+  const handlePinUpdate = (e: React.FormEvent) => {
+    e.preventDefault();
+    setPinSuccess('');
+    setPinError('');
+
+    const expectedPin = (profile.adminPin || '1414').trim();
+    if (currentPinInput.trim() !== expectedPin) {
+      setPinError('الرمز التأكيدي الحالي غير صحيح.');
+      return;
+    }
+
+    if (newPinInput.trim().length < 4) {
+      setPinError('يجب أن يكون الرمز التأكيدي الجديد 4 أرقام أو أحرف على الأقل.');
+      return;
+    }
+
+    if (newPinInput.trim() !== confirmPinInput.trim()) {
+      setPinError('الرمز التأكيدي الجديد وتأكيده غير متطابقين.');
+      return;
+    }
+
+    const nextPin = newPinInput.trim();
+    requestConfirm({
+      variant: 'edit',
+      title: 'تأكيد تغيير الرمز التأكيدي',
+      description: 'سيُطلب الرمز التأكيدي الجديد في المرات القادمة عند تغيير كلمة المرور أو بيانات الدخول.',
+      confirmLabel: 'تأكيد تغيير الرمز',
+      onConfirm: () => {
+        updateProfile({ adminPin: nextPin });
+        setPinSuccess('تم تحديث الرمز التأكيدي (Security PIN) بنجاح!');
+        setCurrentPinInput('');
+        setNewPinInput('');
+        setConfirmPinInput('');
       },
     });
   };
@@ -1980,127 +2032,234 @@ export const AdminPage: React.FC = () => {
 
           {/* TAB 6: SECURITY MANAGEMENT */}
           {activeTab === 'security' && (
-            <div className="space-y-8 max-w-4xl">
-              {/* USERNAME & PASSWORD SECURITY (LOCKED & HIDDEN FOR NON-MASTER) */}
-              {!isCallerMaster ? (
-                <div className="p-4 sm:p-6 md:p-8 rounded-2xl sm:quantix-card space-y-3 shadow-xl min-w-0">
-                  <div className="flex items-start gap-3.5 sm:gap-4 min-w-0">
-                    <div className="w-11 sm:w-12 h-11 sm:h-12 rounded-2xl bg-[#0B0C10] border border-white/[0.08] flex items-center justify-center text-slate-500 shrink-0 mt-0.5">
-                      <Lock className="w-5 sm:w-6 h-5 sm:h-6 text-slate-500" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <h3 className="text-sm sm:text-base font-bold text-white">تأكيد وتغيير بيانات الدخول (محجوب ومحمي)</h3>
-                        <span className="px-2 py-0.5 rounded-full bg-[#14151B] text-slate-400 border border-white/[0.08] text-xs font-mono">
-                          صلاحية مقيدة 🔒
-                        </span>
-                      </div>
-                      <p className="text-xs sm:text-sm text-slate-400 mt-1.5 leading-[1.75] break-words">
-                        تعديل اسم المستخدم وكلمة المرور محجوب ومقتصر حصرياً على <b>الجهاز الرئيسي الأول (أقدم جهاز)</b> أو الأجهزة التي تم تفويضها بمساواة الصلاحيات.
-                      </p>
-                    </div>
+            <div className="space-y-6 max-w-4xl">
+              {/* 1. CREDENTIALS UPDATE CARD (PIN-VERIFIED FOR ALL LOGGED-IN DEVICES) */}
+              <div className="p-4 sm:p-6 md:p-8 rounded-2xl quantix-card space-y-5 sm:space-y-6 shadow-xl min-w-0">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-white/[0.08]/80">
+                  <div>
+                    <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                      <KeyRound className="w-5 h-5 text-theme-primary" />
+                      <span>تأكيد اليوزر والباسورد (بيانات الدخول)</span>
+                    </h2>
+                    <p className="text-xs text-slate-400 font-mono mt-1">
+                      تغيير وتأكيد اسم المستخدم وكلمة المرور مع التحقق الإلزامي بالرمز التأكيدي
+                    </p>
                   </div>
+                  <span className="px-2.5 py-1 rounded-full bg-theme-primary/15 text-theme-primary border border-theme-primary/30 text-[11px] font-bold font-mono flex items-center gap-1.5 self-start sm:self-center">
+                    <ShieldCheck className="w-3.5 h-3.5 text-theme-primary" />
+                    محمي بالرمز التأكيدي
+                  </span>
                 </div>
-              ) : (
-                <div className="p-4 sm:p-6 md:p-8 rounded-2xl sm:quantix-card space-y-5 sm:space-y-6 shadow-xl min-w-0">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-white/[0.08]/80">
-                    <div>
-                      <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                        <KeyRound className="w-5 h-5 text-theme-primary" />
-                        <span>تأكيد اليوزر والباسورد (بيانات الدخول)</span>
-                      </h2>
-                      <p className="text-xs text-slate-400 font-mono mt-1">
-                        تغيير وتأكيد اسم المستخدم وكلمة المرور الخاصة بلوحة التحكم
-                      </p>
-                    </div>
-                    <span className="px-2.5 py-1 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30 text-[11px] font-bold font-mono flex items-center gap-1.5 self-start sm:self-center">
-                      <Crown className="w-3.5 h-3.5 text-amber-400" />
-                      متاح فقط للجهاز الرئيسي
-                    </span>
+
+                {securitySuccess && (
+                  <div className="p-3.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs font-medium flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 shrink-0" />
+                    <span>{securitySuccess}</span>
+                  </div>
+                )}
+
+                {securityError && (
+                  <div className="p-3.5 rounded-xl bg-red-500/15 border border-red-500/30 text-red-400 text-xs font-medium flex items-center gap-2">
+                    <AlertCircle className="w-4 h-4 shrink-0" />
+                    <span>{securityError}</span>
+                  </div>
+                )}
+
+                <form method="post" autoComplete="on" onSubmit={handleSecurityUpdate} className="space-y-4 max-w-lg">
+                  <div>
+                    <label htmlFor="security-username" className="block text-xs font-mono text-slate-300 mb-1.5 font-semibold">
+                      اسم المستخدم (Username)
+                    </label>
+                    <input
+                      id="security-username"
+                      name="username"
+                      type="text"
+                      dir="ltr"
+                      autoComplete="username"
+                      autoCapitalize="none"
+                      autoCorrect="off"
+                      value={newUsername}
+                      onChange={(e) => setNewUsername(e.target.value)}
+                      className="w-full px-4 py-2.5 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm font-mono outline-none focus:border-theme-primary"
+                      required
+                    />
                   </div>
 
-                  {securitySuccess && (
-                    <div className="p-3.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs font-medium flex items-center gap-2">
-                      <CheckCircle2 className="w-4 h-4 shrink-0" />
-                      <span>{securitySuccess}</span>
-                    </div>
-                  )}
+                  <div>
+                    <label htmlFor="security-new-password" className="block text-xs font-mono text-slate-300 mb-1.5 font-semibold">
+                      كلمة المرور الجديدة (New Password)
+                    </label>
+                    <input
+                      id="security-new-password"
+                      name="new-password"
+                      type="password"
+                      dir="ltr"
+                      autoComplete="new-password"
+                      autoCapitalize="none"
+                      autoCorrect="off"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      placeholder="اتركها فارغة للاحتفاظ بكلمة المرور الحالية"
+                      className="w-full px-4 py-2.5 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm font-mono outline-none focus:border-theme-primary"
+                    />
+                  </div>
 
-                  {securityError && (
-                    <div className="p-3.5 rounded-xl bg-red-500/15 border border-red-500/30 text-red-400 text-xs font-medium flex items-center gap-2">
-                      <AlertCircle className="w-4 h-4 shrink-0" />
-                      <span>{securityError}</span>
-                    </div>
-                  )}
+                  <div>
+                    <label htmlFor="security-confirm-password" className="block text-xs font-mono text-slate-300 mb-1.5 font-semibold">
+                      تأكيد كلمة المرور الجديدة (Confirm Password)
+                    </label>
+                    <input
+                      id="security-confirm-password"
+                      name="confirm-password"
+                      type="password"
+                      dir="ltr"
+                      autoComplete="new-password"
+                      autoCapitalize="none"
+                      autoCorrect="off"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      placeholder="أعد إدخال كلمة المرور للتأكيد"
+                      className="w-full px-4 py-2.5 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm font-mono outline-none focus:border-theme-primary"
+                    />
+                  </div>
 
-                  <form method="post" autoComplete="on" onSubmit={handleSecurityUpdate} className="space-y-4 max-w-lg">
-                    <div>
-                      <label htmlFor="security-username" className="block text-xs font-mono text-slate-300 mb-1.5 font-semibold">
-                        اسم المستخدم (Username)
-                      </label>
+                  {/* Mandatory Security PIN Confirmation before Credential Change */}
+                  <div className="p-4 rounded-2xl bg-theme-primary/[0.06] border border-theme-primary/30 space-y-2">
+                    <label htmlFor="security-verification-pin" className="block text-xs font-mono text-theme-primary font-bold">
+                      الرمز التأكيدي (Security PIN) *
+                    </label>
+                    <div className="relative">
                       <input
-                        id="security-username"
-                        name="username"
-                        type="text"
+                        id="security-verification-pin"
+                        name="verification-pin"
+                        type={showVerificationPin ? 'text' : 'password'}
                         dir="ltr"
-                        autoComplete="username"
-                        autoCapitalize="none"
-                        autoCorrect="off"
-                        value={newUsername}
-                        onChange={(e) => setNewUsername(e.target.value)}
-                        className="w-full px-4 py-2.5 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm font-mono outline-none focus:border-theme-primary"
+                        inputMode="numeric"
+                        autoComplete="off"
+                        value={verificationPin}
+                        onChange={(e) => {
+                          setVerificationPin(e.target.value);
+                          setSecurityError('');
+                        }}
+                        placeholder="أدخل الرمز التأكيدي للمتابعة"
+                        className="w-full pl-4 pr-12 py-2.5 rounded-xl bg-[#08090C] border border-theme-primary/30 text-white text-sm font-mono outline-none focus:border-theme-primary"
                         required
                       />
+                      <button
+                        type="button"
+                        onClick={() => setShowVerificationPin(!showVerificationPin)}
+                        aria-label={showVerificationPin ? 'إخفاء الرمز' : 'إظهار الرمز'}
+                        className="absolute top-1/2 -translate-y-1/2 right-3 p-1 text-slate-400 hover:text-white cursor-pointer"
+                      >
+                        {showVerificationPin ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
                     </div>
+                    <p className="text-[11px] text-slate-400">
+                      مطلوب إدخال الرمز التأكيدي قبل حفظ أي تغيير على اسم المستخدم أو كلمة المرور.
+                    </p>
+                  </div>
 
-                    <div>
-                      <label htmlFor="security-new-password" className="block text-xs font-mono text-slate-300 mb-1.5 font-semibold">
-                        كلمة المرور الجديدة (New Password)
-                      </label>
-                      <input
-                        id="security-new-password"
-                        name="new-password"
-                        type="password"
-                        dir="ltr"
-                        autoComplete="new-password"
-                        autoCapitalize="none"
-                        autoCorrect="off"
-                        value={newPassword}
-                        onChange={(e) => setNewPassword(e.target.value)}
-                        placeholder="اتركها فارغة للاحتفاظ بكلمة المرور الحالية"
-                        className="w-full px-4 py-2.5 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm font-mono outline-none focus:border-theme-primary"
-                      />
-                    </div>
+                  <button
+                    type="submit"
+                    className="px-6 py-3 rounded-xl bg-theme-primary hover:bg-theme-primary text-white font-bold text-xs flex items-center gap-2 shadow-[0_0_15px_rgba(var(--theme-primary-rgb),0.3)] transition-all cursor-pointer"
+                  >
+                    <Save className="w-4 h-4" />
+                    <span>حفظ وتأكيد بيانات الدخول</span>
+                  </button>
+                </form>
+              </div>
 
-                    <div>
-                      <label htmlFor="security-confirm-password" className="block text-xs font-mono text-slate-300 mb-1.5 font-semibold">
-                        تأكيد كلمة المرور الجديدة (Confirm Password)
-                      </label>
-                      <input
-                        id="security-confirm-password"
-                        name="confirm-password"
-                        type="password"
-                        dir="ltr"
-                        autoComplete="new-password"
-                        autoCapitalize="none"
-                        autoCorrect="off"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        placeholder="أعد إدخال كلمة المرور للتأكيد"
-                        className="w-full px-4 py-2.5 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm font-mono outline-none focus:border-theme-primary"
-                      />
-                    </div>
+              {/* 2. MANAGE / CHANGE SECURITY PIN */}
+              <div className="p-4 sm:p-6 md:p-8 rounded-2xl quantix-card space-y-5 shadow-xl min-w-0">
+                <div className="flex items-start justify-between gap-3 pb-4 border-b border-white/[0.08]/80">
+                  <div>
+                    <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                      <Shield className="w-5 h-5 text-theme-secondary" />
+                      <span>تغيير الرمز التأكيدي (Security PIN)</span>
+                    </h3>
+                    <p className="text-xs text-slate-400 font-mono mt-1">
+                      تحديث رمز الأمان المستخدم لتأكيد تغييرات بيانات الدخول
+                    </p>
+                  </div>
+                </div>
 
+                {pinSuccess && (
+                  <div className="p-3.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs font-medium flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 shrink-0" />
+                    <span>{pinSuccess}</span>
+                  </div>
+                )}
+
+                {pinError && (
+                  <div className="p-3.5 rounded-xl bg-red-500/15 border border-red-500/30 text-red-400 text-xs font-medium flex items-center gap-2">
+                    <AlertCircle className="w-4 h-4 shrink-0" />
+                    <span>{pinError}</span>
+                  </div>
+                )}
+
+                <form onSubmit={handlePinUpdate} className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div>
+                    <label htmlFor="pin-current" className="block text-xs font-mono text-slate-300 mb-1.5">
+                      الرمز الحالي *
+                    </label>
+                    <input
+                      id="pin-current"
+                      type="password"
+                      dir="ltr"
+                      inputMode="numeric"
+                      autoComplete="off"
+                      value={currentPinInput}
+                      onChange={(e) => setCurrentPinInput(e.target.value)}
+                      placeholder="••••"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm font-mono outline-none focus:border-theme-primary"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="pin-new" className="block text-xs font-mono text-slate-300 mb-1.5">
+                      الرمز الجديد *
+                    </label>
+                    <input
+                      id="pin-new"
+                      type="password"
+                      dir="ltr"
+                      inputMode="numeric"
+                      autoComplete="off"
+                      value={newPinInput}
+                      onChange={(e) => setNewPinInput(e.target.value)}
+                      placeholder="••••"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm font-mono outline-none focus:border-theme-primary"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="pin-confirm" className="block text-xs font-mono text-slate-300 mb-1.5">
+                      تأكيد الرمز الجديد *
+                    </label>
+                    <input
+                      id="pin-confirm"
+                      type="password"
+                      dir="ltr"
+                      inputMode="numeric"
+                      autoComplete="off"
+                      value={confirmPinInput}
+                      onChange={(e) => setConfirmPinInput(e.target.value)}
+                      placeholder="••••"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm font-mono outline-none focus:border-theme-primary"
+                      required
+                    />
+                  </div>
+                  <div className="sm:col-span-3">
                     <button
                       type="submit"
-                      className="px-6 py-3 rounded-xl bg-theme-primary hover:bg-theme-primary text-white font-bold text-xs flex items-center gap-2 shadow-[0_0_15px_rgba(var(--theme-primary-rgb),0.3)] transition-all cursor-pointer"
+                      className="px-6 py-2.5 rounded-xl bg-white/[0.06] hover:bg-theme-primary border border-white/10 hover:border-transparent text-white font-bold text-xs flex items-center gap-2 transition-all cursor-pointer"
                     >
-                      <Save className="w-4 h-4" />
-                      <span>حفظ وتأكيد بيانات الدخول</span>
+                      <ShieldCheck className="w-4 h-4" />
+                      <span>حفظ الرمز التأكيدي الجديد</span>
                     </button>
-                  </form>
-                </div>
-              )}
+                  </div>
+                </form>
+              </div>
             </div>
           )}
 
