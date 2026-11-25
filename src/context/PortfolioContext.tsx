@@ -57,7 +57,7 @@ interface PortfolioContextType {
   isCVModalOpen: boolean;
   setIsCVModalOpen: (open: boolean) => void;
   isAuthenticated: boolean;
-  login: (username: string, password?: string) => boolean;
+  login: (username: string, password?: string, rememberDevice?: boolean) => boolean;
   logout: () => void;
   updateCredentials: (username: string, password: string) => void;
   updateProfile: (profile: Partial<ProfileInfo>) => void;
@@ -226,7 +226,10 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [isCVModalOpen, setIsCVModalOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    return sessionStorage.getItem('portfolio_admin_auth') === 'true';
+    return (
+      sessionStorage.getItem('portfolio_admin_auth') === 'true' ||
+      localStorage.getItem('portfolio_admin_remember_auth') === 'true'
+    );
   });
 
   // Cross-tab synchronization: Any change in Admin tab immediately reflects in Portfolio tab
@@ -383,7 +386,7 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   }, [lang, profile]);
 
   // Auth methods
-  const login = (username: string, password?: string) => {
+  const login = (username: string, password?: string, rememberDevice = false) => {
     const validUser = (profile.adminUsername || 'amratefkandel').trim().toLowerCase();
     const validPass = profile.adminPassword || 'KandelAmr###14';
     
@@ -392,6 +395,11 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       if (username.trim().toLowerCase() === validUser && password === validPass) {
         setIsAuthenticated(true);
         sessionStorage.setItem('portfolio_admin_auth', 'true');
+        if (rememberDevice) {
+          localStorage.setItem('portfolio_admin_remember_auth', 'true');
+        } else {
+          localStorage.removeItem('portfolio_admin_remember_auth');
+        }
         
         // Register session in Supabase
         const sid = `sess_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
@@ -411,6 +419,11 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     if (username.trim() === validPass) {
       setIsAuthenticated(true);
       sessionStorage.setItem('portfolio_admin_auth', 'true');
+      if (rememberDevice) {
+        localStorage.setItem('portfolio_admin_remember_auth', 'true');
+      } else {
+        localStorage.removeItem('portfolio_admin_remember_auth');
+      }
       
       const sid = `sess_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
       localStorage.setItem('portfolio_admin_session_id', sid);
@@ -434,6 +447,7 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     }
     setIsAuthenticated(false);
     sessionStorage.removeItem('portfolio_admin_auth');
+    localStorage.removeItem('portfolio_admin_remember_auth');
     setIsAdminOpen(false);
   };
 

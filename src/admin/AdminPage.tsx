@@ -42,7 +42,12 @@ import {
   Bell,
   Box,
   Globe,
-  Home
+  Home,
+  LayoutGrid,
+  Menu,
+  Settings,
+  Share,
+  PlusSquare
 } from 'lucide-react';
 import { compressImageFile } from '../utils/imageCompressor';
 import { BentoOverview } from './BentoOverview';
@@ -83,7 +88,30 @@ export const AdminPage: React.FC = () => {
   const [usernameInput, setUsernameInput] = useState('');
   const [passwordInput, setPasswordInput] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberDevice, setRememberDevice] = useState(true);
   const [loginError, setLoginError] = useState('');
+
+  // iPhone / iOS App Shell UI States
+  const [isMobileMoreOpen, setIsMobileMoreOpen] = useState(false);
+  const [showIosInstallGuide, setShowIosInstallGuide] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    const ua = window.navigator.userAgent || '';
+    const isIos = /iPhone|iPad|iPod/i.test(ua);
+    const isStandalone =
+      (window.navigator as any).standalone === true ||
+      window.matchMedia('(display-mode: standalone)').matches;
+    const dismissed = localStorage.getItem('admin_ios_guide_dismissed') === 'true';
+    return isIos && !isStandalone && !dismissed;
+  });
+
+  const dismissIosInstallGuide = () => {
+    setShowIosInstallGuide(false);
+    try {
+      localStorage.setItem('admin_ios_guide_dismissed', 'true');
+    } catch {
+      // ignore
+    }
+  };
 
   // Dashboard Tabs
   const [activeTab, setActiveTab] = useState<'overview' | 'status' | 'projects' | 'certificates' | 'skills' | 'profile' | 'security' | 'inbox' | 'backup' | 'theme'>('overview');
@@ -409,7 +437,7 @@ export const AdminPage: React.FC = () => {
       return;
     }
 
-    const success = login(usernameInput, passwordInput);
+    const success = login(usernameInput, passwordInput, rememberDevice);
     if (success) {
       setLoginError('');
       setUsernameInput('');
@@ -461,7 +489,7 @@ export const AdminPage: React.FC = () => {
   // ==========================================
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-[#07090e] flex flex-col justify-center items-center p-4 relative overflow-hidden font-cairo selection:bg-theme-primary/30 selection:text-theme-primary">
+      <div className="admin-login-shell min-h-screen bg-[#07090e] flex flex-col justify-center items-center p-4 pt-[max(1rem,env(safe-area-inset-top))] pb-[max(1rem,env(safe-area-inset-bottom))] relative overflow-hidden font-cairo selection:bg-theme-primary/30 selection:text-theme-primary">
         {/* Ambient Glows */}
         <div className="absolute top-1/4 -right-20 w-96 h-96 bg-theme-primary/10 rounded-full blur-[120px] pointer-events-none" />
         <div className="absolute bottom-1/4 -left-20 w-96 h-96 bg-indigo-500/10 rounded-full blur-[120px] pointer-events-none" />
@@ -545,6 +573,17 @@ export const AdminPage: React.FC = () => {
               </div>
             </div>
 
+            {/* Keep Signed In Option (Essential for iPhone Home Screen App) */}
+            <label className="flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.06] text-xs text-slate-300 cursor-pointer select-none">
+              <span>البقاء متصلاً على هذا الهاتف (تطبيق الآيفون)</span>
+              <input
+                type="checkbox"
+                checked={rememberDevice}
+                onChange={(e) => setRememberDevice(e.target.checked)}
+                className="w-4 h-4 accent-theme-primary rounded cursor-pointer"
+              />
+            </label>
+
             <button
               type="submit"
               style={{
@@ -557,6 +596,34 @@ export const AdminPage: React.FC = () => {
               <span>تأكيد تسجيل الدخول</span>
             </button>
           </form>
+
+          {/* iPhone Add to Home Screen Guide (Shown in iOS Safari before installing) */}
+          {showIosInstallGuide && (
+            <div className="mt-5 p-3.5 rounded-2xl bg-theme-primary/10 border border-theme-primary/25 text-start relative">
+              <button
+                type="button"
+                onClick={dismissIosInstallGuide}
+                aria-label="إغلاق"
+                className="absolute top-2.5 end-2.5 p-1 text-slate-400 hover:text-white"
+              >
+                <X className="w-4 h-4" />
+              </button>
+              <div className="flex items-center gap-2 text-theme-primary text-xs font-bold mb-1.5">
+                <Smartphone className="w-4 h-4 shrink-0" />
+                <span>تثبيت كـ تطبيق على آيفون 7</span>
+              </div>
+              <ol className="text-[11px] text-slate-300 space-y-1 leading-relaxed pe-5 list-decimal list-inside">
+                <li className="flex items-center gap-1.5 flex-wrap">
+                  <span>1. اضغط أيقونة المشاركة بالأسفل في Safari</span>
+                  <Share className="w-3.5 h-3.5 text-theme-secondary inline shrink-0" />
+                </li>
+                <li className="flex items-center gap-1.5 flex-wrap">
+                  <span>2. اختر &quot;إضافة إلى الشاشة الرئيسية&quot;</span>
+                  <PlusSquare className="w-3.5 h-3.5 text-theme-secondary inline shrink-0" />
+                </li>
+              </ol>
+            </div>
+          )}
 
           {/* Security Notice */}
           <div className="mt-6 pt-5 border-t border-white/[0.08]/80 text-center">
@@ -649,8 +716,8 @@ export const AdminPage: React.FC = () => {
           </div>
         </header>
 
-        {/* Content Body */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto max-w-6xl w-full min-w-0 pb-[max(2rem,env(safe-area-inset-bottom))]">
+        {/* Content Body (Extra bottom padding on mobile for native iOS Bottom Tab Bar) */}
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto max-w-6xl w-full min-w-0 pb-[max(6.25rem,calc(env(safe-area-inset-bottom)+5.25rem))] lg:pb-8">
           <div key={activeTab} className="animate-fadeIn">
           {/* TAB 1: BENTO OVERVIEW */}
           {activeTab === 'overview' && (
@@ -2292,6 +2359,164 @@ export const AdminPage: React.FC = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================================
+          NATIVE iOS MOBILE BOTTOM TAB BAR + "MORE" ACTION SHEET (< lg screens)
+          ========================================================================= */}
+      <nav
+        aria-label="Mobile Navigation"
+        className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-[#0A0B0F]/95 backdrop-blur-md border-t border-white/[0.08] px-2 pt-1.5 pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-[0_-12px_32px_rgba(0,0,0,0.85)]"
+      >
+        <div className="grid grid-cols-5 gap-1 max-w-md mx-auto">
+          {[
+            { id: 'overview' as const, label: lang === 'ar' ? 'الرئيسية' : 'Home', icon: LayoutGrid },
+            { id: 'projects' as const, label: lang === 'ar' ? 'المشاريع' : 'Projects', icon: FolderGit2 },
+            { id: 'inbox' as const, label: lang === 'ar' ? 'الرسائل' : 'Inbox', icon: Mail, badge: unreadCount },
+            { id: 'theme' as const, label: lang === 'ar' ? 'المظهر' : 'Theme', icon: Palette },
+          ].map((item) => {
+            const Icon = item.icon;
+            const isActive = activeTab === item.id && !isMobileMoreOpen;
+            return (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => {
+                  setActiveTab(item.id);
+                  setEditingProject(null);
+                  setEditingCert(null);
+                  setIsMobileMoreOpen(false);
+                }}
+                className={`relative flex flex-col items-center justify-center gap-0.5 py-1.5 min-h-[48px] rounded-xl transition-colors ${
+                  isActive ? 'text-theme-primary bg-theme-primary/10' : 'text-slate-400 active:text-white'
+                }`}
+              >
+                <div className="relative">
+                  <Icon className="w-5 h-5" />
+                  {item.badge !== undefined && item.badge > 0 && (
+                    <span className="absolute -top-1.5 -end-2 min-w-[16px] h-4 px-1 rounded-full bg-theme-primary text-white text-[9px] font-bold flex items-center justify-center">
+                      {item.badge}
+                    </span>
+                  )}
+                </div>
+                <span className="text-[10px] font-medium truncate max-w-full px-0.5">{item.label}</span>
+              </button>
+            );
+          })}
+
+          {/* 5th Tab: More Sheet */}
+          <button
+            type="button"
+            onClick={() => setIsMobileMoreOpen(prev => !prev)}
+            className={`flex flex-col items-center justify-center gap-0.5 py-1.5 min-h-[48px] rounded-xl transition-colors ${
+              isMobileMoreOpen || ['skills', 'certificates', 'status', 'profile', 'security', 'backup'].includes(activeTab)
+                ? 'text-theme-primary bg-theme-primary/10'
+                : 'text-slate-400 active:text-white'
+            }`}
+          >
+            <Menu className="w-5 h-5" />
+            <span className="text-[10px] font-medium">{lang === 'ar' ? 'المزيد' : 'More'}</span>
+          </button>
+        </div>
+      </nav>
+
+      {/* Slide-Up More Sheet for Secondary Admin Tabs */}
+      {isMobileMoreOpen && (
+        <div
+          className="lg:hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-end"
+          onClick={() => setIsMobileMoreOpen(false)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="w-full bg-[#0D0E14] border-t border-white/[0.12] rounded-t-3xl p-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] space-y-4 animate-fadeIn max-h-[82vh] overflow-y-auto"
+          >
+            {/* Drag Handle */}
+            <div className="w-10 h-1 rounded-full bg-white/20 mx-auto" />
+
+            {/* Profile Identity Quick Header */}
+            <div className="flex items-center justify-between gap-3 p-3 rounded-2xl bg-white/[0.03] border border-white/[0.08]">
+              <div className="flex items-center gap-3 min-w-0">
+                <img
+                  src={profile.topAvatarUrl || '/my.jpg'}
+                  alt={profile.name}
+                  className="w-10 h-10 rounded-xl object-cover object-top border border-theme-primary/40 shrink-0"
+                />
+                <div className="min-w-0 text-start">
+                  <div className="text-sm font-bold text-white truncate">
+                    {lang === 'ar' ? (profile.shortNameAr || 'عمرو عاطف') : (profile.shortName || 'Amr Atef')}
+                  </div>
+                  <div className="text-[11px] text-slate-400 font-mono truncate">{profile.title}</div>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsMobileMoreOpen(false);
+                  setIsBrandModalOpen(true);
+                }}
+                className="px-3 py-1.5 rounded-xl bg-theme-primary/15 border border-theme-primary/30 text-theme-primary text-xs font-bold shrink-0"
+              >
+                {lang === 'ar' ? 'تعديل الهوية' : 'Edit Brand'}
+              </button>
+            </div>
+
+            {/* Secondary Tabs Grid */}
+            <div className="grid grid-cols-2 gap-2.5">
+              {[
+                { id: 'skills' as const, label: t.tabs.skills, icon: Cpu },
+                { id: 'certificates' as const, label: t.tabs.certificates, icon: Award },
+                { id: 'status' as const, label: t.tabs.status, icon: Radio },
+                { id: 'profile' as const, label: t.tabs.profile, icon: User },
+                { id: 'security' as const, label: t.tabs.security, icon: ShieldCheck },
+                { id: 'backup' as const, label: t.tabs.backup, icon: Settings },
+              ].map((sec) => {
+                const Icon = sec.icon;
+                const isActive = activeTab === sec.id;
+                return (
+                  <button
+                    key={sec.id}
+                    type="button"
+                    onClick={() => {
+                      setActiveTab(sec.id);
+                      setEditingProject(null);
+                      setEditingCert(null);
+                      setIsMobileMoreOpen(false);
+                    }}
+                    className={`flex items-center gap-2.5 p-3.5 rounded-2xl border text-start transition-colors min-h-[50px] ${
+                      isActive
+                        ? 'bg-theme-primary/15 border-theme-primary/40 text-white font-bold'
+                        : 'bg-[#12131A] border-white/[0.07] text-slate-300'
+                    }`}
+                  >
+                    <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-theme-primary' : 'text-slate-400'}`} />
+                    <span className="text-xs truncate">{sec.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* iPhone Install Instructions Reminder (in More Sheet) */}
+            {showIosInstallGuide && (
+              <div className="p-3 rounded-2xl bg-theme-primary/10 border border-theme-primary/25 text-xs text-slate-300 space-y-1 text-start">
+                <div className="font-bold text-theme-primary flex items-center gap-1.5">
+                  <Smartphone className="w-3.5 h-3.5" />
+                  <span>لتثبيت التطبيق على آيفون 7:</span>
+                </div>
+                <p className="text-[11px] leading-relaxed">
+                  من Safari اضغط على أيقونة المشاركة (Share) بالأسفل ثم اختر &quot;إضافة إلى الشاشة الرئيسية&quot; (Add to Home Screen).
+                </p>
+              </div>
+            )}
+
+            <button
+              type="button"
+              onClick={() => setIsMobileMoreOpen(false)}
+              className="w-full py-3 rounded-xl bg-white/[0.05] text-slate-300 text-xs font-bold"
+            >
+              {lang === 'ar' ? 'إغلاق القائمة' : 'Close Menu'}
+            </button>
           </div>
         </div>
       )}

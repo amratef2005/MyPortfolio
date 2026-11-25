@@ -1,0 +1,33 @@
+{
+  "id": "/admin",
+  "name": "Amr Admin | لوحة التحكم",
+  "short_name": "Amr Admin",
+  "description": "Portfolio Administration & Content Management Dashboard",
+  "start_url": "/admin",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#07080B",
+  "theme_color": "#07080B",
+  "dir": "rtl",
+  "lang": "ar",
+  "icons": [
+    {
+      "src": "/admin-icon-180.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/admin-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/admin-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

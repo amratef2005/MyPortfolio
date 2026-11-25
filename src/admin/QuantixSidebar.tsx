@@ -104,7 +104,9 @@ export const QuantixSidebar: React.FC<QuantixSidebarProps> = ({
 
   return (
     <aside
-      className={`relative overflow-hidden shrink-0 bg-[#0A0B0F] border-b lg:border-b-0 lg:border-e border-white/[0.07] lg:sticky lg:top-0 lg:h-screen flex flex-col transition-all duration-300 select-none ${
+      className={`relative overflow-hidden shrink-0 bg-[#0A0B0F] border-b lg:border-b-0 lg:border-e border-white/[0.07] lg:sticky lg:top-0 lg:h-screen flex-col transition-all duration-300 select-none ${
+        includeExtendedTabs ? 'hidden lg:flex' : 'flex'
+      } ${
         collapsed ? 'lg:w-[76px]' : 'w-full lg:w-[250px]'
       }`}
     >
