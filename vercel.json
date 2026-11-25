@@ -10,6 +10,14 @@
       "destination": "/admin.html"
     },
     {
+      "source": "/Amr%20Atef%20Imam.pdf",
+      "destination": "/api/cv-pdf"
+    },
+    {
+      "source": "/Amr Atef Imam.pdf",
+      "destination": "/api/cv-pdf"
+    },
+    {
       "source": "/Amr_Kandel_Resume_ATS.pdf",
       "destination": "/api/cv-pdf"
     }

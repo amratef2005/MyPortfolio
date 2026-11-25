@@ -446,7 +446,7 @@ export const generateAtsPdfDocument = ({
 /**
  * Downloads the ATS-Compliant PDF directly to the user's device
  */
-export const downloadAtsPdf = (params: GenerateAtsPdfParams, filename = 'Amr_Kandel_Resume_ATS.pdf') => {
+export const downloadAtsPdf = (params: GenerateAtsPdfParams, filename = 'Amr Atef Imam.pdf') => {
   const doc = generateAtsPdfDocument(params);
   doc.save(filename);
 };

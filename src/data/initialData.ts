@@ -18,7 +18,7 @@ export const initialProfile: ProfileInfo = {
   github: "https://github.com/amratef2005",
   linkedin: "https://linkedin.com/in/amr-atef-kandel",
   whatsapp: "https://wa.me/amratefkandel",
-  resumeUrl: "/Amr_Kandel_Resume_ATS.pdf",
+  resumeUrl: "/Amr%20Atef%20Imam.pdf",
   topAvatarUrl: "/my.jpg",
   heroAvatarUrl: "/drama_hero.png",
   aboutAvatarUrl: "/about_avatar.png",

@@ -317,7 +317,7 @@ export default async function handler(req, res) {
     const pdfBuffer = Buffer.from(doc.output('arraybuffer'));
 
     res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', 'attachment; filename="Amr_Kandel_Resume_ATS.pdf"');
+    res.setHeader('Content-Disposition', 'attachment; filename="Amr Atef Imam.pdf"');
     res.setHeader('Content-Length', pdfBuffer.length);
     res.status(200).send(pdfBuffer);
   } catch (error) {

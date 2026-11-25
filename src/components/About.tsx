@@ -178,8 +178,8 @@ export const About: React.FC = () => {
                   )}
                   <span>
                     {downloading
-                      ? (lang === 'ar' ? 'جارٍ توليد وتحميل PDF...' : 'Generating ATS PDF...')
-                      : (lang === 'ar' ? 'تحميل السيرة الذاتية (PDF)' : 'Download CV (ATS PDF)')}
+                      ? (lang === 'ar' ? 'جارٍ تحميل السيرة الذاتية...' : 'Downloading CV...')
+                      : (lang === 'ar' ? 'تحميل السيرة الذاتية' : 'Download CV')}
                   </span>
                 </button>
 
