@@ -204,8 +204,34 @@ export const initialProjects: Project[] = [
   }
 ];
 
-// Empty list since no certificates were included in the provided CV data
-export const initialCertificates: Certificate[] = [];
+export const initialCertificates: Certificate[] = [
+  {
+    id: "iti-database-fundamentals",
+    title: "Database Fundamentals",
+    titleAr: "أساسيات قواعد البيانات (Database Fundamentals)",
+    issuer: "ITI Platform (Information Technology Institute)",
+    issuerAr: "منصة معهد تكنولوجيا المعلومات (ITI)",
+    date: "03/11/25",
+    fileUrl: "/iti.pdf",
+    badge: "2h 47m • Code: nyse31Kf2H",
+    badgeAr: "ساعتان و47 دقيقة • كود: nyse31Kf2H",
+    description: "Certificate of Completion — ITI Platform certifies that Amr Atef has successfully completed Database Fundamentals. Course time: 2 Hour, 47 Minutes • Completion date: 03/11/25 • Verification code: nyse31Kf2H.",
+    descriptionAr: "شهادة إتمام معتمدة من منصة معهد تكنولوجيا المعلومات (ITI) في دورة Database Fundamentals — مدة الدورة: ساعتان و47 دقيقة • تاريخ الإتمام: 03/11/25 • رمز التحقق: nyse31Kf2H."
+  },
+  {
+    id: "udemy-csharp-intermediate",
+    title: "C# Mastering Course For Intermediates",
+    titleAr: "إتقان لغة C# للمستوى المتوسط",
+    issuer: "Udemy • Instructors: Kioomars Jonood, Samaneh Mazidi Sharaf Abadi",
+    issuerAr: "Udemy • المدربون: Kioomars Jonood, Samaneh Mazidi Sharaf Abadi",
+    date: "Jan. 27, 2026",
+    fileUrl: "/cshar.pdf",
+    badge: "Udemy • 9 total hours",
+    badgeAr: "Udemy • 9 ساعات تدريبية",
+    description: "Certificate of Completion from Udemy for C# Mastering Course For Intermediates (Length: 9 total hours), instructed by Kioomars Jonood and Samaneh Mazidi Sharaf Abadi on Jan. 27, 2026.",
+    descriptionAr: "شهادة إتمام من منصة Udemy لدورة C# Mastering Course For Intermediates (المدة: 9 ساعات) بإشراف المدربين Kioomars Jonood و Samaneh Mazidi Sharaf Abadi بتاريخ Jan. 27, 2026."
+  }
+];
 
 export const initialSkillCategories: SkillCategory[] = [
   {

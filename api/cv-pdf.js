@@ -231,6 +231,54 @@ export default async function handler(req, res) {
     });
     currentY += 2;
 
+    // Certifications & Accreditations
+    if (currentY + 22 > pageHeight - 16) {
+      doc.addPage();
+      currentY = 16;
+    }
+    drawSectionHeader('Certifications & Accreditations');
+    const certs = [
+      {
+        title: 'Database Fundamentals',
+        issuer: 'ITI Platform (Information Technology Institute) • 2h 47m • Code: nyse31Kf2H',
+        date: '03/11/25',
+        subline: ''
+      },
+      {
+        title: 'C# Mastering Course For Intermediates',
+        issuer: 'Udemy • 9 total hours',
+        date: 'Jan. 27, 2026',
+        subline: 'Instructors: Kioomars Jonood, Samaneh Mazidi Sharaf Abadi'
+      }
+    ];
+    certs.forEach(c => {
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(8.4);
+      doc.setTextColor(15, 23, 42);
+      const titleTxt = `• ${c.title}`;
+      doc.text(titleTxt, marginX, currentY);
+      const tW = doc.getTextWidth(titleTxt);
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8);
+      doc.setTextColor(71, 85, 105);
+      doc.text(` – ${c.issuer}`, marginX + tW, currentY);
+
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(100, 116, 139);
+      doc.text(c.date, marginX + contentWidth, currentY, { align: 'right' });
+      currentY += 3.9;
+
+      if (c.subline) {
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(7.6);
+        doc.setTextColor(100, 116, 139);
+        doc.text(c.subline, marginX + 3.5, currentY);
+        currentY += 3.6;
+      }
+    });
+    currentY += 1.5;
+
     // Education
     drawSectionHeader('Education');
     doc.setFont('helvetica', 'bold');

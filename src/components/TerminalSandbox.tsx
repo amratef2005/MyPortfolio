@@ -84,9 +84,10 @@ export const TerminalSandbox: React.FC = () => {
 
       case 'iti':
         response = (
-          <p className="text-emerald-400 text-xs">
-            🎓 Ministry of Communications & IT (ITI) - Professional Software Engineering Diploma (Accredited).
-          </p>
+          <div className="space-y-1 text-xs text-emerald-400">
+            <p>🎓 ITI Platform (Information Technology Institute) — Database Fundamentals (2h 47m • Completed: 03/11/25 • Code: nyse31Kf2H)</p>
+            <p className="text-cyan-400">🎓 Udemy — C# Mastering Course For Intermediates (9 total hours • Completed: Jan. 27, 2026)</p>
+          </div>
         );
         break;
 

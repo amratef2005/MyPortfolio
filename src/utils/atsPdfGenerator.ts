@@ -357,19 +357,12 @@ export const generateAtsPdfDocument = ({
     drawSectionHeader('Certifications & Accreditations');
 
     certificates.forEach(cert => {
-      ensureSpace(4.5);
+      ensureSpace(8);
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(8.5);
       doc.setTextColor(15, 23, 42);
       const certTitle = `• ${cert.title}`;
       doc.text(certTitle, marginX, currentY);
-
-      if (cert.issuer) {
-        const titleW = doc.getTextWidth(certTitle);
-        doc.setFont('helvetica', 'normal');
-        doc.setTextColor(71, 85, 105);
-        doc.text(` – ${cert.issuer}`, marginX + titleW, currentY);
-      }
 
       if (cert.date) {
         doc.setFont('helvetica', 'bold');
@@ -377,7 +370,25 @@ export const generateAtsPdfDocument = ({
         doc.setTextColor(100, 116, 139);
         doc.text(cert.date, marginX + contentWidth, currentY, { align: 'right' });
       }
-      currentY += 4;
+
+      if (cert.issuer) {
+        const titleW = doc.getTextWidth(certTitle);
+        const dateReserve = cert.date ? doc.getTextWidth(cert.date) + 6 : 0;
+        const availableW = contentWidth - titleW - dateReserve;
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8);
+        doc.setTextColor(71, 85, 105);
+        const issuerTxt = ` – ${cert.issuer}`;
+        if (doc.getTextWidth(issuerTxt) <= availableW) {
+          doc.text(issuerTxt, marginX + titleW, currentY);
+        } else {
+          currentY += 3.6;
+          const wrappedIssuer = doc.splitTextToSize(cert.issuer, contentWidth - 4);
+          doc.text(wrappedIssuer, marginX + 3.5, currentY);
+          currentY += (wrappedIssuer.length - 1) * 3.4;
+        }
+      }
+      currentY += 4.2;
     });
     currentY += 2;
   }

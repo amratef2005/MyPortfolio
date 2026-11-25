@@ -175,6 +175,12 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   });
 
   const [certificates, setCertificates] = useState<Certificate[]>(() => {
+    const certsSyncKey = 'portfolio_certs_sync_2026_v1';
+    if (!localStorage.getItem(certsSyncKey)) {
+      localStorage.setItem(certsSyncKey, 'true');
+      localStorage.setItem('portfolio_certificates', JSON.stringify(initialCertificates));
+      return initialCertificates;
+    }
     const saved = localStorage.getItem('portfolio_certificates');
     if (!saved) return initialCertificates;
     try {

@@ -113,6 +113,7 @@ function supabaseBackendPlugin(): Plugin {
               fileUrl: r.file_url,
               previewImage: r.preview_image,
               badge: r.badge,
+              badgeAr: r.badge_ar || r.badge,
               description: r.description,
               descriptionAr: r.description_ar
             }));
