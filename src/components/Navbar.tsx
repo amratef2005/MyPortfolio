@@ -1,14 +1,22 @@
 import React, { useEffect, useMemo, useRef, useState, useCallback } from 'react';
+import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion';
 import { usePortfolio } from '../context/PortfolioContext';
+import { MOTION_EASE } from './motion/KineticAssemble';
 import { Globe, Menu, X, Linkedin, Github, Mail, Send } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
   const { lang, setLang, profile, certificates, setIsAdminOpen } = usePortfolio();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState<string>('hero');
-  const [scrollProgress, setScrollProgress] = useState<number>(0);
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
   const navRef = useRef<HTMLElement>(null);
+
+  const { scrollYProgress } = useScroll();
+  const smoothScrollProgress = useSpring(scrollYProgress, {
+    stiffness: 160,
+    damping: 28,
+    restDelta: 0.001,
+  });
 
   const navLinks = useMemo(
     () => [
@@ -34,8 +42,6 @@ export const Navbar: React.FC = () => {
       const scrollMarker = window.scrollY + navHeight + 120;
 
       setIsScrolled(window.scrollY > 20);
-      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-      setScrollProgress(maxScroll > 0 ? Math.min(100, Math.max(0, (window.scrollY / maxScroll) * 100)) : 0);
 
       // If near the very bottom of the page, mark the last section active
       if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 40) {
@@ -94,13 +100,15 @@ export const Navbar: React.FC = () => {
           : 'bg-[#050505]/75 backdrop-blur-xl border-b border-theme-primary/15 shadow-[0_8px_30px_rgba(0,0,0,0.75)]'
       }`}
     >
-      {/* Top-Edge Scroll Progress Indicator */}
-      <div
+      {/* Top-Edge Scroll Progress Indicator (GPU scaleX driven) */}
+      <motion.div
         aria-hidden="true"
-        className="absolute bottom-0 left-0 h-[2px] bg-gradient-to-r from-theme-primary to-theme-secondary transition-[width] duration-150 pointer-events-none"
+        className={`absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-theme-primary to-theme-secondary pointer-events-none transform-gpu ${
+          lang === 'ar' ? 'origin-right' : 'origin-left'
+        }`}
         style={{
-          width: `${scrollProgress}%`,
-          boxShadow: scrollProgress > 1 ? '0 0 10px rgba(var(--theme-primary-rgb), 0.7)' : 'none',
+          scaleX: smoothScrollProgress,
+          boxShadow: isScrolled ? '0 0 12px rgba(var(--theme-primary-rgb), 0.7)' : 'none',
         }}
       />
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-3 sm:gap-6">
@@ -132,20 +140,22 @@ export const Navbar: React.FC = () => {
                 href={link.href}
                 onClick={(e) => scrollToSection(e, link.href)}
                 aria-current={isActive ? 'page' : undefined}
-                className={`text-sm font-medium transition-colors duration-200 relative group py-1 ${
+                className={`text-sm font-medium transition-colors duration-300 relative group py-1.5 ${
                   isActive
                     ? 'text-theme-primary font-semibold'
-                    : 'text-theme-secondary hover:text-theme-primary'
+                    : 'text-slate-300 hover:text-theme-secondary'
                 }`}
               >
                 {lang === 'ar' ? link.labelAr : link.labelEn}
-                <span
-                  className={`absolute bottom-0 right-0 h-0.5 bg-gradient-to-r from-theme-primary to-theme-secondary transition-all duration-300 ${
-                    isActive
-                      ? 'w-full left-0'
-                      : 'w-0 group-hover:w-full group-hover:left-0'
-                  }`}
-                />
+                {isActive ? (
+                  <motion.span
+                    layoutId="navActiveUnderline"
+                    transition={{ duration: 0.45, ease: MOTION_EASE }}
+                    className="absolute bottom-0 inset-x-0 h-0.5 rounded-full bg-gradient-to-r from-theme-primary to-theme-secondary shadow-[0_0_10px_rgba(var(--theme-primary-rgb),0.65)]"
+                  />
+                ) : (
+                  <span className="absolute bottom-0 inset-x-0 h-0.5 rounded-full bg-theme-secondary/50 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center" />
+                )}
               </a>
             );
           })}
@@ -218,46 +228,60 @@ export const Navbar: React.FC = () => {
           </div>
         </div>
 
-        {/* Mobile Drawer */}
-        {mobileMenuOpen && (
-          <div className="lg:hidden mt-3 pt-3 border-t border-white/10 flex flex-col gap-2 pb-3 animate-fadeIn">
-            {navLinks.map((link) => {
-              const isActive = activeSection === link.href.replace('#', '');
-              return (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  onClick={(e) => scrollToSection(e, link.href)}
-                  aria-current={isActive ? 'page' : undefined}
-                  className={`text-sm font-medium px-3 py-2 rounded-lg transition-colors ${
-                    isActive
-                      ? 'text-theme-primary bg-theme-primary/15 font-semibold border border-theme-primary/30'
-                      : 'text-theme-secondary hover:text-theme-primary hover:bg-theme-primary/10'
-                  }`}
-                >
-                  {lang === 'ar' ? link.labelAr : link.labelEn}
-                </a>
-              );
-            })}
-            {/* Socials on Mobile */}
-              <div className="flex items-center gap-3 px-3 pt-2 border-t border-white/5 text-theme-secondary">
-                {profile.linkedin && (
+        {/* Mobile Drawer with Smooth Accordion Transition */}
+        <AnimatePresence initial={false}>
+          {mobileMenuOpen && (
+            <motion.div
+              key="mobile-drawer"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.34, ease: MOTION_EASE }}
+              className="lg:hidden overflow-hidden"
+            >
+              <div className="mt-3 pt-3 border-t border-white/10 flex flex-col gap-2 pb-3">
+                {navLinks.map((link, idx) => {
+                  const isActive = activeSection === link.href.replace('#', '');
+                  return (
+                    <motion.a
+                      key={link.href}
+                      href={link.href}
+                      initial={{ opacity: 0, y: -6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.28, delay: idx * 0.04, ease: MOTION_EASE }}
+                      onClick={(e) => scrollToSection(e, link.href)}
+                      aria-current={isActive ? 'page' : undefined}
+                      className={`text-sm font-medium px-3 py-2 rounded-lg transition-colors ${
+                        isActive
+                          ? 'text-theme-primary bg-theme-primary/15 font-semibold border border-theme-primary/30'
+                          : 'text-theme-secondary hover:text-theme-primary hover:bg-theme-primary/10'
+                      }`}
+                    >
+                      {lang === 'ar' ? link.labelAr : link.labelEn}
+                    </motion.a>
+                  );
+                })}
+                {/* Socials on Mobile */}
+                <div className="flex items-center gap-3 px-3 pt-2 border-t border-white/5 text-theme-secondary">
+                  {profile.linkedin && (
                     <a href={profile.linkedin} target="_blank" rel="noreferrer" className="hover:text-theme-primary">
                       <Linkedin className="w-5 h-5" />
                     </a>
-            )}
-                    {profile.github && (
-                        <a href={profile.github} target="_blank" rel="noreferrer" className="hover:text-theme-primary">
-                          <Github className="w-5 h-5" />
-                        </a>
-            )}
-                          <a href={`mailto:${profile.email}`} className="hover:text-theme-primary">
-                            <Mail className="w-5 h-5" />
-                          </a>
-                        </div>
-                      </div>
-                    )}
-                  </nav>
+                  )}
+                  {profile.github && (
+                    <a href={profile.github} target="_blank" rel="noreferrer" className="hover:text-theme-primary">
+                      <Github className="w-5 h-5" />
+                    </a>
+                  )}
+                  <a href={`mailto:${profile.email}`} className="hover:text-theme-primary">
+                    <Mail className="w-5 h-5" />
+                  </a>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </nav>
                 );
 };
 

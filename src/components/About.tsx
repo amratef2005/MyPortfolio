@@ -1,16 +1,12 @@
 import React, { useState } from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
 import { SignatureGlowAvatar } from './SignatureGlowAvatar';
-import { AssembleItem } from './motion/KineticAssemble';
+import { AssembleItem, StaggerGroup, StaggerItem } from './motion/KineticAssemble';
 import {
   FileDown,
   FileText,
-  Heart,
-  CheckCircle2,
-  Layout,
   Users,
   Layers,
-  Compass,
   Loader2,
   Cpu
 } from 'lucide-react';
@@ -46,8 +42,8 @@ export const About: React.FC = () => {
     <section id="about" className="py-8 sm:py-16 lg:py-20 relative overflow-hidden">
       {/* Background Subtle Theme Ambient Bloom */}
       <div
-        className="absolute top-1/2 -left-20 w-[450px] h-[450px] rounded-full blur-[140px] pointer-events-none"
-        style={{ background: 'radial-gradient(circle, rgba(var(--theme-primary-rgb), 0.12) 0%, transparent 70%)' }}
+        className="absolute top-1/2 -left-20 w-[420px] h-[420px] rounded-full blur-[64px] pointer-events-none"
+        style={{ background: 'radial-gradient(circle, rgba(var(--theme-primary-rgb), 0.11) 0%, transparent 70%)' }}
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -55,9 +51,9 @@ export const About: React.FC = () => {
         {/* Two-Column Grid: Left Portrait with Circular Orange Glow, Right Content */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
 
-          {/* Left Column: Portrait with Signature Circular Orange Glow (Image 2) */}
+          {/* Left Column: Portrait with Signature Circular Orange Glow */}
           <div className="lg:col-span-5 flex items-center justify-center">
-            <AssembleItem direction="left" distance={80}>
+            <AssembleItem direction="left" distance={24} delay={0.12}>
               <SignatureGlowAvatar
                 imageUrl={profile.aboutAvatarUrl || "/about_avatar.png"}
                 alt={profile.name || "Amr Atef"}
@@ -71,10 +67,14 @@ export const About: React.FC = () => {
             </AssembleItem>
           </div>
 
-          {/* Right Column: "Designing Is My Passion", Narrative & Download CV */}
-          <div className="lg:col-span-7 flex flex-col gap-6 text-start">
-            <AssembleItem direction="right" distance={80}>
-
+          {/* Right Column: Narrative, Strengths & Download CV with Reading-Order Stagger */}
+          <StaggerGroup
+            mode="inView"
+            delay={0.16}
+            stagger={0.1}
+            className="lg:col-span-7 flex flex-col gap-6 text-start"
+          >
+            <StaggerItem direction="right" distance={22}>
               {/* Badge */}
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#121215] border border-theme-primary/20 text-theme-secondary text-xs font-mono mb-2">
                 <Cpu className="w-3.5 h-3.5 text-theme-primary" />
@@ -87,7 +87,7 @@ export const About: React.FC = () => {
               </p>
 
               {/* Section Main Title */}
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-[1.2]">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-[1.2] mt-1">
                 {lang === 'ar' ? (
                   <>
                     بناء أنظمة خلفية فائقة الأداء <span className="text-theme-primary drop-shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.4)]">وقابلة للتوسع بأعلى أمان</span>
@@ -98,9 +98,11 @@ export const About: React.FC = () => {
                   </>
                 )}
               </h2>
+            </StaggerItem>
 
-              {/* Main Bio Paragraph */}
-              <div className="text-slate-300 text-sm sm:text-base leading-[1.8] mt-2 space-y-3">
+            {/* Main Bio Paragraph */}
+            <StaggerItem direction="bottom" distance={20}>
+              <div className="text-slate-300 text-sm sm:text-base leading-[1.8] space-y-3">
                 {lang === 'ar' ? (
                   <>
                     <p>
@@ -121,9 +123,11 @@ export const About: React.FC = () => {
                   </>
                 )}
               </div>
+            </StaggerItem>
 
-              {/* Core Strengths / Highlights Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 my-3">
+            {/* Core Strengths / Highlights Grid */}
+            <StaggerItem direction="bottom" distance={20}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 <div className="premium-card p-4 rounded-2xl border border-white/10 hover:border-theme-primary/35">
                   <div className="flex items-start gap-3">
                     <div className="w-10 h-10 rounded-xl bg-theme-primary/10 border border-theme-primary/20 flex items-center justify-center text-theme-primary shrink-0 mt-0.5">
@@ -156,8 +160,10 @@ export const About: React.FC = () => {
                   </div>
                 </div>
               </div>
+            </StaggerItem>
 
-              {/* Dynamic CV Generation & Download Button */}
+            {/* Dynamic CV Generation & Download Button */}
+            <StaggerItem direction="bottom" distance={18}>
               <div className="pt-2 flex flex-wrap items-center gap-4">
                 <button
                   type="button"
@@ -187,9 +193,8 @@ export const About: React.FC = () => {
                   <span>{lang === 'ar' ? 'معاينة وتعديل السيرة الذاتية' : 'Preview & Edit CV'}</span>
                 </button>
               </div>
-
-            </AssembleItem>
-          </div>
+            </StaggerItem>
+          </StaggerGroup>
 
         </div>
 

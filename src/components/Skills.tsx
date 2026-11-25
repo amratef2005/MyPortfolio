@@ -4,17 +4,20 @@ import {
   Cpu,
   Server,
   Database,
-  ShieldCheck,
   Zap,
   Code2,
   Layers,
   FileCheck,
-  Cloud,
   Terminal,
   Lock,
   GitBranch
 } from 'lucide-react';
-import { AssembleItem } from './motion/KineticAssemble';
+import {
+  AssembleItem,
+  StaggerGroup,
+  StaggerItem,
+  AnimatedProgressBar,
+} from './motion/KineticAssemble';
 
 export const Skills: React.FC = () => {
   const { skills, profile, lang } = usePortfolio();
@@ -111,14 +114,14 @@ export const Skills: React.FC = () => {
     <section id="skills" className="py-8 sm:py-16 lg:py-20 relative overflow-hidden">
       {/* Ambient Radial Lighting */}
       <div
-        className="absolute top-1/4 -left-20 w-[450px] h-[450px] rounded-full blur-[140px] pointer-events-none"
-        style={{ background: 'radial-gradient(circle, rgba(var(--theme-primary-rgb), 0.12) 0%, transparent 70%)' }}
+        className="absolute top-1/4 -left-20 w-[420px] h-[420px] rounded-full blur-[64px] pointer-events-none"
+        style={{ background: 'radial-gradient(circle, rgba(var(--theme-primary-rgb), 0.11) 0%, transparent 70%)' }}
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Section Header */}
-        <AssembleItem direction="top">
+        <AssembleItem direction="top" distance={22} delay={0.12}>
           <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12 lg:mb-16">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#121215] border border-theme-primary/20 text-theme-secondary text-xs font-mono mb-3">
               <Cpu className="w-3.5 h-3.5 text-theme-primary" />
@@ -144,7 +147,7 @@ export const Skills: React.FC = () => {
         </AssembleItem>
 
         {/* Highlight Card: Bio Intro + Test Pass Rate */}
-        <AssembleItem direction="top" distance={50}>
+        <AssembleItem direction="top" distance={22} delay={0.16}>
           <div className="premium-card mb-10 sm:mb-14 p-4 sm:p-6 lg:p-8 rounded-3xl border border-theme-primary/25 flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="text-start max-w-2xl">
               <h3 className="text-xl font-bold text-white mb-2">
@@ -175,9 +178,14 @@ export const Skills: React.FC = () => {
         </AssembleItem>
 
         {/* Skills with Big Percentages Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+        <StaggerGroup
+          mode="inView"
+          delay={0.14}
+          stagger={0.08}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16"
+        >
           {displaySkills.map((skill, idx) => (
-            <AssembleItem key={idx} direction="top" distance={40 + idx * 10}>
+            <StaggerItem key={idx} direction="bottom" distance={20}>
               <div className="premium-card p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-white/10 hover:border-theme-primary/40 group relative overflow-hidden">
                 {/* Big Theme Percentage Number */}
                 <div className="flex items-baseline justify-between mb-3">
@@ -192,21 +200,20 @@ export const Skills: React.FC = () => {
                   {skill.name}
                 </h4>
 
-                {/* Progress Track */}
-                <div className="w-full h-1.5 rounded-full bg-[#18181f] overflow-hidden">
-                  <div
-                    className="h-full rounded-full bg-gradient-to-r from-theme-primary to-theme-secondary transition-all duration-1000 shadow-[0_0_10px_rgba(var(--theme-primary-rgb),0.5)]"
-                    style={{ width: `${skill.level}%` }}
-                  />
-                </div>
+                {/* Synchronized Animated Progress Track */}
+                <AnimatedProgressBar
+                  level={skill.level}
+                  delay={0.22 + idx * 0.06}
+                  isRtl={lang === 'ar'}
+                />
               </div>
-            </AssembleItem>
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerGroup>
 
         {/* The 8 Architectural Domains Grid */}
         <div className="pt-8 border-t border-white/10">
-          <AssembleItem direction="top">
+          <AssembleItem direction="top" distance={20} delay={0.12}>
             <div className="text-start mb-10">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-theme-primary/10 border border-theme-primary/20 text-theme-secondary text-xs font-mono mb-2">
                 <Terminal className="w-3.5 h-3.5 text-theme-primary" />
@@ -218,9 +225,14 @@ export const Skills: React.FC = () => {
             </div>
           </AssembleItem>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+          <StaggerGroup
+            mode="inView"
+            delay={0.14}
+            stagger={0.08}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5"
+          >
             {backendDomains.map((domain, sIdx) => (
-              <AssembleItem key={sIdx} direction="top" distance={50 + sIdx * 10}>
+              <StaggerItem key={sIdx} direction="bottom" distance={20}>
                 <div className="premium-card p-4 sm:p-5 rounded-2xl sm:rounded-3xl border border-white/10 hover:border-theme-primary/35 group h-full flex flex-col justify-between">
                   <div>
                     <div className="w-11 h-11 rounded-2xl bg-theme-primary/10 border border-theme-primary/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
@@ -238,12 +250,12 @@ export const Skills: React.FC = () => {
                   </div>
                   <div className="mt-4 pt-3 border-t border-white/5 flex items-center gap-1.5 text-[11px] font-mono text-theme-primary">
                     <span>{lang === 'ar' ? 'معتمد ومطبق' : 'Production-Ready'}</span>
-                    <span className="text-theme-secondary">&rarr;</span>
+                    <span className="text-theme-secondary rtl-flip">&rarr;</span>
                   </div>
                 </div>
-              </AssembleItem>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerGroup>
         </div>
 
       </div>

@@ -99,6 +99,7 @@ export const AdminPage: React.FC = () => {
 
   // Profile Form State
   const [profileForm, setProfileForm] = useState(profile);
+  const [skillsDraft, setSkillsDraft] = useState(skills);
 
   // Navbar Brand Quick Editor State
   const [isBrandModalOpen, setIsBrandModalOpen] = useState(false);
@@ -122,6 +123,10 @@ export const AdminPage: React.FC = () => {
       titleAr: profile.titleAr || 'مطور نظم خلفية .NET',
     });
   }, [profile]);
+
+  React.useEffect(() => {
+    setSkillsDraft(skills);
+  }, [skills]);
 
   const handleBrandAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -436,12 +441,19 @@ export const AdminPage: React.FC = () => {
     }
 
     const passwordToSet = newPassword.trim() ? newPassword : (profile.adminPassword || 'KandelAmr###14');
-    updateCredentials(newUsername, passwordToSet);
-    updateProfile({ adminUsername: newUsername, adminPassword: passwordToSet });
-
-    setSecuritySuccess('تم تحديث بيانات الدخول وكلمة المرور بنجاح!');
-    setNewPassword('');
-    setConfirmPassword('');
+    requestConfirm({
+      variant: 'edit',
+      title: 'تأكيد تعديل بيانات الدخول',
+      description: `هل تريد حفظ وتحديث اسم المستخدم (${newUsername}) وكلمة المرور الخاصة بلوحة التحكم؟`,
+      confirmLabel: 'تأكيد التحديث',
+      onConfirm: () => {
+        updateCredentials(newUsername, passwordToSet);
+        updateProfile({ adminUsername: newUsername, adminPassword: passwordToSet });
+        setSecuritySuccess('تم تحديث بيانات الدخول وكلمة المرور بنجاح!');
+        setNewPassword('');
+        setConfirmPassword('');
+      },
+    });
   };
 
   // ==========================================
@@ -1087,11 +1099,19 @@ export const AdminPage: React.FC = () => {
               <div className="pt-2">
                 <button
                   type="button"
-                  onClick={() => {
-                    updateProfile(profileForm);
-                    setStatusSuccess('تم حفظ وتحديث حالات التوفر والواتساب بنجاح في البورتفوليو!');
-                    setTimeout(() => setStatusSuccess(''), 4000);
-                  }}
+                  onClick={() =>
+                    requestConfirm({
+                      variant: 'edit',
+                      title: 'تأكيد تحديث حالات التوفر والواتساب',
+                      description: 'هل تريد حفظ وتطبيق حالات التوفر والواتساب الجديدة على البورتفوليو؟',
+                      confirmLabel: 'تأكيد الحفظ',
+                      onConfirm: () => {
+                        updateProfile(profileForm);
+                        setStatusSuccess('تم حفظ وتحديث حالات التوفر والواتساب بنجاح في البورتفوليو!');
+                        setTimeout(() => setStatusSuccess(''), 4000);
+                      },
+                    })
+                  }
                   className="px-7 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-theme-primary hover:from-emerald-400 hover:to-theme-primary text-slate-950 font-bold text-sm shadow-[0_0_20px_rgba(16,185,129,0.35)] transition-all flex items-center gap-2 cursor-pointer"
                 >
                   <Save className="w-4 h-4" />
@@ -1240,14 +1260,24 @@ export const AdminPage: React.FC = () => {
 
                   <div className="flex items-center gap-3 pt-3">
                     <button
-                      onClick={() => {
-                        if (isNewProject) {
-                          addProject(editingProject);
-                        } else {
-                          updateProject(editingProject.id, editingProject);
-                        }
-                        setEditingProject(null);
-                      }}
+                      onClick={() =>
+                        requestConfirm({
+                          variant: 'edit',
+                          title: isNewProject ? 'تأكيد إضافة مشروع جديد' : 'تأكيد تعديل المشروع',
+                          description: isNewProject
+                            ? `هل تريد إضافة المشروع "${editingProject.titleAr || editingProject.title}" إلى البورتفوليو؟`
+                            : `هل تريد حفظ التعديلات على المشروع "${editingProject.titleAr || editingProject.title}"؟`,
+                          confirmLabel: isNewProject ? 'تأكيد الإضافة' : 'تأكيد الحفظ',
+                          onConfirm: () => {
+                            if (isNewProject) {
+                              addProject(editingProject);
+                            } else {
+                              updateProject(editingProject.id, editingProject);
+                            }
+                            setEditingProject(null);
+                          },
+                        })
+                      }
                       className="px-6 py-2.5 rounded-xl bg-theme-primary hover:bg-theme-primary text-white font-bold text-xs shadow-lg flex items-center gap-2"
                     >
                       <Save className="w-4 h-4" />
@@ -1366,14 +1396,24 @@ export const AdminPage: React.FC = () => {
 
                   <div className="flex items-center gap-3 pt-3">
                     <button
-                      onClick={() => {
-                        if (isNewCert) {
-                          addCertificate(editingCert);
-                        } else {
-                          updateCertificate(editingCert.id, editingCert);
-                        }
-                        setEditingCert(null);
-                      }}
+                      onClick={() =>
+                        requestConfirm({
+                          variant: 'edit',
+                          title: isNewCert ? 'تأكيد إضافة شهادة جديدة' : 'تأكيد تعديل الشهادة',
+                          description: isNewCert
+                            ? `هل تريد إضافة الشهادة "${editingCert.titleAr || editingCert.title}"؟`
+                            : `هل تريد حفظ التعديلات على الشهادة "${editingCert.titleAr || editingCert.title}"؟`,
+                          confirmLabel: isNewCert ? 'تأكيد الإضافة' : 'تأكيد الحفظ',
+                          onConfirm: () => {
+                            if (isNewCert) {
+                              addCertificate(editingCert);
+                            } else {
+                              updateCertificate(editingCert.id, editingCert);
+                            }
+                            setEditingCert(null);
+                          },
+                        })
+                      }
                       className="px-6 py-2.5 rounded-xl bg-theme-primary hover:bg-theme-primary text-white font-bold text-xs"
                     >
                       حفظ الشهادة
@@ -1399,7 +1439,7 @@ export const AdminPage: React.FC = () => {
               </div>
 
               <div className="space-y-6">
-                {skills.map((category, catIdx) => (
+                {skillsDraft.map((category, catIdx) => (
                   <div key={catIdx} className="p-5 quantix-card space-y-3">
                     <h3 className="font-bold text-theme-primary text-sm">{category.nameAr}</h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -1417,7 +1457,7 @@ export const AdminPage: React.FC = () => {
                                 value={skillLevel}
                                 onChange={(e) => {
                                   const nextLevel = Math.min(100, Math.max(0, Number(e.target.value) || 0));
-                                  const newSkills = skills.map((c, ci) =>
+                                  const newSkills = skillsDraft.map((c, ci) =>
                                     ci !== catIdx
                                       ? c
                                       : {
@@ -1431,7 +1471,7 @@ export const AdminPage: React.FC = () => {
                                         ),
                                       }
                                   );
-                                  updateSkills(newSkills);
+                                  setSkillsDraft(newSkills);
                                 }}
                                 className="w-16 px-2 py-1 rounded bg-[#08090C] text-theme-primary text-xs font-mono text-center border border-white/[0.08]"
                               />
@@ -1443,6 +1483,25 @@ export const AdminPage: React.FC = () => {
                     </div>
                   </div>
                 ))}
+
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      requestConfirm({
+                        variant: 'edit',
+                        title: 'تأكيد تعديل نسب المهارات',
+                        description: 'هل تريد حفظ وتطبيق نسب المهارات المحدّثة على البورتفوليو؟',
+                        confirmLabel: 'تأكيد الحفظ',
+                        onConfirm: () => updateSkills(skillsDraft),
+                      })
+                    }
+                    className="px-6 py-2.5 rounded-xl bg-theme-primary hover:bg-theme-primary text-white font-bold text-xs flex items-center gap-2 shadow-lg cursor-pointer"
+                  >
+                    <Save className="w-4 h-4" />
+                    <span>حفظ وتأكيد تعديلات المهارات</span>
+                  </button>
+                </div>
               </div>
             </div>
           )}
@@ -1994,20 +2053,27 @@ export const AdminPage: React.FC = () => {
                 <input
                   type="file"
                   accept=".json"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (!file) return;
-                    const reader = new FileReader();
-                    reader.onload = (event) => {
-                      const content = event.target?.result as string;
-                      if (content && importData(content)) {
-                        alert('تم استيراد البيانات وتحديث البرتفوليو بنجاح!');
-                      } else {
-                        alert('الملف غير صالح أو تالف.');
-                      }
-                    };
-                    reader.readAsText(file);
-                  }}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      const reader = new FileReader();
+                      reader.onload = (event) => {
+                        const content = event.target?.result as string;
+                        if (!content) return;
+                        requestConfirm({
+                          variant: 'edit',
+                          title: 'تأكيد استيراد النسخة الاحتياطية',
+                          description: 'سيتم استبدال بيانات البورتفوليو الحالية بمحتوى ملف JSON المختار.',
+                          confirmLabel: 'تأكيد الاستيراد',
+                          onConfirm: () => {
+                            if (!importData(content)) {
+                              alert('الملف غير صالح أو تالف.');
+                            }
+                          },
+                        });
+                      };
+                      reader.readAsText(file);
+                    }}
                   className="text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-[#14151B] file:text-slate-200 hover:file:bg-slate-700"
                 />
               </div>

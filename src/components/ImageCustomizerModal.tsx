@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { usePortfolio } from '../context/PortfolioContext';
 import { X, Upload, Sliders, Check, RotateCcw, Image as ImageIcon } from 'lucide-react';
 import { SignatureGlowAvatar } from './SignatureGlowAvatar';
+import { ConfirmActionModal, ConfirmActionState } from '../admin/ConfirmActionModal';
 
 interface ImageCustomizerModalProps {
   isOpen: boolean;
@@ -32,6 +33,13 @@ export const ImageCustomizerModal: React.FC<ImageCustomizerModalProps> = ({
   const [aboutRings, setAboutRings] = useState(profile.aboutShowRings ?? true);
 
   const [saved, setSaved] = useState(false);
+  const [confirmState, setConfirmState] = useState<ConfirmActionState>({
+    isOpen: false,
+    variant: 'edit',
+    title: '',
+    description: '',
+    onConfirm: () => {},
+  });
 
   if (!isOpen) return null;
 
@@ -51,39 +59,65 @@ export const ImageCustomizerModal: React.FC<ImageCustomizerModalProps> = ({
   };
 
   const handleSave = () => {
-    updateProfile({
-      heroAvatarUrl: heroImage,
-      heroImageScale: heroScale,
-      heroImageOffsetY: heroOffsetY,
-      heroGlowIntensity: heroGlow,
-      heroShowRings: heroRings,
-      aboutAvatarUrl: aboutImage,
-      aboutImageScale: aboutScale,
-      aboutImageOffsetY: aboutOffsetY,
-      aboutGlowIntensity: aboutGlow,
-      aboutShowRings: aboutRings,
+    setConfirmState({
+      isOpen: true,
+      variant: 'edit',
+      title: lang === 'ar' ? 'تأكيد حفظ تعديلات الصور' : 'Confirm Image Changes',
+      description:
+        lang === 'ar'
+          ? 'هل تريد حفظ وتطبيق تعديلات الصورة والتوهج على البورتفوليو؟'
+          : 'Save and apply these image and halo settings to your portfolio?',
+      confirmLabel: lang === 'ar' ? 'تأكيد الحفظ' : 'Save & Apply',
+      cancelLabel: lang === 'ar' ? 'إلغاء' : 'Cancel',
+      onConfirm: () => {
+        updateProfile({
+          heroAvatarUrl: heroImage,
+          heroImageScale: heroScale,
+          heroImageOffsetY: heroOffsetY,
+          heroGlowIntensity: heroGlow,
+          heroShowRings: heroRings,
+          aboutAvatarUrl: aboutImage,
+          aboutImageScale: aboutScale,
+          aboutImageOffsetY: aboutOffsetY,
+          aboutGlowIntensity: aboutGlow,
+          aboutShowRings: aboutRings,
+        });
+        setSaved(true);
+        setTimeout(() => {
+          setSaved(false);
+          onClose();
+        }, 1200);
+      },
     });
-    setSaved(true);
-    setTimeout(() => {
-      setSaved(false);
-      onClose();
-    }, 1200);
   };
 
   const handleReset = (target: 'home' | 'about') => {
-    if (target === 'home') {
-      setHeroImage('/drama_hero.png');
-      setHeroScale(1);
-      setHeroOffsetY(0);
-      setHeroGlow(1);
-      setHeroRings(true);
-    } else {
-      setAboutImage('/my_transparent.png');
-      setAboutScale(1);
-      setAboutOffsetY(0);
-      setAboutGlow(1);
-      setAboutRings(true);
-    }
+    setConfirmState({
+      isOpen: true,
+      variant: 'danger',
+      title: lang === 'ar' ? 'تأكيد استعادة إعدادات الصورة' : 'Confirm Image Reset',
+      description:
+        lang === 'ar'
+          ? 'سيتم إرجاع الصورة والحجم والهالة إلى الوضع الافتراضي.'
+          : 'Reset this image, scale, and halo settings back to defaults?',
+      confirmLabel: lang === 'ar' ? 'استعادة الافتراضي' : 'Reset',
+      cancelLabel: lang === 'ar' ? 'إلغاء' : 'Cancel',
+      onConfirm: () => {
+        if (target === 'home') {
+          setHeroImage('/drama_hero.png');
+          setHeroScale(1);
+          setHeroOffsetY(0);
+          setHeroGlow(1);
+          setHeroRings(true);
+        } else {
+          setAboutImage('/my_transparent.png');
+          setAboutScale(1);
+          setAboutOffsetY(0);
+          setAboutGlow(1);
+          setAboutRings(true);
+        }
+      },
+    });
   };
 
   const isHome = activeTab === 'home';
@@ -332,6 +366,11 @@ export const ImageCustomizerModal: React.FC<ImageCustomizerModalProps> = ({
         </div>
 
       </div>
+
+      <ConfirmActionModal
+        {...confirmState}
+        onClose={() => setConfirmState(prev => ({ ...prev, isOpen: false }))}
+      />
     </div>
   );
 };

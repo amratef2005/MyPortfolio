@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import { motion, useMotionValue, useSpring, useTransform, useScroll } from 'framer-motion';
 import { Camera } from 'lucide-react';
 
 interface SignatureGlowAvatarProps {
@@ -36,6 +36,16 @@ export const SignatureGlowAvatar: React.FC<SignatureGlowAvatarProps> = ({
       setIsFinePointer(window.matchMedia('(pointer: fine)').matches);
     }
   }, []);
+
+  // Subtle scroll-linked parallax for desktop depth
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ['start end', 'end start'],
+  });
+  const scrollParallaxY = useSpring(
+    useTransform(scrollYProgress, [0, 1], [14, -14]),
+    { stiffness: 120, damping: 24 }
+  );
 
   // Smooth mouse tilt & parallax
   const mouseX = useMotionValue(0);
@@ -144,9 +154,9 @@ export const SignatureGlowAvatar: React.FC<SignatureGlowAvatarProps> = ({
 
       {/* 3. Portrait Silhouette + Feathered Edges + Cinematic Face Lighting */}
       <motion.div
-        style={isFinePointer ? { rotateX, rotateY } : undefined}
+        style={isFinePointer ? { rotateX, rotateY, y: scrollParallaxY } : undefined}
         transition={{ type: 'spring', damping: 20, stiffness: 200 }}
-        className="relative z-10 w-full h-full flex items-end justify-center overflow-visible"
+        className="relative z-10 w-full h-full flex items-end justify-center overflow-visible transform-gpu"
       >
         {/* Isolated & Feathered Portrait Container (melts any rectangular PNG edges) */}
         <div

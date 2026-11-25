@@ -84,12 +84,17 @@ export const AdminDashboard: React.FC = () => {
 
   // Profile Form State
   const [profileForm, setProfileForm] = useState<ProfileInfo>(profile);
+  const [skillsDraft, setSkillsDraft] = useState<SkillCategory[]>(skills);
   const [savedSuccess, setSavedSuccess] = useState(false);
 
   // Keep form in sync when profile changes externally
   useEffect(() => {
     setProfileForm(profile);
   }, [profile]);
+
+  useEffect(() => {
+    setSkillsDraft(skills);
+  }, [skills]);
 
   if (!isAdminOpen) return null;
 
@@ -106,8 +111,20 @@ export const AdminDashboard: React.FC = () => {
         if (base64) {
           const updated = { ...profileForm, [field]: base64 };
           setProfileForm(updated);
-          updateProfile(updated);
-          showSaveNotification();
+          requestConfirm({
+            variant: 'edit',
+            title: lang === 'ar' ? 'تأكيد تحديث الصورة' : 'Confirm Image Upload',
+            description:
+              lang === 'ar'
+                ? 'هل تريد حفظ وتطبيق الصورة المرفوعة الجديدة على البورتفوليو؟'
+                : 'Save and apply the uploaded image to your portfolio?',
+            confirmLabel: lang === 'ar' ? 'تأكيد الحفظ' : 'Save Image',
+            cancelLabel: lang === 'ar' ? 'إلغاء' : 'Cancel',
+            onConfirm: () => {
+              updateProfile(updated);
+              showSaveNotification();
+            },
+          });
         }
       };
       reader.readAsDataURL(file);
@@ -1001,15 +1018,29 @@ export const AdminDashboard: React.FC = () => {
 
                     <div className="flex items-center gap-3 pt-3">
                       <button
-                        onClick={() => {
-                          if (isNewProject) {
-                            addProject(editingProject);
-                          } else {
-                            updateProject(editingProject.id, editingProject);
-                          }
-                          setEditingProject(null);
-                          showSaveNotification();
-                        }}
+                        onClick={() =>
+                          requestConfirm({
+                            variant: 'edit',
+                            title: isNewProject
+                              ? (lang === 'ar' ? 'تأكيد إضافة مشروع جديد' : 'Confirm New Project')
+                              : (lang === 'ar' ? 'تأكيد تعديل المشروع' : 'Confirm Project Update'),
+                            description:
+                              lang === 'ar'
+                                ? `هل تريد حفظ المشروع "${editingProject.titleAr || editingProject.title}"؟`
+                                : `Save project "${editingProject.title}"?`,
+                            confirmLabel: lang === 'ar' ? 'تأكيد الحفظ' : 'Save Project',
+                            cancelLabel: lang === 'ar' ? 'إلغاء' : 'Cancel',
+                            onConfirm: () => {
+                              if (isNewProject) {
+                                addProject(editingProject);
+                              } else {
+                                updateProject(editingProject.id, editingProject);
+                              }
+                              setEditingProject(null);
+                              showSaveNotification();
+                            },
+                          })
+                        }
                         className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-theme-primary to-theme-secondary text-white font-bold text-xs shadow-lg flex items-center gap-2"
                       >
                         <Save className="w-4 h-4" />
@@ -1131,15 +1162,29 @@ export const AdminDashboard: React.FC = () => {
 
                     <div className="flex items-center gap-3 pt-3">
                       <button
-                        onClick={() => {
-                          if (isNewCert) {
-                            addCertificate(editingCert);
-                          } else {
-                            updateCertificate(editingCert.id, editingCert);
-                          }
-                          setEditingCert(null);
-                          showSaveNotification();
-                        }}
+                        onClick={() =>
+                          requestConfirm({
+                            variant: 'edit',
+                            title: isNewCert
+                              ? (lang === 'ar' ? 'تأكيد إضافة شهادة جديدة' : 'Confirm New Certificate')
+                              : (lang === 'ar' ? 'تأكيد تعديل الشهادة' : 'Confirm Certificate Update'),
+                            description:
+                              lang === 'ar'
+                                ? `هل تريد حفظ الشهادة "${editingCert.titleAr || editingCert.title}"؟`
+                                : `Save certificate "${editingCert.title}"?`,
+                            confirmLabel: lang === 'ar' ? 'تأكيد الحفظ' : 'Save Certificate',
+                            cancelLabel: lang === 'ar' ? 'إلغاء' : 'Cancel',
+                            onConfirm: () => {
+                              if (isNewCert) {
+                                addCertificate(editingCert);
+                              } else {
+                                updateCertificate(editingCert.id, editingCert);
+                              }
+                              setEditingCert(null);
+                              showSaveNotification();
+                            },
+                          })
+                        }
                         className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-theme-primary to-theme-secondary text-white font-bold text-xs"
                       >
                         حفظ الشهادة
@@ -1163,7 +1208,7 @@ export const AdminDashboard: React.FC = () => {
               <div className="space-y-6">
                 <h4 className="text-xl font-bold text-white">إدارة المهارات والنسب المئوية</h4>
                 <div className="space-y-6">
-                  {skills.map((category, catIdx) => (
+                  {skillsDraft.map((category, catIdx) => (
                     <div key={catIdx} className="p-4 quantix-card space-y-3">
                       <h5 className="font-bold text-theme-secondary text-sm">{category.nameAr}</h5>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -1181,7 +1226,7 @@ export const AdminDashboard: React.FC = () => {
                                   value={skillLevel}
                                   onChange={(e) => {
                                     const nextLevel = Math.min(100, Math.max(0, Number(e.target.value) || 0));
-                                    const newSkills = skills.map((c, ci) =>
+                                    const newSkills = skillsDraft.map((c, ci) =>
                                       ci !== catIdx
                                         ? c
                                         : {
@@ -1195,7 +1240,7 @@ export const AdminDashboard: React.FC = () => {
                                             ),
                                           }
                                     );
-                                    updateSkills(newSkills);
+                                    setSkillsDraft(newSkills);
                                   }}
                                   className="w-14 px-2 py-1 rounded bg-[#08090C] text-theme-primary text-xs font-mono text-center border border-white/10 font-bold"
                                 />
@@ -1207,6 +1252,30 @@ export const AdminDashboard: React.FC = () => {
                       </div>
                     </div>
                   ))}
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      requestConfirm({
+                        variant: 'edit',
+                        title: lang === 'ar' ? 'تأكيد تعديل نسب المهارات' : 'Confirm Skills Update',
+                        description:
+                          lang === 'ar'
+                            ? 'هل تريد حفظ وتطبيق نسب المهارات المحدّثة على البورتفوليو؟'
+                            : 'Save and apply updated skill levels?',
+                        confirmLabel: lang === 'ar' ? 'تأكيد الحفظ' : 'Save Skills',
+                        cancelLabel: lang === 'ar' ? 'إلغاء' : 'Cancel',
+                        onConfirm: () => {
+                          updateSkills(skillsDraft);
+                          showSaveNotification();
+                        },
+                      })
+                    }
+                    className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-theme-primary to-theme-secondary text-white font-bold text-xs flex items-center gap-2 shadow-lg cursor-pointer"
+                  >
+                    <Save className="w-4 h-4" />
+                    <span>{lang === 'ar' ? 'حفظ وتأكيد تعديلات المهارات' : 'Save Skill Changes'}</span>
+                  </button>
                 </div>
               </div>
             )}
@@ -1396,11 +1465,24 @@ export const AdminDashboard: React.FC = () => {
                       const reader = new FileReader();
                       reader.onload = (event) => {
                         const content = event.target?.result as string;
-                        if (content && importData(content)) {
-                          alert('تم استيراد البيانات وتحديث البرتفوليو بنجاح!');
-                        } else {
-                          alert('الملف غير صالح أو تالف.');
-                        }
+                        if (!content) return;
+                        requestConfirm({
+                          variant: 'edit',
+                          title: lang === 'ar' ? 'تأكيد استيراد النسخة الاحتياطية' : 'Confirm Backup Import',
+                          description:
+                            lang === 'ar'
+                              ? 'سيتم استبدال بيانات البورتفوليو الحالية بمحتوى ملف JSON المختار.'
+                              : 'Replace current portfolio data with the selected JSON backup?',
+                          confirmLabel: lang === 'ar' ? 'تأكيد الاستيراد' : 'Import Backup',
+                          cancelLabel: lang === 'ar' ? 'إلغاء' : 'Cancel',
+                          onConfirm: () => {
+                            if (importData(content)) {
+                              showSaveNotification();
+                            } else {
+                              alert('الملف غير صالح أو تالف.');
+                            }
+                          },
+                        });
                       };
                       reader.readAsText(file);
                     }}

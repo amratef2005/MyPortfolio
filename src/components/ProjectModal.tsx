@@ -1,13 +1,14 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import { Project } from '../types';
 import { usePortfolio } from '../context/PortfolioContext';
+import { MOTION_EASE } from './motion/KineticAssemble';
 import { 
   X, 
   ExternalLink, 
   Github, 
   Layers, 
   Cpu, 
-  Database, 
   CheckCircle2, 
   ShieldCheck,
   Server
@@ -24,9 +25,20 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) 
   if (!project) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md overflow-y-auto animate-fadeIn">
-      <div 
-        className="relative w-full max-w-4xl bg-dark-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl my-8 max-h-[90vh] overflow-y-auto"
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.28, ease: MOTION_EASE }}
+      onClick={onClose}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md overflow-y-auto"
+    >
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 18 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.96, y: 12 }}
+        transition={{ duration: 0.38, ease: MOTION_EASE }}
+        className="relative w-full max-w-4xl bg-dark-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl my-8 max-h-[90vh] overflow-y-auto transform-gpu"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
@@ -159,7 +171,7 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) 
             {lang === 'ar' ? 'إغلاق' : 'Close'}
           </button>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };

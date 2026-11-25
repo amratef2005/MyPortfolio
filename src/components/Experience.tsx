@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useRef } from 'react';
+import { motion, useScroll, useSpring } from 'framer-motion';
 import { usePortfolio } from '../context/PortfolioContext';
 import { AssembleItem } from './motion/KineticAssemble';
 import { 
@@ -6,26 +7,34 @@ import {
   Calendar, 
   MapPin, 
   ExternalLink, 
-  Layers, 
-  CheckCircle2,
-  Award
 } from 'lucide-react';
 
 export const Experience: React.FC = () => {
   const { experiences, profile, lang } = usePortfolio();
+  const timelineRef = useRef<HTMLDivElement>(null);
+
+  const { scrollYProgress } = useScroll({
+    target: timelineRef,
+    offset: ['start 0.78', 'end 0.58'],
+  });
+  const smoothLineProgress = useSpring(scrollYProgress, {
+    stiffness: 110,
+    damping: 26,
+    restDelta: 0.001,
+  });
 
   return (
     <section id="experience" className="py-8 sm:py-16 lg:py-20 relative overflow-hidden">
       {/* Background Subtle Orange Glow */}
       <div 
-        className="absolute top-1/3 -right-20 w-[450px] h-[450px] rounded-full blur-[150px] pointer-events-none"
-        style={{ background: 'radial-gradient(circle, rgba(var(--theme-primary-rgb), 0.12) 0%, transparent 70%)' }}
+        className="absolute top-1/3 -right-20 w-[420px] h-[420px] rounded-full blur-[64px] pointer-events-none"
+        style={{ background: 'radial-gradient(circle, rgba(var(--theme-primary-rgb), 0.11) 0%, transparent 70%)' }}
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header + Large Experience Number Highlight */}
-        <AssembleItem direction="top">
+        <AssembleItem direction="top" distance={22} delay={0.12}>
           <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-8 sm:mb-12 lg:mb-16 gap-6 sm:gap-8">
             <div className="text-start max-w-2xl">
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#121215] border border-theme-primary/20 text-theme-secondary text-xs font-mono mb-3">
@@ -68,10 +77,17 @@ export const Experience: React.FC = () => {
         </AssembleItem>
 
         {/* Vertical Timeline Container */}
-        <div className="relative mt-8">
+        <div ref={timelineRef} className="relative mt-8">
           
-          {/* Vertical Central Glowing Line */}
-          <div className="absolute top-0 bottom-0 left-4 sm:left-1/2 -translate-x-1/2 w-0.5 bg-gradient-to-b from-theme-primary via-theme-secondary to-theme-accent/20 shadow-[0_0_12px_rgba(var(--theme-primary-rgb),0.5)]" />
+          {/* Background Static Track */}
+          <div className="absolute top-0 bottom-0 left-4 sm:left-1/2 -translate-x-1/2 w-0.5 bg-white/10" />
+
+          {/* Scroll-Synced Vertical Central Glowing Line */}
+          <motion.div
+            aria-hidden="true"
+            style={{ scaleY: smoothLineProgress, transformOrigin: 'top' }}
+            className="absolute top-0 bottom-0 left-4 sm:left-1/2 -translate-x-1/2 w-0.5 bg-gradient-to-b from-theme-primary via-theme-secondary to-theme-accent/60 shadow-[0_0_12px_rgba(var(--theme-primary-rgb),0.55)] transform-gpu pointer-events-none"
+          />
 
           {/* Timeline Items */}
           <div className="space-y-12 sm:space-y-16">
@@ -85,9 +101,9 @@ export const Experience: React.FC = () => {
                     isEven ? 'sm:flex-row-reverse' : ''
                   }`}
                 >
-                  {/* Glowing Node Dot on Timeline */}
-                  <div className="absolute left-4 sm:left-1/2 -translate-x-1/2 w-7 h-7 rounded-full bg-[#050505] border-2 border-theme-primary flex items-center justify-center shadow-[0_0_18px_rgba(var(--theme-primary-rgb),0.8)] z-20">
-                    <div className="w-2.5 h-2.5 rounded-full bg-theme-secondary animate-ping" />
+                  {/* Calm Glowing Node Dot on Timeline */}
+                  <div className="absolute left-4 sm:left-1/2 -translate-x-1/2 w-7 h-7 rounded-full bg-[#050505] border-2 border-theme-primary flex items-center justify-center shadow-[0_0_16px_rgba(var(--theme-primary-rgb),0.65)] z-20">
+                    <div className="w-2.5 h-2.5 rounded-full bg-theme-secondary animate-pulse shadow-[0_0_8px_rgba(var(--theme-secondary-rgb),0.8)]" />
                   </div>
 
                   {/* Empty Spacer Column for Desktop */}
@@ -95,7 +111,7 @@ export const Experience: React.FC = () => {
 
                   {/* Card Content Column */}
                   <div className="w-full sm:w-1/2 ps-12 sm:ps-0 sm:px-8">
-                    <AssembleItem direction={isEven ? 'left' : 'right'} distance={60}>
+                    <AssembleItem direction={isEven ? 'left' : 'right'} distance={24} delay={0.14}>
                       <div className="premium-card p-4 sm:p-6 lg:p-8 rounded-3xl border border-white/10 hover:border-theme-primary/40 group relative overflow-hidden">
                         
                         {/* Hover Ambient Corner Glow */}

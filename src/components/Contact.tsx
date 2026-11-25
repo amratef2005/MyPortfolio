@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { usePortfolio } from '../context/PortfolioContext';
 import {
   Mail,
@@ -12,7 +13,7 @@ import {
   MessageSquare
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
-import { AssembleItem } from './motion/KineticAssemble';
+import { AssembleItem, MOTION_EASE } from './motion/KineticAssemble';
 
 const WhatsAppIcon: React.FC<{ className?: string }> = ({ className = "w-5 h-5" }) => (
   <svg
@@ -103,14 +104,14 @@ export const Contact: React.FC = () => {
     <section id="contact" className="py-8 sm:py-16 lg:py-20 relative overflow-hidden">
       {/* Background Subtle Theme Glow */}
       <div
-        className="absolute bottom-0 right-1/4 w-[500px] h-[500px] rounded-full blur-[160px] pointer-events-none"
-        style={{ background: 'radial-gradient(circle, rgba(var(--theme-primary-rgb), 0.14) 0%, transparent 70%)' }}
+        className="absolute bottom-0 right-1/4 w-[440px] h-[440px] rounded-full blur-[64px] pointer-events-none"
+        style={{ background: 'radial-gradient(circle, rgba(var(--theme-primary-rgb), 0.12) 0%, transparent 70%)' }}
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Section Header: "Contact Me" & "Have Any Project? Let's Chat" */}
-        <AssembleItem direction="top">
+        <AssembleItem direction="top" distance={22} delay={0.12}>
           <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12 lg:mb-16">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#121215] border border-theme-primary/20 text-theme-secondary text-xs font-mono mb-3">
               <MessageSquare className="w-3.5 h-3.5 text-theme-primary" />
@@ -140,7 +141,7 @@ export const Contact: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 text-start items-start">
 
           {/* Left Column: Direct Contact Info Channels */}
-          <AssembleItem direction="left" distance={100} className="lg:col-span-5 space-y-4">
+          <AssembleItem direction="left" distance={24} delay={0.14} className="lg:col-span-5 space-y-4">
             <div className="premium-card p-6 sm:p-8 rounded-3xl border border-white/10 space-y-4">
               <h3 className="text-xl font-bold text-white mb-2">
                 {lang === 'ar' ? 'قنوات التواصل المباشرة' : 'Direct Channels'}
@@ -240,33 +241,49 @@ export const Contact: React.FC = () => {
           </AssembleItem>
 
           {/* Right Column: Contact Message Form */}
-          <AssembleItem direction="right" distance={100} className="lg:col-span-7">
+          <AssembleItem direction="right" distance={24} delay={0.2} className="lg:col-span-7">
             <div className="premium-card p-6 sm:p-8 rounded-3xl border border-white/10">
-              {submitted ? (
-                <div className="text-center py-12 space-y-4">
-                  <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mx-auto">
-                    <CheckCircle2 className="w-8 h-8" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-white">
-                    {lang === 'ar' ? 'تم استلام رسالتك بنجاح!' : 'Message Sent Successfully!'}
-                  </h3>
-                  <p className="text-slate-300 text-sm max-w-md mx-auto leading-relaxed">
-                    {lang === 'ar'
-                      ? 'شكراً لتواصلك، سأقوم بمراجعة تفاصيل مشروعك والرد عليك في أقرب وقت ممكن.'
-                      : 'Thank you for reaching out. I have received your note and will get back to you shortly.'}
-                  </p>
-                  <button
-                    onClick={() => {
-                      setSubmitted(false);
-                      setFormData({ name: '', email: '', subject: '', message: '' });
-                    }}
-                    className="mt-4 px-6 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-white text-xs font-mono font-semibold"
+              <AnimatePresence mode="wait">
+                {submitted ? (
+                  <motion.div
+                    key="contact-success"
+                    initial={{ opacity: 0, scale: 0.96, y: 12 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.96, y: -12 }}
+                    transition={{ duration: 0.38, ease: MOTION_EASE }}
+                    className="text-center py-12 space-y-4"
                   >
-                    {lang === 'ar' ? 'إرسال رسالة أخرى' : 'Send Another Note'}
-                  </button>
-                </div>
-              ) : (
-                <form onSubmit={handleSubmit} className="space-y-5">
+                    <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mx-auto">
+                      <CheckCircle2 className="w-8 h-8" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-white">
+                      {lang === 'ar' ? 'تم استلام رسالتك بنجاح!' : 'Message Sent Successfully!'}
+                    </h3>
+                    <p className="text-slate-300 text-sm max-w-md mx-auto leading-relaxed">
+                      {lang === 'ar'
+                        ? 'شكراً لتواصلك، سأقوم بمراجعة تفاصيل مشروعك والرد عليك في أقرب وقت ممكن.'
+                        : 'Thank you for reaching out. I have received your note and will get back to you shortly.'}
+                    </p>
+                    <button
+                      onClick={() => {
+                        setSubmitted(false);
+                        setFormData({ name: '', email: '', subject: '', message: '' });
+                      }}
+                      className="mt-4 px-6 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-white text-xs font-mono font-semibold"
+                    >
+                      {lang === 'ar' ? 'إرسال رسالة أخرى' : 'Send Another Note'}
+                    </button>
+                  </motion.div>
+                ) : (
+                  <motion.form
+                    key="contact-form"
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.34, ease: MOTION_EASE }}
+                    onSubmit={handleSubmit}
+                    className="space-y-5"
+                  >
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {/* Name */}
                     <div>
@@ -341,8 +358,9 @@ export const Contact: React.FC = () => {
                         : (lang === 'ar' ? 'دعنا نتحدث (Let\'s Chat)' : "Let's Chat")}
                     </span>
                   </button>
-                </form>
-              )}
+                  </motion.form>
+                )}
+              </AnimatePresence>
             </div>
           </AssembleItem>
 
