@@ -16,6 +16,47 @@ interface SecurityTabProps {
   requestConfirm: RequestConfirmFn;
 }
 
+interface SecretInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'> {
+  visible?: boolean;
+  onToggleVisibility?: () => void;
+  toggleLabelShow?: string;
+  toggleLabelHide?: string;
+}
+
+/** Shared password/PIN input with an aligned Eye/EyeOff visibility toggle button. */
+const SecretInput: React.FC<SecretInputProps> = ({
+  visible,
+  onToggleVisibility,
+  toggleLabelShow = 'إظهار',
+  toggleLabelHide = 'إخفاء',
+  className = '',
+  ...inputProps
+}) => {
+  const [internalVisible, setInternalVisible] = useState(false);
+  const isShown = visible ?? internalVisible;
+  const handleToggle = onToggleVisibility ?? (() => setInternalVisible((prev) => !prev));
+
+  return (
+    <div className="relative">
+      <input
+        {...inputProps}
+        type={isShown ? 'text' : 'password'}
+        dir="ltr"
+        className={`w-full pl-4 pr-12 py-2.5 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm font-mono outline-none focus:border-theme-primary ${className}`}
+      />
+      <button
+        type="button"
+        onClick={handleToggle}
+        aria-label={isShown ? toggleLabelHide : toggleLabelShow}
+        title={isShown ? toggleLabelHide : toggleLabelShow}
+        className="absolute top-1/2 -translate-y-1/2 right-3 p-1 text-slate-400 hover:text-white transition-colors cursor-pointer"
+      >
+        {isShown ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+      </button>
+    </div>
+  );
+};
+
 export const SecurityTab: React.FC<SecurityTabProps> = ({ requestConfirm }) => {
   const { profile, updateCredentials, updateProfile } = usePortfolio();
 
@@ -23,6 +64,8 @@ export const SecurityTab: React.FC<SecurityTabProps> = ({ requestConfirm }) => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [verificationPin, setVerificationPin] = useState('');
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showVerificationPin, setShowVerificationPin] = useState(false);
   const [securitySuccess, setSecuritySuccess] = useState('');
   const [securityError, setSecurityError] = useState('');
@@ -76,6 +119,9 @@ export const SecurityTab: React.FC<SecurityTabProps> = ({ requestConfirm }) => {
         setNewPassword('');
         setConfirmPassword('');
         setVerificationPin('');
+        setShowNewPassword(false);
+        setShowConfirmPassword(false);
+        setShowVerificationPin(false);
       },
     });
   };
@@ -175,18 +221,22 @@ export const SecurityTab: React.FC<SecurityTabProps> = ({ requestConfirm }) => {
             <label htmlFor="security-new-password" className="block text-xs font-mono text-slate-300 mb-1.5 font-semibold">
               كلمة المرور الجديدة (New Password)
             </label>
-            <input
+            <SecretInput
               id="security-new-password"
               name="new-password"
-              type="password"
-              dir="ltr"
+              visible={showNewPassword}
+              onToggleVisibility={() => setShowNewPassword((prev) => !prev)}
+              toggleLabelShow="إظهار كلمة المرور الجديدة"
+              toggleLabelHide="إخفاء كلمة المرور الجديدة"
               autoComplete="new-password"
               autoCapitalize="none"
               autoCorrect="off"
               value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
+              onChange={(e) => {
+                setNewPassword(e.target.value);
+                setSecurityError('');
+              }}
               placeholder="اتركها فارغة للاحتفاظ بكلمة المرور الحالية"
-              className="w-full px-4 py-2.5 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm font-mono outline-none focus:border-theme-primary"
             />
           </div>
 
@@ -194,18 +244,22 @@ export const SecurityTab: React.FC<SecurityTabProps> = ({ requestConfirm }) => {
             <label htmlFor="security-confirm-password" className="block text-xs font-mono text-slate-300 mb-1.5 font-semibold">
               تأكيد كلمة المرور الجديدة (Confirm Password)
             </label>
-            <input
+            <SecretInput
               id="security-confirm-password"
               name="confirm-password"
-              type="password"
-              dir="ltr"
+              visible={showConfirmPassword}
+              onToggleVisibility={() => setShowConfirmPassword((prev) => !prev)}
+              toggleLabelShow="إظهار تأكيد كلمة المرور"
+              toggleLabelHide="إخفاء تأكيد كلمة المرور"
               autoComplete="new-password"
               autoCapitalize="none"
               autoCorrect="off"
               value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              onChange={(e) => {
+                setConfirmPassword(e.target.value);
+                setSecurityError('');
+              }}
               placeholder="أعد إدخال كلمة المرور للتأكيد"
-              className="w-full px-4 py-2.5 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm font-mono outline-none focus:border-theme-primary"
             />
           </div>
 
@@ -213,32 +267,24 @@ export const SecurityTab: React.FC<SecurityTabProps> = ({ requestConfirm }) => {
             <label htmlFor="security-verification-pin" className="block text-xs font-mono text-theme-primary font-bold">
               الرمز التأكيدي (Security PIN) *
             </label>
-            <div className="relative">
-              <input
-                id="security-verification-pin"
-                name="verification-pin"
-                type={showVerificationPin ? 'text' : 'password'}
-                dir="ltr"
-                inputMode="numeric"
-                autoComplete="off"
-                value={verificationPin}
-                onChange={(e) => {
-                  setVerificationPin(e.target.value);
-                  setSecurityError('');
-                }}
-                placeholder="أدخل الرمز التأكيدي للمتابعة"
-                className="w-full pl-4 pr-12 py-2.5 rounded-xl bg-[#08090C] border border-theme-primary/30 text-white text-sm font-mono outline-none focus:border-theme-primary"
-                required
-              />
-              <button
-                type="button"
-                onClick={() => setShowVerificationPin(!showVerificationPin)}
-                aria-label={showVerificationPin ? 'إخفاء الرمز' : 'إظهار الرمز'}
-                className="absolute top-1/2 -translate-y-1/2 right-3 p-1 text-slate-400 hover:text-white cursor-pointer"
-              >
-                {showVerificationPin ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              </button>
-            </div>
+            <SecretInput
+              id="security-verification-pin"
+              name="verification-pin"
+              visible={showVerificationPin}
+              onToggleVisibility={() => setShowVerificationPin((prev) => !prev)}
+              toggleLabelShow="إظهار الرمز"
+              toggleLabelHide="إخفاء الرمز"
+              inputMode="numeric"
+              autoComplete="off"
+              value={verificationPin}
+              onChange={(e) => {
+                setVerificationPin(e.target.value);
+                setSecurityError('');
+              }}
+              placeholder="أدخل الرمز التأكيدي للمتابعة"
+              className="!bg-[#08090C] !border-theme-primary/30"
+              required
+            />
             <p className="text-[11px] text-slate-400">
               مطلوب إدخال الرمز التأكيدي قبل حفظ أي تغيير على اسم المستخدم أو كلمة المرور.
             </p>
@@ -287,16 +333,15 @@ export const SecurityTab: React.FC<SecurityTabProps> = ({ requestConfirm }) => {
             <label htmlFor="pin-current" className="block text-xs font-mono text-slate-300 mb-1.5">
               الرمز الحالي *
             </label>
-            <input
+            <SecretInput
               id="pin-current"
-              type="password"
-              dir="ltr"
               inputMode="numeric"
               autoComplete="off"
               value={currentPinInput}
               onChange={(e) => setCurrentPinInput(e.target.value)}
               placeholder="••••"
-              className="w-full px-3.5 py-2.5 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm font-mono outline-none focus:border-theme-primary"
+              toggleLabelShow="إظهار الرمز الحالي"
+              toggleLabelHide="إخفاء الرمز الحالي"
               required
             />
           </div>
@@ -304,16 +349,15 @@ export const SecurityTab: React.FC<SecurityTabProps> = ({ requestConfirm }) => {
             <label htmlFor="pin-new" className="block text-xs font-mono text-slate-300 mb-1.5">
               الرمز الجديد *
             </label>
-            <input
+            <SecretInput
               id="pin-new"
-              type="password"
-              dir="ltr"
               inputMode="numeric"
               autoComplete="off"
               value={newPinInput}
               onChange={(e) => setNewPinInput(e.target.value)}
               placeholder="••••"
-              className="w-full px-3.5 py-2.5 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm font-mono outline-none focus:border-theme-primary"
+              toggleLabelShow="إظهار الرمز الجديد"
+              toggleLabelHide="إخفاء الرمز الجديد"
               required
             />
           </div>
@@ -321,16 +365,15 @@ export const SecurityTab: React.FC<SecurityTabProps> = ({ requestConfirm }) => {
             <label htmlFor="pin-confirm" className="block text-xs font-mono text-slate-300 mb-1.5">
               تأكيد الرمز الجديد *
             </label>
-            <input
+            <SecretInput
               id="pin-confirm"
-              type="password"
-              dir="ltr"
               inputMode="numeric"
               autoComplete="off"
               value={confirmPinInput}
               onChange={(e) => setConfirmPinInput(e.target.value)}
               placeholder="••••"
-              className="w-full px-3.5 py-2.5 rounded-xl bg-[#0B0C10] border border-white/[0.08] text-white text-sm font-mono outline-none focus:border-theme-primary"
+              toggleLabelShow="إظهار تأكيد الرمز"
+              toggleLabelHide="إخفاء تأكيد الرمز"
               required
             />
           </div>
