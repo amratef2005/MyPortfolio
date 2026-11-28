@@ -23,5 +23,34 @@
       "source": "/Amr_Kandel_Resume_ATS.pdf",
       "destination": "/api/cv-pdf"
     }
+  ],
+  "headers": [
+    {
+      "source": "/(index\\.html|admin\\.html|admin|sw-admin\\.js|version\\.json|admin-manifest\\.webmanifest)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
   ]
 }

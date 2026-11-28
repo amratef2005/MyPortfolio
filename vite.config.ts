@@ -2,6 +2,36 @@ import { defineConfig, Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 import pg from 'pg';
 import { resolve } from 'path';
+import { mkdirSync, writeFileSync } from 'fs';
+
+const APP_BUILD_ID = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
+
+function versionManifestPlugin(buildId: string): Plugin {
+  return {
+    name: 'version-manifest-plugin',
+    configureServer(server) {
+      server.middlewares.use((req, res, next) => {
+        if (req.url?.split('?')[0] === '/version.json' && req.method === 'GET') {
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/json');
+          res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+          res.end(JSON.stringify({ buildId }));
+          return;
+        }
+        next();
+      });
+    },
+    writeBundle() {
+      const distDir = resolve(__dirname, 'dist');
+      mkdirSync(distDir, { recursive: true });
+      writeFileSync(
+        resolve(distDir, 'version.json'),
+        JSON.stringify({ buildId }, null, 2),
+        'utf8'
+      );
+    },
+  };
+}
 
 const { Pool } = pg;
 
@@ -327,7 +357,10 @@ function supabaseBackendPlugin(): Plugin {
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), supabaseBackendPlugin()],
+  plugins: [react(), supabaseBackendPlugin(), versionManifestPlugin(APP_BUILD_ID)],
+  define: {
+    __APP_BUILD_ID__: JSON.stringify(APP_BUILD_ID),
+  },
   resolve: {
     alias: {
       '@': resolve(__dirname, 'src'),
