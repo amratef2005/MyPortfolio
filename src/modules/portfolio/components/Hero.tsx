@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useLayoutEffect, useRef } from 'react';
 import { usePortfolio } from '@/app/providers/PortfolioContext';
 import { SignatureGlowAvatar } from '@modules/portfolio/components/SignatureGlowAvatar';
 import { MOTION_EASE, StaggerGroup, StaggerItem } from '@shared/ui/KineticAssemble';
@@ -12,6 +12,69 @@ import {
 
 export const Hero: React.FC = () => {
   const { profile, lang } = usePortfolio();
+  const nameContainerRef = useRef<HTMLDivElement>(null);
+  const nameHeadingRef = useRef<HTMLHeadingElement>(null);
+
+  const heroName =
+    lang === 'ar'
+      ? (profile.nameAr || profile.shortNameAr || 'عمرو عاطف إمام محمود')
+      : (profile.name || profile.shortName || 'Amr Atef Imam Mahmoud');
+
+  const fitHeroName = useCallback(() => {
+    const container = nameContainerRef.current;
+    const heading = nameHeadingRef.current;
+    if (!container || !heading) return;
+
+    // Clear previous inline override so CSS clamp() sets the upper bound first
+    heading.style.fontSize = '';
+
+    const availableWidth = container.getBoundingClientRect().width;
+    if (availableWidth <= 0) return;
+
+    const textWidth = heading.getBoundingClientRect().width;
+    const computedPx = parseFloat(window.getComputedStyle(heading).fontSize);
+
+    if (textWidth > availableWidth && Number.isFinite(computedPx)) {
+      const ratio = Math.max(0.1, (availableWidth - 2) / textWidth);
+      let fittedPx = Math.max(16, Math.floor(computedPx * ratio * 10) / 10);
+      heading.style.fontSize = `${fittedPx}px`;
+
+      // Guard against non-linear kerning/hinting overflow after font-size change
+      let guard = 0;
+      while (heading.getBoundingClientRect().width > availableWidth && fittedPx > 16 && guard < 6) {
+        fittedPx = Math.max(16, Math.round((fittedPx - 0.5) * 10) / 10);
+        heading.style.fontSize = `${fittedPx}px`;
+        guard += 1;
+      }
+    }
+  }, []);
+
+  useLayoutEffect(() => {
+    let cancelled = false;
+    const runFit = () => {
+      if (!cancelled) fitHeroName();
+    };
+
+    runFit();
+
+    const observer =
+      typeof ResizeObserver !== 'undefined' && nameContainerRef.current
+        ? new ResizeObserver(runFit)
+        : null;
+    if (observer && nameContainerRef.current) {
+      observer.observe(nameContainerRef.current);
+    }
+
+    const fontSet = typeof document !== 'undefined' ? document.fonts : undefined;
+    fontSet?.ready?.then(runFit).catch(() => {});
+    fontSet?.addEventListener?.('loadingdone', runFit);
+
+    return () => {
+      cancelled = true;
+      observer?.disconnect();
+      fontSet?.removeEventListener?.('loadingdone', runFit);
+    };
+  }, [fitHeroName, heroName, lang, profile.fontPreset]);
 
   return (
     <section id="hero" className="relative min-h-[85vh] pt-20 sm:pt-32 pb-8 sm:pb-16 lg:pb-20 flex items-center justify-center overflow-hidden">
@@ -34,7 +97,7 @@ export const Hero: React.FC = () => {
           mode="mount"
           delay={0.14}
           stagger={0.11}
-          className="lg:col-span-7 flex flex-col gap-6 text-start z-10 order-2 lg:order-1"
+          className="lg:col-span-7 min-w-0 flex flex-col gap-6 text-start z-10 order-2 lg:order-1"
         >
           {/* 1. Dynamic Status / Availability Pill */}
           {profile.showAvailabilityBadge !== false && (() => {
@@ -78,15 +141,20 @@ export const Hero: React.FC = () => {
           })()}
 
           {/* 2 & 3. Greeting + Large Name + Theme Primary Title + Stack + Location */}
-          <div>
+          <div className="min-w-0">
             <StaggerItem direction="bottom" distance={18} duration={0.76}>
               <p className="text-xl sm:text-2xl font-light text-slate-300 tracking-wide font-sans">
                 {lang === 'ar' ? (profile.heroGreetingAr || 'مرحباً، أنا') : (profile.heroGreeting || 'Hello, I am')}
               </p>
               
-              <h1 className="text-[clamp(2.2rem,6vw,4rem)] font-black text-white leading-[1.15] tracking-tight mt-1">
-                {lang === 'ar' ? (profile.nameAr || profile.shortNameAr || 'عمرو عاطف إمام محمود') : (profile.name || profile.shortName || 'Amr Atef Imam Mahmoud')}
-              </h1>
+              <div ref={nameContainerRef} className="w-full min-w-0 overflow-hidden">
+                <h1
+                  ref={nameHeadingRef}
+                  className="inline-block whitespace-nowrap text-[clamp(1.75rem,4.8vw,3.75rem)] font-black text-white leading-[1.2] tracking-tight mt-1"
+                >
+                  {heroName}
+                </h1>
+              </div>
             </StaggerItem>
 
             <StaggerItem direction="bottom" distance={18} duration={0.76}>
@@ -104,6 +172,7 @@ export const Hero: React.FC = () => {
                 {['C#', 'ASP.NET Core', 'SQL Server', 'PostgreSQL'].map((tech) => (
                   <span
                     key={tech}
+                    dir="ltr"
                     className="inline-flex items-center px-2.5 py-1 rounded-full bg-white/[0.04] backdrop-blur-sm border border-white/[0.08] text-[11px] sm:text-xs font-mono font-semibold text-theme-secondary/95 tracking-wide shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
                   >
                     {tech}
