@@ -79,14 +79,14 @@ export const Projects: React.FC = () => {
 
             {/* Filter Pills with Horizontal Scroll on Mobile */}
             {categories.length > 1 && (
-              <div className="flex items-center gap-1.5 bg-[#0c0c0e] p-1.5 rounded-lg border border-white/10 self-start md:self-auto overflow-x-auto max-w-full shrink-0 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+              <div className="flex items-center gap-1.5 bg-[#0c0c0e]/90 backdrop-blur-md p-1.5 rounded-2xl border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] self-start md:self-auto overflow-x-auto max-w-full shrink-0 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
                 {categories.map((cat) => {
                   const isActive = filter === cat.id;
                   return (
                     <button
                       key={cat.id}
                       onClick={() => setFilter(cat.id)}
-                      className={`relative px-3.5 sm:px-4 py-2 rounded-md text-xs font-mono uppercase tracking-wider font-semibold whitespace-nowrap transition-colors shrink-0 ${isActive ? 'text-white' : 'text-slate-400 hover:text-white hover:bg-white/5'
+                      className={`relative px-3.5 sm:px-4 py-2 rounded-xl text-xs font-mono uppercase tracking-wider font-semibold whitespace-nowrap transition-colors shrink-0 ${isActive ? 'text-white' : 'text-slate-400 hover:text-white hover:bg-white/5'
                         }`}
                     >
                       {isActive && (
@@ -105,7 +105,7 @@ export const Projects: React.FC = () => {
           </div>
         </AssembleItem>
 
-        {/* Projects Cards Grid with Smooth Layout Filtering */}
+        {/* Projects Cards Grid with Flagship Bento Layout */}
         <motion.div
           layout
           className={filteredProjects.length === 1 ? 'max-w-4xl mx-auto' : 'grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 items-stretch'}
@@ -113,6 +113,7 @@ export const Projects: React.FC = () => {
           <AnimatePresence mode="popLayout">
             {filteredProjects.map((project, idx) => {
               const indexStr = String(idx + 1).padStart(2, '0');
+              const isFeatured = filter === 'All' && idx === 0 && filteredProjects.length > 2;
 
               return (
                 <motion.div
@@ -127,29 +128,33 @@ export const Projects: React.FC = () => {
                     delay: 0.12 + Math.min(idx, 4) * 0.08,
                     ease: MOTION_EASE,
                   }}
-                  className="h-full transform-gpu"
+                  className={`h-full transform-gpu ${isFeatured ? 'md:col-span-2' : ''}`}
                 >
-                  <div className="premium-card rounded-3xl border border-white/10 hover:border-theme-primary/40 p-4 sm:p-6 lg:p-7 flex flex-col justify-between group overflow-hidden h-full relative">
+                  <div className={`premium-card rounded-3xl border ${isFeatured ? 'border-theme-primary/25 p-5 sm:p-7 lg:p-8' : 'border-white/10 p-4 sm:p-6 lg:p-7'} hover:border-theme-primary/45 flex flex-col justify-between group overflow-hidden h-full relative`}>
 
                     {/* Top Glowing Gradient Bar */}
-                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-theme-primary via-theme-secondary to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-theme-primary via-theme-secondary to-transparent transition-opacity duration-300 ${isFeatured ? 'opacity-80' : 'opacity-0 group-hover:opacity-100'}`} />
 
-                    <div>
+                    <div className="relative z-10">
                       {/* Top Badges Header Bar */}
                       <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
                         <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#14141a] border border-theme-primary/30 text-theme-secondary text-[11px] sm:text-xs font-mono font-bold shadow-sm">
                           <Layers className="w-3.5 h-3.5 text-theme-primary shrink-0" />
-                          <span>{lang === 'ar' ? 'معمارية نظيفة و CQRS' : 'Clean Architecture & CQRS'}</span>
+                          <span>
+                            {isFeatured
+                              ? (lang === 'ar' ? 'المشروع الرئيسي • معمارية نظيفة و CQRS' : 'Flagship • Clean Architecture & CQRS')
+                              : (lang === 'ar' ? 'معمارية نظيفة و CQRS' : 'Clean Architecture & CQRS')}
+                          </span>
                         </span>
 
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#0a1810] border border-emerald-500/30 text-emerald-400 text-[11px] font-mono font-bold">
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#0a1810] border border-emerald-500/30 text-emerald-400 text-[11px] font-mono font-bold tabular-nums">
                           <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                           <span>{lang === 'ar' ? '49 اختبار مؤتمت • 100%' : '49 Tests • 100% Pass'}</span>
                         </span>
                       </div>
 
                       {/* Project Visual / Thumbnail Mockup Preview with Cinematic Lighting */}
-                      <div className="relative w-full h-48 sm:h-56 rounded-2xl overflow-hidden bg-[#101015] border border-white/10 mb-5 group-hover:border-theme-primary/40 transition-all duration-500 flex items-center justify-center shadow-[0_10px_30px_rgba(0,0,0,0.8)] group-hover:shadow-[0_16px_45px_rgba(var(--theme-primary-rgb),0.22)]">
+                      <div className={`relative w-full ${isFeatured ? 'h-56 sm:h-72' : 'h-48 sm:h-56'} rounded-2xl overflow-hidden bg-[#101015] border border-white/10 mb-5 group-hover:border-theme-primary/40 transition-all duration-500 flex items-center justify-center shadow-[0_10px_30px_rgba(0,0,0,0.8)] group-hover:shadow-[0_16px_45px_rgba(var(--theme-primary-rgb),0.22)]`}>
 
                         {/* Ambient Volumetric Backdrop Light */}
                         <div

@@ -16,7 +16,8 @@ export const Hero: React.FC = () => {
   return (
     <section id="hero" className="relative min-h-[85vh] pt-20 sm:pt-32 pb-8 sm:pb-16 lg:pb-20 flex items-center justify-center overflow-hidden">
       
-      {/* Soft Background Radial Light */}
+      {/* Architectural Dot Grid & Soft Background Radial Light */}
+      <div className="hero-dot-grid absolute inset-0 opacity-60 pointer-events-none" aria-hidden="true" />
       <div 
         className="absolute top-1/4 -right-16 w-[380px] sm:w-[560px] h-[380px] sm:h-[560px] rounded-full blur-[56px] pointer-events-none"
         style={{ background: 'radial-gradient(circle, rgba(var(--theme-primary-rgb), 0.16) 0%, transparent 70%)' }}
@@ -98,11 +99,16 @@ export const Hero: React.FC = () => {
                 </p>
               </div>
 
-              {/* Core Technologies Banner */}
-              <div className="mt-1">
-                <span className="text-xs sm:text-sm font-mono text-theme-secondary/95 font-semibold tracking-wider">
-                  C# • ASP.NET Core • SQL Server • PostgreSQL
-                </span>
+              {/* Core Technologies Micro-Pills */}
+              <div className="mt-2.5 flex flex-wrap items-center gap-2">
+                {['C#', 'ASP.NET Core', 'SQL Server', 'PostgreSQL'].map((tech) => (
+                  <span
+                    key={tech}
+                    className="inline-flex items-center px-2.5 py-1 rounded-full bg-white/[0.04] backdrop-blur-sm border border-white/[0.08] text-[11px] sm:text-xs font-mono font-semibold text-theme-secondary/95 tracking-wide shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
+                  >
+                    {tech}
+                  </span>
+                ))}
               </div>
 
               {/* Location */}
@@ -124,11 +130,11 @@ export const Hero: React.FC = () => {
 
           {/* 5. Action Buttons: Hire Me + View Projects */}
           <StaggerItem direction="bottom" distance={18} duration={0.78}>
-            <div className="flex flex-wrap items-center gap-4 pt-2">
+            <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 pt-2">
               {/* "Hire Me" Button with Theme Gradient & Glow */}
               <a
                 href="#contact"
-                className="btn-sheen flex items-center justify-center gap-2.5 h-12 sm:h-14 px-7 sm:px-9 rounded-2xl bg-gradient-to-r from-theme-primary to-theme-secondary hover:brightness-110 text-white font-bold text-base shadow-[0_0_30px_rgba(var(--theme-primary-rgb),0.45)] hover:shadow-[0_0_45px_rgba(var(--theme-primary-rgb),0.7)] transition-all duration-300 active:scale-95"
+                className="btn-sheen w-full sm:w-auto flex items-center justify-center gap-2.5 h-12 sm:h-14 px-7 sm:px-9 rounded-2xl bg-gradient-to-r from-theme-primary to-theme-secondary hover:brightness-110 text-white font-bold text-base shadow-[0_0_30px_rgba(var(--theme-primary-rgb),0.45)] hover:shadow-[0_0_45px_rgba(var(--theme-primary-rgb),0.7)] transition-all duration-300 active:scale-95"
               >
                 <Send className="w-4 h-4" />
                 <span>{lang === 'ar' ? 'وظفني الآن' : 'Hire Me'}</span>
@@ -137,7 +143,7 @@ export const Hero: React.FC = () => {
               {/* Secondary Button: Explore Projects */}
               <a
                 href="#projects"
-                className="flex items-center justify-center gap-2.5 h-12 sm:h-14 px-6 sm:px-8 rounded-2xl bg-[#121215] hover:bg-[#18181f] border border-theme-primary/30 hover:border-theme-primary/60 text-slate-200 hover:text-white font-semibold text-base transition-all duration-300"
+                className="w-full sm:w-auto flex items-center justify-center gap-2.5 h-12 sm:h-14 px-6 sm:px-8 rounded-2xl bg-white/[0.04] hover:bg-white/[0.08] backdrop-blur-md border border-theme-primary/30 hover:border-theme-primary/60 text-slate-200 hover:text-white font-semibold text-base shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition-all duration-300 active:scale-95"
               >
                 <span>{lang === 'ar' ? 'تصفح المشاريع' : 'Explore Projects'}</span>
                 <ArrowUpRight className="w-4 h-4 text-theme-secondary rtl-flip" />
@@ -145,30 +151,30 @@ export const Hero: React.FC = () => {
             </div>
           </StaggerItem>
 
-          {/* 6. Quick Metrics Bar */}
+          {/* 6. Quick Metrics Frosted Stat Cards */}
           <StaggerItem direction="bottom" distance={16} duration={0.8}>
-            <div className="grid grid-cols-3 gap-3 sm:gap-4 pt-4 border-t border-white/10 max-w-lg">
-              <div>
-                <span className="block text-2xl sm:text-3xl font-black text-theme-primary">
+            <div className="grid grid-cols-3 gap-2.5 sm:gap-3.5 pt-2 max-w-xl">
+              <div className="rounded-2xl bg-[#111218]/80 backdrop-blur-md border border-white/[0.08] hover:border-theme-primary/35 px-3 py-3 sm:px-4 sm:py-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition-colors">
+                <span className="block text-xl sm:text-3xl font-black font-mono tabular-nums text-theme-primary">
                   +{profile.yearsOfExperience ?? 1}
                 </span>
-                <span className="text-xs text-slate-400 font-medium">
+                <span className="block text-[11px] sm:text-xs text-slate-400 font-medium mt-0.5 leading-snug">
                   {lang === 'ar' ? 'سنوات خبرة' : 'Years Experience'}
                 </span>
               </div>
-              <div>
-                <span className="block text-2xl sm:text-3xl font-black text-theme-secondary">
+              <div className="rounded-2xl bg-[#111218]/80 backdrop-blur-md border border-white/[0.08] hover:border-theme-secondary/35 px-3 py-3 sm:px-4 sm:py-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition-colors">
+                <span className="block text-xl sm:text-3xl font-black font-mono tabular-nums text-theme-secondary">
                   +{profile.completedProjects || 24}
                 </span>
-                <span className="text-xs text-slate-400 font-medium">
+                <span className="block text-[11px] sm:text-xs text-slate-400 font-medium mt-0.5 leading-snug">
                   {lang === 'ar' ? 'مشروع مكتمل' : 'Completed Projects'}
                 </span>
               </div>
-              <div>
-                <span className="block text-2xl sm:text-3xl font-black text-emerald-400">
+              <div className="rounded-2xl bg-[#111218]/80 backdrop-blur-md border border-white/[0.08] hover:border-emerald-500/35 px-3 py-3 sm:px-4 sm:py-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition-colors">
+                <span className="block text-xl sm:text-3xl font-black font-mono tabular-nums text-emerald-400">
                   100%
                 </span>
-                <span className="text-xs text-slate-400 font-medium">
+                <span className="block text-[11px] sm:text-xs text-slate-400 font-medium mt-0.5 leading-snug">
                   {lang === 'ar' ? 'اجتياز الاختبارات (49)' : 'Test Pass Rate (49)'}
                 </span>
               </div>

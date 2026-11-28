@@ -87,7 +87,7 @@ export const App: React.FC = () => {
         if (!latestEvent) return;
         const target = latestEvent.target as HTMLElement | null;
         if (!target) return;
-        const card = target.closest<HTMLElement>('.glass-panel, .glass-card, .ios-glass');
+        const card = target.closest<HTMLElement>('.glass-panel, .glass-card, .ios-glass, .premium-card');
         if (card) {
           const rect = card.getBoundingClientRect();
           card.style.setProperty('--mouse-x', `${latestEvent.clientX - rect.left}px`);
@@ -122,13 +122,19 @@ export const App: React.FC = () => {
 
             <main className="relative z-10 space-y-0">
               <Hero />
+              <div className="section-divider" aria-hidden="true" />
               <About />
               <SectionErrorBoundary>
                 <Suspense fallback={null}>
+                  <div className="section-divider" aria-hidden="true" />
                   <div className="defer-section"><LazyExperience /></div>
+                  <div className="section-divider" aria-hidden="true" />
                   <div className="defer-section"><LazyProjects /></div>
+                  <div className="section-divider" aria-hidden="true" />
                   <div className="defer-section"><LazyCertificates /></div>
+                  <div className="section-divider" aria-hidden="true" />
                   <div className="defer-section"><LazySkills /></div>
+                  <div className="section-divider" aria-hidden="true" />
                   <div className="defer-section"><LazyContact /></div>
                 </Suspense>
               </SectionErrorBoundary>

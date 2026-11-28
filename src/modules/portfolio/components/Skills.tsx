@@ -187,25 +187,27 @@ export const Skills: React.FC = () => {
           {displaySkills.map((skill, idx) => (
             <StaggerItem key={idx} direction="bottom" distance={20}>
               <div className="premium-card p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-white/10 hover:border-theme-primary/40 group relative overflow-hidden">
-                {/* Big Theme Percentage Number */}
-                <div className="flex items-baseline justify-between mb-3">
-                  <span className="text-3xl sm:text-4xl font-black text-theme-primary font-mono group-hover:text-theme-secondary transition-colors drop-shadow-[0_0_15px_rgba(var(--theme-primary-rgb),0.3)]">
-                    {skill.level}%
-                  </span>
-                  <div className="w-2.5 h-2.5 rounded-full bg-theme-primary group-hover:scale-125 transition-transform" />
+                <div className="relative z-10">
+                  {/* Big Theme Percentage Number */}
+                  <div className="flex items-baseline justify-between mb-3">
+                    <span className="text-3xl sm:text-4xl font-black text-theme-primary font-mono tabular-nums group-hover:text-theme-secondary transition-colors drop-shadow-[0_0_15px_rgba(var(--theme-primary-rgb),0.3)]">
+                      {skill.level}%
+                    </span>
+                    <div className="w-2.5 h-2.5 rounded-full bg-theme-primary group-hover:scale-125 transition-transform" />
+                  </div>
+
+                  {/* Skill Name */}
+                  <h4 className="text-sm sm:text-base font-bold text-white mb-3">
+                    {skill.name}
+                  </h4>
+
+                  {/* Synchronized Animated Progress Track */}
+                  <AnimatedProgressBar
+                    level={skill.level}
+                    delay={0.22 + idx * 0.06}
+                    isRtl={lang === 'ar'}
+                  />
                 </div>
-
-                {/* Skill Name */}
-                <h4 className="text-sm sm:text-base font-bold text-white mb-3">
-                  {skill.name}
-                </h4>
-
-                {/* Synchronized Animated Progress Track */}
-                <AnimatedProgressBar
-                  level={skill.level}
-                  delay={0.22 + idx * 0.06}
-                  isRtl={lang === 'ar'}
-                />
               </div>
             </StaggerItem>
           ))}
@@ -233,9 +235,9 @@ export const Skills: React.FC = () => {
           >
             {backendDomains.map((domain, sIdx) => (
               <StaggerItem key={sIdx} direction="bottom" distance={20}>
-                <div className="premium-card p-4 sm:p-5 rounded-2xl sm:rounded-3xl border border-white/10 hover:border-theme-primary/35 group h-full flex flex-col justify-between">
-                  <div>
-                    <div className="w-11 h-11 rounded-2xl bg-theme-primary/10 border border-theme-primary/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <div className="premium-card p-4 sm:p-5 rounded-2xl sm:rounded-3xl border border-white/10 hover:border-theme-primary/35 group h-full flex flex-col justify-between overflow-hidden">
+                  <div className="relative z-10">
+                    <div className="w-11 h-11 rounded-xl bg-white/[0.04] border border-white/10 group-hover:border-theme-primary/35 group-hover:bg-theme-primary/10 flex items-center justify-center mb-4 group-hover:scale-105 transition-all">
                       {domain.icon}
                     </div>
                     <h4 className="text-base font-bold text-white mb-1.5 group-hover:text-theme-secondary transition-colors">
@@ -248,7 +250,7 @@ export const Skills: React.FC = () => {
                       {lang === 'ar' ? domain.descAr : domain.descEn}
                     </p>
                   </div>
-                  <div className="mt-4 pt-3 border-t border-white/5 flex items-center gap-1.5 text-[11px] font-mono text-theme-primary">
+                  <div className="relative z-10 mt-4 pt-3 border-t border-white/5 flex items-center gap-1.5 text-[11px] font-mono text-theme-primary">
                     <span>{lang === 'ar' ? 'معتمد ومطبق' : 'Production-Ready'}</span>
                     <span className="text-theme-secondary rtl-flip">&rarr;</span>
                   </div>

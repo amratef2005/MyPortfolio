@@ -222,14 +222,14 @@ export const Footer: React.FC = () => {
         </div>
 
         {/* Bottom Copyright & Stack Bar */}
-        <div className="pt-6 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
+        <div className="pt-6 border-t border-white/[0.08] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
           <p className="text-center sm:text-start">
             {lang === 'ar'
               ? `© ${new Date().getFullYear()} ${profile.nameAr || 'عمرو عاطف'}. جميع الحقوق محفوظة.`
               : `© ${new Date().getFullYear()} ${profile.name || 'Amr Atef'}. All rights reserved.`}
           </p>
 
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.02] border border-white/[0.06] font-mono text-[11px] text-slate-400">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.03] backdrop-blur-sm border border-white/[0.08] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] font-mono text-[11px] text-slate-300">
             <Terminal className="w-3.5 h-3.5 text-theme-primary shrink-0" />
             <span>C# • ASP.NET Core • Clean Architecture</span>
           </div>

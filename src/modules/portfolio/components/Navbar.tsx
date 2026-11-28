@@ -92,80 +92,76 @@ export const Navbar: React.FC = () => {
   }, []);
 
   return (
-    <nav
-      ref={navRef}
-      className={`fixed top-0 left-0 right-0 z-50 transform-gpu px-3 xs:px-4 sm:px-6 lg:px-8 py-3 pt-[max(0.75rem,env(safe-area-inset-top))] transition-all duration-300 ${
-        isScrolled
-          ? 'bg-[#050505]/92 backdrop-blur-md sm:backdrop-blur-2xl border-b border-theme-primary/25 shadow-[0_10px_35px_rgba(0,0,0,0.9)]'
-          : 'bg-[#050505]/80 backdrop-blur-sm sm:backdrop-blur-xl border-b border-theme-primary/15 shadow-[0_8px_30px_rgba(0,0,0,0.75)]'
-      }`}
-    >
-      {/* Top-Edge Scroll Progress Indicator (GPU scaleX driven) */}
-      <motion.div
-        aria-hidden="true"
-        className={`absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-theme-primary to-theme-secondary pointer-events-none transform-gpu ${
-          lang === 'ar' ? 'origin-right' : 'origin-left'
+    <header className="fixed top-0 left-0 right-0 z-50 pointer-events-none px-3 sm:px-6 lg:px-8 pt-[max(0.6rem,env(safe-area-inset-top))] transition-all duration-300">
+      <nav
+        ref={navRef}
+        className={`pointer-events-auto relative mx-auto transform-gpu overflow-hidden transition-all duration-500 ${
+          isScrolled
+            ? 'max-w-6xl rounded-2xl px-3.5 sm:px-5 py-2.5 bg-[#07080D]/88 backdrop-blur-2xl border border-white/[0.11] shadow-[0_14px_40px_rgba(0,0,0,0.85),inset_0_1px_0_rgba(255,255,255,0.08)]'
+            : 'max-w-7xl rounded-2xl px-3.5 sm:px-6 py-3 bg-[#06070B]/65 backdrop-blur-xl border border-white/[0.06] shadow-[0_8px_28px_rgba(0,0,0,0.55),inset_0_1px_0_rgba(255,255,255,0.05)]'
         }`}
-        style={{
-          scaleX: smoothScrollProgress,
-          boxShadow: isScrolled ? '0 0 12px rgba(var(--theme-primary-rgb), 0.7)' : 'none',
-        }}
-      />
-      <div className="max-w-7xl mx-auto flex items-center justify-between gap-3 sm:gap-6">
-
-        {/* Brand / Logo: "Amr Atef." with Theme Primary Accent Dot */}
-        <a
-          href="#hero"
-          onClick={(e) => scrollToSection(e, '#hero')}
-          onDoubleClick={(e) => {
-            e.preventDefault();
-            setIsAdminOpen(true);
+      >
+        {/* Top-Edge Scroll Progress Indicator */}
+        <motion.div
+          aria-hidden="true"
+          className={`absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-theme-primary via-theme-secondary to-theme-primary pointer-events-none transform-gpu ${
+            lang === 'ar' ? 'origin-right' : 'origin-left'
+          }`}
+          style={{
+            scaleX: smoothScrollProgress,
+            boxShadow: isScrolled ? '0 0 12px rgba(var(--theme-primary-rgb), 0.7)' : 'none',
           }}
-          className="flex items-center gap-2 group shrink-0 select-none cursor-pointer"
-          title={lang === 'ar' ? 'Amr Atef (نقر مزدوج لفتح لوحة التحكم)' : 'Amr Atef (Double-click to open Admin)'}
-        >
-          <span className="text-xl sm:text-2xl font-black tracking-tight text-white transition-colors duration-200">
-            {lang === 'ar' ? (profile.brandNameAr || profile.brandName || 'عمرو عاطف') : (profile.brandName || 'Amr Atef')}
-            <span className="text-theme-primary text-2xl sm:text-3xl font-black drop-shadow-[0_0_12px_rgba(var(--theme-primary-rgb),0.8)]">.</span>
-          </span>
-        </a>
+        />
+        <div className="flex items-center justify-between gap-2 sm:gap-5">
+          {/* Brand / Logo */}
+          <a
+            href="#hero"
+            onClick={(e) => scrollToSection(e, '#hero')}
+            onDoubleClick={(e) => {
+              e.preventDefault();
+              setIsAdminOpen(true);
+            }}
+            className="flex items-center gap-2 group min-w-0 shrink select-none cursor-pointer"
+            title={lang === 'ar' ? 'Amr Atef (نقر مزدوج لفتح لوحة التحكم)' : 'Amr Atef (Double-click to open Admin)'}
+          >
+            <span className="text-lg sm:text-2xl font-black tracking-tight text-white transition-colors duration-200 truncate max-w-[138px] sm:max-w-none">
+              {lang === 'ar' ? (profile.brandNameAr || profile.brandName || 'عمرو عاطف') : (profile.brandName || 'Amr Atef')}
+              <span className="text-theme-primary text-2xl sm:text-3xl font-black drop-shadow-[0_0_12px_rgba(var(--theme-primary-rgb),0.8)]">.</span>
+            </span>
+          </a>
 
-        {/* Desktop Navigation Links */}
-        <div className="hidden lg:flex items-center gap-7">
-          {navLinks.map((link) => {
-            const isActive = activeSection === link.href.replace('#', '');
-            return (
-              <a
-                key={link.href}
-                href={link.href}
-                onClick={(e) => scrollToSection(e, link.href)}
-                aria-current={isActive ? 'page' : undefined}
-                className={`text-sm font-medium transition-colors duration-300 relative group py-1.5 ${
-                  isActive
-                    ? 'text-theme-primary font-semibold'
-                    : 'text-slate-300 hover:text-theme-secondary'
-                }`}
-              >
-                {lang === 'ar' ? link.labelAr : link.labelEn}
-                {isActive ? (
-                  <motion.span
-                    layoutId="navActiveUnderline"
-                    transition={{ duration: 0.45, ease: MOTION_EASE }}
-                    className="absolute bottom-0 inset-x-0 h-0.5 rounded-full bg-gradient-to-r from-theme-primary to-theme-secondary shadow-[0_0_10px_rgba(var(--theme-primary-rgb),0.65)]"
-                  />
-                ) : (
-                  <span className="absolute bottom-0 inset-x-0 h-0.5 rounded-full bg-theme-secondary/50 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center" />
-                )}
-              </a>
-            );
-          })}
-        </div>
+          {/* Desktop Navigation Pills */}
+          <div className="hidden lg:flex items-center gap-1 p-1 rounded-xl bg-white/[0.025] border border-white/[0.06]">
+            {navLinks.map((link) => {
+              const isActive = activeSection === link.href.replace('#', '');
+              return (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  onClick={(e) => scrollToSection(e, link.href)}
+                  aria-current={isActive ? 'page' : undefined}
+                  className={`relative px-3.5 py-1.5 rounded-lg text-xs font-medium transition-colors duration-300 ${
+                    isActive
+                      ? 'text-white font-semibold'
+                      : 'text-slate-300 hover:text-white'
+                  }`}
+                >
+                  {isActive && (
+                    <motion.span
+                      layoutId="navActivePill"
+                      transition={{ type: 'spring', stiffness: 360, damping: 30 }}
+                      className="absolute inset-0 rounded-lg bg-theme-primary/20 border border-theme-primary/40 shadow-[0_0_14px_rgba(var(--theme-primary-rgb),0.25)]"
+                    />
+                  )}
+                  <span className="relative z-10">{lang === 'ar' ? link.labelAr : link.labelEn}</span>
+                </a>
+              );
+            })}
+          </div>
 
-        {/* Right Section: Social Icons + Hire Me + Lang Toggle */}
-        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-
-          {/* Social Icons (Desktop) */}
-            <div className="hidden sm:flex items-center gap-2 text-theme-secondary border-e border-white/10 pe-3 me-1">
+          {/* Right Section: Social Icons + Hire Me + Lang Toggle */}
+          <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+            <div className="hidden sm:flex items-center gap-1 text-theme-secondary border-e border-white/10 pe-2.5 me-0.5">
               {profile.linkedin && (
                 <a
                   href={profile.linkedin}
@@ -197,38 +193,34 @@ export const Navbar: React.FC = () => {
               </a>
             </div>
 
-            {/* "Hire Me" Quick Action CTA */}
             <a
               href="#contact"
               onClick={(e) => scrollToSection(e, '#contact')}
-              className="btn-sheen flex items-center justify-center gap-1.5 h-10 px-3 sm:px-4 rounded-xl bg-gradient-to-r from-theme-primary to-theme-secondary hover:brightness-110 text-white text-xs sm:text-sm font-bold shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.4)] hover:shadow-[0_0_28px_rgba(var(--theme-primary-rgb),0.6)] transition-all shrink-0 active:scale-95"
+              className="btn-sheen flex items-center justify-center gap-1.5 h-9 sm:h-10 px-3 sm:px-4 rounded-xl bg-gradient-to-r from-theme-primary to-theme-secondary hover:brightness-110 text-white text-xs sm:text-sm font-bold shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.4)] hover:shadow-[0_0_28px_rgba(var(--theme-primary-rgb),0.6)] transition-all shrink-0 active:scale-95"
             >
               <Send className="w-3.5 h-3.5" />
               <span>{lang === 'ar' ? 'وظفني' : 'Hire Me'}</span>
             </a>
 
-            {/* Language Toggle */}
             <button
               onClick={() => setLang(lang === 'ar' ? 'en' : 'ar')}
-              className="flex items-center justify-center gap-1 h-10 px-2.5 rounded-xl bg-[#121215] hover:bg-[#18181f] border border-white/10 hover:border-theme-primary/40 text-xs font-mono text-slate-200 transition-colors"
+              className="flex items-center justify-center gap-1 h-9 sm:h-10 px-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 hover:border-theme-primary/40 text-xs font-mono text-slate-200 transition-colors active:scale-95"
               title={lang === 'ar' ? 'Switch to English' : 'التحويل للعربية'}
             >
               <Globe className="w-3.5 h-3.5 text-theme-secondary" />
-              <span className="font-bold">{lang === 'ar' ? 'EN' : 'عربي'}</span>
+              <span className="font-bold">{lang === 'ar' ? 'EN' : 'AR'}</span>
             </button>
 
-            {/* Mobile Hamburger Toggle */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden h-10 w-10 rounded-xl bg-[#121215] border border-white/10 text-slate-300 hover:text-white flex items-center justify-center"
+              className="lg:hidden h-9 w-9 rounded-xl bg-white/[0.04] border border-white/10 text-slate-300 hover:text-white flex items-center justify-center active:scale-95"
               aria-label="Toggle menu"
             >
-              {mobileMenuOpen ? <X className="w-5 h-5 text-theme-secondary" /> : <Menu className="w-5 h-5" />}
+              {mobileMenuOpen ? <X className="w-4.5 h-4.5 text-theme-secondary" /> : <Menu className="w-4.5 h-4.5" />}
             </button>
           </div>
         </div>
 
-        {/* Mobile Drawer with Smooth Accordion Transition */}
         <AnimatePresence initial={false}>
           {mobileMenuOpen && (
             <motion.div
@@ -239,7 +231,7 @@ export const Navbar: React.FC = () => {
               transition={{ duration: 0.34, ease: MOTION_EASE }}
               className="lg:hidden overflow-hidden"
             >
-              <div className="mt-3 pt-3 border-t border-white/10 flex flex-col gap-2 pb-3">
+              <div className="mt-3 pt-3 border-t border-white/10 flex flex-col gap-1.5 pb-2">
                 {navLinks.map((link, idx) => {
                   const isActive = activeSection === link.href.replace('#', '');
                   return (
@@ -251,30 +243,29 @@ export const Navbar: React.FC = () => {
                       transition={{ duration: 0.28, delay: idx * 0.04, ease: MOTION_EASE }}
                       onClick={(e) => scrollToSection(e, link.href)}
                       aria-current={isActive ? 'page' : undefined}
-                      className={`text-sm font-medium px-3 py-2 rounded-lg transition-colors ${
+                      className={`text-sm font-medium px-3.5 py-2.5 rounded-xl transition-colors ${
                         isActive
-                          ? 'text-theme-primary bg-theme-primary/15 font-semibold border border-theme-primary/30'
-                          : 'text-theme-secondary hover:text-theme-primary hover:bg-theme-primary/10'
+                          ? 'text-white bg-theme-primary/18 font-semibold border border-theme-primary/35'
+                          : 'text-slate-300 hover:text-white hover:bg-white/[0.05]'
                       }`}
                     >
                       {lang === 'ar' ? link.labelAr : link.labelEn}
                     </motion.a>
                   );
                 })}
-                {/* Socials on Mobile */}
-                <div className="flex items-center gap-3 px-3 pt-2 border-t border-white/5 text-theme-secondary">
+                <div className="flex items-center gap-3 px-3 pt-2.5 mt-1 border-t border-white/10 text-theme-secondary">
                   {profile.linkedin && (
-                    <a href={profile.linkedin} target="_blank" rel="noreferrer" className="hover:text-theme-primary">
-                      <Linkedin className="w-5 h-5" />
+                    <a href={profile.linkedin} target="_blank" rel="noreferrer" className="p-2 rounded-lg bg-white/[0.03] border border-white/[0.08] hover:text-theme-primary">
+                      <Linkedin className="w-4 h-4" />
                     </a>
                   )}
                   {profile.github && (
-                    <a href={profile.github} target="_blank" rel="noreferrer" className="hover:text-theme-primary">
-                      <Github className="w-5 h-5" />
+                    <a href={profile.github} target="_blank" rel="noreferrer" className="p-2 rounded-lg bg-white/[0.03] border border-white/[0.08] hover:text-theme-primary">
+                      <Github className="w-4 h-4" />
                     </a>
                   )}
-                  <a href={`mailto:${profile.email}`} className="hover:text-theme-primary">
-                    <Mail className="w-5 h-5" />
+                  <a href={`mailto:${profile.email}`} className="p-2 rounded-lg bg-white/[0.03] border border-white/[0.08] hover:text-theme-primary">
+                    <Mail className="w-4 h-4" />
                   </a>
                 </div>
               </div>
@@ -282,7 +273,8 @@ export const Navbar: React.FC = () => {
           )}
         </AnimatePresence>
       </nav>
-                );
+    </header>
+  );
 };
 
                 export default Navbar;
