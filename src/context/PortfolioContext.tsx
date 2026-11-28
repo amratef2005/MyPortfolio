@@ -73,7 +73,7 @@ interface PortfolioContextType {
   updateCertificate: (id: string, cert: Partial<Certificate>) => void;
   deleteCertificate: (id: string) => void;
   updateSkills: (skills: SkillCategory[]) => void;
-  addMessage: (msg: Omit<ContactMessage, 'id' | 'createdAt' | 'read'>) => void;
+  addMessage: (msg: Omit<ContactMessage, 'id' | 'createdAt' | 'read'>) => Promise<void>;
   markMessageRead: (id: string) => void;
   deleteMessage: (id: string) => void;
   exportData: () => void;
@@ -607,19 +607,23 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     broadcastChange('UPDATE_SKILLS', newSkills);
   };
 
-  const addMessage = (msg: Omit<ContactMessage, 'id' | 'createdAt' | 'read'>) => {
+  const addMessage = async (msg: Omit<ContactMessage, 'id' | 'createdAt' | 'read'>) => {
     const newMessage: ContactMessage = {
       ...msg,
-      id: Date.now().toString(),
+      id: `msg_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
       createdAt: new Date().toISOString(),
       read: false
     };
     setMessages(prev => [newMessage, ...prev]);
-    fetch('/api/contact', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(newMessage)
-    }).catch(e => console.error('Supabase message error:', e));
+    try {
+      await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newMessage)
+      });
+    } catch (e) {
+      console.error('Supabase message error:', e);
+    }
   };
 
   const markMessageRead = (id: string) => {

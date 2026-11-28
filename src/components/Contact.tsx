@@ -40,6 +40,7 @@ export const Contact: React.FC = () => {
 
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const submitLockRef = React.useRef(false);
   const [copiedEmail, setCopiedEmail] = useState(false);
   const [copiedWhatsApp, setCopiedWhatsApp] = useState(false);
 
@@ -66,25 +67,24 @@ export const Contact: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name || !formData.email || !formData.message) return;
+    if (submitLockRef.current || submitting || submitted) return;
+    if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) return;
 
+    submitLockRef.current = true;
     setSubmitting(true);
 
     try {
-      // 1. Post to Backend API
-      await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      }).catch(() => {
-        // Fallback gracefully if running purely offline
+      // Single source of truth: addMessage persists locally and posts once to /api/contact
+      await addMessage({
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        subject: formData.subject.trim(),
+        message: formData.message.trim(),
       });
-
-      // 2. Add to Local State / Context
-      addMessage(formData);
+      setFormData({ name: '', email: '', subject: '', message: '' });
       setSubmitted(true);
 
-      // 3. Trigger Celebration Confetti
+      // Trigger Celebration Confetti
       const styles = getComputedStyle(document.documentElement);
       const pColor = styles.getPropertyValue('--theme-primary').trim() || '#FF5722';
       const sColor = styles.getPropertyValue('--theme-secondary').trim() || '#FF7A00';
@@ -96,6 +96,7 @@ export const Contact: React.FC = () => {
         colors: [pColor, sColor, aColor, '#FFFFFF']
       });
     } finally {
+      submitLockRef.current = false;
       setSubmitting(false);
     }
   };

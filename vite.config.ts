@@ -243,9 +243,11 @@ function supabaseBackendPlugin(): Plugin {
         if (url === '/api/contact' && req.method === 'POST') {
           try {
             const data = await readBody();
-            const id = 'msg_' + Date.now();
+            const id = (typeof data.id === 'string' && data.id.trim())
+              ? data.id.trim().slice(0, 80)
+              : `msg_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
             await pool.query(
-              'INSERT INTO public.portfolio_messages (id, name, email, subject, message) VALUES ($1, $2, $3, $4, $5)',
+              'INSERT INTO public.portfolio_messages (id, name, email, subject, message) VALUES ($1, $2, $3, $4, $5) ON CONFLICT (id) DO NOTHING',
               [id, data.name, data.email, data.subject || '', data.message]
             );
             return jsonResponse(200, { success: true, id });
