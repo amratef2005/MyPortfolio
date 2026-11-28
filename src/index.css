@@ -94,29 +94,47 @@
     letter-spacing: normal !important;
   }
 
-  /* Scoped Quantix Dashboard Typography */
+  /* Scoped Quantix Dashboard UI Typography (Always sharp & readable on mobile, unaffected by decorative portfolio fonts) */
   .quantix-dashboard {
-    font-family: var(--font-sans-en), var(--font-sans-ar), sans-serif;
+    font-family: "Plus Jakarta Sans", "IBM Plex Sans Arabic", "Cairo", sans-serif;
   }
 
   [dir="rtl"] .quantix-dashboard,
   html[lang="ar"] .quantix-dashboard {
-    font-family: var(--font-sans-ar), 'Cairo', sans-serif;
+    font-family: "IBM Plex Sans Arabic", "Cairo", "Plus Jakarta Sans", sans-serif;
+  }
+
+  .quantix-dashboard .font-mono {
+    font-family: "JetBrains Mono", "IBM Plex Sans Arabic", monospace;
+    line-height: 1.5;
   }
 
   .quantix-dashboard h1,
   .quantix-dashboard h2,
-  .quantix-dashboard h3 {
-    font-family: var(--font-display-en), var(--font-sans-en), sans-serif;
+  .quantix-dashboard h3,
+  .quantix-dashboard h4 {
+    font-family: "Space Grotesk", "Plus Jakarta Sans", "IBM Plex Sans Arabic", "Cairo", sans-serif;
+    letter-spacing: -0.015em !important;
   }
 
   [dir="rtl"] .quantix-dashboard h1,
   [dir="rtl"] .quantix-dashboard h2,
   [dir="rtl"] .quantix-dashboard h3,
+  [dir="rtl"] .quantix-dashboard h4,
   html[lang="ar"] .quantix-dashboard h1,
   html[lang="ar"] .quantix-dashboard h2,
-  html[lang="ar"] .quantix-dashboard h3 {
-    font-family: var(--font-display-ar), var(--font-sans-ar), sans-serif;
+  html[lang="ar"] .quantix-dashboard h3,
+  html[lang="ar"] .quantix-dashboard h4 {
+    font-family: "IBM Plex Sans Arabic", "Cairo", sans-serif;
+    letter-spacing: normal !important;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 
   /* Unified Quantix Dashboard Card System */

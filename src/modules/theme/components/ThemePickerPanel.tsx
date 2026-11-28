@@ -252,31 +252,31 @@ export const ThemePickerPanel: React.FC<{ onSaved?: () => void }> = ({ onSaved }
                 key={preset.id}
                 type="button"
                 onClick={() => applyPreset(preset.primary, preset.secondary, preset.accent)}
-                className={`quantix-card quantix-card-interactive group relative p-4 text-start flex items-center justify-between gap-3 w-full ${
-                  isSelected ? 'border-theme-primary/50 shadow-lg' : ''
+                className={`quantix-card quantix-card-interactive group relative p-3 sm:p-4 text-start flex items-center justify-between gap-2.5 w-full ${
+                  isSelected ? 'border-theme-primary/55 shadow-[0_0_24px_-6px_rgba(var(--theme-primary-rgb),0.45)] ring-1 ring-theme-primary/30' : ''
                 }`}
               >
-                <div className="flex items-center gap-3 min-w-0">
+                <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
                   <span
-                    className="w-9 h-9 rounded-xl shrink-0 border border-white/20 shadow-inner"
+                    className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl shrink-0 border border-white/20 shadow-inner"
                     style={{
                       background: `linear-gradient(135deg, ${preset.primary}, ${preset.secondary})`,
                       boxShadow: isSelected ? `0 0 18px ${preset.primary}66` : undefined,
                     }}
                   />
                   <div className="min-w-0">
-                    <div className="text-sm font-semibold text-white truncate">
+                    <div className="text-xs sm:text-sm font-semibold text-white truncate">
                       {lang === 'ar' ? preset.nameAr : preset.name}
                     </div>
-                    <div className="text-[11px] font-mono text-slate-400">{preset.primary}</div>
+                    <div className="text-[10px] sm:text-[11px] font-mono text-slate-400">{preset.primary}</div>
                   </div>
                 </div>
                 {isSelected && (
                   <span
-                    className="w-6 h-6 rounded-full flex items-center justify-center text-white shrink-0"
+                    className="w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center text-white shrink-0 shadow-sm"
                     style={{ backgroundColor: preset.primary }}
                   >
-                    <Check className="w-3.5 h-3.5" />
+                    <Check className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                   </span>
                 )}
               </button>
@@ -286,7 +286,7 @@ export const ThemePickerPanel: React.FC<{ onSaved?: () => void }> = ({ onSaved }
           return (
             <>
               {defaultPreset && renderPresetCard(defaultPreset)}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-3">
                 {recentColors.map(renderPresetCard)}
               </div>
             </>

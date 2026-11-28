@@ -38,7 +38,6 @@ export const AdminPageShell: React.FC = () => {
   } = usePortfolio();
 
   const [activeTab, setActiveTab] = useActiveAdminTab();
-  const [isMobileMoreOpen, setIsMobileMoreOpen] = useState(false);
   const [isBrandModalOpen, setIsBrandModalOpen] = useState(false);
 
   const [editingProject, setEditingProject] = useState<Project | null>(null);
@@ -68,17 +67,6 @@ export const AdminPageShell: React.FC = () => {
   const requestConfirm: RequestConfirmFn = (opts) => {
     setConfirmState({ ...opts, isOpen: true });
   };
-
-  const [showIosInstallGuide] = useState(() => {
-    if (typeof window === 'undefined') return false;
-    const ua = window.navigator.userAgent || '';
-    const isIos = /iPhone|iPad|iPod/i.test(ua);
-    const isStandalone =
-      (window.navigator as any).standalone === true ||
-      window.matchMedia('(display-mode: standalone)').matches;
-    const dismissed = localStorage.getItem('admin_ios_guide_dismissed') === 'true';
-    return isIos && !isStandalone && !dismissed;
-  });
 
   const { fetchSessions } = useAdminSessions(isAuthenticated, logout);
 
@@ -135,6 +123,8 @@ export const AdminPageShell: React.FC = () => {
           refreshFeedback={refreshFeedback}
           onRefresh={handleRefresh}
           onLogout={logout}
+          profile={profile}
+          onEditBrand={() => setIsBrandModalOpen(true)}
         />
 
         <main
@@ -142,7 +132,7 @@ export const AdminPageShell: React.FC = () => {
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
-          className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto max-w-6xl w-full min-w-0 pb-[max(6.25rem,calc(env(safe-area-inset-bottom)+5.25rem))] lg:pb-8"
+          className="flex-1 p-3.5 sm:p-6 lg:p-8 overflow-y-auto max-w-6xl w-full min-w-0 pb-[max(6.75rem,calc(env(safe-area-inset-bottom)+5.75rem))] lg:pb-8"
         >
           {(pullDistance > 0 || isRefreshing) && (
             <div
@@ -277,7 +267,9 @@ export const AdminPageShell: React.FC = () => {
             )}
             {activeTab === 'security' && <SecurityTab requestConfirm={requestConfirm} />}
             {activeTab === 'inbox' && <InboxTab requestConfirm={requestConfirm} />}
-            {activeTab === 'backup' && <BackupTab requestConfirm={requestConfirm} />}
+            {activeTab === 'backup' && (
+              <BackupTab requestConfirm={requestConfirm} onHardReload={handleHardReload} />
+            )}
           </div>
         </main>
       </div>
@@ -290,16 +282,9 @@ export const AdminPageShell: React.FC = () => {
 
       <MobileAdminNav
         activeTab={activeTab}
-        isMobileMoreOpen={isMobileMoreOpen}
-        setIsMobileMoreOpen={setIsMobileMoreOpen}
         onSelectTab={handleSelectTab}
         unreadCount={unreadCount}
         lang={lang}
-        tabsLabels={t.tabs}
-        profile={profile}
-        onOpenBrandModal={() => setIsBrandModalOpen(true)}
-        onHardReload={handleHardReload}
-        showIosInstallGuide={showIosInstallGuide}
       />
 
       <ConfirmActionModal

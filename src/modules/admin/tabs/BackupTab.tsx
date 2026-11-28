@@ -1,14 +1,15 @@
 import React from 'react';
-import { Download, RotateCcw } from 'lucide-react';
+import { Download, RefreshCw, RotateCcw } from 'lucide-react';
 import { usePortfolio } from '@/app/providers/PortfolioContext';
 import type { RequestConfirmFn } from '../types';
 
 interface BackupTabProps {
   requestConfirm: RequestConfirmFn;
   onSaved?: () => void;
+  onHardReload?: () => Promise<void>;
 }
 
-export const BackupTab: React.FC<BackupTabProps> = ({ requestConfirm, onSaved }) => {
+export const BackupTab: React.FC<BackupTabProps> = ({ requestConfirm, onSaved, onHardReload }) => {
   const { exportData, importData, resetToDefault } = usePortfolio();
 
   return (
@@ -17,6 +18,25 @@ export const BackupTab: React.FC<BackupTabProps> = ({ requestConfirm, onSaved })
         <h2 className="text-xl font-bold text-white">النسخ الاحتياطي والاستعادة</h2>
         <p className="text-xs text-slate-400 font-mono mt-0.5">تصدير واستيراد بيانات البرتفوليو بملفات JSON</p>
       </div>
+
+      {onHardReload && (
+        <div className="p-5 sm:p-6 quantix-card flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h3 className="font-bold text-white text-sm">تحديث وإعادة تحميل التطبيق (Clear App Cache)</h3>
+            <p className="text-xs text-slate-400 mt-1">
+              يمسح الكاش المؤقت للواجهة ويجلب أحدث إصدار فوراً مع بقاء الجلسة مفتوحة.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => void onHardReload()}
+            className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-theme-primary/15 hover:bg-theme-primary/25 border border-theme-primary/35 text-theme-primary font-bold text-xs cursor-pointer shrink-0 transition-all active:scale-95"
+          >
+            <RefreshCw className="w-4 h-4" />
+            <span>إعادة تحميل التطبيق</span>
+          </button>
+        </div>
+      )}
 
       <div className="p-6 quantix-card space-y-4">
         <h3 className="font-bold text-white text-sm">تصدير كامل بيانات البرتفوليو (JSON):</h3>
