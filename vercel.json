@@ -1,5 +1,6 @@
 {
   "cleanUrls": true,
+  "installCommand": "export npm_config_cache=\"${npm_config_cache:-${npm_config_cache_dir:-$HOME/.npm}}\"; unset npm_config_cache_dir NPM_CONFIG_CACHE_DIR; npm install",
   "rewrites": [
     {
       "source": "/admin",
