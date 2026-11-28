@@ -328,6 +328,13 @@ function supabaseBackendPlugin(): Plugin {
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react(), supabaseBackendPlugin()],
+  resolve: {
+    alias: {
+      '@': resolve(__dirname, 'src'),
+      '@shared': resolve(__dirname, 'src/shared'),
+      '@modules': resolve(__dirname, 'src/modules'),
+    },
+  },
   build: {
     rollupOptions: {
       input: {

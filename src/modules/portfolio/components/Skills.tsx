@@ -1,0 +1,266 @@
+import React from 'react';
+import { usePortfolio } from '@/app/providers/PortfolioContext';
+import {
+  Cpu,
+  Server,
+  Database,
+  Zap,
+  Code2,
+  Layers,
+  FileCheck,
+  Terminal,
+  Lock,
+  GitBranch
+} from 'lucide-react';
+import {
+  AssembleItem,
+  StaggerGroup,
+  StaggerItem,
+  AnimatedProgressBar,
+} from '@shared/ui/KineticAssemble';
+
+export const Skills: React.FC = () => {
+  const { skills, profile, lang } = usePortfolio();
+
+  // Top core competencies with percentages
+  const displaySkills = [
+    { name: "C# & .NET 10", level: 95 },
+    { name: "ASP.NET Core Web API", level: 95 },
+    { name: "Clean Architecture & CQRS", level: 95 },
+    { name: "PostgreSQL & SQL Server", level: 92 },
+    { name: "JWT & Refresh Token Security", level: 94 },
+    { name: "Entity Framework Core", level: 92 },
+    { name: "SignalR & Real-Time", level: 90 },
+    { name: "GitHub Actions & CI/CD", level: 90 }
+  ];
+
+  // The 8 Core Backend Architectural Domains from the user's CV
+  const backendDomains = [
+    {
+      icon: <Code2 className="w-6 h-6 text-theme-primary" />,
+      titleAr: "لغات البرمجة",
+      titleEn: "Programming Languages",
+      skillsAr: "C#, SQL",
+      skillsEn: "C#, SQL",
+      descAr: "كتابة كود C# متقن وعالي الأداء، واستعلامات SQL علائقية محسنة.",
+      descEn: "Clean, robust C# engineering and optimized relational SQL queries."
+    },
+    {
+      icon: <Server className="w-6 h-6 text-theme-secondary" />,
+      titleAr: "تطوير النظم الخلفية",
+      titleEn: "Backend Development",
+      skillsAr: ".NET 10, ASP.NET Core, EF Core, RESTful APIs, DI, Middleware, Background Services",
+      skillsEn: ".NET 10, ASP.NET Core Web API, RESTful APIs, EF Core, DI, Middleware, Background Services",
+      descAr: "بناء واجهات برمجية RESTful قابلة للتوسع، وإدارة مسار معالجة الطلبات والخدمات الخلفية.",
+      descEn: "Scalable RESTful API architecture, pipeline middleware, and asynchronous background workers."
+    },
+    {
+      icon: <Layers className="w-6 h-6 text-theme-primary" />,
+      titleAr: "المعمارية وتصميم الأنظمة",
+      titleEn: "Architecture & Design",
+      skillsAr: "Clean Architecture, Modular Monolith, CQRS, DTOs, Manual Mapping",
+      skillsEn: "Clean Architecture, Modular Monolith, CQRS, DTOs, Manual Mapping, Separation of Concerns",
+      descAr: "فصل طبقات المجال والتطبيق، تطبيق نمط CQRS، وتحويل البيانات عالي الكفاءة.",
+      descEn: "Strict Domain separation, CQRS command/query segregation, and high-performance mapping."
+    },
+    {
+      icon: <Database className="w-6 h-6 text-theme-secondary" />,
+      titleAr: "قواعد البيانات وإدارة البيانات",
+      titleEn: "Databases & ORM",
+      skillsAr: "PostgreSQL, SQL Server, Supabase, EF Core, Database Migrations",
+      skillsEn: "Microsoft SQL Server, PostgreSQL, Supabase, EF Core, Relational Schema Design",
+      descAr: "تصميم مخططات قواعد البيانات العلائقية، إدارة الهجرة والترقيات، والتحسين الفائق للاستعلامات.",
+      descEn: "Relational schema design, schema migrations, and optimized EF Core query execution."
+    },
+    {
+      icon: <Lock className="w-6 h-6 text-theme-primary" />,
+      titleAr: "المصادقة وأمان الأنظمة",
+      titleEn: "Authentication & Security",
+      skillsAr: "JWT, OAuth 2.0, Phone OTP, Refresh Token Rotation (SHA-256), Tenant Isolation, IDOR Prevention",
+      skillsEn: "JWT, OAuth 2.0, Phone OTP, Refresh Token Rotation, SHA-256 Hashing, IDOR Prevention",
+      descAr: "إدارة جلسات فائقة الأمان، تدوير التوكنات بتشفير SHA-256، وحماية صارمة ضد ثغرات IDOR.",
+      descEn: "Secure session lifecycle, SHA-256 refresh token rotation, and multi-tenant IDOR protection."
+    },
+    {
+      icon: <Zap className="w-6 h-6 text-theme-secondary" />,
+      titleAr: "الاتصال اللحظي ومعالجة الدفعات",
+      titleEn: "Real-Time & Performance",
+      skillsAr: "SignalR (WebSockets), Background Processing, Batch Processing, Async Programming",
+      skillsEn: "SignalR (WebSockets), Background Processing, Batch Processing, Asynchronous Programming",
+      descAr: "تحديثات لحظية فورية عبر SignalR، معالجة الدفعات في الخلفية، وتزامن فائق السرعة.",
+      descEn: "Real-time bi-directional SignalR communication, batch processing, and high-concurrency async code."
+    },
+    {
+      icon: <FileCheck className="w-6 h-6 text-theme-primary" />,
+      titleAr: "التحقق والتوثيق البرمجي",
+      titleEn: "Validation & Documentation",
+      skillsAr: "FluentValidation, Swagger / OpenAPI, Postman",
+      skillsEn: "FluentValidation, Swagger / OpenAPI, Postman",
+      descAr: "التحقق من صحة المدخلات بنمط نظيف وتوثيق واجهات الـ APIs بدقة تفاعلية.",
+      descEn: "Declarative request validation with FluentValidation and interactive Swagger / OpenAPI contracts."
+    },
+    {
+      icon: <GitBranch className="w-6 h-6 text-theme-secondary" />,
+      titleAr: "أدوات التطوير والأتمتة",
+      titleEn: "DevOps & Tools",
+      skillsAr: "Git, GitHub, GitHub Actions (CI/CD), IIS Deployment",
+      skillsEn: "Git, GitHub, GitHub Actions, CI/CD, IIS Deployment",
+      descAr: "إدارة النسخ عبر Git، أتمتة خطوط البناء والاختبار والنشر (CI/CD)، والاستضافة عبر IIS.",
+      descEn: "Automated CI/CD build & test workflows using GitHub Actions and production hosting on IIS."
+    }
+  ];
+
+  return (
+    <section id="skills" className="py-8 sm:py-16 lg:py-20 relative overflow-hidden">
+      {/* Ambient Radial Lighting */}
+      <div
+        className="absolute top-1/4 -left-20 w-[420px] h-[420px] rounded-full blur-[64px] pointer-events-none"
+        style={{ background: 'radial-gradient(circle, rgba(var(--theme-primary-rgb), 0.11) 0%, transparent 70%)' }}
+      />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        {/* Section Header */}
+        <AssembleItem direction="top" distance={22} delay={0.12}>
+          <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12 lg:mb-16">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#121215] border border-theme-primary/20 text-theme-secondary text-xs font-mono mb-3">
+              <Cpu className="w-3.5 h-3.5 text-theme-primary" />
+              <span>{lang === 'ar' ? 'القدرات والمهارات التقنية' : 'Technical Skills & Capabilities'}</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-[1.2]">
+              {lang === 'ar' ? (
+                <>
+                  كفاءات معمارية وهندسية <span className="text-theme-primary drop-shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.4)]">بأعلى معايير الأداء</span>
+                </>
+              ) : (
+                <>
+                  Backend Engineering & Architecture <span className="text-theme-primary drop-shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.4)]">Core Competencies</span>
+                </>
+              )}
+            </h2>
+            <p className="text-slate-400 mt-4 text-sm sm:text-base leading-relaxed">
+              {lang === 'ar'
+                ? 'منظومة متكاملة من التقنيات والأنماط المعمارية لتطوير نظم خلفية موثوقة، آمنة، وقابلة للتوسع.'
+                : 'A cohesive stack of modern .NET backend technologies, robust patterns, and database engineering.'}
+            </p>
+          </div>
+        </AssembleItem>
+
+        {/* Highlight Card: Bio Intro + Test Pass Rate */}
+        <AssembleItem direction="top" distance={22} delay={0.16}>
+          <div className="premium-card mb-10 sm:mb-14 p-4 sm:p-6 lg:p-8 rounded-3xl border border-theme-primary/25 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="text-start max-w-2xl">
+              <h3 className="text-xl font-bold text-white mb-2">
+                {lang === 'ar' ? 'خبرة عملية مبنية على بناء مشاريع واقعية' : 'Hands-on Production Architecture'}
+              </h3>
+              <p className="text-slate-300 text-sm leading-relaxed">
+                {lang === 'ar'
+                  ? 'خبرة في تطبيق Clean Architecture ونمط Modular Monolith، وتطوير واجهات برمجة تطبيقات RESTful APIs متقدمة، وتنفيذ آليات أمان الجلسات وتدوير التوكنات، مع تحقيق 49 اختباراً مؤتمتاً ناجحاً بنسبة 100%.'
+                  : 'Demonstrated proficiency delivering scalable backend solutions, multi-tenant SaaS architecture, token rotation with SHA-256, SignalR real-time hubs, and 49 automated passing tests with 100% pass rate.'}
+              </p>
+            </div>
+
+            {/* Big Theme Number */}
+            <div className="flex items-center gap-4 px-6 py-4 rounded-2xl bg-theme-primary/10 border border-theme-primary/30 shrink-0">
+              <span className="text-5xl sm:text-6xl font-black text-theme-primary font-mono drop-shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.5)]">
+                100%
+              </span>
+              <div className="flex flex-col text-start">
+                <span className="text-white font-bold text-sm">
+                  {lang === 'ar' ? 'نسبة اجتياز الاختبارات' : 'Test Pass Rate'}
+                </span>
+                <span className="text-xs text-theme-secondary font-mono">
+                  {lang === 'ar' ? '49 اختباراً مؤتمتاً ناجحاً' : '49 Passing Tests'}
+                </span>
+              </div>
+            </div>
+          </div>
+        </AssembleItem>
+
+        {/* Skills with Big Percentages Grid */}
+        <StaggerGroup
+          mode="inView"
+          delay={0.14}
+          stagger={0.08}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16"
+        >
+          {displaySkills.map((skill, idx) => (
+            <StaggerItem key={idx} direction="bottom" distance={20}>
+              <div className="premium-card p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-white/10 hover:border-theme-primary/40 group relative overflow-hidden">
+                {/* Big Theme Percentage Number */}
+                <div className="flex items-baseline justify-between mb-3">
+                  <span className="text-3xl sm:text-4xl font-black text-theme-primary font-mono group-hover:text-theme-secondary transition-colors drop-shadow-[0_0_15px_rgba(var(--theme-primary-rgb),0.3)]">
+                    {skill.level}%
+                  </span>
+                  <div className="w-2.5 h-2.5 rounded-full bg-theme-primary group-hover:scale-125 transition-transform" />
+                </div>
+
+                {/* Skill Name */}
+                <h4 className="text-sm sm:text-base font-bold text-white mb-3">
+                  {skill.name}
+                </h4>
+
+                {/* Synchronized Animated Progress Track */}
+                <AnimatedProgressBar
+                  level={skill.level}
+                  delay={0.22 + idx * 0.06}
+                  isRtl={lang === 'ar'}
+                />
+              </div>
+            </StaggerItem>
+          ))}
+        </StaggerGroup>
+
+        {/* The 8 Architectural Domains Grid */}
+        <div className="pt-8 border-t border-white/10">
+          <AssembleItem direction="top" distance={20} delay={0.12}>
+            <div className="text-start mb-10">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-theme-primary/10 border border-theme-primary/20 text-theme-secondary text-xs font-mono mb-2">
+                <Terminal className="w-3.5 h-3.5 text-theme-primary" />
+                <span>{lang === 'ar' ? 'المجالات الهندسية المتخصصة' : 'Specialized Engineering Areas'}</span>
+              </div>
+              <h3 className="text-2xl sm:text-3xl font-black text-white">
+                {lang === 'ar' ? 'فئات الخبرة والقدرات البرمجية' : 'Full Backend Technology Domains'}
+              </h3>
+            </div>
+          </AssembleItem>
+
+          <StaggerGroup
+            mode="inView"
+            delay={0.14}
+            stagger={0.08}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5"
+          >
+            {backendDomains.map((domain, sIdx) => (
+              <StaggerItem key={sIdx} direction="bottom" distance={20}>
+                <div className="premium-card p-4 sm:p-5 rounded-2xl sm:rounded-3xl border border-white/10 hover:border-theme-primary/35 group h-full flex flex-col justify-between">
+                  <div>
+                    <div className="w-11 h-11 rounded-2xl bg-theme-primary/10 border border-theme-primary/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                      {domain.icon}
+                    </div>
+                    <h4 className="text-base font-bold text-white mb-1.5 group-hover:text-theme-secondary transition-colors">
+                      {lang === 'ar' ? domain.titleAr : domain.titleEn}
+                    </h4>
+                    <p className="text-theme-secondary font-mono text-[11px] font-semibold mb-2">
+                      {lang === 'ar' ? domain.skillsAr : domain.skillsEn}
+                    </p>
+                    <p className="text-slate-400 text-xs leading-relaxed">
+                      {lang === 'ar' ? domain.descAr : domain.descEn}
+                    </p>
+                  </div>
+                  <div className="mt-4 pt-3 border-t border-white/5 flex items-center gap-1.5 text-[11px] font-mono text-theme-primary">
+                    <span>{lang === 'ar' ? 'معتمد ومطبق' : 'Production-Ready'}</span>
+                    <span className="text-theme-secondary rtl-flip">&rarr;</span>
+                  </div>
+                </div>
+              </StaggerItem>
+            ))}
+          </StaggerGroup>
+        </div>
+
+      </div>
+    </section>
+  );
+};
+
+export default Skills;

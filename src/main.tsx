@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App';
-import { PortfolioProvider } from './context/PortfolioContext';
-import { AdminPage } from './admin/AdminPage';
+import App from '@/app/App';
+import { PortfolioProvider } from '@/app/providers/PortfolioContext';
+import { AdminPageShell } from '@modules/admin';
 import './index.css';
 
 const path = window.location.pathname.toLowerCase();
@@ -12,7 +12,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     {isAdminRoute ? (
       <PortfolioProvider>
-        <AdminPage />
+        <AdminPageShell />
       </PortfolioProvider>
     ) : (
       <App />

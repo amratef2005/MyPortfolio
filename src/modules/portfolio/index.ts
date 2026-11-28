@@ -1,0 +1,14 @@
+export { Navbar } from './components/Navbar';
+export { Hero } from './components/Hero';
+export { About } from './components/About';
+export { Experience } from './components/Experience';
+export { Projects } from './components/Projects';
+export { ProjectModal } from './components/ProjectModal';
+export { Certificates } from './components/Certificates';
+export { Skills } from './components/Skills';
+export { DeviceShowcase } from './components/DeviceShowcase';
+export { InteractiveAvatar } from './components/InteractiveAvatar';
+export { SignatureGlowAvatar } from './components/SignatureGlowAvatar';
+export { TerminalSandbox } from './components/TerminalSandbox';
+export { Footer } from './components/Footer';
+export * from './data/initialData';
